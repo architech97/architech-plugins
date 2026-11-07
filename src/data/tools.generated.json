@@ -1,0 +1,1865 @@
+[
+ {
+  "slug": "compliance-guard",
+  "key": "ComplianceGuard",
+  "name": "Compliance Guard",
+  "suite": "sentinel",
+  "panel": "Clean Up",
+  "software": [
+   "Revit"
+  ],
+  "revit": [
+   "2024"
+  ],
+  "tagline": "Review CAD-style line candidates (incl. sketch lines), unpinned datum/links, and Workset1 usage.",
+  "description": "Line-style names are candidates only, not proof of CAD origin. Model, detail and sketch lines are inspected; sketch lines are reported but never deleted because they belong to a host element. Deletion requires reviewed selections and confirmation. Pin selected assets and inspect Workset1 usage.",
+  "capabilities": [
+   "Line-style names are candidates only, not proof of CAD origin.",
+   "Pin selected assets and inspect Workset1 usage."
+  ],
+  "safeguards": [
+   "Model, detail and sketch lines are inspected; sketch lines are reported but never deleted because they belong to a host element.",
+   "Deletion requires reviewed selections and confirmation."
+  ],
+  "dialogs": [
+   {
+    "title": "Compliance Guard",
+    "dark": "media/dialogs/compliance-guard/complianceguardwindow-dark.webp",
+    "w": 966,
+    "h": 626,
+    "light": "media/dialogs/compliance-guard/complianceguardwindow-light.webp"
+   }
+  ]
+ },
+ {
+  "slug": "duplicates-resolver",
+  "key": "DuplicatesResolver",
+  "name": "Duplicates Resolver",
+  "suite": "sentinel",
+  "panel": "Clean Up",
+  "software": [
+   "Revit"
+  ],
+  "revit": [
+   "2024"
+  ],
+  "tagline": "Find instances stacked at the same location, then merge or delete the extras.",
+  "description": "Groups FamilyInstances that share a type and a location to within 1 mm - point-placed on their XYZ, line-based on both end points, so a curve drawn the other way round still matches. Pick which copy survives per cluster, then Merge (carry the extras' filled-in instance parameters into the primary where it is blank) or Delete. FamilyInstances only: walls, floors and other non-instance duplicates are not covered.",
+  "capabilities": [
+   "Groups FamilyInstances that share a type and a location to within 1 mm - point-placed on their XYZ, line-based on both end points, so a curve drawn the other way round still matches.",
+   "Pick which copy survives per cluster, then Merge (carry the extras' filled-in instance parameters into the primary where it is blank) or Delete.",
+   "FamilyInstances only: walls, floors and other non-instance duplicates are not covered."
+  ],
+  "safeguards": [],
+  "dialogs": [
+   {
+    "title": "Duplicates Resolver",
+    "dark": "media/dialogs/duplicates-resolver/duplicateswindow-dark.webp",
+    "w": 1226,
+    "h": 726,
+    "light": "media/dialogs/duplicates-resolver/duplicateswindow-light.webp"
+   }
+  ]
+ },
+ {
+  "slug": "group-manager",
+  "key": "GroupManager",
+  "name": "Group Manager",
+  "suite": "sentinel",
+  "panel": "Clean Up",
+  "software": [
+   "Revit"
+  ],
+  "revit": [
+   "2024"
+  ],
+  "tagline": "Detail groups, model groups and ungrouping in one window, one tab each.",
+  "description": "Ungrouping dissolves the group container and KEEPS its member elements - nothing is deleted. Tick any mix of group types and every instance of them is dissolved in one undoable step. Only placed types are listed, since an unplaced one has nothing to dissolve. Per row you can jump to the first instance, select every instance, or isolate them in 3D first.",
+  "capabilities": [
+   "Ungrouping dissolves the group container and KEEPS its member elements - nothing is deleted.",
+   "Per row you can jump to the first instance, select every instance, or isolate them in 3D first."
+  ],
+  "safeguards": [
+   "Tick any mix of group types and every instance of them is dissolved in one undoable step.",
+   "Only placed types are listed, since an unplaced one has nothing to dissolve."
+  ],
+  "dialogs": [
+   {
+    "title": "Group Browser",
+    "dark": "media/dialogs/group-manager/groupbrowserwindow-dark.webp",
+    "w": 1086,
+    "h": 606,
+    "light": "media/dialogs/group-manager/groupbrowserwindow-light.webp"
+   }
+  ]
+ },
+ {
+  "slug": "off-axis-resolver",
+  "key": "OffAxis",
+  "name": "Off-Axis Resolver",
+  "suite": "sentinel",
+  "panel": "Clean Up",
+  "software": [
+   "Revit"
+  ],
+  "revit": [
+   "2024"
+  ],
+  "tagline": "Scan and fix elements that drifted off orthogonal.",
+  "description": "Scan the model for elements whose XY angle drifted off orthogonal, review each one with its proposed correction, then fix the safe ones in a single undoable step. Grid lines are preview-only; a sketch line is fixed only when its loop still closes.",
+  "capabilities": [],
+  "safeguards": [
+   "Scan the model for elements whose XY angle drifted off orthogonal, review each one with its proposed correction, then fix the safe ones in a single undoable step.",
+   "Grid lines are preview-only; a sketch line is fixed only when its loop still closes."
+  ],
+  "dialogs": [
+   {
+    "title": "Off Axis Resolver",
+    "dark": "media/dialogs/off-axis-resolver/offaxisresolverwindow-dark.webp",
+    "w": 1306,
+    "h": 706,
+    "light": "media/dialogs/off-axis-resolver/offaxisresolverwindow-light.webp"
+   }
+  ]
+ },
+ {
+  "slug": "purge-and-merge",
+  "key": "PurgeMerge",
+  "name": "Purge and Merge",
+  "suite": "sentinel",
+  "panel": "Clean Up",
+  "software": [
+   "Revit"
+  ],
+  "revit": [
+   "2024"
+  ],
+  "tagline": "Find and delete unused materials, patterns, filters, templates, line styles and filled regions - or merge the duplicates.",
+  "description": "Scans seven kinds of reusable project content at once and marks each entry used or unused, so you only delete what is safe to remove. Filter by category, by usage or by name, tick any mix across categories and purge them in one undoable step. Duplicates brought in by repeated CAD or model imports can be merged instead: pick which copy survives, and every reference - compound-structure layers, view filters with their overrides, view templates, curve line styles, filled regions - is redirected to it before the rest are deleted. Exports the full list to Documents\\\\Model Health Reports.",
+  "capabilities": [
+   "Scans seven kinds of reusable project content at once and marks each entry used or unused, so you only delete what is safe to remove.",
+   "Duplicates brought in by repeated CAD or model imports can be merged instead: pick which copy survives, and every reference - compound-structure layers, view filters with their overrides, view templates, curve line styles, filled regions - is redirected to it before the rest are deleted."
+  ],
+  "safeguards": [
+   "Filter by category, by usage or by name, tick any mix across categories and purge them in one undoable step.",
+   "Exports the full list to Documents\\\\Model Health Reports."
+  ],
+  "dialogs": [
+   {
+    "title": "Merge duplicates",
+    "dark": "media/dialogs/purge-and-merge/mergeduplicateswindow-dark.webp",
+    "w": 1166,
+    "h": 726,
+    "light": "media/dialogs/purge-and-merge/mergeduplicateswindow-light.webp"
+   },
+   {
+    "title": "Purge",
+    "dark": "media/dialogs/purge-and-merge/purgewindow-dark.webp",
+    "w": 1266,
+    "h": 766,
+    "light": "media/dialogs/purge-and-merge/purgewindow-light.webp"
+   }
+  ]
+ },
+ {
+  "slug": "coord-plan",
+  "key": "CoordPlan",
+  "name": "Coord Plan",
+  "suite": "sentinel",
+  "panel": "Coordination",
+  "software": [
+   "Revit"
+  ],
+  "revit": [
+   "2024"
+  ],
+  "tagline": "Create (or rebuild) a clean Coordination floor plan.",
+  "description": "Builds a 1:100 coarse hidden-line floor plan on the Coordination discipline with an unlimited view range and no crop, then force-shows the coordination scaffolding (project base point, survey point, grids, levels, reference planes, scope boxes, section/elevation markers), the site context (site, property lines, topography, pads, roads, parking) and linked Revit models - while hiding every CAD import and link and 38 annotation, tag and colour-fill categories. An existing Coordination Plan can be rebuilt or kept.",
+  "capabilities": [
+   "Builds a 1:100 coarse hidden-line floor plan on the Coordination discipline with an unlimited view range and no crop, then force-shows the coordination scaffolding (project base point, survey point, grids, levels, reference planes, scope boxes, section/elevation markers), the site context (site, property lines, topography, pads, roads, parking) and linked Revit models - while hiding every CAD import and link and 38 annotation, tag and colour-fill categories."
+  ],
+  "safeguards": [
+   "An existing Coordination Plan can be rebuilt or kept."
+  ],
+  "dialogs": []
+ },
+ {
+  "slug": "navis-view",
+  "key": "NavisView",
+  "name": "Navis View",
+  "suite": "sentinel",
+  "panel": "Coordination",
+  "software": [
+   "Revit"
+  ],
+  "revit": [
+   "2024"
+  ],
+  "tagline": "Create (or reopen) the Navisworks export view. Shift-click keeps links visible; Ctrl-click creates views by workset or category.",
+  "description": "Builds an isometric 3D view named Navisworks with the coordination preset: flat colours, medium detail, fine detail on MEP, half-transparent walls, annotations/imports/point clouds hidden, section box on. Normal click hides linked models; Shift-click keeps them. Ctrl-click selects worksets or model categories for a batch: preview names, skip existing views, keep links hidden, and create in one Undo step.",
+  "capabilities": [
+   "Builds an isometric 3D view named Navisworks with the coordination preset: flat colours, medium detail, fine detail on MEP, half-transparent walls, annotations/imports/point clouds hidden, section box on.",
+   "Normal click hides linked models; Shift-click keeps them."
+  ],
+  "safeguards": [
+   "Ctrl-click selects worksets or model categories for a batch: preview names, skip existing views, keep links hidden, and create in one Undo step."
+  ],
+  "dialogs": []
+ },
+ {
+  "slug": "scope-box-synchronizer",
+  "key": "ScopeBoxSync",
+  "name": "Scope Box Synchronizer",
+  "suite": "sentinel",
+  "panel": "Coordination",
+  "software": [
+   "Revit"
+  ],
+  "revit": [
+   "2024"
+  ],
+  "tagline": "Synchronize scope boxes from linked master models, reconcile drift, and reassign views.",
+  "description": "Compares host scope boxes against master link models. Automatically detects boundary drift, recreates coordinated extents, copies missing scope boxes, and reassigns all dependent views.",
+  "capabilities": [
+   "Compares host scope boxes against master link models.",
+   "Automatically detects boundary drift, recreates coordinated extents, copies missing scope boxes, and reassigns all dependent views."
+  ],
+  "safeguards": [],
+  "dialogs": [
+   {
+    "title": "Scope Box Sync",
+    "dark": "media/dialogs/scope-box-synchronizer/scopeboxsyncwindow-dark.webp",
+    "w": 906,
+    "h": 606,
+    "light": "media/dialogs/scope-box-synchronizer/scopeboxsyncwindow-light.webp"
+   }
+  ]
+ },
+ {
+  "slug": "section-box",
+  "key": "SectionBox",
+  "name": "Section Box",
+  "suite": "sentinel",
+  "panel": "Coordination",
+  "software": [
+   "Revit"
+  ],
+  "revit": [
+   "2024"
+  ],
+  "tagline": "Create or update a 3D section box around selected elements with customizable padding.",
+  "description": "Instantly crops a 3D view to the combined bounding box of currently selected elements. If no elements are selected, prompts to pick. Choose padding in project units or explicit units and configure the target view.",
+  "capabilities": [
+   "Instantly crops a 3D view to the combined bounding box of currently selected elements.",
+   "If no elements are selected, prompts to pick.",
+   "Choose padding in project units or explicit units and configure the target view."
+  ],
+  "safeguards": [],
+  "dialogs": [
+   {
+    "title": "Section Box",
+    "dark": "media/dialogs/section-box/sectionboxwindow-dark.webp",
+    "w": 480,
+    "h": 412,
+    "light": "media/dialogs/section-box/sectionboxwindow-light.webp"
+   }
+  ]
+ },
+ {
+  "slug": "links-inspector",
+  "key": "LinksInspector",
+  "name": "Links Inspector",
+  "suite": "sentinel",
+  "panel": "Links",
+  "software": [
+   "Revit"
+  ],
+  "revit": [
+   "2024"
+  ],
+  "tagline": "Audit every Revit link and CAD import, with load status, pinning and a verdict.",
+  "description": "Lists top-level Revit link types (nested links excluded, as Manage Links does) with load status, attachment type, path, instance count and how many instances are pinned; and every CAD import with its owning view, flagging embedded CAD as the sync cost it is. Isolate a link's instances in 3D, or delete it.",
+  "capabilities": [
+   "Lists top-level Revit link types (nested links excluded, as Manage Links does) with load status, attachment type, path, instance count and how many instances are pinned; and every CAD import with its owning view, flagging embedded CAD as the sync cost it is.",
+   "Isolate a link's instances in 3D, or delete it."
+  ],
+  "safeguards": [],
+  "dialogs": []
+ },
+ {
+  "slug": "pin-unpin-links",
+  "key": "PinUnpinLinks",
+  "name": "Pin / Unpin Links",
+  "suite": "sentinel",
+  "panel": "Links",
+  "software": [
+   "Revit"
+  ],
+  "revit": [
+   "2024"
+  ],
+  "tagline": "Audit and bulk-set the pin state of every Revit link and CAD import.",
+  "description": "Lists every link placement with its current pin state, then pins or unpins in bulk - all links, or just the Revit ones, or just the CAD ones. An unpinned link can be dragged, and a link moved by accident is one of the hardest coordination faults to spot. One undoable step per action.",
+  "capabilities": [
+   "Lists every link placement with its current pin state, then pins or unpins in bulk - all links, or just the Revit ones, or just the CAD ones.",
+   "An unpinned link can be dragged, and a link moved by accident is one of the hardest coordination faults to spot."
+  ],
+  "safeguards": [
+   "One undoable step per action."
+  ],
+  "dialogs": []
+ },
+ {
+  "slug": "in-place-converter",
+  "key": "InPlaceConverter",
+  "name": "In-Place Converter",
+  "suite": "sentinel",
+  "panel": "Model Health",
+  "software": [
+   "Revit"
+  ],
+  "revit": [
+   "2024"
+  ],
+  "tagline": "Export in-place solids as Generic Model RFA copies while keeping the originals.",
+  "description": "Exports selected in-place solids as Generic Model RFA copies. Originals are retained. Source parameters, constraints and material fidelity are not guaranteed.",
+  "capabilities": [
+   "Exports selected in-place solids as Generic Model RFA copies.",
+   "Source parameters, constraints and material fidelity are not guaranteed."
+  ],
+  "safeguards": [
+   "Originals are retained."
+  ],
+  "dialogs": [
+   {
+    "title": "In Place Converter",
+    "dark": "media/dialogs/in-place-converter/inplaceconverterwindow-dark.webp",
+    "w": 966,
+    "h": 626,
+    "light": "media/dialogs/in-place-converter/inplaceconverterwindow-light.webp"
+   }
+  ]
+ },
+ {
+  "slug": "in-place-inspector",
+  "key": "InPlaceInspector",
+  "name": "In-Place Inspector",
+  "suite": "sentinel",
+  "panel": "Model Health",
+  "software": [
+   "Revit"
+  ],
+  "revit": [
+   "2024"
+  ],
+  "tagline": "Inventory in-place families by instance count, and convert or delete the offenders.",
+  "description": "In-place families are regenerated on every sync, so a high-instance one directly costs sync time. Lists each with its category, instance count and a recommendation; unused families are flagged too. Isolate a family's instances in a dedicated 3D view, or delete the family and its instances in one undoable step.",
+  "capabilities": [
+   "In-place families are regenerated on every sync, so a high-instance one directly costs sync time.",
+   "Lists each with its category, instance count and a recommendation; unused families are flagged too."
+  ],
+  "safeguards": [
+   "Isolate a family's instances in a dedicated 3D view, or delete the family and its instances in one undoable step."
+  ],
+  "dialogs": []
+ },
+ {
+  "slug": "mirrored-auditor",
+  "key": "MirroredAuditor",
+  "name": "Mirrored Auditor",
+  "suite": "sentinel",
+  "panel": "Model Health",
+  "software": [
+   "Revit"
+  ],
+  "revit": [
+   "2024"
+  ],
+  "tagline": "Audit and resolve mirrored doors, windows, and specialty equipment.",
+  "description": "Distinguishes valid hand/facing flips from destructive mirrored states. Provides auto-resolution, temporary isolation, 3D isolation, and CSV/XLSX reports.",
+  "capabilities": [
+   "Distinguishes valid hand/facing flips from destructive mirrored states."
+  ],
+  "safeguards": [
+   "Provides auto-resolution, temporary isolation, 3D isolation, and CSV/XLSX reports."
+  ],
+  "dialogs": [
+   {
+    "title": "Mirrored Auditor",
+    "dark": "media/dialogs/mirrored-auditor/mirroredauditorwindow-dark.webp",
+    "w": 1066,
+    "h": 626,
+    "light": "media/dialogs/mirrored-auditor/mirroredauditorwindow-light.webp"
+   }
+  ]
+ },
+ {
+  "slug": "model-health",
+  "key": "ModelChecker",
+  "name": "Model Health",
+  "suite": "sentinel",
+  "panel": "Model Health",
+  "software": [
+   "Revit"
+  ],
+  "revit": [
+   "2024"
+  ],
+  "tagline": "Run the Model Health rule checks you choose and review the model in an HTML dashboard.",
+  "description": "Choose the rule checks, export options and output folder, then review the results in the ArchiTECH Model Health dashboard: sortable, searchable tables with per-column filters, row limits and CSV export for every section.",
+  "capabilities": [],
+  "safeguards": [
+   "Choose the rule checks, export options and output folder, then review the results in the ArchiTECH Model Health dashboard: sortable, searchable tables with per-column filters, row limits and CSV export for every section."
+  ],
+  "dialogs": []
+ },
+ {
+  "slug": "structural-qa",
+  "key": "StructuralQA",
+  "name": "Structural QA",
+  "suite": "sentinel",
+  "panel": "Model Health",
+  "software": [
+   "Revit"
+  ],
+  "revit": [
+   "2024"
+  ],
+  "tagline": "Column-to-grid alignment and a 5 mm solid-contact screen at beam endpoints.",
+  "description": "Screens column/grid offsets and beam endpoint contact with modeled columns and framing. Contact is geometric evidence only; this does not verify structural bearing or capacity.",
+  "capabilities": [
+   "Screens column/grid offsets and beam endpoint contact with modeled columns and framing.",
+   "Contact is geometric evidence only; this does not verify structural bearing or capacity."
+  ],
+  "safeguards": [],
+  "dialogs": [
+   {
+    "title": "Structural QA",
+    "dark": "media/dialogs/structural-qa/structuralqawindow-dark.webp",
+    "w": 966,
+    "h": 626,
+    "light": "media/dialogs/structural-qa/structuralqawindow-light.webp"
+   }
+  ]
+ },
+ {
+  "slug": "warnings-inspector",
+  "key": "WarningsInspector",
+  "name": "Warnings Inspector",
+  "suite": "sentinel",
+  "panel": "Model Health",
+  "software": [
+   "Revit"
+  ],
+  "revit": [
+   "2024"
+  ],
+  "tagline": "Group the model's warnings by type and act on the elements each one blames.",
+  "description": "Review critical-class warnings first, then frequency. Search descriptions or an exact element ID, filter severity, inspect full details, select or isolate affected elements and refresh after edits. Known warnings use native failure identities; fallback classifications are labelled for review. Export all groups and classification evidence to a two-sheet .xlsx report without requiring Excel.",
+  "capabilities": [
+   "Search descriptions or an exact element ID, filter severity, inspect full details, select or isolate affected elements and refresh after edits."
+  ],
+  "safeguards": [
+   "Review critical-class warnings first, then frequency.",
+   "Known warnings use native failure identities; fallback classifications are labelled for review.",
+   "Export all groups and classification evidence to a two-sheet .xlsx report without requiring Excel."
+  ],
+  "dialogs": [
+   {
+    "title": "Warnings Inspector",
+    "dark": "media/dialogs/warnings-inspector/warningswindow-dark.webp",
+    "w": 1186,
+    "h": 746,
+    "light": "media/dialogs/warnings-inspector/warningswindow-light.webp"
+   }
+  ]
+ },
+ {
+  "slug": "family-name-editor",
+  "key": "FamilyNameEditor",
+  "name": "Family Name Editor",
+  "suite": "sentinel",
+  "panel": "Standards",
+  "software": [
+   "Revit"
+  ],
+  "revit": [
+   "2024"
+  ],
+  "tagline": "Audit and rename loadable family names against the BEP naming convention.",
+  "description": "Lists every loadable family with the name it has, the name the BEP convention gives it, and whether it complies. The convention is a prefix and a suffix per category, loaded from JSON or edited in place. Rename by typing in the grid and applying, auto-assign every non-compliant family at once, or find-and-replace across the families in view. Filter by category, by family or to non-compliant rows only, and export the compliance table to xlsx or csv. Every rename that Revit refuses is reported by name and reason rather than counted.",
+  "capabilities": [
+   "Lists every loadable family with the name it has, the name the BEP convention gives it, and whether it complies.",
+   "The convention is a prefix and a suffix per category, loaded from JSON or edited in place.",
+   "Rename by typing in the grid and applying, auto-assign every non-compliant family at once, or find-and-replace across the families in view.",
+   "Filter by category, by family or to non-compliant rows only, and export the compliance table to xlsx or csv."
+  ],
+  "safeguards": [
+   "Every rename that Revit refuses is reported by name and reason rather than counted."
+  ],
+  "dialogs": [
+   {
+    "title": "Family Name Editor",
+    "dark": "media/dialogs/family-name-editor/familynameeditorwindow-dark.webp",
+    "w": 1166,
+    "h": 806,
+    "light": "media/dialogs/family-name-editor/familynameeditorwindow-light.webp"
+   },
+   {
+    "title": "BEP naming convention",
+    "dark": "media/dialogs/family-name-editor/bepconfigwindow-dark.webp",
+    "w": 746,
+    "h": 626,
+    "light": "media/dialogs/family-name-editor/bepconfigwindow-light.webp"
+   },
+   {
+    "title": "Find and replace",
+    "dark": "media/dialogs/family-name-editor/findreplacewindow-dark.webp",
+    "w": 480,
+    "h": 330,
+    "light": "media/dialogs/family-name-editor/findreplacewindow-light.webp"
+   }
+  ]
+ },
+ {
+  "slug": "family-name-synchronizer",
+  "key": "FamilyNameSync",
+  "name": "Family Name Synchronizer",
+  "suite": "sentinel",
+  "panel": "Standards",
+  "software": [
+   "Revit"
+  ],
+  "revit": [
+   "2024"
+  ],
+  "tagline": "Rename project families to match a container model, matched by Type Mark.",
+  "description": "Opens a container model detached, pairs its families with the project's by Type Mark (or by a bracketed suffix when no Type Mark exists), and renames the selected project families to the container's names. Families with no match are listed so the gaps are visible.",
+  "capabilities": [
+   "Opens a container model detached, pairs its families with the project's by Type Mark (or by a bracketed suffix when no Type Mark exists), and renames the selected project families to the container's names."
+  ],
+  "safeguards": [
+   "Families with no match are listed so the gaps are visible."
+  ],
+  "dialogs": [
+   {
+    "title": "Family Name Sync",
+    "dark": "media/dialogs/family-name-synchronizer/familynamesyncwindow-dark.webp",
+    "w": 946,
+    "h": 646,
+    "light": "media/dialogs/family-name-synchronizer/familynamesyncwindow-light.webp"
+   }
+  ]
+ },
+ {
+  "slug": "filter-usage-checker",
+  "key": "FilterUsageChecker",
+  "name": "Filter Usage Checker",
+  "suite": "sentinel",
+  "panel": "Standards",
+  "software": [
+   "Revit"
+  ],
+  "revit": [
+   "2024"
+  ],
+  "tagline": "Audit which filters are applied across views and templates - find unused filters and template drift.",
+  "description": "Lists every view filter in the project with a count of the views and view templates using it, so filters nobody can account for become visible. Narrow by view type, pick specific filters, or search by name. Click a filter to see every view and template it can go on, with a tick box each: tick to add, untick to remove, and Apply commits the lot in one transaction. Export the full breakdown to xlsx or csv, or read the unused list on screen.",
+  "capabilities": [
+   "Lists every view filter in the project with a count of the views and view templates using it, so filters nobody can account for become visible.",
+   "Narrow by view type, pick specific filters, or search by name.",
+   "Export the full breakdown to xlsx or csv, or read the unused list on screen."
+  ],
+  "safeguards": [
+   "Click a filter to see every view and template it can go on, with a tick box each: tick to add, untick to remove, and Apply commits the lot in one transaction."
+  ],
+  "dialogs": [
+   {
+    "title": "Filter Usage",
+    "dark": "media/dialogs/filter-usage-checker/filterusagewindow-dark.webp",
+    "w": 1226,
+    "h": 746,
+    "light": "media/dialogs/filter-usage-checker/filterusagewindow-light.webp"
+   }
+  ]
+ },
+ {
+  "slug": "model-query-pro",
+  "key": "ModelQueryPro",
+  "name": "Model Query Pro",
+  "suite": "sentinel",
+  "panel": "Standards",
+  "software": [
+   "Revit"
+  ],
+  "revit": [
+   "2024"
+  ],
+  "tagline": "Query model data or open Review Center for scoped warning, room and FF&E review.",
+  "description": "Audit elements using AND/OR rules, regular expressions and numeric thresholds. Open Review Center from the dialog for Architecture, Interiors, Coordination and Pre-handover profiles, selectable checks, scoped scans, accepted exceptions and comparison scans. Inspect, select or isolate affected elements; review failed checks and timings. Review decisions are stored locally without changing model metadata.",
+  "capabilities": [
+   "Audit elements using AND/OR rules, regular expressions and numeric thresholds."
+  ],
+  "safeguards": [
+   "Open Review Center from the dialog for Architecture, Interiors, Coordination and Pre-handover profiles, selectable checks, scoped scans, accepted exceptions and comparison scans.",
+   "Inspect, select or isolate affected elements; review failed checks and timings.",
+   "Review decisions are stored locally without changing model metadata."
+  ],
+  "dialogs": [
+   {
+    "title": "Model Query",
+    "dark": "media/dialogs/model-query-pro/modelquerywindow-dark.webp",
+    "w": 1066,
+    "h": 726,
+    "light": "media/dialogs/model-query-pro/modelquerywindow-light.webp"
+   },
+   {
+    "title": "Review Center",
+    "dark": "media/dialogs/model-query-pro/reviewcenterwindow-dark.webp",
+    "w": 1266,
+    "h": 806,
+    "light": "media/dialogs/model-query-pro/reviewcenterwindow-light.webp"
+   }
+  ]
+ },
+ {
+  "slug": "parameter-colorizer",
+  "key": "ParameterColorizer",
+  "name": "Parameter Colorizer",
+  "suite": "sentinel",
+  "panel": "Standards",
+  "software": [
+   "Revit"
+  ],
+  "revit": [
+   "2024"
+  ],
+  "tagline": "Colorize model elements by parameter values using dynamic HSL gradients for visual QA/QC.",
+  "description": "Audit any category across the active view. Preview instance or type parameter values and apply distinct colors. Original graphics are restored on close unless Keep colors is selected.",
+  "capabilities": [
+   "Audit any category across the active view."
+  ],
+  "safeguards": [
+   "Preview instance or type parameter values and apply distinct colors.",
+   "Original graphics are restored on close unless Keep colors is selected."
+  ],
+  "dialogs": [
+   {
+    "title": "Parameter Colorizer",
+    "dark": "media/dialogs/parameter-colorizer/colorizerwindow-dark.webp",
+    "w": 746,
+    "h": 586,
+    "light": "media/dialogs/parameter-colorizer/colorizerwindow-light.webp"
+   }
+  ]
+ },
+ {
+  "slug": "workset-manager",
+  "key": "WorksetManager",
+  "name": "Workset Manager",
+  "suite": "sentinel",
+  "panel": "Standards",
+  "software": [
+   "Revit"
+  ],
+  "revit": [
+   "2024"
+  ],
+  "tagline": "Bulk-assign elements to worksets against the BEP's prefix and category rules.",
+  "description": "Lists every family/type in the model with the workset it is on and the workset the BEP says it belongs on, then moves them in bulk. Rules match on family-name prefix, on category, or both, and the first matching rule wins. Filter by category, family and workset; edit a row's workset by hand and apply it, or auto-assign every row the BEP has a rule for. Writes a compliance report to xlsx or csv, and renames loadable families with find-and-replace. Needs a workshared model.",
+  "capabilities": [
+   "Lists every family/type in the model with the workset it is on and the workset the BEP says it belongs on, then moves them in bulk.",
+   "Rules match on family-name prefix, on category, or both, and the first matching rule wins.",
+   "Filter by category, family and workset; edit a row's workset by hand and apply it, or auto-assign every row the BEP has a rule for.",
+   "Needs a workshared model."
+  ],
+  "safeguards": [
+   "Writes a compliance report to xlsx or csv, and renames loadable families with find-and-replace."
+  ],
+  "dialogs": [
+   {
+    "title": "Workset Manager",
+    "dark": "media/dialogs/workset-manager/worksetmanagerwindow-dark.webp",
+    "w": 1166,
+    "h": 726,
+    "light": "media/dialogs/workset-manager/worksetmanagerwindow-light.webp"
+   },
+   {
+    "title": "BEP workset rules",
+    "dark": "media/dialogs/workset-manager/worksetconfigwindow-dark.webp",
+    "w": 746,
+    "h": 606,
+    "light": "media/dialogs/workset-manager/worksetconfigwindow-light.webp"
+   },
+   {
+    "title": "Find and replace",
+    "dark": "media/dialogs/workset-manager/findreplacewindow-dark.webp",
+    "w": 480,
+    "h": 330,
+    "light": "media/dialogs/workset-manager/findreplacewindow-light.webp"
+   }
+  ]
+ },
+ {
+  "slug": "fr-to-finishes",
+  "key": "FinishTools",
+  "name": "FR to Finishes",
+  "suite": "forge",
+  "panel": "Finishes",
+  "software": [
+   "Revit"
+  ],
+  "revit": [
+   "2024"
+  ],
+  "tagline": "Turn drawn Filled Regions into real Floors, Ceilings or Walls.",
+  "description": "Reads Filled Regions in the active view: a floor plan makes Floors, a ceiling plan makes Ceilings, and an elevation or section makes Walls. Supported single-loop vertical line/arc wall profiles are preserved exactly; unsupported outlines are skipped. Rectangular bounding-box walls require an explicit reviewed option. Slab curves retain their shape; native geometry/offset rejection preserves the source. Optional source deletion and floor/wall joins remain available.",
+  "capabilities": [
+   "Reads Filled Regions in the active view: a floor plan makes Floors, a ceiling plan makes Ceilings, and an elevation or section makes Walls.",
+   "Optional source deletion and floor/wall joins remain available."
+  ],
+  "safeguards": [
+   "Supported single-loop vertical line/arc wall profiles are preserved exactly; unsupported outlines are skipped.",
+   "Rectangular bounding-box walls require an explicit reviewed option.",
+   "Slab curves retain their shape; native geometry/offset rejection preserves the source."
+  ],
+  "dialogs": [
+   {
+    "title": "FR to Finishes",
+    "dark": "media/dialogs/fr-to-finishes/frtofinisheswindow-dark.webp",
+    "w": 700,
+    "h": 655,
+    "light": "media/dialogs/fr-to-finishes/frtofinisheswindow-light.webp"
+   }
+  ]
+ },
+ {
+  "slug": "replace-materials",
+  "key": "ReplaceMaterials",
+  "name": "Replace Materials",
+  "suite": "forge",
+  "panel": "Finishes",
+  "software": [
+   "Revit"
+  ],
+  "revit": [
+   "2024"
+  ],
+  "tagline": "Find and replace a material across the model categories you choose.",
+  "description": "Swaps a material everywhere it appears in the selected categories - inside the compound structure layers of walls, floors, roofs and ceilings, and in every material-typed parameter on instances and types. Reports how many layers and parameters changed, and which could not. One undoable step.",
+  "capabilities": [
+   "Swaps a material everywhere it appears in the selected categories - inside the compound structure layers of walls, floors, roofs and ceilings, and in every material-typed parameter on instances and types."
+  ],
+  "safeguards": [
+   "Reports how many layers and parameters changed, and which could not.",
+   "One undoable step."
+  ],
+  "dialogs": [
+   {
+    "title": "Replace Materials",
+    "dark": "media/dialogs/replace-materials/replacematerialswindow-dark.webp",
+    "w": 746,
+    "h": 686,
+    "light": "media/dialogs/replace-materials/replacematerialswindow-light.webp"
+   }
+  ]
+ },
+ {
+  "slug": "room-to-finishes",
+  "key": "RoomFinishes",
+  "name": "Room to Finishes",
+  "suite": "forge",
+  "panel": "Finishes",
+  "software": [
+   "Revit"
+  ],
+  "revit": [
+   "2024"
+  ],
+  "tagline": "Create finishing floors, walls and ceilings from the selected rooms.",
+  "description": "Builds a finishing floor from each room's outer boundary - optionally notched around the doors that open into it - finishing walls along the boundary segments hosted by walls, columns or room separation lines, and a finishing ceiling at room height. Openings are cut for inner boundary loops. One undoable step per element kind.",
+  "capabilities": [
+   "Builds a finishing floor from each room's outer boundary - optionally notched around the doors that open into it - finishing walls along the boundary segments hosted by walls, columns or room separation lines, and a finishing ceiling at room height.",
+   "Openings are cut for inner boundary loops."
+  ],
+  "safeguards": [
+   "One undoable step per element kind."
+  ],
+  "dialogs": [
+   {
+    "title": "Room to Finishes",
+    "dark": "media/dialogs/room-to-finishes/finishingwindow-dark.webp",
+    "w": 886,
+    "h": 706,
+    "light": "media/dialogs/room-to-finishes/finishingwindow-light.webp"
+   },
+   {
+    "title": "Review finish plan",
+    "dark": "media/dialogs/room-to-finishes/finishreviewwindow-dark.webp",
+    "w": 1080,
+    "h": 660,
+    "light": "media/dialogs/room-to-finishes/finishreviewwindow-light.webp"
+   }
+  ]
+ },
+ {
+  "slug": "split-floor-ceiling",
+  "key": "SplitFloorCeiling",
+  "name": "Split Floor / Ceiling",
+  "suite": "forge",
+  "panel": "Finishes",
+  "software": [
+   "Revit"
+  ],
+  "revit": [
+   "2024"
+  ],
+  "tagline": "Split floors and ceilings whose sketch has more than one separate region into separate elements.",
+  "description": "Select floors or ceilings. Each separate region of the sketch (an outer boundary with its own openings) becomes its own element, with writable parameters, phases and pin state copied across. Single-region elements, sloped or shape-edited slabs, and grouped or borrowed elements are left alone. You are asked first if tags, dimensions or hosted families would be deleted with an original.",
+  "capabilities": [
+   "Select floors or ceilings.",
+   "Each separate region of the sketch (an outer boundary with its own openings) becomes its own element, with writable parameters, phases and pin state copied across.",
+   "Single-region elements, sloped or shape-edited slabs, and grouped or borrowed elements are left alone.",
+   "You are asked first if tags, dimensions or hosted families would be deleted with an original."
+  ],
+  "safeguards": [],
+  "dialogs": []
+ },
+ {
+  "slug": "assign-room-properties",
+  "key": "AssignRoomProperties",
+  "name": "Assign Room Properties",
+  "suite": "forge",
+  "panel": "Parameters",
+  "software": [
+   "Revit"
+  ],
+  "revit": [
+   "2024"
+  ],
+  "tagline": "Write room properties onto the elements that sit inside each room.",
+  "description": "Finds the room each element occupies - in this model or a linked one - then applies any number of room-parameter to element-parameter mappings, on the instance or its type. Nested family components are reached too.",
+  "capabilities": [
+   "Finds the room each element occupies - in this model or a linked one - then applies any number of room-parameter to element-parameter mappings, on the instance or its type.",
+   "Nested family components are reached too."
+  ],
+  "safeguards": [],
+  "dialogs": [
+   {
+    "title": "Room mappings",
+    "dark": "media/dialogs/assign-room-properties/roommappingwindow-dark.webp",
+    "w": 806,
+    "h": 686,
+    "light": "media/dialogs/assign-room-properties/roommappingwindow-light.webp"
+   }
+  ]
+ },
+ {
+  "slug": "copy-param-from-link",
+  "key": "CopyParamFromLink",
+  "name": "Copy Param from Link",
+  "suite": "forge",
+  "panel": "Parameters",
+  "software": [
+   "Revit"
+  ],
+  "revit": [
+   "2024"
+  ],
+  "tagline": "Copy one room text property onto a category of elements, from this model or a link.",
+  "description": "The simple form: one room text parameter onto one element text parameter, for every element of a chosen category, using the room each element opens into or sits in.",
+  "capabilities": [
+   "The simple form: one room text parameter onto one element text parameter, for every element of a chosen category, using the room each element opens into or sits in."
+  ],
+  "safeguards": [],
+  "dialogs": [
+   {
+    "title": "Copy Param from Link",
+    "dark": "media/dialogs/copy-param-from-link/roomtextcopywindow-dark.webp",
+    "w": 546,
+    "h": 316,
+    "light": "media/dialogs/copy-param-from-link/roomtextcopywindow-light.webp"
+   }
+  ]
+ },
+ {
+  "slug": "family-param-transfer",
+  "key": "FamilyParamTransfer",
+  "name": "Family Param Transfer",
+  "suite": "forge",
+  "panel": "Parameters",
+  "software": [
+   "Revit"
+  ],
+  "revit": [
+   "2024"
+  ],
+  "tagline": "Transfer a parameter definition from one family to another.",
+  "description": "Copy shared or family parameter definitions - preserving the shared-parameter GUID - from a source family into a target family. Pick families loaded in the active project, or browse to .rfa files on disk.",
+  "capabilities": [
+   "Pick families loaded in the active project, or browse to .rfa files on disk."
+  ],
+  "safeguards": [
+   "Copy shared or family parameter definitions - preserving the shared-parameter GUID - from a source family into a target family."
+  ],
+  "dialogs": [
+   {
+    "title": "Family Param Transfer",
+    "dark": "media/dialogs/family-param-transfer/familyparamtransferwindow-dark.webp",
+    "w": 746,
+    "h": 746,
+    "light": "media/dialogs/family-param-transfer/familyparamtransferwindow-light.webp"
+   }
+  ]
+ },
+ {
+  "slug": "one-parameter",
+  "key": "OneParameter",
+  "name": "One Parameter",
+  "suite": "forge",
+  "panel": "Parameters",
+  "software": [
+   "Revit"
+  ],
+  "revit": [
+   "2024"
+  ],
+  "tagline": "Find and replace, or add a prefix or suffix to, one parameter's values across the model or the active view.",
+  "description": "Pick a category and one of its parameters, preview every element's current value, edit the proposed values with find/replace, prefix or suffix, then write the ticked rows in one transaction. A type parameter is written once per type.",
+  "capabilities": [
+   "A type parameter is written once per type."
+  ],
+  "safeguards": [
+   "Pick a category and one of its parameters, preview every element's current value, edit the proposed values with find/replace, prefix or suffix, then write the ticked rows in one transaction."
+  ],
+  "dialogs": [
+   {
+    "title": "One Parameter",
+    "dark": "media/dialogs/one-parameter/oneparameterwindow-dark.webp",
+    "w": 1120,
+    "h": 680,
+    "light": "media/dialogs/one-parameter/oneparameterwindow-light.webp"
+   }
+  ]
+ },
+ {
+  "slug": "parameter-manager",
+  "key": "ParameterManager",
+  "name": "Parameter Manager",
+  "suite": "forge",
+  "panel": "Parameters",
+  "software": [
+   "Revit"
+  ],
+  "revit": [
+   "2024"
+  ],
+  "tagline": "Manage project and family parameters: rename, duplicate, delete, formulas, categories, profiles, Excel/CSV.",
+  "description": "Create, edit and delete project parameters and their category bindings, add family parameters, transfer parameters between families, set formulas, and save or load parameter profiles. Import and export through Excel or CSV. Shared-parameter .txt files and binding their definitions are done in Shared Param Manager.",
+  "capabilities": [
+   "Create, edit and delete project parameters and their category bindings, add family parameters, transfer parameters between families, set formulas, and save or load parameter profiles.",
+   "Import and export through Excel or CSV.",
+   "Shared-parameter .txt files and binding their definitions are done in Shared Param Manager."
+  ],
+  "safeguards": [],
+  "dialogs": [
+   {
+    "title": "Parameter Manager",
+    "dark": "media/dialogs/parameter-manager/parametermanagerwindow-dark.webp",
+    "w": 1240,
+    "h": 660,
+    "light": "media/dialogs/parameter-manager/parametermanagerwindow-light.webp"
+   }
+  ]
+ },
+ {
+  "slug": "parameter-mapping",
+  "key": "MapParameters",
+  "name": "Parameter Mapping",
+  "suite": "forge",
+  "panel": "Parameters",
+  "software": [
+   "Revit"
+  ],
+  "revit": [
+   "2024"
+  ],
+  "tagline": "Copy parameter values between elements, filtered by category, family and type.",
+  "description": "Pick categories, narrow to families and types, then map one or more source parameters onto targets - one source broadcast to many, or the same number of each paired in order. Values move in internal units, with optional prefix and suffix on text targets, or a typed manual value.",
+  "capabilities": [
+   "Pick categories, narrow to families and types, then map one or more source parameters onto targets - one source broadcast to many, or the same number of each paired in order.",
+   "Values move in internal units, with optional prefix and suffix on text targets, or a typed manual value."
+  ],
+  "safeguards": [],
+  "dialogs": [
+   {
+    "title": "Parameter Mapping",
+    "dark": "media/dialogs/parameter-mapping/parametercopywindow-dark.webp",
+    "w": 966,
+    "h": 806,
+    "light": "media/dialogs/parameter-mapping/parametercopywindow-light.webp"
+   }
+  ]
+ },
+ {
+  "slug": "shared-param-manager",
+  "key": "SharedParamManager",
+  "name": "Shared Param Manager",
+  "suite": "forge",
+  "panel": "Parameters",
+  "software": [
+   "Revit"
+  ],
+  "revit": [
+   "2024"
+  ],
+  "tagline": "Edit shared-parameter TXT definitions and bind the selected definitions to project model categories.",
+  "description": "Create and organize shared-parameter TXT definitions with GUIDs and groups, then bind the selected definitions to project model categories as instance or type parameters, in a parameter group you choose. Already-bound parameters gain the new categories; the Bindings list shows and removes project bindings. Definitions can be exported to and imported from Excel. Project and family parameters (rename, duplicate, delete, formulas, profiles, Excel/CSV) are managed in Parameter Manager, the next button on this panel.",
+  "capabilities": [
+   "Create and organize shared-parameter TXT definitions with GUIDs and groups, then bind the selected definitions to project model categories as instance or type parameters, in a parameter group you choose.",
+   "Already-bound parameters gain the new categories; the Bindings list shows and removes project bindings.",
+   "Definitions can be exported to and imported from Excel.",
+   "Project and family parameters (rename, duplicate, delete, formulas, profiles, Excel/CSV) are managed in Parameter Manager, the next button on this panel."
+  ],
+  "safeguards": [],
+  "dialogs": [
+   {
+    "title": "Shared Param",
+    "dark": "media/dialogs/shared-param-manager/sharedparamwindow-dark.webp",
+    "w": 986,
+    "h": 626,
+    "light": "media/dialogs/shared-param-manager/sharedparamwindow-light.webp"
+   }
+  ]
+ },
+ {
+  "slug": "match-opening",
+  "key": "MatchOpening",
+  "name": "Match Opening",
+  "suite": "forge",
+  "panel": "Rooms",
+  "software": [
+   "Revit"
+  ],
+  "revit": [
+   "2024"
+  ],
+  "tagline": "Match wall opening sizes from a selected Revit link into this model - architectural or structural.",
+  "description": "Auto-detects rectangular wall openings in a selected source Revit link, previews matches on this model's walls, and creates or resizes confirmed openings.",
+  "capabilities": [],
+  "safeguards": [
+   "Auto-detects rectangular wall openings in a selected source Revit link, previews matches on this model's walls, and creates or resizes confirmed openings."
+  ],
+  "dialogs": [
+   {
+    "title": "Match Opening",
+    "dark": "media/dialogs/match-opening/matchopeningwindow-dark.webp",
+    "w": 1206,
+    "h": 706,
+    "light": "media/dialogs/match-opening/matchopeningwindow-light.webp"
+   }
+  ]
+ },
+ {
+  "slug": "room-height-adjust",
+  "key": "RoomHeightAdjust",
+  "name": "Room Height Adjust",
+  "suite": "forge",
+  "panel": "Rooms",
+  "software": [
+   "Revit"
+  ],
+  "revit": [
+   "2024"
+  ],
+  "tagline": "Lower room upper limits so each room stops at the ceiling above it.",
+  "description": "Samples points inside each room to find the ceilings genuinely above its footprint, then lowers the room's Limit Offset so its top lands on the lowest ceiling underside. Room height becomes floor level to ceiling underside.",
+  "capabilities": [
+   "Samples points inside each room to find the ceilings genuinely above its footprint, then lowers the room's Limit Offset so its top lands on the lowest ceiling underside.",
+   "Room height becomes floor level to ceiling underside."
+  ],
+  "safeguards": [],
+  "dialogs": [
+   {
+    "title": "Room Height Adjust",
+    "dark": "media/dialogs/room-height-adjust/roomheightadjustwindow-dark.webp",
+    "w": 946,
+    "h": 586,
+    "light": "media/dialogs/room-height-adjust/roomheightadjustwindow-light.webp"
+   }
+  ]
+ },
+ {
+  "slug": "room-level-assigner",
+  "key": "RoomLevelAssigner",
+  "name": "Room Level Assigner",
+  "suite": "forge",
+  "panel": "Rooms",
+  "software": [
+   "Revit"
+  ],
+  "revit": [
+   "2024"
+  ],
+  "tagline": "Reassign rooms to a different level.",
+  "description": "Reassign rooms to a different level. Revit cannot re-level a placed room, so each room is recreated in place, with its number, name, parameters and XY location preserved.",
+  "capabilities": [
+   "Reassign rooms to a different level."
+  ],
+  "safeguards": [
+   "Revit cannot re-level a placed room, so each room is recreated in place, with its number, name, parameters and XY location preserved."
+  ],
+  "dialogs": [
+   {
+    "title": "Room Level Assigner",
+    "dark": "media/dialogs/room-level-assigner/roomlevelassignerwindow-dark.webp",
+    "w": 986,
+    "h": 686,
+    "light": "media/dialogs/room-level-assigner/roomlevelassignerwindow-light.webp"
+   }
+  ]
+ },
+ {
+  "slug": "deviation-inspector",
+  "key": "DeviationInspector",
+  "name": "Deviation Inspector",
+  "suite": "forge",
+  "panel": "Scan to BIM",
+  "software": [
+   "Revit"
+  ],
+  "revit": [
+   "2024"
+  ],
+  "tagline": "Sample real cloud points against modelled faces and colour walls and columns by deviation; unmeasured elements never pass.",
+  "description": "Reports sampled point-to-surface mean, median, 95th percentile and maximum for walls and structural columns in the active view. Sampling count and spacing are configurable; the default result metric is the 95th percentile. Fewer than five valid projections cannot PASS. Projection yield does not establish spatial coverage. The heatmap overrides are restored on Clear or on close.",
+  "capabilities": [
+   "Sampling count and spacing are configurable; the default result metric is the 95th percentile.",
+   "Fewer than five valid projections cannot PASS.",
+   "Projection yield does not establish spatial coverage."
+  ],
+  "safeguards": [
+   "Reports sampled point-to-surface mean, median, 95th percentile and maximum for walls and structural columns in the active view.",
+   "The heatmap overrides are restored on Clear or on close."
+  ],
+  "dialogs": [
+   {
+    "title": "Deviation Inspector",
+    "dark": "media/dialogs/deviation-inspector/deviationinspectorwindow-dark.webp",
+    "w": 1000,
+    "h": 640,
+    "light": "media/dialogs/deviation-inspector/deviationinspectorwindow-light.webp"
+   }
+  ]
+ },
+ {
+  "slug": "point-cloud-slicer",
+  "key": "PointCloudSlicer",
+  "name": "Point Cloud Slicer",
+  "suite": "forge",
+  "panel": "Scan to BIM",
+  "software": [
+   "Revit"
+  ],
+  "revit": [
+   "2024"
+  ],
+  "tagline": "Make one 3D view and one floor plan per level, cut to that storey of the point cloud.",
+  "description": "For each level you tick, creates (or updates) a 3D view whose section box runs from the level to the next one, and a floor plan cropped to the point cloud's extent with its view range set to the same storey - ready for Scan-to-BIM modelling. Offsets widen or narrow each slice. The point cloud itself is not modified or processed. A companion Point Cloud On/Off action toggles point clouds in the active view; Undo restores the previous setting.",
+  "capabilities": [
+   "For each level you tick, creates (or updates) a 3D view whose section box runs from the level to the next one, and a floor plan cropped to the point cloud's extent with its view range set to the same storey - ready for Scan-to-BIM modelling.",
+   "Offsets widen or narrow each slice."
+  ],
+  "safeguards": [
+   "The point cloud itself is not modified or processed.",
+   "A companion Point Cloud On/Off action toggles point clouds in the active view; Undo restores the previous setting."
+  ],
+  "dialogs": [
+   {
+    "title": "Point Cloud Slicer",
+    "dark": "media/dialogs/point-cloud-slicer/pointcloudslicerwindow-dark.webp",
+    "w": 806,
+    "h": 586,
+    "light": "media/dialogs/point-cloud-slicer/pointcloudslicerwindow-light.webp"
+   }
+  ]
+ },
+ {
+  "slug": "manage-text",
+  "key": "ManageText",
+  "name": "Manage Text",
+  "suite": "folio",
+  "panel": "Annotation",
+  "software": [
+   "Revit"
+  ],
+  "revit": [
+   "2024"
+  ],
+  "tagline": "Transform, merge, find, export and re-type text notes across the selection, views, sheets or the whole model.",
+  "description": "One tool for text: change case, clean up, find and replace (with regular expressions and a preview); merge notes into one or re-space and align them; find text across sheets and views, export it to CSV for Excel and import the edits back; move notes between text types and edit a type's font and size. Each run is one undoable step.",
+  "capabilities": [],
+  "safeguards": [
+   "One tool for text: change case, clean up, find and replace (with regular expressions and a preview); merge notes into one or re-space and align them; find text across sheets and views, export it to CSV for Excel and import the edits back; move notes between text types and edit a type's font and size.",
+   "Each run is one undoable step."
+  ],
+  "dialogs": [
+   {
+    "title": "Manage Text",
+    "dark": "media/dialogs/manage-text/managetextwindow-dark.webp",
+    "w": 1106,
+    "h": 846,
+    "light": "media/dialogs/manage-text/managetextwindow-light.webp"
+   }
+  ]
+ },
+ {
+  "slug": "reorder-pro",
+  "key": "ReorderPro",
+  "name": "Reorder Pro",
+  "suite": "folio",
+  "panel": "Annotation",
+  "software": [
+   "Revit"
+  ],
+  "revit": [
+   "2024"
+  ],
+  "tagline": "Renumber elements with filters, preview, ordering modes, spreadsheet round-trip and profiles.",
+  "description": "Collects elements by scope, narrows them with cascading category / family / type filters, then orders them manually, by the view's axes, along a crossing line, by a line's vertices, or by a reproducible seeded shuffle. Every proposed value is shown in a preview before any of them is written. Also exports and re-imports the plan as CSV or XLSX, saves and loads profiles, and colours or isolates the order for review.",
+  "capabilities": [
+   "Collects elements by scope, narrows them with cascading category / family / type filters, then orders them manually, by the view's axes, along a crossing line, by a line's vertices, or by a reproducible seeded shuffle."
+  ],
+  "safeguards": [
+   "Every proposed value is shown in a preview before any of them is written.",
+   "Also exports and re-imports the plan as CSV or XLSX, saves and loads profiles, and colours or isolates the order for review."
+  ],
+  "dialogs": [
+   {
+    "title": "Reorder Pro",
+    "dark": "media/dialogs/reorder-pro/reorderprowindow-dark.webp",
+    "w": 1166,
+    "h": 746,
+    "light": "media/dialogs/reorder-pro/reorderprowindow-light.webp"
+   }
+  ]
+ },
+ {
+  "slug": "spell-check",
+  "key": "SpellCheck",
+  "name": "Spell Check",
+  "suite": "folio",
+  "panel": "Annotation",
+  "software": [
+   "Revit"
+  ],
+  "revit": [
+   "2024"
+  ],
+  "tagline": "Check spelling across Revit sheets and elements",
+  "description": "Hybrid Hunspell + SymSpell spell checking with an interactive HTML report.",
+  "capabilities": [],
+  "safeguards": [
+   "Hybrid Hunspell + SymSpell spell checking with an interactive HTML report."
+  ],
+  "dialogs": [
+   {
+    "title": "Spell Check",
+    "dark": "media/dialogs/spell-check/spellcheckerwindow-dark.webp",
+    "w": 1026,
+    "h": 986,
+    "light": "media/dialogs/spell-check/spellcheckerwindow-light.webp"
+   }
+  ]
+ },
+ {
+  "slug": "spot-elevation-line",
+  "key": "SpotElevationLine",
+  "name": "Spot Elevation Line",
+  "suite": "folio",
+  "panel": "Annotation",
+  "software": [
+   "Revit"
+  ],
+  "revit": [
+   "2024"
+  ],
+  "tagline": "Override the line pattern of every spot elevation, across every view that shows one.",
+  "description": "Pick a line pattern; it is applied as a projection and cut line-pattern override to every spot elevation in each view that contains one. One undoable step, and clearable with Revit's Remove Overrides.",
+  "capabilities": [
+   "Pick a line pattern; it is applied as a projection and cut line-pattern override to every spot elevation in each view that contains one."
+  ],
+  "safeguards": [
+   "One undoable step, and clearable with Revit's Remove Overrides."
+  ],
+  "dialogs": []
+ },
+ {
+  "slug": "text-tag-align",
+  "key": "TextTagAlign",
+  "name": "Text/Tag Align",
+  "suite": "folio",
+  "panel": "Annotation",
+  "software": [
+   "Revit"
+  ],
+  "revit": [
+   "2024"
+  ],
+  "tagline": "Pick or preselect text notes and tags, then align them as a vertical column or horizontal row using the current view axes.",
+  "description": "Pick or preselect text notes and tags, then align them as a vertical column or horizontal row using the current view axes.",
+  "capabilities": [
+   "Pick or preselect text notes and tags, then align them as a vertical column or horizontal row using the current view axes."
+  ],
+  "safeguards": [],
+  "dialogs": [
+   {
+    "title": "Text Tag Align",
+    "dark": "media/dialogs/text-tag-align/texttagalignwindow-dark.webp",
+    "w": 560,
+    "h": 379,
+    "light": "media/dialogs/text-tag-align/texttagalignwindow-light.webp"
+   }
+  ]
+ },
+ {
+  "slug": "auto-dimension",
+  "key": "DocAutoDimension",
+  "name": "Auto Dimension",
+  "suite": "folio",
+  "panel": "Detailing",
+  "software": [
+   "Revit"
+  ],
+  "revit": [
+   "2024"
+  ],
+  "tagline": "Dimension views automatically: plans, ceiling plans, elevations, sections, callouts and drafting views, one view or a batch.",
+  "description": "Elevations and sections: level, grid and opening-size strings, and strings across element edges. Drafting views and legends: strings across the drafted element edges. Plans place these strings: Room clear: finish face to finish face both ways in each room. Facade: along each wall, a string through the door and window edges and wall ends, and an overall string, on the outside or inside. Setting-out: across parallel walls to core faces, finish faces or centrelines (replaces Core Dimensioner), from picked walls, a two-point witness line or the whole view. Rows are spaced in paper millimetres so they read at any scale. Running it again replaces the strings it made before for the same walls or rooms. After a run you choose Keep or Undo. Skipped walls and rooms are listed with the reason.",
+  "capabilities": [
+   "Elevations and sections: level, grid and opening-size strings, and strings across element edges.",
+   "Drafting views and legends: strings across the drafted element edges.",
+   "Plans place these strings: Room clear: finish face to finish face both ways in each room.",
+   "Facade: along each wall, a string through the door and window edges and wall ends, and an overall string, on the outside or inside.",
+   "Setting-out: across parallel walls to core faces, finish faces or centrelines (replaces Core Dimensioner), from picked walls, a two-point witness line or the whole view.",
+   "Rows are spaced in paper millimetres so they read at any scale.",
+   "Running it again replaces the strings it made before for the same walls or rooms."
+  ],
+  "safeguards": [
+   "After a run you choose Keep or Undo.",
+   "Skipped walls and rooms are listed with the reason."
+  ],
+  "dialogs": [
+   {
+    "title": "Auto Dimension",
+    "dark": "media/dialogs/auto-dimension/autodimensionwindow-dark.webp",
+    "w": 1106,
+    "h": 746,
+    "light": "media/dialogs/auto-dimension/autodimensionwindow-light.webp"
+   }
+  ]
+ },
+ {
+  "slug": "manage-dimension",
+  "key": "ManageDimension",
+  "name": "Manage Dimension",
+  "suite": "folio",
+  "panel": "Detailing",
+  "software": [
+   "Revit"
+  ],
+  "revit": [
+   "2024"
+  ],
+  "tagline": "Dimension elements on reference detail lines (they stay when elements are deleted but no longer update when elements move), merge strings, and audit, rebuild, merge or re-type dimensions across views and sheets.",
+  "description": "One palette for dimensions (replaces Dimension with Line and Dimension Merge). IN THIS VIEW: Cut through elements (draw a line through walls, joinery, furniture, fixtures, regions and every face it cuts is dimensioned on reference detail lines; string after string until Esc), Selected elements along a picked baseline, Rebuild existing dimensions on detail lines, and Merge 2+ strings into one (parallel strings can snap onto the first one's line). ACROSS VIEWS AND SHEETS: this view, views you pick, views on sheets you pick, views using templates you pick, or the whole project: Audit (typed-over values, zero segments, added text, locked/EQ, views hiding dimensions; clear typed values from the report), Merge in-line strings, Rebuild all on detail lines, Change dimension type. PROJECT: dimension types with use counts, replace one with another everywhere, purge the unused. A dimension on detail lines keeps its measurement when the elements are deleted but no longer updates when they move. Rebuild only restyles reference lines this tool drew; dimensions on lines someone else drew are left as drawn. Batch runs and merges are one Ctrl+Z; Cut through is one Ctrl+Z per string. Borrowed elements are skipped and named. 3D views and sheets cannot host detail lines; Cut through also measures the elements of loaded linked models.",
+  "capabilities": [
+   "One palette for dimensions (replaces Dimension with Line and Dimension Merge).",
+   "IN THIS VIEW: Cut through elements (draw a line through walls, joinery, furniture, fixtures, regions and every face it cuts is dimensioned on reference detail lines; string after string until Esc), Selected elements along a picked baseline, Rebuild existing dimensions on detail lines, and Merge 2+ strings into one (parallel strings can snap onto the first one's line).",
+   "PROJECT: dimension types with use counts, replace one with another everywhere, purge the unused.",
+   "A dimension on detail lines keeps its measurement when the elements are deleted but no longer updates when they move.",
+   "Rebuild only restyles reference lines this tool drew; dimensions on lines someone else drew are left as drawn.",
+   "Batch runs and merges are one Ctrl+Z; Cut through is one Ctrl+Z per string.",
+   "3D views and sheets cannot host detail lines; Cut through also measures the elements of loaded linked models."
+  ],
+  "safeguards": [
+   "ACROSS VIEWS AND SHEETS: this view, views you pick, views on sheets you pick, views using templates you pick, or the whole project: Audit (typed-over values, zero segments, added text, locked/EQ, views hiding dimensions; clear typed values from the report), Merge in-line strings, Rebuild all on detail lines, Change dimension type.",
+   "Borrowed elements are skipped and named."
+  ],
+  "dialogs": [
+   {
+    "title": "Manage Dimension",
+    "dark": "media/dialogs/manage-dimension/managedimensionwindow-dark.webp",
+    "w": 966,
+    "h": 746,
+    "light": "media/dialogs/manage-dimension/managedimensionwindow-light.webp"
+   },
+   {
+    "title": "Tick list",
+    "dark": "media/dialogs/manage-dimension/ticklistwindow-dark.webp",
+    "w": 626,
+    "h": 606,
+    "light": "media/dialogs/manage-dimension/ticklistwindow-light.webp"
+   }
+  ]
+ },
+ {
+  "slug": "make-pattern",
+  "key": "MakePattern",
+  "name": "Make Pattern",
+  "suite": "folio",
+  "panel": "Detailing",
+  "software": [
+   "Revit"
+  ],
+  "revit": [
+   "2024"
+  ],
+  "tagline": "Build a filled / model pattern from selected geometry.",
+  "description": "Turns picked detail or model linework - or the fill grids of a picked Filled Region - into a Revit fill pattern, resolving each line onto the nearest grid angle the AutoCAD .pat format can repeat. Also exports any pattern to a .pat file.",
+  "capabilities": [
+   "Turns picked detail or model linework - or the fill grids of a picked Filled Region - into a Revit fill pattern, resolving each line onto the nearest grid angle the AutoCAD .pat format can repeat.",
+   "Also exports any pattern to a .pat file."
+  ],
+  "safeguards": [],
+  "dialogs": [
+   {
+    "title": "Make Pattern",
+    "dark": "media/dialogs/make-pattern/makepatternwindow-dark.webp",
+    "w": 546,
+    "h": 686,
+    "light": "media/dialogs/make-pattern/makepatternwindow-light.webp"
+   }
+  ]
+ },
+ {
+  "slug": "split-region-with-line",
+  "key": "SplitRegionWithLine",
+  "name": "Split Region with Line",
+  "suite": "folio",
+  "panel": "Detailing",
+  "software": [
+   "Revit"
+  ],
+  "revit": [
+   "2024"
+  ],
+  "tagline": "Split selected filled or masking regions with a detail line used as an infinite plane.",
+  "description": "Pick regions, then a detail line. The line defines a plane perpendicular to the view that cuts each region in two - in plans, sections, elevations and drafting views. Both halves keep the fill type, boundary line style and parameters; the original is deleted only when both halves are created.",
+  "capabilities": [
+   "Pick regions, then a detail line.",
+   "The line defines a plane perpendicular to the view that cuts each region in two - in plans, sections, elevations and drafting views.",
+   "Both halves keep the fill type, boundary line style and parameters; the original is deleted only when both halves are created."
+  ],
+  "safeguards": [],
+  "dialogs": []
+ },
+ {
+  "slug": "sheet-export",
+  "key": "SheetExport",
+  "name": "Sheet Export",
+  "suite": "folio",
+  "panel": "Publish",
+  "software": [
+   "Revit"
+  ],
+  "revit": [
+   "2024"
+  ],
+  "tagline": "Three-step batch export (Selection / Format / Create) to PDF, DWG, DGN, DWF, NWC, IFC, images and XML.",
+  "description": "Select sheets or views, choose one or more formats, configure export options, and run the export pipeline - including automatic XRef binding, optional OLE image embedding for DWG (needs the ArchiTECH AutoCAD helper), audit and purge, optional single-file consolidation, and an optional Drawing Register (.xlsx) of the exported sheets and their revisions.",
+  "capabilities": [
+   "Select sheets or views, choose one or more formats, configure export options, and run the export pipeline - including automatic XRef binding, optional OLE image embedding for DWG (needs the ArchiTECH AutoCAD helper), audit and purge, optional single-file consolidation, and an optional Drawing Register (.xlsx) of the exported sheets and their revisions."
+  ],
+  "safeguards": [],
+  "dialogs": [
+   {
+    "title": "Sheet Export",
+    "dark": "media/dialogs/sheet-export/archsheetexportwindow-dark.webp",
+    "w": 1400,
+    "h": 900,
+    "light": "media/dialogs/sheet-export/archsheetexportwindow-light.webp"
+   },
+   {
+    "title": "Custom file name",
+    "dark": "media/dialogs/sheet-export/customfilenamedialog-dark.webp",
+    "w": 940,
+    "h": 660,
+    "light": "media/dialogs/sheet-export/customfilenamedialog-light.webp"
+   },
+   {
+    "title": "Export progress",
+    "dark": "media/dialogs/sheet-export/exportprogresswindow-dark.webp",
+    "w": 480,
+    "h": 256,
+    "light": "media/dialogs/sheet-export/exportprogresswindow-light.webp"
+   },
+   {
+    "title": "Prompt",
+    "dark": "media/dialogs/sheet-export/promptdialog-dark.webp",
+    "w": 480,
+    "h": 222,
+    "light": "media/dialogs/sheet-export/promptdialog-light.webp"
+   },
+   {
+    "title": "Publish sets",
+    "dark": "media/dialogs/sheet-export/publishsetsdialog-dark.webp",
+    "w": 780,
+    "h": 580,
+    "light": "media/dialogs/sheet-export/publishsetsdialog-light.webp"
+   },
+   {
+    "title": "Reorder",
+    "dark": "media/dialogs/sheet-export/reorderdialog-dark.webp",
+    "w": 600,
+    "h": 560,
+    "light": "media/dialogs/sheet-export/reorderdialog-light.webp"
+   }
+  ]
+ },
+ {
+  "slug": "excel-to-schedule",
+  "key": "ExcelToSchedule",
+  "name": "Excel to Schedule",
+  "suite": "folio",
+  "panel": "Schedules",
+  "software": [
+   "Revit"
+  ],
+  "revit": [
+   "2024"
+  ],
+  "tagline": "Build a Revit schedule that reproduces an Excel worksheet, or refresh one in place.",
+  "description": "Reads an .xlsx or .csv - values, fonts, fill and font colours, borders, alignment, wrap, column widths, row heights and merged regions - and reproduces it in a schedule's header grid. Refresh rebuilds the SAME schedule element in place, so its sheet placement is kept. Multiple worksheet tabs can be created or refreshed in one run.",
+  "capabilities": [
+   "Reads an .xlsx or .csv - values, fonts, fill and font colours, borders, alignment, wrap, column widths, row heights and merged regions - and reproduces it in a schedule's header grid.",
+   "Multiple worksheet tabs can be created or refreshed in one run."
+  ],
+  "safeguards": [
+   "Refresh rebuilds the SAME schedule element in place, so its sheet placement is kept."
+  ],
+  "dialogs": [
+   {
+    "title": "Excel To Schedule",
+    "dark": "media/dialogs/excel-to-schedule/exceltoschedulewindow-dark.webp",
+    "w": 1026,
+    "h": 666,
+    "light": "media/dialogs/excel-to-schedule/exceltoschedulewindow-light.webp"
+   }
+  ]
+ },
+ {
+  "slug": "update-schedule",
+  "key": "UpdateSchedule",
+  "name": "Update Schedule",
+  "suite": "folio",
+  "panel": "Schedules",
+  "software": [
+   "Revit"
+  ],
+  "revit": [
+   "2024"
+  ],
+  "tagline": "Export element parameters or editable schedules to a spreadsheet, then import the edited values back.",
+  "description": "Four workflows. Export Elements writes every instance of the categories you pick, with the parameters you pick. Export Editable Schedules writes one worksheet per schedule, carrying only the fields that map to a writable parameter - a calculated field cannot round-trip, so it is left out rather than exported and silently dropped. The two import buttons read a .xlsx or .csv back and write the values onto the matched elements, in one undoable step; a blank cell is skipped, never used to clear a parameter. Schedule imports also match each worksheet back to its schedule and can create copies named after the original schedule with an Imported suffix.",
+  "capabilities": [
+   "Four workflows.",
+   "Export Elements writes every instance of the categories you pick, with the parameters you pick.",
+   "Export Editable Schedules writes one worksheet per schedule, carrying only the fields that map to a writable parameter - a calculated field cannot round-trip, so it is left out rather than exported and silently dropped.",
+   "Schedule imports also match each worksheet back to its schedule and can create copies named after the original schedule with an Imported suffix."
+  ],
+  "safeguards": [
+   "The two import buttons read a .xlsx or .csv back and write the values onto the matched elements, in one undoable step; a blank cell is skipped, never used to clear a parameter."
+  ],
+  "dialogs": [
+   {
+    "title": "Update Schedule",
+    "dark": "media/dialogs/update-schedule/updateschedulewindow-dark.webp",
+    "w": 1146,
+    "h": 766,
+    "light": "media/dialogs/update-schedule/updateschedulewindow-light.webp"
+   },
+   {
+    "title": "Review schedule import",
+    "dark": "media/dialogs/update-schedule/importpreviewwindow-dark.webp",
+    "w": 960,
+    "h": 600,
+    "light": "media/dialogs/update-schedule/importpreviewwindow-light.webp"
+   }
+  ]
+ },
+ {
+  "slug": "sheet-manager",
+  "key": "DocSheetManager",
+  "name": "Sheet Manager",
+  "suite": "folio",
+  "panel": "Sheets",
+  "software": [
+   "Revit"
+  ],
+  "revit": [
+   "2024"
+  ],
+  "tagline": "Duplicate sheets, renumber and rename sheets, set sheet parameters and the title block, and add or remove revisions on sheets, many sheets at once, from one list.",
+  "description": "One window for working on many sheets. It lists every sheet and placeholder sheet with its number, name, title block, current revision, view count and Appears In Sheet List; search it, filter sheets or placeholders, and tick the sheets to work on. Four tabs act on the ticked sheets: DUPLICATE: duplicate sheets 1 to 9 times, sheet only (title block, sheet parameters and sheet annotations) or with their views duplicated, duplicated with detailing or as dependent views, placed at the same spot with the same viewport type. Legends and schedules are placed again as they are. RENUMBER / RENAME: renumber sheets and rename sheets with find and replace, prefix, suffix, tokens and a sequence number (start, step, padding), with a live preview and a clash check. Swapped or shifted numbers are handled. SET PARAMETER: set a sheet parameter, Appears In Sheet List, or change the title block type on every ticked sheet. REVISIONS: add or remove revisions on sheets (Revisions on Sheet). Revisions that come from a revision cloud on the sheet are reported. Each run is one Undo step, and anything skipped or blocked (borrowed by another user) is listed in the result.",
+  "capabilities": [
+   "One window for working on many sheets.",
+   "It lists every sheet and placeholder sheet with its number, name, title block, current revision, view count and Appears In Sheet List; search it, filter sheets or placeholders, and tick the sheets to work on.",
+   "Four tabs act on the ticked sheets: DUPLICATE: duplicate sheets 1 to 9 times, sheet only (title block, sheet parameters and sheet annotations) or with their views duplicated, duplicated with detailing or as dependent views, placed at the same spot with the same viewport type.",
+   "Legends and schedules are placed again as they are.",
+   "Swapped or shifted numbers are handled.",
+   "SET PARAMETER: set a sheet parameter, Appears In Sheet List, or change the title block type on every ticked sheet.",
+   "REVISIONS: add or remove revisions on sheets (Revisions on Sheet)."
+  ],
+  "safeguards": [
+   "RENUMBER / RENAME: renumber sheets and rename sheets with find and replace, prefix, suffix, tokens and a sequence number (start, step, padding), with a live preview and a clash check.",
+   "Revisions that come from a revision cloud on the sheet are reported.",
+   "Each run is one Undo step, and anything skipped or blocked (borrowed by another user) is listed in the result."
+  ],
+  "dialogs": [
+   {
+    "title": "Sheet Manager",
+    "dark": "media/dialogs/sheet-manager/sheetmanagerwindow-dark.webp",
+    "w": 1306,
+    "h": 866,
+    "light": "media/dialogs/sheet-manager/sheetmanagerwindow-light.webp"
+   }
+  ]
+ },
+ {
+  "slug": "vp-manager",
+  "key": "DocVpManager",
+  "name": "VP Manager",
+  "suite": "folio",
+  "panel": "Sheets",
+  "software": [
+   "Revit"
+  ],
+  "revit": [
+   "2024"
+  ],
+  "tagline": "Viewport manager: align viewports across sheets, match the viewport crop, renumber detail numbers, set the title on sheet, change the viewport type, pin viewports and move a viewport to another sheet, many viewports at once, from one list.",
+  "description": "One window for working on many viewports. It lists every viewport in the project with its sheet, detail number, view, view type, scale, viewport type, title on sheet, pinned and crop state; search it, filter by sheet or view type, and tick the viewports to work on. Double-click a row to open its sheet with the viewport selected. Four tabs act on the ticked viewports: ALIGN: align viewports to a reference viewport: the same position on every sheet (typical plans in the same spot), by model coordinates, or to an edge or centre of the reference on the same sheet. Optionally match the crop and the viewport type. Pinned viewports are unpinned for the move and pinned again. CROP: match the viewport crop to the reference (scope box or crop shape), grow or shrink the crop by a margin in project units or paper millimetres, and switch the crop region and annotation crop on or off. TITLES AND NUMBERS: change the viewport type (view title), renumber detail numbers per sheet left to right or top to bottom with a start number, prefix and step, and set the Title on Sheet with find and replace, prefix, suffix and tokens. PIN AND MOVE: pin viewports, unpin viewports, and move viewports (legends too) to another sheet at the same spot, keeping the viewport type, rotation, title position and detail number. Each run is one Undo step, and anything skipped or blocked (borrowed by another user) is listed in the result.",
+  "capabilities": [
+   "One window for working on many viewports.",
+   "It lists every viewport in the project with its sheet, detail number, view, view type, scale, viewport type, title on sheet, pinned and crop state; search it, filter by sheet or view type, and tick the viewports to work on.",
+   "Double-click a row to open its sheet with the viewport selected.",
+   "Four tabs act on the ticked viewports: ALIGN: align viewports to a reference viewport: the same position on every sheet (typical plans in the same spot), by model coordinates, or to an edge or centre of the reference on the same sheet.",
+   "Optionally match the crop and the viewport type.",
+   "Pinned viewports are unpinned for the move and pinned again.",
+   "CROP: match the viewport crop to the reference (scope box or crop shape), grow or shrink the crop by a margin in project units or paper millimetres, and switch the crop region and annotation crop on or off.",
+   "TITLES AND NUMBERS: change the viewport type (view title), renumber detail numbers per sheet left to right or top to bottom with a start number, prefix and step, and set the Title on Sheet with find and replace, prefix, suffix and tokens."
+  ],
+  "safeguards": [
+   "Each run is one Undo step, and anything skipped or blocked (borrowed by another user) is listed in the result."
+  ],
+  "dialogs": [
+   {
+    "title": "VP Manager",
+    "dark": "media/dialogs/vp-manager/vpmanagerwindow-dark.webp",
+    "w": 1326,
+    "h": 866,
+    "light": "media/dialogs/vp-manager/vpmanagerwindow-light.webp"
+   }
+  ]
+ },
+ {
+  "slug": "template-manager",
+  "key": "TemplateManager",
+  "name": "Template Manager",
+  "suite": "folio",
+  "panel": "View Templates",
+  "software": [
+   "Revit"
+  ],
+  "revit": [
+   "2024"
+  ],
+  "tagline": "Transfer view templates, view filters, V/G and hidden elements, and turn imported CAD off, from one window.",
+  "description": "One window with a tab for each View Templates tool: TEMPLATES FROM MODEL: copy view templates from another model, and copy Revit link settings between links. FILTERS: copy chosen view filters, with their overrides and visibility, into other views and view templates. V/G AND HIDDEN ELEMENTS: copy a view's Visibility/Graphics, filters and hidden elements onto other views. IMPORTS OFF: hide imported CAD in chosen views and templates, or delete every project-level import. Each tab is the same tool as its old button. Replaces Transfer Template, Transfer Filter, Transfer VS/EH and Imports Off.",
+  "capabilities": [
+   "One window with a tab for each View Templates tool: TEMPLATES FROM MODEL: copy view templates from another model, and copy Revit link settings between links.",
+   "FILTERS: copy chosen view filters, with their overrides and visibility, into other views and view templates.",
+   "V/G AND HIDDEN ELEMENTS: copy a view's Visibility/Graphics, filters and hidden elements onto other views.",
+   "IMPORTS OFF: hide imported CAD in chosen views and templates, or delete every project-level import.",
+   "Each tab is the same tool as its old button.",
+   "Replaces Transfer Template, Transfer Filter, Transfer VS/EH and Imports Off."
+  ],
+  "safeguards": [],
+  "dialogs": [
+   {
+    "title": "Template Manager",
+    "dark": "media/dialogs/template-manager/templatemanagerwindow-dark.webp",
+    "w": 1166,
+    "h": 766,
+    "light": "media/dialogs/template-manager/templatemanagerwindow-light.webp"
+   },
+   {
+    "title": "Imports Off",
+    "dark": "media/dialogs/template-manager/importsoffwindow-dark.webp",
+    "w": 746,
+    "h": 686,
+    "light": "media/dialogs/template-manager/importsoffwindow-light.webp"
+   },
+   {
+    "title": "Transfer VS / EH",
+    "dark": "media/dialogs/template-manager/transfervsoptionswindow-dark.webp",
+    "w": 540,
+    "h": 439,
+    "light": "media/dialogs/template-manager/transfervsoptionswindow-light.webp"
+   },
+   {
+    "title": "Transfer filters",
+    "dark": "media/dialogs/template-manager/filtertemplatewindow-dark.webp",
+    "w": 706,
+    "h": 586,
+    "light": "media/dialogs/template-manager/filtertemplatewindow-light.webp"
+   },
+   {
+    "title": "Transfer templates",
+    "dark": "media/dialogs/template-manager/templatetransferwindow-dark.webp",
+    "w": 946,
+    "h": 686,
+    "light": "media/dialogs/template-manager/templatetransferwindow-light.webp"
+   }
+  ]
+ },
+ {
+  "slug": "graphic-overviews",
+  "key": "GraphicOverviews",
+  "name": "Graphic Overviews",
+  "suite": "folio",
+  "panel": "View Templates",
+  "software": [
+   "Revit"
+  ],
+  "revit": [
+   "2024"
+  ],
+  "tagline": "Create drafting views documenting the project's graphic standards.",
+  "description": "Builds one drafting view per chosen category - line patterns, line styles, line weights at several scales, filled region types, drafting patterns, and a materials table showing shading, surface and cut graphics - then places them on a new sheet on a non-overlapping grid. One undoable step.",
+  "capabilities": [
+   "Builds one drafting view per chosen category - line patterns, line styles, line weights at several scales, filled region types, drafting patterns, and a materials table showing shading, surface and cut graphics - then places them on a new sheet on a non-overlapping grid."
+  ],
+  "safeguards": [
+   "One undoable step."
+  ],
+  "dialogs": [
+   {
+    "title": "Graphic Overviews",
+    "dark": "media/dialogs/graphic-overviews/graphicoverviewswindow-dark.webp",
+    "w": 1106,
+    "h": 746,
+    "light": "media/dialogs/graphic-overviews/graphicoverviewswindow-light.webp"
+   }
+  ]
+ },
+ {
+  "slug": "detail-view",
+  "key": "DetailView",
+  "name": "Detail View",
+  "suite": "folio",
+  "panel": "Views",
+  "software": [
+   "Revit"
+  ],
+  "revit": [
+   "2024"
+  ],
+  "tagline": "Wall sections plus ceiling, floor and wall detail callouts, on every cut line you draw.",
+  "description": "Draw straight detail lines where you want the sections to cut, then run this: for every selected level and every picked line it creates a wall section plus its ceiling, floor and wall detail callouts. Each line's ends set where its section cuts and its length sets how wide every view is. Bottom and top heights are set per detail in mm from the level, and each can pin its own level instead. Section and callout types are yours to choose, and a head override is applied through an isolated copy of the view type so other views are untouched. Switch off any detail you do not need. The lines are removed for you and one Ctrl+Z brings back both the lines and the views.",
+  "capabilities": [
+   "Draw straight detail lines where you want the sections to cut, then run this: for every selected level and every picked line it creates a wall section plus its ceiling, floor and wall detail callouts.",
+   "Each line's ends set where its section cuts and its length sets how wide every view is.",
+   "Bottom and top heights are set per detail in mm from the level, and each can pin its own level instead.",
+   "Section and callout types are yours to choose, and a head override is applied through an isolated copy of the view type so other views are untouched.",
+   "Switch off any detail you do not need.",
+   "The lines are removed for you and one Ctrl+Z brings back both the lines and the views."
+  ],
+  "safeguards": [],
+  "dialogs": [
+   {
+    "title": "Detail View",
+    "dark": "media/dialogs/detail-view/detailviewwindow-dark.webp",
+    "w": 1106,
+    "h": 746,
+    "light": "media/dialogs/detail-view/detailviewwindow-light.webp"
+   }
+  ]
+ },
+ {
+  "slug": "room-to-view",
+  "key": "RoomViews",
+  "name": "Room to View",
+  "suite": "folio",
+  "panel": "Views",
+  "software": [
+   "Revit"
+  ],
+  "revit": [
+   "2024"
+  ],
+  "tagline": "Create a floor plan, a ceiling plan and four elevations for one room.",
+  "description": "Pick a room and generate any combination of its floor plan, reflected ceiling plan and four interior elevations (N/E/S/W) from one tabbed dialog. Each view type gets its own crop-to-room option with a margin you set, its own drawing scale and its own view template. Views are named from the room number and name so they are easy to find, and the whole batch is one undo step. The elevation marker is auto-swapped to a four-arrow type when the project default is single-direction - the reason all four sides used to fail.",
+  "capabilities": [
+   "Pick a room and generate any combination of its floor plan, reflected ceiling plan and four interior elevations (N/E/S/W) from one tabbed dialog.",
+   "Each view type gets its own crop-to-room option with a margin you set, its own drawing scale and its own view template.",
+   "The elevation marker is auto-swapped to a four-arrow type when the project default is single-direction - the reason all four sides used to fail."
+  ],
+  "safeguards": [
+   "Views are named from the room number and name so they are easy to find, and the whole batch is one undo step."
+  ],
+  "dialogs": [
+   {
+    "title": "Room To View",
+    "dark": "media/dialogs/room-to-view/roomtoviewwindow-dark.webp",
+    "w": 1166,
+    "h": 806,
+    "light": "media/dialogs/room-to-view/roomtoviewwindow-light.webp"
+   }
+  ]
+ },
+ {
+  "slug": "view-manager",
+  "key": "DocViewManager",
+  "name": "View Manager",
+  "suite": "folio",
+  "panel": "Views",
+  "software": [
+   "Revit"
+  ],
+  "revit": [
+   "2024"
+  ],
+  "tagline": "Convert, duplicate, apply view templates to, batch rename and hide elements in many project views at once, from one list.",
+  "description": "One window for working on many views. It lists every project view with its type, level, scale, view template and sheet; search it, filter it by view type or by placed/unplaced on sheets, and tick the views to work on. Three tabs act on the ticked views: CONVERT: floor plans, ceiling plans, sections, elevations and detail views to drafting views (model geometry through a DWG round-trip, rebuilt as native detail lines and filled regions); drafting views to legends, using a template legend you choose (New legend... opens Revit's New Legend dialog when the project has none); legends to drafting views; floor plans to ceiling plans (reflected ceiling plan, RCP) and ceiling plans to floor plans, with the cut plane height asked for each run (2300 mm / 1200 mm by default), a view template, and make-copies or convert-in-place, which keeps the sheet viewport. A preview lists the new view names first. MANAGE: duplicate views (duplicate, with detailing, or as dependent), apply a view template, and batch rename with find and replace, prefix, suffix and ignore case, with a live preview. HIDE IN VIEWS: hide or unhide the elements selected in Revit, or their whole categories, in all the ticked views at once. Each run is one Undo step, and anything skipped or failed is listed in the result. Replaces View to Drafting, Drafting Legend, View Type Converter and Hide in Views.",
+  "capabilities": [
+   "One window for working on many views.",
+   "It lists every project view with its type, level, scale, view template and sheet; search it, filter it by view type or by placed/unplaced on sheets, and tick the views to work on.",
+   "Three tabs act on the ticked views: CONVERT: floor plans, ceiling plans, sections, elevations and detail views to drafting views (model geometry through a DWG round-trip, rebuilt as native detail lines and filled regions); drafting views to legends, using a template legend you choose (New legend... opens Revit's New Legend dialog when the project has none); legends to drafting views; floor plans to ceiling plans (reflected ceiling plan, RCP) and ceiling plans to floor plans, with the cut plane height asked for each run (2300 mm / 1200 mm by default), a view template, and make-copies or convert-in-place, which keeps the sheet viewport.",
+   "HIDE IN VIEWS: hide or unhide the elements selected in Revit, or their whole categories, in all the ticked views at once.",
+   "Replaces View to Drafting, Drafting Legend, View Type Converter and Hide in Views."
+  ],
+  "safeguards": [
+   "A preview lists the new view names first.",
+   "MANAGE: duplicate views (duplicate, with detailing, or as dependent), apply a view template, and batch rename with find and replace, prefix, suffix and ignore case, with a live preview.",
+   "Each run is one Undo step, and anything skipped or failed is listed in the result."
+  ],
+  "dialogs": [
+   {
+    "title": "View Manager",
+    "dark": "media/dialogs/view-manager/viewmanagerwindow-dark.webp",
+    "w": 1306,
+    "h": 866,
+    "light": "media/dialogs/view-manager/viewmanagerwindow-light.webp"
+   },
+   {
+    "title": "Choose the source view",
+    "dark": "media/dialogs/view-manager/sourceviewpicker-dark.webp",
+    "w": 706,
+    "h": 586,
+    "light": "media/dialogs/view-manager/sourceviewpicker-light.webp"
+   }
+  ]
+ }
+]

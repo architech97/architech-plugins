@@ -1,0 +1,22 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<title>ArchiTECH Automation</title>
+<meta name="robots" content="noindex">
+<script>
+  // GitHub Pages has no SPA routing: keep the requested path and reopen the app at the site root.
+  (function () {
+    var base = '/architech-plugins/';
+    var path = location.pathname + location.search + location.hash;
+    if (path.indexOf(base) === 0) {
+      sessionStorage.setItem('spa-redirect', path);
+      location.replace(base);
+    } else {
+      location.replace('/');
+    }
+  })();
+</script>
+</head>
+<body style="background:#05070d"></body>
+</html>
