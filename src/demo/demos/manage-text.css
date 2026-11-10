@@ -1,0 +1,39 @@
+.mt-layout { display: grid; grid-template-columns: 200px minmax(0, 1fr); gap: 12px; }
+.mt-nav { border: 1px solid var(--d-border); border-radius: 8px; align-self: start; }
+.mt-nav > .ad-label { padding: 0 10px 5px; }
+.mt-nav button { display: flex; align-items: center; gap: 7px; }
+.mt-number { display: grid; place-items: center; width: 20px; height: 20px; flex: none; border: 1px solid var(--d-border-strong); border-radius: 50%; font-size: 10px; }
+.mt-work, .mt-stack, .mt-field { display: grid; gap: 8px; min-width: 0; }
+.mt-heading h3 { margin: 0; font-size: 17px; font-weight: 600; line-height: 1.25; }
+.mt-heading p { margin: 4px 0 0; }
+.mt-fields { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 8px; }
+.mt-field { gap: 4px; max-width: 100%; width: fit-content; }
+.mt-fields .mt-field { width: 100%; }
+.mt-preview-tools .ad-search { flex: 1 1 145px; min-width: 0; }
+.mt-table { min-height: 0; }
+.mt-table td { white-space: pre-wrap; overflow-wrap: anywhere; }
+.mt-table td.wrap { white-space: pre-wrap; min-width: 88px; }
+.mt-table tbody tr { cursor: default; }
+.mt-detail { display: block; }
+.mt-apply { justify-content: space-between; }
+.mt-status, .mt-error, .mt-merge-preview p { margin: 0; }
+.mt-error { color: var(--d-error); }
+.mt-status, .mt-merge-preview { padding: 9px 11px; border: 1px solid var(--d-border); border-radius: 6px; background: var(--d-input); }
+.mt-status { color: var(--d-success); }
+.mt-status p, .mt-status ul { margin: 0; }
+.mt-status ul { margin-top: 6px; padding-left: 17px; color: var(--d-text); }
+.mt-status li span { display: block; white-space: pre-wrap; overflow-wrap: anywhere; }
+.mt-merge-preview p { white-space: pre-wrap; overflow-wrap: anywhere; }
+.mt-picker { min-width: 0; display: grid; gap: 4px; padding: 8px; border: 1px solid var(--d-border); border-radius: 6px; }
+.mt-picker legend { padding: 0 4px; }
+.mt-layout :is(button, [tabindex]):focus-visible { outline: 2px solid var(--d-accent); outline-offset: 2px; }
+@media (max-width: 720px) {
+  .mt-layout { grid-template-columns: minmax(0, 1fr); }
+  .mt-nav { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 4px; padding: 8px; }
+  .mt-nav > .ad-label { grid-column: 1 / -1; }
+  .mt-nav button { min-height: 36px; }
+}
+@media (max-width: 420px) {
+  .mt-fields { grid-template-columns: 1fr; }
+  .mt-layout .ad-card { padding: 9px; }
+}

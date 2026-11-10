@@ -10,6 +10,22 @@ import { studioDemos } from './studioRegistry'
 // DemoContext), add an entry here, and map the tool key to its id in src/data/catalog.ts.
 const CRAFTED: Omit<DemoDefinition, 'kind'>[] = [
   {
+    id: 'manage-text', productSlug: 'manage-text', width: 1106,
+    ribbon: { tab: 'Arch Folio', panel: 'Annotation', button: 'Manage Text' },
+    title: 'Manage Text',
+    summary: 'Find, replace, tidy, re-type and merge text notes. Review exactly which notes would change before applying.',
+    basis: [
+      'The tool rail, scope controls and preview follow the installed Arch Folio Manage Text dialog.',
+      'This browser simulation works on fictional Sample Residence notes. Excel editing uses a prepared sample. Picking and applying changes stay in the browser.',
+    ],
+    steps: [
+      { id: 'configure', title: 'Set a text operation', hint: 'In Case & tidy-up, select lower or try Tidy spaces and lines.', target: 'manage-text-configure' },
+      { id: 'preview', title: 'Review the changes', hint: 'Choose Refresh and compare Before with After. Tick the rows you want to keep.', target: 'manage-text-refresh' },
+      { id: 'apply', title: 'Apply ticked changes', hint: 'Choose Apply and read the receipt for the sample notes.', target: 'manage-text-apply' },
+    ],
+    load: () => import('./demos/ManageText'),
+  },
+  {
     id: 'sheet-export', productSlug: 'sheet-export', width: 1080,
     ribbon: { tab: 'Arch Folio', panel: 'Publish', button: 'Sheet Export' },
     title: 'Sheet Export: publish a drawing set',
