@@ -10,6 +10,7 @@ import { SUITES, suiteById } from '../data/suites'
 import { DEMO_PROJECT, PROJECT_WORKFLOW } from '../data/demoProject'
 import { ROOMS, SHEETS, WARNINGS } from '../demo/sample'
 import { asset } from '../components/Brand'
+import { NativeEvidence, type NativeEvidenceConfig } from '../components/NativeEvidence'
 import NotFound from './NotFound'
 import './demos.css'
 
@@ -23,6 +24,65 @@ const demoFormats = {
   workflow: { label: 'Workflow simulation', detail: 'Try a representative command, desktop workflow or connector interaction on sample data.' },
 } satisfies Record<DemoDefinition['kind'], { label: string; detail: string }>
 const labelFor = (demo: DemoDefinition) => demoFormats[demo.kind].label
+const NATIVE_EVIDENCE: Partial<Record<'architech-i3d' | 'architech-assistant' | 'revit-mcp', NativeEvidenceConfig>> = {
+  'architech-i3d': {
+    title: 'Installed desktop build',
+    context: 'Both captures come from one chair-mesh session in the installed Windows app.',
+    build: 'ArchiTECH-I3D Desktop 0.6.38',
+    captures: [
+      {
+        title: 'Material workspace',
+        src: 'media/native/i3d-material.webp',
+        alt: 'I3D Material stage showing a textured chair and mesh-budget settings',
+        note: 'The Material workspace shows the chair with its texture and the mesh-budget settings used to prepare the asset.',
+      },
+      {
+        title: 'Revit export setup',
+        src: 'media/native/i3d-result.webp',
+        alt: 'I3D Result stage showing Revit family RFA selected as the export format',
+        note: 'The Result stage shows the chair ready to export with Revit family (.rfa) selected.',
+      },
+    ],
+  },
+  'architech-assistant': {
+    title: 'Installed desktop build',
+    context: 'The installed Windows app is shown with a saved read-only exchange and its composer modes.',
+    build: 'Assistant 1.0.5',
+    captures: [
+      {
+        title: 'Active view readback',
+        src: 'media/native/assistant-result.webp',
+        alt: 'Assistant conversation with a saved question about the active view and the response that it is Cover',
+        note: 'In the saved exchange, Assistant answers “What is the active view?” with “The active view is Cover.”',
+      },
+      {
+        title: 'Composer modes',
+        src: 'media/native/assistant-modes.webp',
+        alt: 'Assistant desktop composer showing its Ask, Search and Build modes',
+        note: 'The composer offers Ask, Search and Build modes.',
+      },
+    ],
+  },
+  'revit-mcp': {
+    title: 'Installed Revit connector',
+    context: 'The installed connector was used in Revit 2024 to read the active sheet in Autodesk’s Snowdon Towers sample.',
+    build: 'Revit MCP Connector 2.2.3',
+    captures: [
+      {
+        title: 'Connector ready',
+        src: 'media/native/revit-mcp-connector.webp',
+        alt: 'ArchiTECH Revit MCP Connector showing Revit 2024 with the bridge running and a model open',
+        note: 'The connector reports that it is ready for MCP clients. The activity panel is empty in this capture.',
+      },
+      {
+        title: 'Cover sheet readback',
+        src: 'media/native/revit-mcp-cover.webp',
+        alt: 'Revit 2024 displaying sheet G000 Cover of the Autodesk Snowdon Towers sample project',
+        note: 'The read-only get_current_view_info call returned Name=Cover, ViewType=DrawingSheet, SheetNumber=G000, SheetName=Cover and IsSheet=true.',
+      },
+    ],
+  },
+}
 const indexNumber = (i: number) => String(i + 1).padStart(2, '0')
 
 const viewNames = ['Plan', 'Assembly', 'Review'] as const
@@ -337,8 +397,10 @@ export function DemoPage() {
   const demo = demoById(id)
   if (!demo) return <NotFound />
   const product = productBySlug(demo.productSlug)
+  const evidence = demo.id === 'architech-i3d' || demo.id === 'architech-assistant' || demo.id === 'revit-mcp' ? NATIVE_EVIDENCE[demo.id] : undefined
   const sequence = PROJECT_WORKFLOW.findIndex((step) => step.id === demo.id)
   const next = sequence >= 0 ? PROJECT_WORKFLOW[sequence + 1] : undefined
+  const player = <DemoPlayer key={demo.id} demo={demo} />
   return (
     <div className="demo-detail">
       <header className="demo-detail-header">
@@ -346,10 +408,12 @@ export function DemoPage() {
           <Link to={{ pathname: '/demos', search: librarySearch, hash: '#demo-index' }} className="demo-text-link"><ArrowLeft size={16} /> Demo library</Link>
           <div className="demo-detail-title">
             <div>
-              <p className="demo-kicker">{demo.ribbon.tab} <span /> {labelFor(demo)}</p>
-              <h1>{demo.title}</h1>
-              <p>{demo.summary}</p>
-              <p className="demo-detail-format">{demoFormats[demo.kind].detail}</p>
+              <p className="demo-kicker">{demo.ribbon.tab} <span /> {evidence ? 'Native captures and browser exercise' : labelFor(demo)}</p>
+              <h1>{evidence ? (product?.name ?? demo.ribbon.tab) : demo.title}</h1>
+              {evidence ? <p>View captures from the installed build, then try a separate browser exercise on sample data.</p> : <>
+                <p>{demo.summary}</p>
+                <p className="demo-detail-format">{demoFormats[demo.kind].detail}</p>
+              </>}
             </div>
             {product && <div className="demo-detail-links">
               <Link className="demo-text-link" to={`/plugins/${product.slug}`}>Product details <ArrowUpRight size={16} /></Link>
@@ -359,7 +423,20 @@ export function DemoPage() {
         </div>
       </header>
       <div className="wrap-wide demo-detail-body">
-        <DemoPlayer key={demo.id} demo={demo} />
+        {evidence ? <>
+          <NativeEvidence key={demo.id} {...evidence} />
+          <section id="browser-exercise" className="native-browser-exercise" tabIndex={-1} aria-labelledby="browser-exercise-title">
+            <header>
+              <div>
+                <p className="demo-kicker">Browser exercise <span /> Sample data</p>
+                <h2 id="browser-exercise-title">{demo.title}</h2>
+                <p>{demo.summary}</p>
+              </div>
+              <a className="demo-text-link" href="#native-build">Back to native captures <ArrowUpRight size={16} aria-hidden="true" /></a>
+            </header>
+            {player}
+          </section>
+        </> : player}
         {sequence >= 0 && (
           <div className="demo-project-next">
             <div><p className="demo-kicker">{DEMO_PROJECT.code} / {PROJECT_WORKFLOW[sequence].phase} / {indexNumber(sequence)} of {PROJECT_WORKFLOW.length}</p><strong>{DEMO_PROJECT.name}</strong></div>
