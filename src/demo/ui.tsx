@@ -44,10 +44,10 @@ export function Btn({ primary, danger, sm, children, demo, ...rest }: { primary?
   return <button className={`ad-btn ${primary ? 'primary' : ''} ${danger ? 'danger' : ''} ${sm ? 'sm' : ''}`} data-demo={demo} {...rest}>{children}</button>
 }
 
-export function Check({ label, checked, onChange, demo, title }: { label?: ReactNode; checked: boolean; onChange: (v: boolean) => void; demo?: string; title?: string }) {
+export function Check({ label, checked, onChange, demo, title, disabled }: { label?: ReactNode; checked: boolean; onChange: (v: boolean) => void; demo?: string; title?: string; disabled?: boolean }) {
   return (
     <label className="ad-check" data-demo={demo} title={title}>
-      <input type="checkbox" checked={checked} onChange={(e) => onChange(e.target.checked)} aria-label={typeof label === 'string' ? label : title} />
+      <input type="checkbox" checked={checked} disabled={disabled} onChange={(e) => onChange(e.target.checked)} aria-label={typeof label === 'string' ? label : title} />
       <span className="ad-box" />
       {label && <span>{label}</span>}
     </label>

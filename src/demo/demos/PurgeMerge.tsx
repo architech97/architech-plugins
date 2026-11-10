@@ -4,6 +4,13 @@ import { PURGE, PURGE_KINDS, type PurgeItem } from '../sample'
 import { downloadCsv } from './craftedTools'
 import type { DemoContext } from '../types'
 
+const refusalByItem: Partial<Record<number, string>> = {
+  901: 'Retained · still referenced by sample types',
+  905: 'Retained · still referenced by sample materials',
+  911: 'Retained · system line style',
+  915: 'Retained · default text note type',
+}
+
 // Simulation of Arch Sentinel > Clean Up > Purge and Merge. Columns, Show filters, type tags and
 // footer actions follow the shipping dialog; entries are sample content.
 export default function PurgeMerge({ theme, setTheme, done, notify, close }: DemoContext) {
@@ -14,7 +21,7 @@ export default function PurgeMerge({ theme, setTheme, done, notify, close }: Dem
   const [catsOpen, setCatsOpen] = useState(false)
   const [q, setQ] = useState('')
   const [ticked, setTicked] = useState<Set<number>>(new Set())
-  const [review, setReview] = useState<'purge' | 'merge' | null>(null)
+  const [review, setReview] = useState<'in-use' | 'purge' | 'merge' | null>(null)
   const [survivor, setSurvivor] = useState('901')
   const [status, setStatus] = useState('Scan complete. Unused entries are shown; tick Used to see referenced ones.')
 
@@ -23,15 +30,17 @@ export default function PurgeMerge({ theme, setTheme, done, notify, close }: Dem
     && (!q || `${i.name} ${i.info} ${i.detail} ${PURGE_KINDS[i.tag]}`.toLowerCase().includes(q.toLowerCase()))), [items, showUsed, showUnused, kinds, q])
 
   const selected = items.filter((item) => ticked.has(item.id))
-  const deletable = selected.filter((item) => item.id !== 911)
+  const refusal = (item: PurgeItem) => item.id === 902 && item.used ? refusalByItem[901] : refusalByItem[item.id]
+  const deletable = selected.filter((item) => !refusal(item))
   const duplicates = items.filter((item) => item.id === 901 || item.id === 902)
   const hidden = selected.filter((item) => !shown.includes(item)).length
+  const used = selected.filter((item) => item.used).length
   const purge = () => {
     const remove = new Set(deletable.map((item) => item.id))
     setItems(items.filter((item) => !remove.has(item.id)))
     setTicked(new Set())
     setReview(null)
-    const message = 'Purged ' + remove.size + ' entries from the sample scan.'
+    const message = 'Purged ' + remove.size + ' entries. ' + (selected.length - remove.size) + ' selected entries retained in the sample scan.'
     setStatus(message)
     notify({ kind: 'success', text: message })
     done('purge')
@@ -60,7 +69,8 @@ export default function PurgeMerge({ theme, setTheme, done, notify, close }: Dem
         <span className="ad-status">{status}</span>
         {review ? <>
           <Btn onClick={() => setReview(null)}>Cancel</Btn>
-          {review === 'purge'
+          {review === 'in-use' ? <Btn primary onClick={() => setReview('purge')}>Continue to deletion preview</Btn>
+            : review === 'purge'
             ? <Btn primary disabled={!deletable.length} onClick={purge}>Confirm sample purge</Btn>
             : <Btn primary onClick={merge}>Merge sample pair</Btn>}
         </> : <>
@@ -68,16 +78,19 @@ export default function PurgeMerge({ theme, setTheme, done, notify, close }: Dem
           <Btn onClick={() => setTicked(new Set())}>Clear</Btn>
           <Btn onClick={exportScan}>Download sample CSV</Btn>
           <Btn disabled={duplicates.length !== 2 || (kinds.size > 0 && !kinds.has('MAT'))} onClick={() => setReview('merge')}>Merge duplicates...</Btn>
-          <Btn primary demo="purge" disabled={!ticked.size} onClick={() => setReview('purge')}>Purge selected</Btn>
+          <Btn primary demo="purge" disabled={!ticked.size} onClick={() => setReview(used ? 'in-use' : 'purge')}>Purge selected</Btn>
           <Btn onClick={close}>Close</Btn>
         </>}
 
       </>}>
+      {review === 'in-use' && <div className="ad-result" role="status">
+        <strong>Items in use</strong>
+        <p>{used} of the selected sample entries are in use. Continue to see which records the sample would remove or retain.</p>
+      </div>}
       {review === 'purge' && <div className="ad-result" role="status">
-        <strong>Review sample purge</strong>
-        <p>{deletable.length} eligible entries · {selected.filter((item) => item.used).length} in use · {hidden} hidden by filters</p>
-        {selected.some((item) => item.id === 911) && <p>The sample system line style &lt;Thin Lines&gt; is protected.</p>}
-        {selected.map((item) => <div key={item.id}>{item.name}{item.used ? ' · In use' : ''}</div>)}
+        <strong>Deletion preview</strong>
+        <p>{deletable.length} eligible entries · {selected.length - deletable.length} retained · {hidden} selected entries hidden by filters</p>
+        {selected.map((item) => <div key={item.id}>ID {item.id + 120000} · {item.name} · {refusal(item) ?? (item.id === 907 ? 'Eligible · removes four view filter assignments' : 'Eligible')}</div>)}
       </div>}
       {review === 'merge' && <div className="ad-result">
         <strong>Choose the surviving concrete material</strong>

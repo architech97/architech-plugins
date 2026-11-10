@@ -44,3 +44,8 @@ export interface DemoDefinition {
   width: number
   load: () => Promise<{ default: ComponentType<DemoContext> }>
 }
+
+/** Local tool folders may replace the dialog or augment the exported layout. */
+export type ToolDefinition = Partial<Pick<DemoDefinition,
+  'kind' | 'width' | 'title' | 'summary' | 'basis' | 'steps' | 'frame' | 'load'
+>>

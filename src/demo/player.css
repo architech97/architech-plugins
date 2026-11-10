@@ -33,7 +33,7 @@
 @keyframes toast-in { from { opacity: 0; transform: translateY(10px); } to { opacity: 1; transform: none; } }
 
 /* guided focus ring on the real control */
-.demo-focus { position: relative; z-index: 2; outline: 2px solid var(--cyan) !important; outline-offset: 3px; border-radius: 6px; animation: focus-pulse 1.6s ease-in-out infinite; }
+.demo-focus { position: relative; z-index: 2; outline: 2px solid var(--cyan) !important; outline-offset: 3px; border-radius: 6px; animation: focus-pulse 1.6s ease-in-out; }
 @keyframes focus-pulse { 0%, 100% { box-shadow: 0 0 0 0 color-mix(in srgb, var(--signal), transparent 45%); } 50% { box-shadow: 0 0 0 7px transparent; } }
 @media (prefers-reduced-motion: reduce) { .demo-focus, .toast { animation: none; } }
 

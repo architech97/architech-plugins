@@ -221,12 +221,12 @@
   ],
   "parameter-manager": [
     {
-      "title": "Nested Parameters",
+      "title": "Nested Parameters · Browser exercise",
       "source": "reconstructed",
-      "dark": "media/dialogs/parameter-manager/nested-parameters-dark.svg",
-      "w": 1060,
-      "h": 267,
-      "light": "media/dialogs/parameter-manager/nested-parameters-light.svg"
+      "dark": "media/dialogs/parameter-manager/nested-parameters-browser-dark.png",
+      "w": 860,
+      "h": 375,
+      "light": "media/dialogs/parameter-manager/nested-parameters-browser-light.png"
     },
     {
       "title": "Parameter action report",
@@ -347,20 +347,20 @@
   ],
   "excel-to-schedule": [
     {
-      "title": "Excel cell region",
+      "title": "Excel cell region · Browser exercise",
       "source": "reconstructed",
-      "dark": "media/dialogs/excel-to-schedule/cell-region-dark.svg",
-      "w": 760,
-      "h": 267,
-      "light": "media/dialogs/excel-to-schedule/cell-region-light.svg"
+      "dark": "media/dialogs/excel-to-schedule/cell-region-browser-dark.png",
+      "w": 544,
+      "h": 334,
+      "light": "media/dialogs/excel-to-schedule/cell-region-browser-light.png"
     },
     {
-      "title": "Choose the existing Excel schedule",
+      "title": "Choose the existing Excel schedule · Browser exercise",
       "source": "reconstructed",
-      "dark": "media/dialogs/excel-to-schedule/existing-excel-schedule-dark.svg",
-      "w": 760,
-      "h": 229,
-      "light": "media/dialogs/excel-to-schedule/existing-excel-schedule-light.svg"
+      "dark": "media/dialogs/excel-to-schedule/existing-excel-schedule-browser-dark.png",
+      "w": 544,
+      "h": 332,
+      "light": "media/dialogs/excel-to-schedule/existing-excel-schedule-browser-light.png"
     }
   ],
   "graphic-overviews": [

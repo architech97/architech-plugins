@@ -4,11 +4,56 @@ import { PRODUCTS } from '../data/catalog'
 import { LAYOUTS, generatedSteps } from './generatedRegistry'
 import { connectorDemos } from './connectorRegistry'
 import { studioDemos } from './studioRegistry'
+import { toolDefinition } from './toolDiscovery'
 
 
-// Every interactive demo. To add one: write src/demo/demos/<Name>.tsx (a component that takes
-// DemoContext), add an entry here, and map the tool key to its id in src/data/catalog.ts.
+// Legacy hand-built demos stay explicit. New implementations are discovered from
+// tools/<product-slug>/index.ts(x), without adding another registry entry.
 const CRAFTED: Omit<DemoDefinition, 'kind'>[] = [
+  {
+    id: 'excel-to-schedule', productSlug: 'excel-to-schedule', width: 1040,
+    ribbon: { tab: 'Arch Folio', panel: 'Schedules', button: 'Excel to Schedule' },
+    title: 'Excel to Schedule',
+    summary: 'Choose an Excel region, preview the cells and review a relink of a placed sample schedule.',
+    basis: [
+      'The workbook, worksheet, options and preview panes follow the installed Revit 2024 dialog.',
+      'The sample uses the workbook region, target eligibility and relink rules from the native command. Existing schedule IDs and placements carry through the simulated refresh.',
+    ],
+    steps: [
+      { id: 'workbook', title: 'Open the sample workbook', hint: 'Browse for a fictional workbook and inspect its worksheet tabs.', target: 'excel-workbook' },
+      { id: 'region', title: 'Choose an Excel region', hint: 'Try a print area or named region and compare the cell preview.', target: 'excel-region' },
+      { id: 'worksheet', title: 'Tick one worksheet', hint: 'Leave one worksheet checked when choosing an existing target.', target: 'excel-worksheets' },
+      { id: 'target', title: 'Choose an existing schedule', hint: 'Review ownership and sheet placements before choosing a target.', target: 'excel-existing' },
+      { id: 'refresh', title: 'Confirm the refresh', hint: 'Review the source and target, then check the retained sample schedule identity.', target: 'excel-confirm' },
+    ],
+    load: () => import('./demos/ExcelToSchedule'),
+  },
+  {
+    id: 'replace-materials', productSlug: 'replace-materials', width: 900,
+    ribbon: { tab: 'Arch Forge', panel: 'Finishes', button: 'Replace Materials' },
+    title: 'Replace Materials',
+    summary: 'Set material, categories and scope, scan the impact, then apply the reviewed sample replacements.',
+    basis: ['The controls and impact-scan requirement follow the deployed Revit 2024 dialog and scoped material replacement rules.'],
+    steps: [
+      { id: 'configure', title: 'Set replacement scope', hint: 'Choose the two materials, work scope and type handling.', target: 'replace-configure' },
+      { id: 'scan', title: 'Scan impact', hint: 'Check how many elements and types the current settings affect.', target: 'replace-scan' },
+      { id: 'replace', title: 'Apply the reviewed replacement', hint: 'Run the sample replacement with a current impact scan.', target: 'replace-apply' },
+    ],
+    load: () => import('./demos/ReplaceMaterials'),
+  },
+  {
+    id: 'match-opening', productSlug: 'match-opening', width: 1040,
+    ribbon: { tab: 'Arch Forge', panel: 'Rooms', button: 'Match Opening' },
+    title: 'Match Opening',
+    summary: 'Scan a linked model, review opening differences and apply the selected sample changes.',
+    basis: ['The scan, tolerances, opening review and apply order follow the deployed Match Opening dialog.'],
+    steps: [
+      { id: 'scan', title: 'Scan the linked openings', hint: 'Choose a linked model and check the scan settings.', target: 'opening-scan' },
+      { id: 'select', title: 'Review the candidates', hint: 'Tick a Create or Resize row in the sample comparison.', target: 'opening-select' },
+      { id: 'apply', title: 'Apply selected changes', hint: 'Review and confirm any host replacement before applying.', target: 'opening-apply' },
+    ],
+    load: () => import('./demos/MatchOpening'),
+  },
   {
     id: 'manage-text', productSlug: 'manage-text', width: 1106,
     ribbon: { tab: 'Arch Folio', panel: 'Annotation', button: 'Manage Text' },
@@ -173,12 +218,81 @@ const CRAFTED: Omit<DemoDefinition, 'kind'>[] = [
 
 const SUITE_TAB: Record<string, string> = { folio: 'Arch Folio', forge: 'Arch Forge', sentinel: 'Arch Sentinel' }
 
+interface ToolModule { definition: DemoDefinition }
+interface DiscoveredTool {
+  path: string
+  importModule: () => Promise<ToolModule>
+  definition?: DemoDefinition
+  pending?: Promise<void>
+  error?: unknown
+  descriptor?: DemoDefinition
+}
+
+// Keep this glob lazy: importing the registry must not import tool UI, fixtures or CSS.
+// Metadata is resolved only when a routed demo asks for it through demoById.
+const toolModules = import.meta.glob<ToolModule>('./tools/*/index.tsx')
+const discovered = new Map<string, DiscoveredTool>()
+for (const [path, importModule] of Object.entries(toolModules).sort(([a], [b]) => a.localeCompare(b))) {
+  const slug = path.split('/')[2]
+  if (discovered.has(slug)) throw new Error(`Duplicate demo indexes for ${slug}. Keep one index.ts or index.tsx.`)
+  discovered.set(slug, { path, importModule })
+}
+
+function loadDiscovered(tool: DiscoveredTool, slug: string): Promise<void> {
+  if (!tool.pending) {
+    tool.pending = tool.importModule().then(({ definition }) => {
+      if (!definition || definition.productSlug !== slug || typeof definition.load !== 'function'
+        || !Array.isArray(definition.steps) || !Array.isArray(definition.basis)) {
+        throw new Error(`${tool.path} must export a DemoDefinition named definition for ${slug}.`)
+      }
+      tool.definition = definition
+      // Gallery entries hold the same descriptor object; hydrate it once, before
+      // mounting the player, so every consumer can read the tool's real metadata.
+      if (tool.descriptor) Object.assign(tool.descriptor, definition)
+    }).catch((error: unknown) => { tool.error = error })
+  }
+  return tool.pending
+}
+
+function discoveredDescriptor(product: Product, tool: DiscoveredTool): DemoDefinition {
+  const descriptor: DemoDefinition = {
+    id: product.demo ?? product.slug, productSlug: product.slug, kind: 'crafted',
+    ribbon: { tab: SUITE_TAB[product.suite] ?? product.name, panel: product.panel, button: product.name },
+    title: product.name, summary: product.tagline, width: 1080,
+    basis: ['Interactive dialog using the fictional Sample Residence fixture. Open the demo for its source notes.'],
+    steps: [],
+    load: async () => {
+      await loadDiscovered(tool, product.slug)
+      if (tool.error) throw tool.error
+      return tool.definition!.load()
+    },
+  }
+  tool.descriptor = descriptor
+  return descriptor
+}
+
 function defineDemo(product: Product): DemoDefinition {
   const crafted = CRAFTED.find((entry) => entry.productSlug === product.slug)
   if (crafted) return { ...crafted, kind: 'crafted' }
 
+  const tool = discovered.get(product.slug)
+  if (tool) return discoveredDescriptor(product, tool)
+
   const ribbon = { tab: SUITE_TAB[product.suite] ?? product.software[0] ?? product.name, panel: product.panel, button: product.name }
   const base = { id: product.demo ?? product.slug, productSlug: product.slug, ribbon, summary: product.tagline }
+  const local = toolDefinition(product.slug)
+  if (local?.load) {
+    return {
+      ...base,
+      kind: 'crafted',
+      width: 1080,
+      title: product.name,
+      basis: ['Interactive dialog using fictional Sample Residence metadata.'],
+      steps: [],
+      ...local,
+      load: local.load,
+    }
+  }
   const studio = studioDemos[product.slug] ?? connectorDemos[product.slug]
   if (studio) return { ...base, kind: 'workflow', width: 1020, frame: 'app', ...studio }
 
@@ -194,7 +308,8 @@ function defineDemo(product: Product): DemoDefinition {
         'Try the controls on representative sample rows. The installed tool performs the corresponding Revit operations.',
       ],
       steps: generatedSteps(product.slug),
-      load: async () => ({ default: (await import('./GeneratedDemo')).makeGenerated(product.slug) }),
+      load: async () => (await import('./GeneratedDemo')).loadGenerated(product.slug),
+      ...local,
     }
   }
 
@@ -220,5 +335,15 @@ export const DEMOS = PRODUCTS.map(defineDemo)
 const byId = new Map(DEMOS.map((demo) => [demo.id, demo]))
 const byProduct = new Map(DEMOS.map((demo) => [demo.productSlug, demo]))
 
-export const demoById = (id: string) => byId.get(id)
+/** Route metadata is ready before DemoPlayer mounts; the route's existing Suspense
+ * boundary handles a tool's first lazy import. Gallery discovery remains synchronous. */
+export const demoById = (id: string): DemoDefinition | undefined => {
+  const demo = byId.get(id)
+  if (!demo) return undefined
+  const tool = discovered.get(demo.productSlug)
+  if (!tool || tool.descriptor !== demo) return demo
+  if (tool.error) throw tool.error
+  if (!tool.definition) throw loadDiscovered(tool, demo.productSlug)
+  return demo
+}
 export const demoForProduct = (slug: string) => byProduct.get(slug)
