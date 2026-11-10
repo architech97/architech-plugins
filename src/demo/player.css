@@ -22,7 +22,7 @@
 .dialog-host { position: relative; width: 100%; z-index: 1; }
 .loading, .reopen { margin: 80px auto; text-align: center; color: var(--text-2); display: grid; gap: 14px; justify-items: center; padding: 30px; background: rgba(10, 14, 24, .6); border-radius: 14px; border: 1px solid var(--line); max-width: 360px; }
 
-.toasts { position: absolute; right: 16px; top: 14px; z-index: 5; display: grid; gap: 8px; max-width: min(380px, calc(100% - 32px)); }
+.toasts { position: absolute; pointer-events: none; right: 16px; top: 14px; z-index: 5; display: grid; gap: 8px; max-width: min(380px, calc(100% - 32px)); }
 .toast { display: flex; gap: 10px; align-items: flex-start; padding: 11px 14px; border-radius: 12px; font-size: 13.5px; line-height: 1.45; color: var(--text); background: rgba(10, 16, 30, .94); border: 1px solid var(--line-strong); box-shadow: var(--shadow); animation: toast-in .35s var(--ease); }
 .toast svg { flex: none; margin-top: 2px; }
 .toast.success { border-color: rgba(74, 222, 128, .45); } .toast.success svg { color: var(--ok); }

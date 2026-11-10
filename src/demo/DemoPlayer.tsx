@@ -11,6 +11,7 @@ export function DemoPlayer({ demo, compact = false }: { demo: DemoDefinition; co
   const Comp = useMemo(() => lazy(demo.load), [demo])
   const [theme, setTheme] = useState<DialogTheme>('dark')
   const [run, setRun] = useState(0)
+  const activeRun = useRef(0)
   const [doneIds, setDoneIds] = useState<string[]>([])
   const [guided, setGuided] = useState(true)
   const [closed, setClosed] = useState(false)
@@ -29,9 +30,10 @@ export function DemoPlayer({ demo, compact = false }: { demo: DemoDefinition; co
   const progress = Math.round((doneIds.length / demo.steps.length) * 100)
 
   const done = useCallback((id: string) => {
-    if (demo.steps.some((step) => step.id === id)) setDoneIds((d) => (d.includes(id) ? d : [...d, id]))
-  }, [demo.steps])
+    if (activeRun.current === run && demo.steps.some((step) => step.id === id)) setDoneIds((d) => (d.includes(id) ? d : [...d, id]))
+  }, [demo.steps, run])
   const notify = useCallback((n: DemoNotice) => {
+    if (activeRun.current !== run) return
     const e = { ...n, id: ++seq.current, at: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', second: '2-digit' }) }
     setToasts((t) => [...t.slice(-2), e])
     setLog((l) => [e, ...l].slice(0, 40))
@@ -40,8 +42,8 @@ export function DemoPlayer({ demo, compact = false }: { demo: DemoDefinition; co
       setToasts((t) => t.filter((x) => x.id !== e.id))
     }, 4200)
     toastTimers.current.add(timer)
-  }, [])
-  const reset = () => { clearToastTimers(); setRun((r) => r + 1); setDoneIds([]); setLog([]); setToasts([]); setClosed(false) }
+  }, [run])
+  const reset = () => { clearToastTimers(); setRun(++activeRun.current); setDoneIds([]); setLog([]); setToasts([]); setClosed(false) }
 
   // Highlight the control for the current step.
   // Re-apply when a lazily loaded control or its guide target changes.

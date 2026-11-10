@@ -104,6 +104,10 @@ export function makeGenerated(slug: string, tagline: string) {
     const touch = (step = 'explore') => { setTouched(true); done(step) }
     const set = (key: string, v: string | boolean, step = 'option') => { setVals((s) => ({ ...s, [key]: v })); touch(step) }
     const changeTheme = (value: 'dark' | 'light') => { setTheme(value); touch('theme') }
+    const changeTab = (index: number) => {
+      if (index === tab) return
+      setTab(index); touch('tab')
+    }
     const tickRows = (selected: boolean) => {
       const updates: Record<string, boolean> = {}
       nodes.forEach((node, index) => {
@@ -153,7 +157,7 @@ export function makeGenerated(slug: string, tagline: string) {
         case 'tab': {
           if (!n.main) return <span key={key} className={`ad-tab ${n.on ? 'on' : ''}`} style={{ ...pos, pointerEvents: 'none', display: 'grid', placeItems: 'center', padding: 0 }}>{n.s}</span>
           const style: CSSProperties = navLabel ? { position: 'absolute', left: navLabel.x - 8, top: navLabel.y + 28 + (n.i ?? 0) * 34, width: 156, height: 30, textAlign: 'left', padding: '0 10px', borderRadius: 6, border: 0, borderBottom: 0, background: n.i === tab ? 'var(--d-accent-soft)' : 'transparent', boxShadow: n.i === tab ? 'inset 3px 0 0 var(--d-accent)' : undefined, color: n.i === tab ? 'var(--d-text)' : 'var(--d-text-2)', fontWeight: n.i === tab ? 600 : 500 } : { ...pos, padding: 0 }
-          return <button key={key} aria-pressed={n.i === tab} className={navLabel ? '' : `ad-tab ${n.i === tab ? 'on' : ''}`} data-demo={i === firstOf.tab ? 'gen-tab' : undefined} style={{ ...style, cursor: 'pointer', font: 'inherit', fontSize: 12.5 }} onClick={() => { if (n.i !== undefined && n.i !== tab) { setTab(n.i); touch('tab') } }}>{n.s || response?.layout?.tabs[n.i ?? 0] || 'Overview'}</button>
+          return <button key={key} aria-pressed={n.i === tab} className={navLabel ? '' : `ad-tab ${n.i === tab ? 'on' : ''}`} data-demo={i === firstOf.tab ? 'gen-tab' : undefined} style={{ ...style, cursor: 'pointer', font: 'inherit', fontSize: 12.5 }} onClick={() => { if (n.i !== undefined) changeTab(n.i) }}>{n.s || response?.layout?.tabs[n.i ?? 0] || 'Overview'}</button>
         }
         case 'check': case 'radio': {
           const checked = n.k === 'radio' ? radioChecked(n, key) : !!(vals[key] ?? n.on)
@@ -219,6 +223,11 @@ export function makeGenerated(slug: string, tagline: string) {
         {metas.length > 1 && (
           <div className="gen-windows" role="group" aria-label="Dialogs of this tool">
             {metas.map((m, i) => <button key={m.file} aria-pressed={i === win} data-demo={slug === 'template-manager' && i === 1 ? 'gen-window' : undefined} className={i === win ? 'on' : ''} onClick={() => openWindow(i)}>{m.title}</button>)}
+          </div>
+        )}
+        {response?.layout && meta.tabs.length > 1 && firstOf.tab === -1 && (
+          <div className="gen-windows" role="group" aria-label="Sections of this dialog">
+            {meta.tabs.map((label, index) => <button key={label || index} aria-pressed={index === tab} data-demo={index === (tab === 0 ? 1 : 0) ? 'gen-tab' : undefined} className={index === tab ? 'on' : ''} onClick={() => changeTab(index)}>{label || 'Overview'}</button>)}
           </div>
         )}
         {response?.layout && !nodes.some((n) => n.k === 'theme') && (
