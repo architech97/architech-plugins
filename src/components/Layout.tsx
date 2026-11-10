@@ -6,7 +6,7 @@ import { CONTACT } from '../data/contact'
 
 const NAV = [
   { to: '/plugins', label: 'Plugins' },
-  { to: '/demos', label: 'Live demos' },
+  { to: '/demos', label: 'Demos' },
   { to: '/pricing', label: 'Pricing' },
   { to: '/custom-development', label: 'Custom development' },
 ]
@@ -40,24 +40,23 @@ export function Layout() {
     <>
       <div className="bg-grid" aria-hidden="true" />
       <a className="skip-link" href="#main">Skip to content</a>
-      <div className="division-bar">
-        <div className="wrap division-bar-inner">
-          <nav className="division-nav" aria-label="ArchiTECH divisions">
-            <a href={CONTACT.designSite}>ArchiTECH Design <ArrowUpRight size={12} aria-hidden="true" /></a>
-            <Link to="/" aria-current="true">ArchiTECH Automation</Link>
-          </nav>
-          <p className="division-note">Staging preview · Browser demos use sample data</p>
-        </div>
-      </div>
       <header className="site-header">
+        <div className="division-bar">
+          <div className="wrap division-bar-inner">
+            <nav className="division-nav" aria-label="ArchiTECH divisions">
+              <a href={CONTACT.designSite}>ArchiTECH Design <ArrowUpRight size={12} aria-hidden="true" /></a>
+              <Link to="/" aria-current="true">ArchiTECH Automation</Link>
+            </nav>
+            <p className="division-note">Staging preview · Browser demos use sample data</p>
+          </div>
+        </div>
         <div className="wrap bar">
           <Link to="/" aria-label="ArchiTECH Automation home"><Logo /></Link>
           <nav ref={nav} id="site-nav" className={'nav' + (open ? ' open' : '')} aria-label="Main">
             {NAV.map((n) => <NavLink key={n.to} to={n.to} onClick={() => setOpen(false)} className={({ isActive }) => (isActive ? 'active' : '')}>{n.label}</NavLink>)}
           </nav>
           <div className="nav-cta">
-            <Link className="btn btn-ghost btn-sm" to="/custom-development?type=demo">Request a demo</Link>
-            <Link className="btn btn-primary btn-sm" to="/demos">Try a live demo</Link>
+            <Link className="btn btn-primary btn-sm" to="/demos#sample-project">Try a workflow</Link>
             <button ref={menu} className="menu-btn" aria-controls="site-nav" aria-label={open ? 'Close menu' : 'Open menu'} aria-expanded={open} onClick={() => setOpen(!open)}>
               {open ? <X size={20} /> : <Menu size={20} />}
             </button>
@@ -91,7 +90,7 @@ function Footer() {
           </div>
           <div>
             <h4>Explore</h4>
-            <Link to="/demos">Live demos</Link>
+            <Link to="/demos">Browser demos</Link>
             <Link to="/plugins">Full catalogue</Link>
             <Link to="/pricing">Pricing &amp; licensing</Link>
             <Link to="/custom-development">Custom development</Link>

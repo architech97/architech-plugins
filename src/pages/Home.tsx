@@ -1,72 +1,131 @@
+import { useState } from 'react'
+import { ArrowRight, ArrowUpRight, Check, CircleAlert, Play, ScanLine } from 'lucide-react'
 import { Link } from 'react-router-dom'
-import { ArrowRight, PlayCircle, ShieldCheck, Undo2, Eye, Layers, Moon, Wrench, Sparkles, Boxes } from 'lucide-react'
 import { PRODUCTS, STATS } from '../data/catalog'
 import { SUITES } from '../data/suites'
-import { Reveal } from '../components/Layout'
 import { asset } from '../components/Brand'
-import { ProductCard } from '../components/ProductCard'
 import { DEMO_PROJECT, PROJECT_WORKFLOW } from '../data/demoProject'
+import { SHEETS } from '../demo/sample'
+import './home.css'
+
+const plans = SHEETS.filter(({ number }) => number === 'A-101' || number === 'A-102')
+const registerModes = [
+  { id: 'existing', label: 'Current set' },
+  { id: 'proposed', label: 'Preview changes' },
+  { id: 'conflict', label: 'Check collision' },
+] as const
+type RegisterMode = typeof registerModes[number]['id']
+
+const nativeViews = [
+  { id: 'axon', label: '3D view', reference: 'A901 · Roof perspective', file: 'snowdon-axon.webp', alt: 'Snowdon Towers roof gardens and street façades in an elevated Revit camera view' },
+  { id: 'plan', label: 'Level 2 plan', reference: 'SD102 · Schematic plan', file: 'snowdon-plan.webp', alt: 'Snowdon Towers Level 2 schematic plan with room labels, drawing grids and an occupancy legend' },
+] as const
+const snowdonSource = 'https://help.autodesk.com/cloudhelp/2024/ENU/Revit-GetStarted/files/GUID-5DA26FF7-85B3-4E9D-A9F2-FADDD02D88D6.htm'
+
+function SheetRegister() {
+  const [mode, setMode] = useState<RegisterMode>('proposed')
+  const conflict = mode === 'conflict'
+  const proposed = mode === 'proposed'
+  return (
+    <figure className="issue-preview">
+      <figcaption><span><ScanLine size={15} /> Sheet Manager</span><span>{DEMO_PROJECT.code} / {DEMO_PROJECT.revision}</span></figcaption>
+      <div className="issue-paper">
+        <div className="issue-heading">
+          <div><p>Drawing register / Browser sample</p><h2>Floor plans</h2></div>
+          <span className="issue-stamp">A–100<br />SERIES</span>
+        </div>
+        <div className="issue-controls" role="group" aria-label="Sheet register example">
+          {registerModes.map(({ id, label }) => <button type="button" key={id} aria-pressed={mode === id} onClick={() => setMode(id)}>{label}</button>)}
+        </div>
+        <table className="issue-table">
+          <thead><tr><th scope="col">Drawing</th><th scope="col">Current</th><th scope="col">{mode === 'existing' ? 'Issue' : 'Proposed'}</th></tr></thead>
+          <tbody>
+            {plans.map((sheet, i) => (
+              <tr key={sheet.id}>
+                <th scope="row">{sheet.name}<small>{sheet.titleBlock} · {sheet.views} views</small></th>
+                <td>{sheet.number}</td>
+                <td>
+                  {proposed ? <b className="issue-number" key={mode}>{sheet.number.replace(/^A-/, 'GA-')}</b>
+                    : conflict && i === 0 ? <b className="issue-number issue-error" key={mode}>A-102</b>
+                    : conflict ? <span title="Outside the change scope">—</span> : sheet.revision}
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+        <div className={'issue-status' + (conflict ? ' is-conflict' : '')} role="status">
+          {conflict ? <CircleAlert size={16} /> : <Check size={16} />}
+          {conflict ? 'Blocked · A-102 is already in use.' : proposed ? '2 sheets ready for review. View placements are retained.' : '2 floor plans in revision P02.'}
+        </div>
+      </div>
+      <div className="issue-footer"><span>{DEMO_PROJECT.name}</span><Link to="/demos/sheet-manager">Try the full demo <ArrowUpRight size={16} /></Link></div>
+    </figure>
+  )
+}
+
+function RevitViews() {
+  const [index, setIndex] = useState(0)
+  const view = nativeViews[index]
+  return (
+    <section className="section native-study" id="revit-views" aria-labelledby="native-title">
+      <div className="wrap">
+        <div className="native-title">
+          <div><p className="eyebrow">02 / Native Revit study</p><h2 id="native-title">From model to plan</h2></div>
+          <p>Explore two views exported from Autodesk’s Snowdon Towers sample project in Revit 2024.</p>
+        </div>
+        <div className="native-grid">
+          <figure className="native-view">
+            <div className="native-image"><img key={view.id} src={asset('media/revit/' + view.file)} alt={view.alt} width={1400} height={1138} loading="lazy" decoding="async" /></div>
+            <figcaption><span aria-live="polite">{view.reference} / Native Revit export</span><a href={asset('media/revit/' + view.file)} target="_blank" rel="noreferrer">Open full view <ArrowUpRight size={13} /></a></figcaption>
+          </figure>
+          <div className="native-sidebar">
+            <div className="native-switch" role="group" aria-label="Snowdon Towers model view">
+              {nativeViews.map(({ id, label }, i) => <button key={id} type="button" aria-pressed={index === i} onClick={() => setIndex(i)}><span>0{i + 1}</span>{label}<ArrowRight size={17} /></button>)}
+            </div>
+            <div className="native-sidebar-copy">
+              <h3>Try the same type of work</h3>
+              <p>Generate a plan and elevations in the Room to View browser exercise using the separate AT-01 fixture.</p>
+              <Link to="/demos/room-to-view">Open Room to View <ArrowUpRight size={16} /></Link>
+            </div>
+            <a className="native-credit" href={snowdonSource}>Model source · Autodesk Snowdon Towers <ArrowUpRight size={13} /></a>
+          </div>
+        </div>
+        <div className="native-asset">
+          <img src={asset('media/i3d/chair-result-preview.webp')} alt="Textured chair in the ArchiTECH I3D result preview" width={548} height={672} loading="lazy" decoding="async" />
+          <div><p className="eyebrow">ArchiTECH I3D / Desktop capture</p><h3>Inspect a textured asset</h3><p>The chair is shown in I3D’s result preview. The browser exercise steps through sizing and simulated Revit family export.</p><Link to="/demos/architech-i3d">Try the I3D workflow <ArrowUpRight size={16} /></Link></div>
+        </div>
+      </div>
+    </section>
+  )
+}
 
 export default function Home() {
-  const count = (id: string) => PRODUCTS.filter((p) => p.suite === id).length
-  const featured = ['warnings-inspector', 'room-to-view', 'sheet-manager', 'room-to-finishes'].map((s) => PRODUCTS.find((p) => p.slug === s)!).filter(Boolean)
   return (
-    <>
-      <section className="hero">
-        <div className="wrap hero-grid">
-          <div>
-            <span className="eyebrow">BIM automation software · Revit · AI</span>
-            <h1>From model to drawing set</h1>
-            <p className="lead">Prepare drawings, build models and review standards with ArchiTECH Automation. Try the tools on a sample project before you choose a suite.</p>
+    <div className="automation-home">
+      <section className="automation-hero">
+        <div className="wrap automation-hero-grid">
+          <div className="automation-hero-copy">
+            <p className="eyebrow">ArchiTECH Automation / BIM tools</p>
+            <h1><span>From model</span>{' '}<span>to drawing set</span></h1>
+            <p className="lead">Prepare sheets, generate room views and review model warnings. Start with a sample project or explore the tools for your software.</p>
             <div className="hero-cta">
-              <Link className="btn btn-primary" to="/demos"><PlayCircle size={18} /> Try a browser demo</Link>
-              <Link className="btn btn-ghost" to="/plugins">Browse {STATS.products} products <ArrowRight size={17} /></Link>
+              <Link className="btn btn-primary" to="/demos#sample-project"><Play size={17} /> Start the sample project</Link>
+              <Link className="home-secondary" to="/plugins">Browse {STATS.products} tools <ArrowRight size={17} /></Link>
             </div>
+            <p className="automation-hero-meta"><span>Browser demos · Sample data</span><a href="#revit-views">View the native Revit model</a></p>
           </div>
-          <HeroVisual />
-        </div>
-        <div className="wrap">
-          <dl className="home-counts">
-            <div><dt>Products</dt><dd>{STATS.products}</dd></div>
-            <div><dt>Revit tools</dt><dd>{STATS.revitTools}</dd></div>
-            <div><dt>Product lines</dt><dd>{SUITES.length}</dd></div>
-            <div><dt>Interactive demos</dt><dd>{STATS.demos}</dd></div>
-          </dl>
-        </div>
-      </section>
-
-      <section className="section" style={{ paddingTop: 30 }}>
-        <div className="wrap">
-          <Reveal className="section-head">
-            <div><span className="eyebrow">Product suites</span><h2>One platform, five product lines.</h2></div>
-            <p className="lead">Every Revit tool lives on the ArchiTECH ribbon in one of three suites. I3D and the AI connectors extend the same workflows.</p>
-          </Reveal>
-          <div className="grid-3">
-            {SUITES.map((s, i) => (
-              <Reveal key={s.id} delay={i * 60}>
-                <Link to={`/plugins?suite=${s.id}`} className="glass suite-card" style={{ ['--suite' as string]: s.color }}>
-                  <span className="suite-tag" style={{ ['--suite' as string]: s.color }}>{s.focus}</span>
-                  <div style={{ display: 'flex', alignItems: 'baseline', justifyContent: 'space-between', gap: 12 }}>
-                    <h3 style={{ fontSize: '1.45rem' }}>{s.name}</h3>
-                    <span className="count">{count(s.id)}</span>
-                  </div>
-                  <p>{s.summary}</p>
-                  <span className="accent-text" style={{ fontWeight: 500, marginTop: 'auto' }}>Explore {s.short} <ArrowRight size={15} style={{ verticalAlign: -3 }} /></span>
-                </Link>
-              </Reveal>
-            ))}
-          </div>
+          <SheetRegister />
         </div>
       </section>
 
       <section className="section" id="live-demo">
         <div className="wrap">
-          <div className="home-project">
+          <div className="home-project home-project-blueprint">
             <div>
-              <span className="eyebrow">Sample project / {DEMO_PROJECT.code}</span>
-              <h2>Work through {DEMO_PROJECT.name}</h2>
-              <p>Generate room views, review finishes, prepare a drawing set and check model warnings on fictional project data.</p>
-              <Link to="/demos#sample-project" className="btn btn-primary"><PlayCircle size={17} /> Open the project board</Link>
+              <p className="eyebrow">01 / Sample project</p>
+              <h2>{DEMO_PROJECT.name}</h2>
+              <p>Follow four exercises from room setup to drawing review. Each opens with its own sample data.</p>
+              <Link to="/demos#sample-project" className="btn btn-primary">Open {DEMO_PROJECT.code} <ArrowRight size={17} /></Link>
             </div>
             <ol>
               {PROJECT_WORKFLOW.map((step) => <li key={step.id}><Link to={'/demos/' + step.id}><span>{step.phase}</span><strong>{step.title}</strong><ArrowRight size={17} /></Link></li>)}
@@ -75,92 +134,36 @@ export default function Home() {
         </div>
       </section>
 
-      <section className="section">
+      <RevitViews />
+
+      <section className="section suite-index" aria-labelledby="suite-index-title">
         <div className="wrap">
-          <Reveal className="section-head">
-            <div><span className="eyebrow">Built for production models</span><h2>Designed around review, not surprises.</h2></div>
-            <p className="lead">The same principles run through the Revit tools, as stated in their own descriptions.</p>
-          </Reveal>
-          <div className="grid-3">
-            {[
-              { icon: Eye, t: 'Preview before writing', d: 'Renumbering, parameter edits, finishes and more show the planned result first; only what you approve is written.' },
-              { icon: Undo2, t: 'One undoable step', d: 'Batch runs are written as a single Revit transaction, so one Ctrl+Z reverses the whole run.' },
-              { icon: ShieldCheck, t: 'Skips are named, not hidden', d: 'Borrowed, edited or unsupported elements are left alone and listed with the reason.' },
-              { icon: Moon, t: 'Dark and Light', d: 'Switch themes in the dialog header or compare the supplied screenshots.' },
-              { icon: Layers, t: 'One ribbon, one design system', d: 'All 58 Revit tools install on the ArchiTECH ribbon and share one dialog design system, theme and interaction patterns.' },
-              { icon: Boxes, t: 'Data in and out', d: 'Excel and CSV round trips for schedules, sheets, parameters and reports.' },
-            ].map((f, i) => (
-              <Reveal key={f.t} delay={i * 50}><div className="glass kpi" style={{ height: '100%' }}>
-                <f.icon size={22} color="var(--cyan-2)" />
-                <h3 style={{ margin: '14px 0 8px' }}>{f.t}</h3>
-                <p className="muted" style={{ fontSize: 15 }}>{f.d}</p>
-              </div></Reveal>
+          <div className="native-title">
+            <div><p className="eyebrow">03 / Tool catalog</p><h2 id="suite-index-title">Choose a product line</h2></div>
+            <p>Find documentation, modeling and review tools for Revit, plus I3D and AI connectors for supported CAD hosts.</p>
+          </div>
+          <ul className="home-suite-list">
+            {SUITES.map((suite, i) => (
+              <li key={suite.id}><Link to={'/plugins?suite=' + suite.id}>
+                <span className="home-suite-id">0{i + 1}</span>
+                <div><h3>{suite.name}</h3><p>{suite.focus}</p></div>
+                <p className="home-suite-summary">{suite.summary}</p>
+                <span className="home-suite-count">{PRODUCTS.filter((item) => item.suite === suite.id).length} tools</span>
+                <ArrowRight size={18} aria-hidden="true" />
+              </Link></li>
             ))}
+          </ul>
+        </div>
+      </section>
+
+      <section className="section automation-contact">
+        <div className="wrap">
+          <div className="native-title">
+            <div><p className="eyebrow">Custom development</p><h2>Have a workflow of your own?</h2></div>
+            <Link className="btn btn-ghost" to="/custom-development">Describe your workflow <ArrowRight size={16} /></Link>
           </div>
         </div>
       </section>
-
-      <section className="section">
-        <div className="wrap">
-          <Reveal className="section-head">
-            <div><span className="eyebrow">Featured</span><h2>Start with a common BIM task.</h2></div>
-            <Link className="btn btn-ghost" to="/plugins">See the full catalogue <ArrowRight size={17} /></Link>
-          </Reveal>
-          <div className="grid-2" style={{ gridTemplateColumns: 'repeat(auto-fit, minmax(270px, 1fr))' }}>
-            {featured.map((p, i) => <Reveal key={p.slug} delay={i * 60}><ProductCard p={p} /></Reveal>)}
-          </div>
-        </div>
-      </section>
-
-      <section className="section">
-        <div className="wrap grid-2" style={{ alignItems: 'center', gap: 40 }}>
-          <Reveal>
-            <span className="eyebrow">ArchiTECH-I3D · AI connectors</span>
-            <h2 style={{ margin: '14px 0 16px' }}>From a product photo to a Revit family. From a prompt to a guarded model edit.</h2>
-            <p className="lead">I3D turns a photo or mesh into a dimensioned, textured asset and places it in Revit, running locally on one NVIDIA GPU. The MCP connectors give AI assistants typed tools in Revit, Rhino, SketchUp, AutoCAD and Blender.</p>
-            <div className="hero-cta"><Link className="btn btn-primary" to="/plugins/architech-i3d"><Sparkles size={17} /> Explore I3D</Link><Link className="btn btn-ghost" to="/plugins?suite=ai">AI &amp; MCP connectors</Link></div>
-          </Reveal>
-          <Reveal delay={100}>
-            <div className="glass" style={{ padding: 10, overflow: 'hidden' }}>
-              <img src={asset('media/i3d/desktop-0.6.36.webp')} alt="ArchiTECH-I3D Desktop main window" loading="lazy" style={{ borderRadius: 12 }} />
-            </div>
-          </Reveal>
-        </div>
-      </section>
-
-      <section className="section" style={{ paddingTop: 20 }}>
-        <div className="wrap">
-          <Reveal>
-            <div className="glass cta-band">
-              <div>
-                <span className="eyebrow">Custom development</span>
-                <h2 style={{ margin: '12px 0 12px' }}>Need a tool your team doesn't have yet?</h2>
-                <p className="lead">Commission a custom Revit add-in or an AI automation, built to the same standards as the ArchiTECH suites.</p>
-              </div>
-              <div style={{ display: 'grid', gap: 12 }}>
-                <Link className="btn btn-primary" to="/custom-development"><Wrench size={17} /> Start an inquiry</Link>
-                <Link className="btn btn-ghost" to="/custom-development?type=demo">Request a guided demo</Link>
-              </div>
-            </div>
-          </Reveal>
-        </div>
-      </section>
-    </>
-  )
-}
-
-function HeroVisual() {
-  const shot = PRODUCTS.find((p) => p.slug === 'sheet-manager')?.dialogs[0]?.dark
-  return (
-    <figure className="home-proof">
-      <figcaption><span>{DEMO_PROJECT.name} / {DEMO_PROJECT.code}</span><span>{DEMO_PROJECT.revision}</span></figcaption>
-      <div className="home-proof-media">
-        {shot && <img src={asset(shot)} alt="Sheet Manager dialog with numbered sample drawing sheets" fetchPriority="high" />}
-      </div>
-      <div className="home-proof-caption">
-        <div><strong>Sheet Manager</strong><span>Renumber a sample drawing set</span></div>
-        <Link to="/demos/sheet-manager" aria-label="Try Sheet Manager"><PlayCircle size={24} /></Link>
-      </div>
-    </figure>
+    </div>
   )
 }

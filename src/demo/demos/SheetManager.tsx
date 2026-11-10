@@ -20,6 +20,9 @@ type Section = (typeof SECTIONS)[number][0]
 interface Rule { find: string; replace: string; prefix: string; suffix: string }
 const keyOf = (number: string) => number.trim().toLowerCase()
 const VIEWS = ['Living Room Enlarged Plan', 'North Interior Elevation', 'Finish Schedule']
+const SAMPLE_PLANS = SHEETS.filter(({ number }) => number === 'A-101' || number === 'A-102')
+type SampleRule = 'select' | 'collision' | 'issue'
+interface RenumberReceipt { id: number; before: string; after: string; name: string; revision: string; views: number }
 const latestRevision = (sheet: Sheet) => [sheet.revision, ...(sheet.addedRevisions ?? [])].filter((revision) => revision !== '—').sort().at(-1) ?? '—'
 const empty: Rule = { find: '', replace: '', prefix: '', suffix: '' }
 const REVISIONS = [
@@ -35,7 +38,7 @@ function applyRule(r: Rule, value: string, s: Sheet, seq: string, ignoreCase: bo
   return (expand(r.prefix) + v + expand(r.suffix)).trim()
 }
 
-export default function SheetManager({ theme, setTheme, done, notify, close }: DemoContext) {
+export default function SheetManager({ theme, setTheme, done, rewind, notify, close }: DemoContext) {
   const [sheets, setSheets] = useState<Sheet[]>(SHEETS)
   const [ticked, setTicked] = useState<Set<number>>(new Set())
   const [search, setSearch] = useState('')
@@ -47,6 +50,7 @@ export default function SheetManager({ theme, setTheme, done, notify, close }: D
   const [seq, setSeq] = useState({ start: '1', step: '1', pad: '0' })
   const [ignoreCase, setIgnoreCase] = useState(false)
   const [result, setResult] = useState('')
+  const [receipt, setReceipt] = useState<RenumberReceipt[]>([])
   // Create / Duplicate / Parameter / Revisions state
   const [createRows, setCreateRows] = useState([{ number: 'A-104', name: 'Site Plan' }, { number: 'A-502', name: 'Bathroom Interior Elevations' }])
   const [createReal, setCreateReal] = useState(true)
@@ -96,6 +100,22 @@ export default function SheetManager({ theme, setTheme, done, notify, close }: D
     }
   }
   const changes = plan.filter((item) => !item.skip && (item.number !== item.sheet.number || item.name !== item.sheet.name))
+  const canLoadSample = SAMPLE_PLANS.every((sample) => sheets.some((sheet) => sheet.id === sample.id && sheet.number === sample.number))
+  const loadSample = (scenario: SampleRule) => {
+    setSection('Renumber / Rename')
+    setSearch('Floor Plan')
+    setKind('All sheets')
+    setTickedOnly(false)
+    setTicked(new Set((scenario === 'collision' ? SAMPLE_PLANS.slice(0, 1) : SAMPLE_PLANS).map(({ id }) => id)))
+    setName(empty)
+    setNum(scenario === 'collision' ? { ...empty, find: 'A-101', replace: 'A-102' }
+      : scenario === 'issue' ? { ...empty, find: 'A-', replace: 'GA-' } : empty)
+    setResult('')
+    rewind(scenario === 'select' ? 'collision' : scenario === 'collision' ? 'rule' : 'preview')
+    done('tick')
+    if (scenario === 'collision') done('collision')
+    if (scenario === 'issue') done('rule')
+  }
   const available = <T extends { number: string; name: string }>(rows: T[]) => {
     const taken = new Set(sheets.map((sheet) => keyOf(sheet.number)))
     return rows.filter((row) => {
@@ -127,6 +147,7 @@ export default function SheetManager({ theme, setTheme, done, notify, close }: D
   const tickShown = () => { const t = new Set(ticked); shown.forEach((s) => t.add(s.id)); setTicked(t); if (t.size >= 2) done('tick') }
   const setRule = (which: 'num' | 'name', k: keyof Rule, v: string) => {
     (which === 'num' ? setNum : setName)((r) => ({ ...r, [k]: v }))
+    rewind('preview')
     if (v) done('rule')
   }
 
@@ -156,6 +177,9 @@ export default function SheetManager({ theme, setTheme, done, notify, close }: D
       const byId = new Map(changes.map((p) => [p.sheet.id, p]))
       setSheets((all) => all.map((s) => (byId.has(s.id) ? { ...s, number: byId.get(s.id)!.number, name: byId.get(s.id)!.name } : s)))
       const skipped = plan.filter((p) => p.skip)
+      setReceipt(changes.map(({ sheet, number, name: sheetName }) => ({
+        id: sheet.id, before: sheet.number, after: number, name: sheetName, revision: latestRevision(sheet), views: sheet.views,
+      })))
       setResult(`Renumbered or renamed ${changes.length} of ${plan.length} sheets${skipped.length ? ` · ${skipped.length} skipped` : ''}`)
       notify({ kind: 'success', text: `Renumbered or renamed ${changes.length} sheets. In Revit this is one Undo step.` })
       skipped.forEach((p) => notify({ kind: 'warning', text: `${p.sheet.number} skipped: ${p.skip}` }))
@@ -209,7 +233,7 @@ export default function SheetManager({ theme, setTheme, done, notify, close }: D
   const ruleBox = (which: 'num' | 'name') => {
     const r = which === 'num' ? num : name
     return (['find', 'replace', 'prefix', 'suffix'] as const).map((k) => (
-      <TextBox key={k} value={r[k]} aria-label={`${which === 'num' ? 'Number' : 'Name'} ${k}`} onChange={(e) => setRule(which, k, e.target.value)} demo={`${which}-${k}`} />
+      <TextBox key={`${which}-${k}`} value={r[k]} aria-label={`${which === 'num' ? 'Number' : 'Name'} ${k}`} onChange={(e) => setRule(which, k, e.target.value)} demo={`${which}-${k}`} />
     ))
   }
 
@@ -224,13 +248,22 @@ export default function SheetManager({ theme, setTheme, done, notify, close }: D
         <nav className="ad-nav" aria-label="Sheet Manager sections">
           <span className="ad-label" style={{ padding: '2px 10px 8px' }}>Tools</span>
           {SECTIONS.map(([s]) => (
-            <button key={s} className={s === section ? 'on' : ''} data-demo={`nav:${s}`} onClick={() => { setSection(s); if (s === 'Renumber / Rename') done('section') }}>{s}</button>
+            <button key={s} className={s === section ? 'on' : ''} data-demo={`nav:${s}`} onClick={() => setSection(s)}>{s}</button>
           ))}
         </nav>
         <div style={{ padding: '14px 18px', display: 'flex', flexDirection: 'column', gap: 10, minWidth: 0 }}>
           <div className="ad-row" style={{ justifyContent: 'space-between' }}>
             <div><div className="ad-h">{section}</div><div className="ad-note">{SECTIONS.find(([s]) => s === section)![1]}</div></div>
             <Btn sm onClick={() => notify({ kind: 'info', text: 'Read the model again (ticks are kept).' })}>Refresh</Btn>
+          </div>
+          <div className="ad-row" role="group" aria-label="Browser sample shortcuts">
+            <span className="ad-label">Sample shortcut</span>
+            <Btn sm demo="sheet-sample" disabled={!canLoadSample} onClick={() => loadSample('select')}>Load the two floor plans</Btn>
+            {section === 'Renumber / Rename' && <>
+              <Btn sm demo="sheet-collision" disabled={!canLoadSample} onClick={() => loadSample('collision')}>Try occupied number</Btn>
+              <Btn sm demo="sheet-issue" disabled={!canLoadSample} onClick={() => loadSample('issue')}>Use GA issue numbering</Btn>
+            </>}
+            {!canLoadSample && <span className="ad-note">Reset restores the original sample numbers.</span>}
           </div>
           <div className="ad-row">
             <SearchBox value={search} onChange={setSearch} placeholder="Search sheet number, name, title block or revision..." width="min(300px, 100%)" demo="search" />
@@ -282,20 +315,33 @@ export default function SheetManager({ theme, setTheme, done, notify, close }: D
                 <span style={{ gridColumn: 'span 2' }}><Check label="Ignore case when finding" checked={ignoreCase} onChange={setIgnoreCase} /></span>
                 <span className="ad-note" style={{ gridColumn: '1 / -1' }}>Tokens for Replace, Prefix and Suffix: {'{Number} {Name} {Revision} {Seq}'}. A number already in use is skipped. One Undo reverses the whole run.</span>
               </div>
-              <div style={{ display: 'flex', flexDirection: 'column', gap: 6, minWidth: 0 }}>
+              <div style={{ display: 'flex', flexDirection: 'column', gap: 6, minWidth: 0 }} data-demo="preview">
                 <span className="ad-label">Preview</span>
-                <div className="ad-list" style={{ maxHeight: 200 }} data-demo="preview">
+                <div className="ad-list" style={{ maxHeight: 200 }} aria-label="Sample numbering preview">
                   {plan.length === 0 && <span className="li">Tick sheets to see the planned numbers and names.</span>}
                   {plan.map((p) => (
-                    <span key={p.sheet.id} className={`li ${p.skip ? 'err' : p.number !== p.sheet.number || p.name !== p.sheet.name ? '' : ''}`}>
+                    <span key={p.sheet.id} className={`li ${p.skip ? 'err' : ''}`}>
                       {p.skip ? <>✕ {p.sheet.number}: skipped, {p.skip}</> : p.number !== p.sheet.number || p.name !== p.sheet.name
                         ? <><b>{p.sheet.number}</b> → <b>{p.number}</b>{p.name !== p.sheet.name && <> · {p.name}</>}</>
                         : <>{p.sheet.number}: no change</>}
                     </span>
                   ))}
                 </div>
-                <Btn sm disabled={!plan.length} onClick={() => done('preview')}>Mark preview reviewed</Btn>
+                <Btn sm disabled={!plan.length} onClick={() => {
+                  if (plan.some(({ skip }) => skip)) done('collision')
+                  if (changes.length) done('preview')
+                }}>Mark preview reviewed</Btn>
               </div>
+            </div>
+          )}
+          {section === 'Renumber / Rename' && receipt.length > 0 && (
+            <div className="ad-result" role="status" aria-label="Last sample renumber">
+              <strong>Last sample renumber · {receipt.length} sheets changed</strong>
+              <ul style={{ marginBlock: 6, paddingInlineStart: 18 }}>
+                {receipt.map(({ id, before, after, name: sheetName, revision, views }) => (
+                  <li key={id}>{before} → <b>{after}</b> · {sheetName} · {revision} · {views} views</li>
+                ))}
+              </ul>
             </div>
           )}
 

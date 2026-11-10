@@ -19,6 +19,8 @@ open a model or call any service.
 
 The AT-01 Sample Residence project board links four demos using fictional rooms, sheets and warning groups. Each demo starts with independent sample state. Sample reports are generated in the browser.
 
+The Home page includes an attributed roof perspective and schematic plan exported from Autodesk's Snowdon Towers sample in Revit 2024. Those views are separate from the AT-01 fixtures. The I3D chair is a desktop result preview.
+
 ## Stack
 
 Vite + React + TypeScript, static output for GitHub Pages. No backend.

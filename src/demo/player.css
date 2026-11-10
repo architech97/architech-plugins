@@ -101,20 +101,20 @@
 }
 
 .player {
-  --bg: #20221c;
-  --panel: #292c23;
-  --panel-2: #373a2f;
-  --line: #484b3d;
-  --line-strong: #6c6d5e;
-  --text: #f5efe2;
-  --text-2: #ddd5c6;
-  --muted: #b9b0a0;
-  --signal: #dfb882;
+  --bg: #121315;
+  --panel: #1b1c1f;
+  --panel-2: #272c34;
+  --line: #3b4049;
+  --line-strong: #696f7e;
+  --text: #f1efea;
+  --text-2: #d9d9df;
+  --muted: #b5b9c5;
+  --signal: #7b9be6;
   --cyan: var(--signal);
-  --cyan-2: #edcda0;
-  --blue: #b08955;
-  --blue-2: #c49c67;
-  --ink-on-accent: #211b13;
+  --cyan-2: #b3c5f2;
+  --blue: #537abf;
+  --blue-2: #8ba7e8;
+  --ink-on-accent: #121315;
   --ok: #a4d4a3;
   --warn: #efd095;
   --bad: #f8b1a4;
@@ -127,8 +127,8 @@
 }
 .project-workspace .player { border: 0; padding: 0; }
 .player .steps-panel, .player .player-quick-guide { background: var(--panel); }
-.player .rp-btn { background: #dfb88220; box-shadow: inset 0 0 0 1px #dfb88270; }
-.player .step-list li.cur { background: #dfb8821a; box-shadow: inset 0 0 0 1px #dfb88265; }
+.player .rp-btn { background: #7b9be620; box-shadow: inset 0 0 0 1px #7b9be670; }
+.player .step-list li.cur { background: #7b9be61a; box-shadow: inset 0 0 0 1px #7b9be665; }
 .player .toast, .player .loading, .player .reopen { background: var(--bg); }
 .player .steps-complete { background: #a4d4a317; border-color: #a4d4a350; }
 .player .demo-focus { animation-iteration-count: 2; }
