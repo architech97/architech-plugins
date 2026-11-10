@@ -18,23 +18,33 @@ export function DemoPlayer({ demo, compact = false }: { demo: DemoDefinition; co
   const [log, setLog] = useState<LogEntry[]>([])
   const stage = useRef<HTMLDivElement>(null)
   const seq = useRef(0)
+  const toastTimers = useRef(new Set<number>())
+  const clearToastTimers = useCallback(() => {
+    toastTimers.current.forEach((timer) => window.clearTimeout(timer))
+    toastTimers.current.clear()
+  }, [])
+  useEffect(() => clearToastTimers, [clearToastTimers])
 
   const current = demo.steps.find((s) => !doneIds.includes(s.id))
   const progress = Math.round((doneIds.length / demo.steps.length) * 100)
 
   const done = useCallback((id: string) => {
-    setDoneIds((d) => (d.includes(id) ? d : [...d, id]))
-  }, [])
+    if (demo.steps.some((step) => step.id === id)) setDoneIds((d) => (d.includes(id) ? d : [...d, id]))
+  }, [demo.steps])
   const notify = useCallback((n: DemoNotice) => {
     const e = { ...n, id: ++seq.current, at: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', second: '2-digit' }) }
     setToasts((t) => [...t.slice(-2), e])
     setLog((l) => [e, ...l].slice(0, 40))
-    window.setTimeout(() => setToasts((t) => t.filter((x) => x.id !== e.id)), 4200)
+    const timer = window.setTimeout(() => {
+      toastTimers.current.delete(timer)
+      setToasts((t) => t.filter((x) => x.id !== e.id))
+    }, 4200)
+    toastTimers.current.add(timer)
   }, [])
-  const reset = () => { setRun((r) => r + 1); setDoneIds([]); setLog([]); setToasts([]); setClosed(false) }
+  const reset = () => { clearToastTimers(); setRun((r) => r + 1); setDoneIds([]); setLog([]); setToasts([]); setClosed(false) }
 
   // Highlight the control for the current step.
-  // Re-applied on an interval: the dialog loads on demand and re-renders on its own.
+  // Re-apply when a lazily loaded control or its guide target changes.
   useEffect(() => {
     const root = stage.current
     if (!root) return
@@ -45,46 +55,47 @@ export function DemoPlayer({ demo, compact = false }: { demo: DemoDefinition; co
       el?.classList.add('demo-focus')
     }
     apply()
-    const t = window.setInterval(apply, 400)
-    return () => { window.clearInterval(t); root.querySelectorAll('.demo-focus').forEach((x) => x.classList.remove('demo-focus')) }
+    const observer = new MutationObserver(apply)
+    observer.observe(root, { subtree: true, childList: true, attributes: true, attributeFilter: ['data-demo'] })
+    return () => { observer.disconnect(); root.querySelectorAll('.demo-focus').forEach((x) => x.classList.remove('demo-focus')) }
   }, [current?.target, guided, closed, run])
 
   return (
     <div className={`player ${compact ? 'compact' : ''}`}>
       <div className="player-top">
         <div className="player-title">
-          <span className="badge-sim"><AlertTriangle size={13} /> Interactive simulation · no Revit model is opened or changed</span>
-          <p className="small-screen-hint">Tip: the dialogs are full desktop windows, so they are easiest to use on a larger screen.</p>
+          <span className="badge-sim"><Info size={14} /> Browser simulation · sample data</span>
+          {demo.frame !== 'app' && <p className="small-screen-hint">Desktop dialogs are easier to use on a larger screen.</p>}
         </div>
         <div className="player-actions">
           <div className="seg" role="group" aria-label="Mode">
-            <button className={guided ? 'on' : ''} onClick={() => setGuided(true)}><Compass size={14} style={{ marginRight: 6, verticalAlign: -2 }} />Guided</button>
-            <button className={!guided ? 'on' : ''} onClick={() => setGuided(false)}><Eye size={14} style={{ marginRight: 6, verticalAlign: -2 }} />Explore</button>
+            <button aria-pressed={guided} className={guided ? 'on' : ''} onClick={() => setGuided(true)}><Compass size={14} style={{ marginRight: 6, verticalAlign: -2 }} />Guided</button>
+            <button aria-pressed={!guided} className={!guided ? 'on' : ''} onClick={() => setGuided(false)}><Eye size={14} style={{ marginRight: 6, verticalAlign: -2 }} />Explore</button>
           </div>
           <button className="btn btn-ghost btn-sm" onClick={reset}><RotateCcw size={15} /> Reset</button>
         </div>
       </div>
 
       <div className="player-main">
-        <div className="revit" aria-label="Simulated Revit window">
+        <div className={demo.frame === 'app' ? 'revit app-frame' : 'revit'} aria-label={demo.frame === 'app' ? demo.ribbon.button + ' simulation' : 'Simulated Revit window'}>
           <div className="revit-bar">
             <span className="revit-dots"><i /><i /><i /></span>
-            <span className="revit-file">Autodesk Revit 2024 · Sample Residence.rvt <em>(sample data)</em></span>
+            <span className="revit-file">{demo.frame === 'app' ? <>{demo.ribbon.button} <em>(simulated)</em></> : <>Autodesk Revit 2024 · Sample Residence.rvt <em>(sample data)</em></>}</span>
           </div>
-          <div className="revit-ribbon">
-            {(['Arch Folio', 'Arch Forge', 'Arch Sentinel'] as const).map((t) => (
-              <span key={t} className={`rt ${t === demo.ribbon.tab ? 'on' : ''}`}>{t}</span>
-            ))}
-          </div>
-          <div className="revit-panel">
-            <span className="rp-btn on"><span className="rp-icon" />{demo.ribbon.button}</span>
-            <span className="rp-name">{demo.ribbon.panel}</span>
-          </div>
+          {demo.frame !== 'app' && <>
+            <div className="revit-ribbon">
+              {['Arch Folio', 'Arch Forge', 'Arch Sentinel'].map((x) => <span key={x} className={`rt ${x === demo.ribbon.tab ? 'on' : ''}`}>{x}</span>)}
+            </div>
+            <div className="revit-panel">
+              <span className="rp-btn on"><span className="rp-icon" />{demo.ribbon.button}</span>
+              <span className="rp-name">{demo.ribbon.panel}</span>
+            </div>
+          </>}
           <div className="revit-canvas" ref={stage}>
-            <svg className="revit-plan" viewBox="0 0 400 260" aria-hidden="true">
+            {demo.frame !== 'app' && <svg className="revit-plan" viewBox="0 0 400 260" aria-hidden="true">
               <g fill="none" stroke="currentColor" strokeWidth="2"><path d="M30 30h340v200H30z" /><path d="M30 120h150M180 30v200M260 120h110M260 120v110" /></g>
               <g fill="none" stroke="currentColor" strokeWidth="1" strokeDasharray="4 4" opacity=".6"><path d="M60 60h90v40H60zM210 50h130v50H210z" /></g>
-            </svg>
+            </svg>}
             <div className="dialog-host" style={{ maxWidth: demo.width }}>
               {closed ? (
                 <div className="reopen">
@@ -113,13 +124,13 @@ export function DemoPlayer({ demo, compact = false }: { demo: DemoDefinition; co
             <span className="eyebrow">Guided workflow</span>
             <span className="mono muted" style={{ fontSize: 12 }}>{doneIds.length}/{demo.steps.length}</span>
           </div>
-          <div className="steps-progress"><i style={{ width: `${progress}%` }} /></div>
+          <div className="steps-progress" role="progressbar" aria-label="Guided workflow progress" aria-valuenow={progress}><i style={{ width: `${progress}%` }} /></div>
           <ol className="step-list">
             {demo.steps.map((s, i) => {
               const isDone = doneIds.includes(s.id)
               const isCur = current?.id === s.id
               return (
-                <li key={s.id} className={`${isDone ? 'done' : ''} ${isCur ? 'cur' : ''}`}>
+                <li key={s.id} aria-current={isCur ? 'step' : undefined} className={`${isDone ? 'done' : ''} ${isCur ? 'cur' : ''}`}>
                   {isDone ? <CheckCircle2 size={18} /> : <Circle size={18} />}
                   <div>
                     <b>{i + 1}. {s.title}</b>
@@ -132,7 +143,7 @@ export function DemoPlayer({ demo, compact = false }: { demo: DemoDefinition; co
           {!current && <div className="steps-complete">Workflow complete. Reset to run it again, or switch to Explore and try other options.</div>}
           <div className="log">
             <span className="eyebrow" style={{ fontSize: 10.5 }}>What happened (simulated)</span>
-            {log.length === 0 && <p className="muted" style={{ fontSize: 13, marginTop: 8 }}>Actions you take in the dialog appear here.</p>}
+            {log.length === 0 && <p className="muted" style={{ fontSize: 13, marginTop: 8 }}>Actions you take in the simulation appear here.</p>}
             <ul>
               {log.map((l) => <li key={l.id} className={l.kind}><span className="mono">{l.at}</span>{l.text}</li>)}
             </ul>

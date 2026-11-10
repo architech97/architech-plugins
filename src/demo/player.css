@@ -61,3 +61,23 @@
 @media (max-width: 640px) { .revit-canvas { min-height: 0; padding: 8px; } .revit-plan { display: none; } .revit-panel .rp-name { display: none; } }
 .small-screen-hint { display: none; font-size: 13px; color: var(--text-2); }
 @media (max-width: 640px) { .small-screen-hint { display: block; } }
+
+/* generated replicas: dialog switcher */
+.gen-windows { display: flex; flex-wrap: wrap; gap: 6px; margin-bottom: 10px; }
+.gen-windows button { min-height: 30px; padding: 0 12px; border-radius: 6px; border: 1px solid #3a3f49; background: #23262c; color: #b9bfcb; font: 500 12.5px/1 var(--font-body); cursor: pointer; }
+.gen-windows button.on { color: #fff; border-color: var(--signal); background: #2b2f37; }
+.ad.gen { border-radius: 10px; }
+.ad.gen .ad-check, .ad.gen .ad-radio { font-size: 12.5px; }
+
+/* Application simulations and command fixtures */
+.player .badge-sim { color: var(--text-2); border-color: var(--line-strong); }
+.player .app-frame { border-radius: 8px; background: var(--panel); }
+.app-frame .revit-canvas { padding: clamp(8px, 2vw, 22px); background: var(--panel); min-height: 0; }
+.flow-command-input { display: grid; gap: 6px; }
+.flow-command-results { margin: 0; border: 1px solid var(--d-border); border-radius: 5px; overflow: hidden; }
+.flow-command-results > div { display: grid; grid-template-columns: minmax(0, .42fr) minmax(0, .58fr); gap: 12px; padding: 8px 12px; background: var(--d-input); }
+.flow-command-results > div + div { border-top: 1px solid var(--d-border); }
+.flow-command-results dt { font-weight: 600; color: var(--d-text); }
+.flow-command-results dd { margin: 0; color: var(--d-text-2); }
+
+@media (prefers-reduced-motion: reduce) { .steps-progress i { transition: none; } }

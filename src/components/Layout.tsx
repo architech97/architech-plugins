@@ -13,13 +13,19 @@ const NAV = [
 
 export function Layout() {
   const [open, setOpen] = useState(false)
-  const { pathname } = useLocation()
-  useEffect(() => { setOpen(false); window.scrollTo({ top: 0 }) }, [pathname])
+  const { pathname, hash } = useLocation()
+  useEffect(() => {
+    setOpen(false)
+    window.scrollTo({ top: 0, behavior: 'instant' })
+  }, [pathname])
+  useEffect(() => {
+    if (hash) document.getElementById(hash.slice(1))?.scrollIntoView()
+  }, [pathname, hash])
   return (
     <>
       <div className="bg-grid" aria-hidden="true" />
       <a className="sr-only" href="#main">Skip to content</a>
-      <div className="staging-strip">Staging preview · not yet live on architechdesign.in · interactive demos are browser simulations</div>
+      <div className="staging-strip">Staging preview · Browser demos use sample data</div>
       <header className="site-header">
         <div className="wrap bar">
           <Link to="/" aria-label="ArchiTECH Automation home"><Logo /></Link>
@@ -76,7 +82,7 @@ function Footer() {
         </div>
         <div className="footer-legal">
           <span>© {new Date().getFullYear()} ArchiTECH · Navneet Singh. Autodesk, Revit and AutoCAD are trademarks of Autodesk, Inc.; Rhino, SketchUp and Blender are trademarks of their owners.</span>
-          <span>Demos are simulations in your browser; they never run Revit or access a model.</span>
+          <span>Demos run in your browser using sample data.</span>
         </div>
       </div>
     </footer>

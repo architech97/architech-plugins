@@ -28,7 +28,11 @@ export interface DemoDefinition {
   id: string
   productSlug: string
   /** Tab / panel the button lives on, for the simulated ribbon. */
-  ribbon: { tab: 'Arch Folio' | 'Arch Forge' | 'Arch Sentinel'; panel: string; button: string }
+  ribbon: { tab: string; panel: string; button: string }
+  /** 'app' shows a plain application window instead of the simulated Revit ribbon. */
+  frame?: 'revit' | 'app'
+  /** How the demo was made: rebuilt by hand, generated from the dialog layout, or a workflow simulation. */
+  kind: 'crafted' | 'replica' | 'workflow'
   title: string
   summary: string
   /** Facts the simulation is based on (shown under the demo). */

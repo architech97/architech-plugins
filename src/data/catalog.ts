@@ -23,13 +23,13 @@ const tools: Product[] = (generated as Omit<Product, 'status'>[]).map((t) => ({
   tagline: TAGLINES[t.key] ?? t.tagline,
   status: 'available',
   problem: PROBLEMS[t.key],
-  demo: DEMO_BY_KEY[t.key],
+  demo: DEMO_BY_KEY[t.key] ?? t.slug,   // every tool has a live demo: hand-built, or generated from its dialog
   platform: 'Windows · Autodesk Revit',
 }))
 
 const SUITE_ORDER = ['folio', 'forge', 'sentinel', 'i3d', 'ai']
 
-export const PRODUCTS: Product[] = [...tools, ...EXTRAS].sort(
+export const PRODUCTS: Product[] = [...tools, ...EXTRAS.map((e) => ({ ...e, demo: e.slug }))].sort(
   (a, b) => SUITE_ORDER.indexOf(a.suite) - SUITE_ORDER.indexOf(b.suite) || a.panel.localeCompare(b.panel) || a.name.localeCompare(b.name),
 )
 
@@ -40,7 +40,8 @@ export const STATS = {
   products: PRODUCTS.length,
   revitTools: tools.length,
   dialogs: tools.reduce((n, t) => n + t.dialogs.length, 0),
-  demos: Object.keys(DEMO_BY_KEY).length,
+  demos: tools.length + EXTRAS.length,
+  crafted: Object.keys(DEMO_BY_KEY).length,
   softwares: new Set(PRODUCTS.flatMap((p) => p.software)).size,
 }
 

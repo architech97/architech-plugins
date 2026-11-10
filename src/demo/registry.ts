@@ -1,8 +1,14 @@
 import type { DemoDefinition } from './types'
+import type { Product } from '../data/types'
+import { PRODUCTS } from '../data/catalog'
+import { LAYOUTS, generatedSteps } from './generatedRegistry'
+import { connectorDemos } from './connectorRegistry'
+import { studioDemos } from './studioRegistry'
+
 
 // Every interactive demo. To add one: write src/demo/demos/<Name>.tsx (a component that takes
 // DemoContext), add an entry here, and map the tool key to its id in src/data/catalog.ts.
-export const DEMOS: DemoDefinition[] = [
+const CRAFTED: Omit<DemoDefinition, 'kind'>[] = [
   {
     id: 'sheet-manager', productSlug: 'sheet-manager', width: 1060,
     ribbon: { tab: 'Arch Folio', panel: 'Sheets', button: 'Sheet Manager' },
@@ -91,4 +97,55 @@ export const DEMOS: DemoDefinition[] = [
   },
 ]
 
-export const demoById = (id: string) => DEMOS.find((d) => d.id === id)
+
+const SUITE_TAB: Record<string, string> = { folio: 'Arch Folio', forge: 'Arch Forge', sentinel: 'Arch Sentinel' }
+
+function defineDemo(product: Product): DemoDefinition {
+  const crafted = CRAFTED.find((entry) => entry.productSlug === product.slug)
+  if (crafted) return { ...crafted, kind: 'crafted' }
+
+  const ribbon = { tab: SUITE_TAB[product.suite] ?? product.software[0] ?? product.name, panel: product.panel, button: product.name }
+  const base = { id: product.demo ?? product.slug, productSlug: product.slug, ribbon, summary: product.tagline }
+  const studio = studioDemos[product.slug] ?? connectorDemos[product.slug]
+  if (studio) return { ...base, kind: 'workflow', width: 1020, frame: 'app', ...studio }
+
+  const layouts = LAYOUTS[product.slug]
+  if (layouts?.length) {
+    return {
+      ...base,
+      kind: 'replica',
+      width: Math.min(1180, layouts[0].w),
+      title: product.name,
+      basis: [
+        `The explorer reconstructs the ${product.name} dialog from exported layout positions, labels and tooltips.`,
+        'Controls use sample values, and actions simulate what the tool would do on a model.',
+      ],
+      steps: generatedSteps(product.slug),
+      load: async () => ({ default: (await import('./GeneratedDemo')).makeGenerated(product.slug, product.tagline) }),
+    }
+  }
+
+  return {
+    ...base,
+    kind: 'workflow',
+    width: 660,
+    title: product.name,
+    basis: [
+      `This sample scenario follows the command documented by ${product.name}.`,
+      'The browser shows illustrative inputs and outcomes for Sample Residence.',
+    ],
+    steps: [
+      { id: 'configure', title: 'Choose a sample input', hint: 'Pick an option to see how it affects the outcome.', target: 'flow-choice' },
+      { id: 'run', title: 'Run the command', hint: 'Apply the command to the selected sample input.', target: 'flow-run' },
+      { id: 'review', title: 'Review the result', hint: 'Inspect the sample results and mark them reviewed.', target: 'flow-review' },
+    ],
+    load: async () => ({ default: (await import('./FlowDemo')).makeCommand(product) }),
+  }
+}
+
+export const DEMOS = PRODUCTS.map(defineDemo)
+const byId = new Map(DEMOS.map((demo) => [demo.id, demo]))
+const byProduct = new Map(DEMOS.map((demo) => [demo.productSlug, demo]))
+
+export const demoById = (id: string) => byId.get(id)
+export const demoForProduct = (slug: string) => byProduct.get(slug)

@@ -27,7 +27,7 @@ export default function Home() {
               <div><b>{STATS.products}</b><span>products in the catalogue</span></div>
               <div><b>{STATS.revitTools}</b><span>Revit tools in three suites</span></div>
               <div><b>{STATS.dialogs}</b><span>real dialogs, Dark and Light</span></div>
-              <div><b>{STATS.demos}</b><span>interactive dialog demos</span></div>
+              <div><b>{STATS.demos}</b><span>interactive demos</span></div>
             </div>
           </div>
           <HeroVisual />
@@ -61,12 +61,12 @@ export default function Home() {
       <section className="section" id="live-demo">
         <div className="wrap-wide">
           <Reveal className="section-head">
-            <div><span className="eyebrow">Interactive demo</span><h2>Use the real dialog, right here.</h2></div>
-            <p className="lead">These are browser replicas of the shipping dialogs, built from their actual layouts, labels and rules, with sample BIM data. Follow the guided steps or explore freely. Nothing runs in Revit.</p>
+            <div><span className="eyebrow">Interactive demo</span><h2>Try Sheet Manager in your browser.</h2></div>
+            <p className="lead">Work through a sample drawing set in a browser recreation of the Sheet Manager dialog. The demo library also includes the other Revit tools, I3D, Assistant and the MCP connectors.</p>
           </Reveal>
           <Reveal><DemoPlayer demo={demoById('sheet-manager')!} /></Reveal>
           <div className="grid-3" style={{ marginTop: 28 }}>
-            {DEMOS.filter((d) => d.id !== 'sheet-manager').map((d, i) => (
+            {DEMOS.filter((d) => d.kind === 'crafted' && d.id !== 'sheet-manager').map((d, i) => (
               <Reveal key={d.id} delay={i * 50}>
                 <Link to={`/demos/${d.id}`} className="glass suite-card" style={{ ['--suite' as string]: 'var(--cyan)' }}>
                   <span className="chip chip-dot" style={{ alignSelf: 'flex-start' }}>{d.ribbon.tab} · {d.ribbon.panel}</span>
@@ -77,6 +77,7 @@ export default function Home() {
               </Reveal>
             ))}
           </div>
+          <Link className="btn btn-ghost" style={{ marginTop: 26 }} to="/demos">Browse all demos <ArrowRight size={16} /></Link>
         </div>
       </section>
 

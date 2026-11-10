@@ -1,0 +1,901 @@
+{
+ "auto-dimension": [
+  {
+   "file": "demo-layouts/auto-dimension/autodimensionwindow.json",
+   "title": "Auto Dimension",
+   "w": 1106,
+   "h": 746,
+   "tabs": [],
+   "options": 22,
+   "grids": 0,
+   "primary": "Dimension",
+   "win": "autodimensionwindow"
+  }
+ ],
+ "detail-view": [
+  {
+   "file": "demo-layouts/detail-view/detailviewwindow.json",
+   "title": "Detail View",
+   "w": 1106,
+   "h": 746,
+   "tabs": [
+    "Step 1",
+    "Step 2",
+    "Step 3",
+    "Step 4",
+    "Step 5",
+    "Step 6"
+   ],
+   "options": 22,
+   "grids": 0,
+   "primary": "Create detail views",
+   "win": "detailviewwindow"
+  }
+ ],
+ "excel-to-schedule": [
+  {
+   "file": "demo-layouts/excel-to-schedule/exceltoschedulewindow.json",
+   "title": "Excel To Schedule",
+   "w": 1026,
+   "h": 666,
+   "tabs": [],
+   "options": 3,
+   "grids": 2,
+   "primary": null,
+   "win": "exceltoschedulewindow"
+  }
+ ],
+ "graphic-overviews": [
+  {
+   "file": "demo-layouts/graphic-overviews/graphicoverviewswindow.json",
+   "title": "Graphic Overviews",
+   "w": 1106,
+   "h": 746,
+   "tabs": [
+    "Overviews",
+    "Lines",
+    "Regions",
+    "Materials"
+   ],
+   "options": 11,
+   "grids": 0,
+   "primary": "Create",
+   "win": "graphicoverviewswindow"
+  }
+ ],
+ "make-pattern": [
+  {
+   "file": "demo-layouts/make-pattern/makepatternwindow.json",
+   "title": "Make Pattern",
+   "w": 546,
+   "h": 686,
+   "tabs": [],
+   "options": 8,
+   "grids": 0,
+   "primary": "Create Pattern",
+   "win": "makepatternwindow"
+  }
+ ],
+ "manage-dimension": [
+  {
+   "file": "demo-layouts/manage-dimension/managedimensionwindow.json",
+   "title": "Manage Dimension",
+   "w": 966,
+   "h": 746,
+   "tabs": [],
+   "options": 11,
+   "grids": 0,
+   "primary": "Start",
+   "win": "managedimensionwindow"
+  },
+  {
+   "file": "demo-layouts/manage-dimension/ticklistwindow.json",
+   "title": "Tick list",
+   "w": 626,
+   "h": 606,
+   "tabs": [],
+   "options": 0,
+   "grids": 0,
+   "primary": "OK",
+   "win": "ticklistwindow"
+  }
+ ],
+ "manage-text": [
+  {
+   "file": "demo-layouts/manage-text/managetextwindow.json",
+   "title": "Manage Text",
+   "w": 1106,
+   "h": 846,
+   "tabs": [
+    "Transform",
+    "Merge & Align",
+    "Text Types"
+   ],
+   "options": 32,
+   "grids": 1,
+   "primary": "Merge / Re-space",
+   "win": "managetextwindow"
+  }
+ ],
+ "reorder-pro": [
+  {
+   "file": "demo-layouts/reorder-pro/reorderprowindow.json",
+   "title": "Reorder Pro",
+   "w": 1166,
+   "h": 746,
+   "tabs": [],
+   "options": 16,
+   "grids": 1,
+   "primary": "Apply",
+   "win": "reorderprowindow"
+  }
+ ],
+ "room-to-view": [
+  {
+   "file": "demo-layouts/room-to-view/roomtoviewwindow.json",
+   "title": "Room To View",
+   "w": 1166,
+   "h": 806,
+   "tabs": [
+    "",
+    "Floor Plan",
+    "Ceiling Plan",
+    "3D View",
+    "Elevations",
+    "Masking",
+    "Place on Sheet"
+   ],
+   "options": 28,
+   "grids": 1,
+   "primary": null,
+   "win": "roomtoviewwindow"
+  }
+ ],
+ "sheet-export": [
+  {
+   "file": "demo-layouts/sheet-export/archsheetexportwindow.json",
+   "title": "Sheet Export",
+   "w": 1400,
+   "h": 900,
+   "tabs": [
+    "1. Selection",
+    "2. Format",
+    "3. Create"
+   ],
+   "options": 25,
+   "grids": 0,
+   "primary": "Sheets",
+   "win": "archsheetexportwindow"
+  },
+  {
+   "file": "demo-layouts/sheet-export/customfilenamedialog.json",
+   "title": "Custom file name",
+   "w": 940,
+   "h": 660,
+   "tabs": [],
+   "options": 1,
+   "grids": 1,
+   "primary": "OK",
+   "win": "customfilenamedialog"
+  },
+  {
+   "file": "demo-layouts/sheet-export/publishsetsdialog.json",
+   "title": "Publish sets",
+   "w": 780,
+   "h": 580,
+   "tabs": [],
+   "options": 0,
+   "grids": 0,
+   "primary": "Apply Set",
+   "win": "publishsetsdialog"
+  },
+  {
+   "file": "demo-layouts/sheet-export/reorderdialog.json",
+   "title": "Reorder",
+   "w": 600,
+   "h": 560,
+   "tabs": [],
+   "options": 0,
+   "grids": 0,
+   "primary": "OK",
+   "win": "reorderdialog"
+  },
+  {
+   "file": "demo-layouts/sheet-export/exportprogresswindow.json",
+   "title": "Export progress",
+   "w": 480,
+   "h": 255.2,
+   "tabs": [],
+   "options": 0,
+   "grids": 0,
+   "primary": "Stop  (Esc)",
+   "win": "exportprogresswindow"
+  },
+  {
+   "file": "demo-layouts/sheet-export/promptdialog.json",
+   "title": "Prompt",
+   "w": 480,
+   "h": 221.2,
+   "tabs": [],
+   "options": 0,
+   "grids": 0,
+   "primary": "OK",
+   "win": "promptdialog"
+  }
+ ],
+ "sheet-manager": [
+  {
+   "file": "demo-layouts/sheet-manager/sheetmanagerwindow.json",
+   "title": "Sheet Manager",
+   "w": 1306,
+   "h": 866,
+   "tabs": [
+    "Create",
+    "Duplicate",
+    "Renumber / Rename",
+    "Set parameter",
+    "Revisions",
+    "Place on sheet"
+   ],
+   "options": 17,
+   "grids": 2,
+   "primary": null,
+   "win": "sheetmanagerwindow"
+  }
+ ],
+ "spell-check": [
+  {
+   "file": "demo-layouts/spell-check/spellcheckerwindow.json",
+   "title": "Spell Check",
+   "w": 1026,
+   "h": 986,
+   "tabs": [],
+   "options": 11,
+   "grids": 0,
+   "primary": null,
+   "win": "spellcheckerwindow"
+  }
+ ],
+ "template-manager": [
+  {
+   "file": "demo-layouts/template-manager/templatemanagerwindow.json",
+   "title": "Template Manager",
+   "w": 1166,
+   "h": 766,
+   "tabs": [],
+   "options": 0,
+   "grids": 0,
+   "primary": null,
+   "win": "templatemanagerwindow"
+  },
+  {
+   "file": "demo-layouts/template-manager/templatetransferwindow.json",
+   "title": "Transfer templates",
+   "w": 946,
+   "h": 686,
+   "tabs": [
+    "Transfer View Templates",
+    "Link Settings Copier"
+   ],
+   "options": 12,
+   "grids": 0,
+   "primary": "Transfer Selected Templates",
+   "win": "templatetransferwindow"
+  },
+  {
+   "file": "demo-layouts/template-manager/importsoffwindow.json",
+   "title": "Imports Off",
+   "w": 746,
+   "h": 686,
+   "tabs": [],
+   "options": 4,
+   "grids": 0,
+   "primary": "Hide",
+   "win": "importsoffwindow"
+  },
+  {
+   "file": "demo-layouts/template-manager/filtertemplatewindow.json",
+   "title": "Transfer filters",
+   "w": 706,
+   "h": 586,
+   "tabs": [],
+   "options": 4,
+   "grids": 0,
+   "primary": null,
+   "win": "filtertemplatewindow"
+  },
+  {
+   "file": "demo-layouts/template-manager/transfervsoptionswindow.json",
+   "title": "Transfer VS / EH",
+   "w": 540,
+   "h": 438.6,
+   "tabs": [],
+   "options": 3,
+   "grids": 0,
+   "primary": null,
+   "win": "transfervsoptionswindow"
+  }
+ ],
+ "text-tag-align": [
+  {
+   "file": "demo-layouts/text-tag-align/texttagalignwindow.json",
+   "title": "Text Tag Align",
+   "w": 560,
+   "h": 378.4,
+   "tabs": [],
+   "options": 0,
+   "grids": 0,
+   "primary": null,
+   "win": "texttagalignwindow"
+  }
+ ],
+ "update-schedule": [
+  {
+   "file": "demo-layouts/update-schedule/importpreviewwindow.json",
+   "title": "Review schedule import",
+   "w": 960,
+   "h": 600,
+   "tabs": [],
+   "options": 1,
+   "grids": 2,
+   "primary": "Apply 3 change(s) + 3 column(s)",
+   "win": "importpreviewwindow"
+  }
+ ],
+ "vp-manager": [
+  {
+   "file": "demo-layouts/vp-manager/vpmanagerwindow.json",
+   "title": "VP Manager",
+   "w": 1326,
+   "h": 866,
+   "tabs": [
+    "Align",
+    "Crop",
+    "Titles & numbers",
+    "Pin & move",
+    "Place on sheet"
+   ],
+   "options": 33,
+   "grids": 1,
+   "primary": null,
+   "win": "vpmanagerwindow"
+  }
+ ],
+ "view-manager": [
+  {
+   "file": "demo-layouts/view-manager/viewmanagerwindow.json",
+   "title": "View Manager",
+   "w": 1306,
+   "h": 866,
+   "tabs": [
+    "Convert",
+    "Manage",
+    "Hide in Views"
+   ],
+   "options": 21,
+   "grids": 1,
+   "primary": null,
+   "win": "viewmanagerwindow"
+  },
+  {
+   "file": "demo-layouts/view-manager/sourceviewpicker.json",
+   "title": "Choose the source view",
+   "w": 706,
+   "h": 586,
+   "tabs": [],
+   "options": 2,
+   "grids": 1,
+   "primary": "Use this view",
+   "win": "sourceviewpicker"
+  }
+ ],
+ "assign-room-properties": [
+  {
+   "file": "demo-layouts/assign-room-properties/roommappingwindow.json",
+   "title": "Room mappings",
+   "w": 806,
+   "h": 686,
+   "tabs": [],
+   "options": 5,
+   "grids": 0,
+   "primary": null,
+   "win": "roommappingwindow"
+  }
+ ],
+ "copy-param-from-link": [
+  {
+   "file": "demo-layouts/copy-param-from-link/roomtextcopywindow.json",
+   "title": "Copy Param from Link",
+   "w": 546,
+   "h": 316,
+   "tabs": [],
+   "options": 4,
+   "grids": 0,
+   "primary": null,
+   "win": "roomtextcopywindow"
+  }
+ ],
+ "deviation-inspector": [
+  {
+   "file": "demo-layouts/deviation-inspector/deviationinspectorwindow.json",
+   "title": "Deviation Inspector",
+   "w": 1000,
+   "h": 640,
+   "tabs": [],
+   "options": 1,
+   "grids": 1,
+   "primary": "Analyze",
+   "win": "deviationinspectorwindow"
+  }
+ ],
+ "fr-to-finishes": [
+  {
+   "file": "demo-layouts/fr-to-finishes/frtofinisheswindow.json",
+   "title": "FR to Finishes",
+   "w": 700,
+   "h": 655,
+   "tabs": [],
+   "options": 4,
+   "grids": 0,
+   "primary": "Convert",
+   "win": "frtofinisheswindow"
+  }
+ ],
+ "family-param-transfer": [
+  {
+   "file": "demo-layouts/family-param-transfer/familyparamtransferwindow.json",
+   "title": "Family Param Transfer",
+   "w": 746,
+   "h": 746,
+   "tabs": [],
+   "options": 4,
+   "grids": 1,
+   "primary": "Transfer",
+   "win": "familyparamtransferwindow"
+  }
+ ],
+ "match-opening": [
+  {
+   "file": "demo-layouts/match-opening/matchopeningwindow.json",
+   "title": "Match Opening",
+   "w": 1206,
+   "h": 706,
+   "tabs": [],
+   "options": 2,
+   "grids": 1,
+   "primary": null,
+   "win": "matchopeningwindow"
+  }
+ ],
+ "one-parameter": [
+  {
+   "file": "demo-layouts/one-parameter/oneparameterwindow.json",
+   "title": "One Parameter",
+   "w": 1120,
+   "h": 680,
+   "tabs": [],
+   "options": 3,
+   "grids": 1,
+   "primary": "Apply Changes",
+   "win": "oneparameterwindow"
+  }
+ ],
+ "parameter-manager": [
+  {
+   "file": "demo-layouts/parameter-manager/parametermanagerwindow.json",
+   "title": "Parameter Manager",
+   "w": 1240,
+   "h": 660,
+   "tabs": [
+    "Parameters",
+    "Categories",
+    "Transfer",
+    "Families"
+   ],
+   "options": 5,
+   "grids": 1,
+   "primary": "Apply",
+   "win": "parametermanagerwindow"
+  }
+ ],
+ "parameter-mapping": [
+  {
+   "file": "demo-layouts/parameter-mapping/parametercopywindow.json",
+   "title": "Parameter Mapping",
+   "w": 966,
+   "h": 806,
+   "tabs": [],
+   "options": 3,
+   "grids": 0,
+   "primary": null,
+   "win": "parametercopywindow"
+  }
+ ],
+ "point-cloud-slicer": [
+  {
+   "file": "demo-layouts/point-cloud-slicer/pointcloudslicerwindow.json",
+   "title": "Point Cloud Slicer",
+   "w": 806,
+   "h": 586,
+   "tabs": [],
+   "options": 2,
+   "grids": 1,
+   "primary": "Generate Slices",
+   "win": "pointcloudslicerwindow"
+  }
+ ],
+ "replace-materials": [
+  {
+   "file": "demo-layouts/replace-materials/replacematerialswindow.json",
+   "title": "Replace Materials",
+   "w": 746,
+   "h": 686,
+   "tabs": [],
+   "options": 2,
+   "grids": 0,
+   "primary": null,
+   "win": "replacematerialswindow"
+  }
+ ],
+ "room-height-adjust": [
+  {
+   "file": "demo-layouts/room-height-adjust/roomheightadjustwindow.json",
+   "title": "Room Height Adjust",
+   "w": 946,
+   "h": 586,
+   "tabs": [],
+   "options": 2,
+   "grids": 1,
+   "primary": "Adjust Heights",
+   "win": "roomheightadjustwindow"
+  }
+ ],
+ "room-level-assigner": [
+  {
+   "file": "demo-layouts/room-level-assigner/roomlevelassignerwindow.json",
+   "title": "Room Level Assigner",
+   "w": 986,
+   "h": 686,
+   "tabs": [],
+   "options": 2,
+   "grids": 1,
+   "primary": "Reassign Levels",
+   "win": "roomlevelassignerwindow"
+  }
+ ],
+ "room-to-finishes": [
+  {
+   "file": "demo-layouts/room-to-finishes/finishingwindow.json",
+   "title": "Room to Finishes",
+   "w": 886,
+   "h": 706,
+   "tabs": [],
+   "options": 5,
+   "grids": 0,
+   "primary": null,
+   "win": "finishingwindow"
+  },
+  {
+   "file": "demo-layouts/room-to-finishes/finishreviewwindow.json",
+   "title": "Review finish plan",
+   "w": 1080,
+   "h": 660,
+   "tabs": [],
+   "options": 0,
+   "grids": 1,
+   "primary": "Apply reviewed plan",
+   "win": "finishreviewwindow"
+  }
+ ],
+ "shared-param-manager": [
+  {
+   "file": "demo-layouts/shared-param-manager/sharedparamwindow.json",
+   "title": "Shared Param",
+   "w": 986,
+   "h": 626,
+   "tabs": [],
+   "options": 0,
+   "grids": 1,
+   "primary": "Save File",
+   "win": "sharedparamwindow"
+  }
+ ],
+ "compliance-guard": [
+  {
+   "file": "demo-layouts/compliance-guard/complianceguardwindow.json",
+   "title": "Compliance Guard",
+   "w": 966,
+   "h": 626,
+   "tabs": [],
+   "options": 0,
+   "grids": 1,
+   "primary": null,
+   "win": "complianceguardwindow"
+  }
+ ],
+ "duplicates-resolver": [
+  {
+   "file": "demo-layouts/duplicates-resolver/duplicateswindow.json",
+   "title": "Duplicates Resolver",
+   "w": 1226,
+   "h": 726,
+   "tabs": [],
+   "options": 0,
+   "grids": 1,
+   "primary": null,
+   "win": "duplicateswindow"
+  }
+ ],
+ "family-name-editor": [
+  {
+   "file": "demo-layouts/family-name-editor/familynameeditorwindow.json",
+   "title": "Family Name Editor",
+   "w": 1166,
+   "h": 806,
+   "tabs": [],
+   "options": 6,
+   "grids": 1,
+   "primary": null,
+   "win": "familynameeditorwindow"
+  },
+  {
+   "file": "demo-layouts/family-name-editor/bepconfigwindow.json",
+   "title": "BEP naming convention",
+   "w": 746,
+   "h": 626,
+   "tabs": [],
+   "options": 0,
+   "grids": 1,
+   "primary": "Use this convention",
+   "win": "bepconfigwindow"
+  },
+  {
+   "file": "demo-layouts/family-name-editor/findreplacewindow.json",
+   "title": "Find and replace",
+   "w": 480,
+   "h": 329.9,
+   "tabs": [],
+   "options": 0,
+   "grids": 0,
+   "primary": "Rename",
+   "win": "findreplacewindow"
+  }
+ ],
+ "family-name-synchronizer": [
+  {
+   "file": "demo-layouts/family-name-synchronizer/familynamesyncwindow.json",
+   "title": "Family Name Sync",
+   "w": 946,
+   "h": 646,
+   "tabs": [
+    "Mapped families",
+    "No Type Mark (project)",
+    "No Type Mark (container)"
+   ],
+   "options": 3,
+   "grids": 1,
+   "primary": "Rename",
+   "win": "familynamesyncwindow"
+  }
+ ],
+ "filter-usage-checker": [
+  {
+   "file": "demo-layouts/filter-usage-checker/filterusagewindow.json",
+   "title": "Filter Usage",
+   "w": 1226,
+   "h": 746,
+   "tabs": [],
+   "options": 3,
+   "grids": 1,
+   "primary": null,
+   "win": "filterusagewindow"
+  }
+ ],
+ "group-manager": [
+  {
+   "file": "demo-layouts/group-manager/groupbrowserwindow.json",
+   "title": "Group Browser",
+   "w": 1086,
+   "h": 606,
+   "tabs": [
+    "Detail groups",
+    "Model groups",
+    "Ungroup"
+   ],
+   "options": 0,
+   "grids": 1,
+   "primary": null,
+   "win": "groupbrowserwindow"
+  }
+ ],
+ "in-place-converter": [
+  {
+   "file": "demo-layouts/in-place-converter/inplaceconverterwindow.json",
+   "title": "In Place Converter",
+   "w": 966,
+   "h": 626,
+   "tabs": [],
+   "options": 0,
+   "grids": 1,
+   "primary": "Export RFA copies",
+   "win": "inplaceconverterwindow"
+  }
+ ],
+ "mirrored-auditor": [
+  {
+   "file": "demo-layouts/mirrored-auditor/mirroredauditorwindow.json",
+   "title": "Mirrored Auditor",
+   "w": 1066,
+   "h": 626,
+   "tabs": [],
+   "options": 1,
+   "grids": 1,
+   "primary": null,
+   "win": "mirroredauditorwindow"
+  }
+ ],
+ "model-query-pro": [
+  {
+   "file": "demo-layouts/model-query-pro/reviewcenterwindow.json",
+   "title": "Review Center",
+   "w": 1266,
+   "h": 806,
+   "tabs": [
+    "Finding queue",
+    "Checks and timings"
+   ],
+   "options": 12,
+   "grids": 1,
+   "primary": "Scan / verify again",
+   "win": "reviewcenterwindow"
+  },
+  {
+   "file": "demo-layouts/model-query-pro/modelquerywindow.json",
+   "title": "Model Query",
+   "w": 1066,
+   "h": 726,
+   "tabs": [],
+   "options": 4,
+   "grids": 1,
+   "primary": "Run Query",
+   "win": "modelquerywindow"
+  }
+ ],
+ "off-axis-resolver": [
+  {
+   "file": "demo-layouts/off-axis-resolver/offaxisresolverwindow.json",
+   "title": "Off Axis Resolver",
+   "w": 1306,
+   "h": 706,
+   "tabs": [],
+   "options": 10,
+   "grids": 1,
+   "primary": "Scan model",
+   "win": "offaxisresolverwindow"
+  }
+ ],
+ "parameter-colorizer": [
+  {
+   "file": "demo-layouts/parameter-colorizer/colorizerwindow.json",
+   "title": "Parameter Colorizer",
+   "w": 746,
+   "h": 586,
+   "tabs": [],
+   "options": 3,
+   "grids": 1,
+   "primary": "Apply colors",
+   "win": "colorizerwindow"
+  }
+ ],
+ "purge-and-merge": [
+  {
+   "file": "demo-layouts/purge-and-merge/purgewindow.json",
+   "title": "Purge",
+   "w": 1266,
+   "h": 766,
+   "tabs": [],
+   "options": 3,
+   "grids": 1,
+   "primary": null,
+   "win": "purgewindow"
+  },
+  {
+   "file": "demo-layouts/purge-and-merge/mergeduplicateswindow.json",
+   "title": "Merge duplicates",
+   "w": 1166,
+   "h": 726,
+   "tabs": [],
+   "options": 2,
+   "grids": 0,
+   "primary": "Merge Selected",
+   "win": "mergeduplicateswindow"
+  }
+ ],
+ "scope-box-synchronizer": [
+  {
+   "file": "demo-layouts/scope-box-synchronizer/scopeboxsyncwindow.json",
+   "title": "Scope Box Sync",
+   "w": 906,
+   "h": 606,
+   "tabs": [],
+   "options": 2,
+   "grids": 1,
+   "primary": "Synchronize selected",
+   "win": "scopeboxsyncwindow"
+  }
+ ],
+ "section-box": [
+  {
+   "file": "demo-layouts/section-box/sectionboxwindow.json",
+   "title": "Section Box",
+   "w": 480,
+   "h": 411.1,
+   "tabs": [],
+   "options": 5,
+   "grids": 0,
+   "primary": "Apply Section Box",
+   "win": "sectionboxwindow"
+  }
+ ],
+ "structural-qa": [
+  {
+   "file": "demo-layouts/structural-qa/structuralqawindow.json",
+   "title": "Structural QA",
+   "w": 966,
+   "h": 626,
+   "tabs": [],
+   "options": 1,
+   "grids": 1,
+   "primary": null,
+   "win": "structuralqawindow"
+  }
+ ],
+ "warnings-inspector": [
+  {
+   "file": "demo-layouts/warnings-inspector/warningswindow.json",
+   "title": "Warnings Inspector",
+   "w": 1186,
+   "h": 746,
+   "tabs": [],
+   "options": 2,
+   "grids": 1,
+   "primary": null,
+   "win": "warningswindow"
+  }
+ ],
+ "workset-manager": [
+  {
+   "file": "demo-layouts/workset-manager/worksetmanagerwindow.json",
+   "title": "Workset Manager",
+   "w": 1166,
+   "h": 726,
+   "tabs": [],
+   "options": 3,
+   "grids": 1,
+   "primary": "Apply Changes",
+   "win": "worksetmanagerwindow"
+  },
+  {
+   "file": "demo-layouts/workset-manager/worksetconfigwindow.json",
+   "title": "BEP workset rules",
+   "w": 746,
+   "h": 606,
+   "tabs": [],
+   "options": 0,
+   "grids": 1,
+   "primary": "Use these rules",
+   "win": "worksetconfigwindow"
+  },
+  {
+   "file": "demo-layouts/workset-manager/findreplacewindow.json",
+   "title": "Find and replace",
+   "w": 480,
+   "h": 329.9,
+   "tabs": [],
+   "options": 0,
+   "grids": 0,
+   "primary": "Rename",
+   "win": "findreplacewindow"
+  }
+ ]
+}

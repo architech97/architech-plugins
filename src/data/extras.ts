@@ -81,10 +81,10 @@ export const EXTRAS: Product[] = [
   {
     slug: 'blender-mcp', key: 'BlenderMCP', name: 'ArchiTECH Blender MCP', suite: 'ai', panel: 'MCP connectors',
     software: ['Blender'], revit: [], status: 'enterprise',
-    tagline: 'Blender MCP connector with a native bpy add-on and 89 discoverable tools.',
-    description: 'Blender MCP connector with a native bpy add-on, 89 discoverable tools, guarded scene operations and explicit recovery semantics.',
+    tagline: 'Run native Blender scene, modelling and rendering workflows from an MCP client.',
+    description: 'Blender MCP connector with a native bpy add-on, discoverable tools, guarded scene operations and explicit recovery semantics.',
     problem: 'Visualisation and scene preparation in Blender involve many repetitive scene operations that are risky to automate blindly.',
-    capabilities: ['Native bpy add-on.', '89 discoverable tools.'],
+    capabilities: ['Native bpy add-on.', 'Discoverable tools for scene authoring, inspection and rendering.'],
     safeguards: ['Guarded scene operations.', 'Explicit recovery semantics.'],
     dialogs: [],
   },

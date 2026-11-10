@@ -1,7 +1,7 @@
 # ArchiTECH Automation · Plugins website (staging)
 
 The commercial marketplace for ArchiTECH's BIM productivity software: 65 products (58 Revit tools in the
-Arch Folio, Arch Forge and Arch Sentinel suites, plus ArchiTECH-I3D and the AI & MCP connectors), with interactive browser demos of the real plugin dialogs.
+Arch Folio, Arch Forge and Arch Sentinel suites, plus ArchiTECH-I3D and the AI & MCP connectors), with an interactive browser demo for each product.
 
 This is a **staging preview**. It is separate from the ArchiTECH Design website (architechdesign.in), which
 this repository does not touch. The site is marked `noindex` until it is approved.
@@ -12,7 +12,7 @@ Website code and public product information only:
 
 - product copy taken from each plugin's own ribbon tooltip and long description;
 - dialog screenshots rendered from each plugin's own layout with sample data;
-- interactive simulations of selected dialogs, running on invented sample data.
+- guided Revit simulations, layout-based dialog explorers, and product-specific workflow simulations on sample data.
 
 It contains **no plugin source code, licensing logic, credentials or client data**. The demos never run Revit,
 open a model or call any service.
@@ -25,9 +25,10 @@ Vite + React + TypeScript, static output for GitHub Pages. No backend.
 |---|---|
 | `src/data/` | The catalogue: `tools.generated.json` (generated from the plugin sources), `problems.ts`, `extras.ts` (I3D, MCP, Assistant), `suites.ts`, `catalog.ts` |
 | `src/demo/` | The demo framework: `DemoPlayer` (simulated Revit window, guided steps, notifications, log), `ui.tsx` (dialog primitives), `dialog.css` (the plugins' own Dark/Light palette), `sample.ts`, `registry.ts` |
-| `src/demo/demos/` | One component per interactive demo |
+| `src/demo/demos/` | Hand-built Revit demo components |
 | `src/pages/` | Home, catalogue, product, demos, pricing, custom development |
-| `public/media/` | Dialog renders (WebP, Dark and Light) and I3D media |
+| `public/media/` | Dialog renders, I3D captures and sample Blender render |
+| `public/demo-layouts/` | Public dialog layout fixtures loaded by the explorers |
 
 ## Adding an interactive demo
 
@@ -55,5 +56,5 @@ npm run dev
 npm run build   # type-check and build to dist/
 ```
 
-Pushing to `main` deploys `dist/` to GitHub Pages through `.github/workflows/deploy.yml`. For a custom domain,
+Pushing to `main` deploys `dist/` to GitHub Pages through `.github/workflows/deploy.yml`. The build emits static entry points for direct product and demo links. For a custom domain,
 build with `BASE=/` and update `public/404.html`.
