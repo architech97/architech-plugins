@@ -1,3 +1,4 @@
+import './kit/accessibility.css'
 import type { ReactNode, InputHTMLAttributes } from 'react'
 import { Search, X, ChevronDown } from 'lucide-react'
 import { asset } from '../components/Brand'

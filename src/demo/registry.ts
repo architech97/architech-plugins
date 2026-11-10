@@ -1,10 +1,10 @@
-import type { DemoDefinition } from './types'
+import type { DemoDefinition, ToolDefinition } from './types'
 import type { Product } from '../data/types'
 import { PRODUCTS } from '../data/catalog'
 import { LAYOUTS, generatedSteps } from './generatedRegistry'
 import { connectorDemos } from './connectorRegistry'
 import { studioDemos } from './studioRegistry'
-import { toolDefinition } from './toolDiscovery'
+import { suiteHomeSteps } from './suiteHomeCatalog'
 
 
 // Legacy hand-built demos stay explicit. New implementations are discovered from
@@ -54,6 +54,20 @@ const CRAFTED: Omit<DemoDefinition, 'kind'>[] = [
     ],
     load: () => import('./demos/MatchOpening'),
   },
+  {
+    id: 'point-cloud-on-off', productSlug: 'point-cloud-on-off', width: 820,
+    ribbon: { tab: 'Arch Forge', panel: 'Scan to BIM', button: 'Point Cloud On/Off' },
+    title: 'Point Cloud On/Off',
+    summary: 'Toggle point clouds in the sample view and restore the previous visibility with Undo.',
+    basis: ['The native split-button command toggles the Point Clouds category in the active view. A view template or unsupported view can block the toggle.'],
+    steps: [
+      { id: 'view', title: 'Choose a sample view', hint: 'Compare a working view with a view that cannot change point-cloud visibility.', target: 'pointcloud-view' },
+      { id: 'toggle', title: 'Toggle the point cloud', hint: 'Run Point Cloud On/Off in a supported sample view.', target: 'pointcloud-toggle' },
+      { id: 'undo', title: 'Restore the previous view', hint: 'Undo the sample visibility change.', target: 'pointcloud-undo' },
+    ],
+    load: () => import('./demos/PointCloudVisibility'),
+  },
+
   {
     id: 'manage-text', productSlug: 'manage-text', width: 1106,
     ribbon: { tab: 'Arch Folio', panel: 'Annotation', button: 'Manage Text' },
@@ -218,7 +232,7 @@ const CRAFTED: Omit<DemoDefinition, 'kind'>[] = [
 
 const SUITE_TAB: Record<string, string> = { folio: 'Arch Folio', forge: 'Arch Forge', sentinel: 'Arch Sentinel' }
 
-interface ToolModule { definition: DemoDefinition }
+interface ToolModule { definition?: DemoDefinition; default?: ToolDefinition }
 interface DiscoveredTool {
   path: string
   importModule: () => Promise<ToolModule>
@@ -226,24 +240,37 @@ interface DiscoveredTool {
   pending?: Promise<void>
   error?: unknown
   descriptor?: DemoDefinition
+  fallback?: DemoDefinition
 }
 
 // Keep this glob lazy: importing the registry must not import tool UI, fixtures or CSS.
 // Metadata is resolved only when a routed demo asks for it through demoById.
-const toolModules = import.meta.glob<ToolModule>('./tools/*/index.tsx')
+const toolModules = import.meta.glob<ToolModule>('./tools/*/index.{ts,tsx}')
 const discovered = new Map<string, DiscoveredTool>()
 for (const [path, importModule] of Object.entries(toolModules).sort(([a], [b]) => a.localeCompare(b))) {
   const slug = path.split('/')[2]
-  if (discovered.has(slug)) throw new Error(`Duplicate demo indexes for ${slug}. Keep one index.ts or index.tsx.`)
-  discovered.set(slug, { path, importModule })
+  // A named TSX dialog wins over a legacy metadata-only TS index. Both files
+  // remain on disk; this resolves integration conflicts without deleting work.
+  const previous = discovered.get(slug)
+  if (!previous || path.endsWith('.tsx')) discovered.set(slug, { path, importModule })
 }
 
 function loadDiscovered(tool: DiscoveredTool, slug: string): Promise<void> {
   if (!tool.pending) {
-    tool.pending = tool.importModule().then(({ definition }) => {
-      if (!definition || definition.productSlug !== slug || typeof definition.load !== 'function'
-        || !Array.isArray(definition.steps) || !Array.isArray(definition.basis)) {
-        throw new Error(`${tool.path} must export a DemoDefinition named definition for ${slug}.`)
+    tool.pending = tool.importModule().then((module) => {
+      const candidate = module.definition ?? module.default
+      if (!candidate || typeof candidate !== 'object') {
+        throw new Error(`${tool.path} must export definition or a default ToolDefinition.`)
+      }
+      if (module.definition && module.definition.productSlug !== slug) {
+        throw new Error(`${tool.path} exports a definition for a different product slug.`)
+      }
+      // Legacy metadata-only indexes inherit their generated dialog and folder
+      // result workflow. Complete named definitions supply their own dialog.
+      const definition: DemoDefinition = { ...tool.fallback!, ...candidate }
+      if (typeof definition.load !== 'function' || !Array.isArray(definition.steps)
+        || !Array.isArray(definition.basis)) {
+        throw new Error(`${tool.path} does not resolve to a complete DemoDefinition.`)
       }
       tool.definition = definition
       // Gallery entries hold the same descriptor object; hydrate it once, before
@@ -255,12 +282,11 @@ function loadDiscovered(tool: DiscoveredTool, slug: string): Promise<void> {
 }
 
 function discoveredDescriptor(product: Product, tool: DiscoveredTool): DemoDefinition {
+  const fallback = defineFallback(product)
+  tool.fallback = fallback
   const descriptor: DemoDefinition = {
-    id: product.demo ?? product.slug, productSlug: product.slug, kind: 'crafted',
-    ribbon: { tab: SUITE_TAB[product.suite] ?? product.name, panel: product.panel, button: product.name },
-    title: product.name, summary: product.tagline, width: 1080,
-    basis: ['Interactive dialog using the fictional Sample Residence fixture. Open the demo for its source notes.'],
-    steps: [],
+    ...fallback,
+    kind: 'crafted',
     load: async () => {
       await loadDiscovered(tool, product.slug)
       if (tool.error) throw tool.error
@@ -277,20 +303,23 @@ function defineDemo(product: Product): DemoDefinition {
 
   const tool = discovered.get(product.slug)
   if (tool) return discoveredDescriptor(product, tool)
+  return defineFallback(product)
+}
 
+function defineFallback(product: Product): DemoDefinition {
   const ribbon = { tab: SUITE_TAB[product.suite] ?? product.software[0] ?? product.name, panel: product.panel, button: product.name }
   const base = { id: product.demo ?? product.slug, productSlug: product.slug, ribbon, summary: product.tagline }
-  const local = toolDefinition(product.slug)
-  if (local?.load) {
+  if (product.panel === 'Start' && (product.suite === 'folio' || product.suite === 'forge' || product.suite === 'sentinel')) {
+    const suite = product.suite
     return {
       ...base,
       kind: 'crafted',
       width: 1080,
       title: product.name,
-      basis: ['Interactive dialog using fictional Sample Residence metadata.'],
-      steps: [],
-      ...local,
-      load: local.load,
+      summary: 'Browse the ribbon groups, find a tool and review whether it can open in the sample context.',
+      basis: ['The launcher matches the installed Revit 2024 layout, panel order and tool labels. Opening a tool leads to its browser simulation.'],
+      steps: suiteHomeSteps(suite),
+      load: async () => ({ default: (await import('./demos/SuiteHome')).makeSuiteHome(suite) }),
     }
   }
   const studio = studioDemos[product.slug] ?? connectorDemos[product.slug]
@@ -309,7 +338,6 @@ function defineDemo(product: Product): DemoDefinition {
       ],
       steps: generatedSteps(product.slug),
       load: async () => (await import('./GeneratedDemo')).loadGenerated(product.slug),
-      ...local,
     }
   }
 

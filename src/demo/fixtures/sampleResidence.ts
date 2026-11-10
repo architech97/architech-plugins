@@ -114,9 +114,9 @@ export const LINK_FIXTURES: ResidenceLink[] = [
   { id: 7102, name: 'Sample Residence – Structure.rvt', kind: 'Revit', loaded: true, pinned: true, instances: 1, path: 'C:/Sample Residence/Structure.rvt', view: '(Model-wide)', attachment: 'Overlay', status: 'Loaded', verdict: 'OK' },
   { id: 7103, name: 'Sample Residence – MEP.rvt', kind: 'Revit', loaded: true, pinned: false, instances: 1, path: 'C:/Sample Residence/MEP.rvt', view: '(Model-wide)', attachment: 'Attachment', status: 'Loaded', verdict: 'Review' },
   { id: 7104, name: 'Sample Residence – Landscape.rvt', kind: 'Revit', loaded: false, pinned: true, instances: 1, path: 'C:/Sample Residence/Landscape.rvt', view: '(Model-wide)', attachment: 'Overlay', status: 'Unloaded', verdict: 'Review' },
-  { id: 7201, name: 'Site Survey.dwg', kind: 'CAD', loaded: true, pinned: true, instances: 1, path: 'C:/Sample Residence/Site Survey.dwg', view: '(Model-wide)', attachment: 'Linked CAD', status: 'Linked CAD', verdict: 'OK' },
-  { id: 7202, name: 'Kitchen Detail.dwg', kind: 'CAD', loaded: true, pinned: false, instances: 1, path: '(Embedded)', view: 'Level 01 – Floor Plan', attachment: 'Embedded CAD', status: 'Embedded CAD', verdict: 'Fail' },
-  { id: 7203, name: 'Boundary.dwg', kind: 'CAD', loaded: true, pinned: false, instances: 1, path: 'C:/Sample Residence/Boundary.dwg', view: '(Model-wide)', attachment: 'Linked CAD', status: 'Linked CAD', verdict: 'Review' },
+  { id: 7201, name: 'Site Survey.dwg', kind: 'CAD', loaded: true, pinned: true, instances: 1, path: 'C:/Sample Residence/Site Survey.dwg', view: '(Model-wide)', attachment: 'Linked CAD', status: 'Site Survey.dwg', verdict: 'OK' },
+  { id: 7202, name: 'Kitchen Detail.dwg', kind: 'CAD', loaded: true, pinned: false, instances: 1, path: '(Embedded)', view: 'Level 01 – Floor Plan', attachment: 'Embedded CAD', status: 'Kitchen Detail.dwg', verdict: 'Fail' },
+  { id: 7203, name: 'Boundary.dwg', kind: 'CAD', loaded: true, pinned: false, instances: 1, path: 'C:/Sample Residence/Boundary.dwg', view: '(Model-wide)', attachment: 'Linked CAD', status: 'Boundary.dwg', verdict: 'Review' },
 ]
 export const IN_PLACE_FAMILIES: ResidenceInPlaceFamily[] = [
   { id: 8101, name: 'Kitchen bulkhead', category: 'Generic Models', instances: 24, owner: 'Sample Architect', workset: 'Interiors' },

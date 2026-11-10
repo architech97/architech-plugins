@@ -23,17 +23,17 @@ interface DialogButton { label: string; onClick: () => void; primary?: boolean; 
 export interface TaskDialogProps extends Omit<DialogShellProps, 'children'> {
   instruction?: string; mainInstruction?: string; content?: ReactNode; details?: ReactNode
   commandLinks?: CommandLink[]; onCommand?: (id: string) => void; buttons?: DialogButton[]; children?: ReactNode
-  showTheme?: boolean
+  kind?: 'info' | 'success' | 'warning' | 'error' | 'question'; showTheme?: boolean
 }
-export function TaskDialogShell({ instruction, mainInstruction, content, details, commandLinks = [], onCommand, buttons = [], children, showTheme = true, ...shell }: TaskDialogProps) {
-  const footer = shell.footer ?? <div className={`dk-task-buttons${commandLinks.length > 2 || commandLinks.some((l) => l.label.length > 28) ? ' stacked' : ''}`}>
+export function TaskDialogShell({ instruction, mainInstruction, content, details, commandLinks = [], onCommand, buttons = [], children, kind = 'info', showTheme = true, ...shell }: TaskDialogProps) {
+  const footerRef = useRef<HTMLDivElement>(null)
+  useEffect(() => { footerRef.current?.querySelector<HTMLButtonElement>('button:not(:disabled)')?.focus({ preventScroll: true }) }, [instruction, mainInstruction])
+  const footer = shell.footer ?? <div ref={footerRef} className={`dk-task-buttons${commandLinks.length + buttons.length > 3 || [...commandLinks, ...buttons].some((l) => l.label.length > 22) ? ' stacked' : ''}`}>
     {commandLinks.map((link, index) => <Btn key={link.id ?? index} primary={index === 0} disabled={link.disabled} onClick={() => { link.onClick?.(); if (link.id) onCommand?.(link.id) }}>{link.label}{link.description && <small>{link.description}</small>}</Btn>)}
     {buttons.map((b) => <Btn key={b.label} primary={b.primary} disabled={b.disabled} onClick={b.onClick}>{b.label}</Btn>)}
   </div>
-  return <div className="dk-native-task">
-    {showTheme && <button type="button" className="dk-theme-button" onClick={() => shell.onTheme(shell.theme === 'dark' ? 'light' : 'dark')}>
-      Use {shell.theme === 'dark' ? 'light' : 'dark'} theme
-    </button>}
+  return <div className="dk-native-task" data-kind={kind} onKeyDown={(event) => { if (event.key === 'Escape') { event.preventDefault(); event.stopPropagation(); shell.onClose?.() } }}>
+    {showTheme && <button type="button" className="dk-demo-theme" onClick={() => shell.onTheme(shell.theme === 'dark' ? 'light' : 'dark')}>Demo theme: {shell.theme === 'dark' ? 'Dark' : 'Light'}</button>}
     <DialogShell {...shell} title={shell.title.replace(/^ArchiTECH\s*[—–-]\s*/, '')} footer={footer}>
     <div className="dk-task"><div className="dk-task-message"><span className="dk-kind-dot" aria-hidden="true" /><div><h2>{instruction ?? mainInstruction}</h2>{content && <div className="dk-content">{content}</div>}
       {details && <div className="dk-native-detail">{details}</div>}</div></div>{children}
@@ -70,7 +70,7 @@ export function ConfirmGuard({ open, theme, onTheme = () => {}, title, instructi
     return () => { dialog.close(); previous?.focus() }
   }, [open])
   if (!open) return null
-  return <dialog className="dk-guard" ref={ref} aria-label={title} onCancel={(event) => { event.preventDefault(); onCancel() }}><TaskDialogShell showTheme={false} theme={theme} onTheme={onTheme} title={title} instruction={instruction} content={content} details={details} onClose={onCancel} footer={<><button className="ad-btn dk-guard-cancel" onClick={onCancel}>{cancelLabel}</button><Btn primary onClick={onConfirm}>{confirmLabel}</Btn></>} /></dialog>
+  return <dialog className="dk-guard" ref={ref} aria-label={title} onCancel={(event) => { event.preventDefault(); onCancel() }}><TaskDialogShell showTheme={false} kind="question" theme={theme} onTheme={onTheme} title={title} instruction={instruction} content={content} details={details} onClose={onCancel} footer={<><button className="ad-btn dk-guard-cancel" onClick={onCancel}>{cancelLabel}</button><Btn primary onClick={onConfirm}>{confirmLabel}</Btn></>} /></dialog>
 }
 export function Receipt({ entries, download, filename = 'sample-residence-receipt.json', title = 'What happened (simulated)' }: { entries: (string | { label: string; detail?: string })[]; download?: unknown; filename?: string; title?: string }) {
   const ref = useRef<HTMLElement>(null)
@@ -85,7 +85,7 @@ export function MiniView({ kind = 'plan', variant = 'coord', phase = 'before', a
   const ref = useRef<SVGSVGElement>(null)
   const reduced = useReducedMotion()
   const titleId = useId()
-  useEffect(() => { if (!actionKey) return; const targets = Array.from(ref.current?.querySelectorAll('[data-motion]') ?? []).slice(0, 3); const animations = targets.map((el, i) => !reduced ? el.animate([{ opacity: .15 }, { opacity: 1 }], { duration: motion.standard + i * motion.stagger, easing: motion.easing, iterations: 1 }) : undefined); return () => animations.forEach((a) => a?.cancel()) }, [actionKey, reduced])
+  useEffect(() => { if (!actionKey) return; const targets = Array.from(ref.current?.querySelectorAll('[data-motion]') ?? []).slice(0, 3); const animations = targets.map((el, i) => animateOnce(el, [{ opacity: .15 }, { opacity: 1 }], reduced, motion.standard + i * motion.stagger)); return () => animations.forEach((a) => a?.cancel()) }, [actionKey, reduced])
   const shown = items
   return <figure className="dk-mini"><figcaption>{title}<span>{phase === 'after' ? 'After' : phase === 'preview' ? 'Preview' : 'Before'} · {kind}</span></figcaption><svg ref={ref} viewBox="0 0 600 260" role="img" aria-labelledby={titleId}><title id={titleId}>{title}: {variant}, {phase}</title><defs><pattern id={`${titleId}-grid`} width="20" height="20" patternUnits="userSpaceOnUse"><path d="M 20 0 L 0 0 0 20" fill="none" stroke="currentColor" opacity=".1" /></pattern></defs><rect width="600" height="260" fill={`url(#${titleId}-grid)`} />{children ?? <>
     {variant === 'spots' ? shown.slice(0, 4).map((item, i) => <g data-motion key={item.id} transform={`translate(${20 + (i % 2) * 295} ${15 + Math.floor(i / 2) * 125})`}><rect width="270" height="110" rx="5" fill="none" stroke="currentColor" opacity=".3" /><text x="12" y="22">{item.label}{item.value !== undefined ? ` ? ${item.value} spots` : ''}</text>{[0, 1, 2].map((n) => <g key={n}><path d={`M ${25 + n * 78} 80 l 18 -28 h 35`} fill="none" stroke="var(--d-accent)" strokeWidth="2" strokeDasharray={phase !== 'before' && pattern !== 'Solid' ? pattern === 'Dash' ? '9 5' : '3 4' : undefined} /><text x={48 + n * 78} y="46" fontSize="10">+{(n * .15).toFixed(2)}</text></g>)}</g>) : variant === 'inplace' ? shown.slice(0, 9).map((item, i) => <g key={item.id} data-motion transform={`translate(20 ${18 + i * 26})`}><text y="12" fontSize="11">{item.label.slice(0, 24)}</text><rect x="170" width={Math.max(4, ((item.value ?? 0) / Math.max(1, ...shown.map((v) => v.value ?? 0))) * 300)} height="16" rx="3" fill="var(--d-accent)" opacity={phase === 'after' ? '.7' : '1'} /><text x="500" y="12">{item.value ?? 2}</text></g>) : variant === 'batch' || variant === 'links' ? shown.slice(0, 8).map((item, i) => <g key={item.id} data-motion transform={`translate(${18 + (i % 4) * 145} ${18 + Math.floor(i / 4) * 120})`}><rect width="130" height="105" rx="6" fill="var(--d-surface)" stroke="var(--d-border)" /><path d="M 25 60 l 40 -28 l 38 23 l -40 29 Z M 25 60 v -30 l 40 -25 l 38 20 v 30 M 65 32 v 30" transform="translate(0 10) scale(.75)" fill="none" stroke="var(--d-accent)" /><text x="9" y="92" fontSize="10">{item.label.slice(0, 20)}</text><text x="100" y="24">{item.pinned ? '⚑' : '○'}</text></g>) : <>
