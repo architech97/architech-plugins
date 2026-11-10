@@ -1,6 +1,6 @@
 import { useEffect, useRef, useState, type ReactNode } from 'react'
 import { Link, NavLink, Outlet, useLocation } from 'react-router-dom'
-import { Menu, X } from 'lucide-react'
+import { ArrowUpRight, Menu, X } from 'lucide-react'
 import { Logo } from './Brand'
 import { CONTACT } from '../data/contact'
 
@@ -40,7 +40,15 @@ export function Layout() {
     <>
       <div className="bg-grid" aria-hidden="true" />
       <a className="skip-link" href="#main">Skip to content</a>
-      <div className="staging-strip">Staging preview · Browser demos use sample data</div>
+      <div className="division-bar">
+        <div className="wrap division-bar-inner">
+          <nav className="division-nav" aria-label="ArchiTECH divisions">
+            <a href={CONTACT.designSite}>ArchiTECH Design <ArrowUpRight size={12} aria-hidden="true" /></a>
+            <Link to="/" aria-current="true">ArchiTECH Automation</Link>
+          </nav>
+          <p className="division-note">Staging preview · Browser demos use sample data</p>
+        </div>
+      </div>
       <header className="site-header">
         <div className="wrap bar">
           <Link to="/" aria-label="ArchiTECH Automation home"><Logo /></Link>

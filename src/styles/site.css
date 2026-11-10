@@ -105,7 +105,6 @@ p { margin: 0; text-wrap: pretty; }
 .nav a.active { color: var(--text); }
 .nav-cta { display: flex; align-items: center; gap: 10px; }
 .menu-btn { display: none; background: none; border: 1px solid var(--line-strong); border-radius: 7px; width: 42px; height: 42px; align-items: center; justify-content: center; cursor: pointer; }
-.staging-strip { border-bottom: 1px solid var(--line); font: 400 12px/1.4 var(--font-mono); color: var(--muted); text-align: center; padding: 7px var(--pad); }
 @media (max-width: 960px) {
   .nav, .nav-cta .btn-ghost { display: none; }
   .menu-btn { display: inline-flex; }
@@ -445,3 +444,41 @@ p { margin: 0; text-wrap: pretty; }
 .skip-link { position: fixed; z-index: 60; left: 10px; top: 10px; transform: translateY(-160%); color: var(--bg); background: var(--text); padding: 9px 12px; border-radius: 3px; font-weight: 600; }
 .skip-link:focus { transform: none; color: var(--bg); }
 .site-header .nav a[aria-current="page"] { box-shadow: inset 0 -1px var(--signal); }
+
+/* ArchiTECH divisions share the public canvas. The masthead identifies Automation. */
+:root {
+  --automation-navy: #09141e;
+  --automation-cyan: #58ccf3;
+  --automation-heading: #164d66;
+  --design-brass: #dfb882;
+}
+main h1 { color: var(--automation-heading); }
+.division-bar, .site-header {
+  --bg: var(--automation-navy);
+  --panel: #13232e;
+  --line: #293e4c;
+  --line-strong: #49616d;
+  --text: #f5f6f7;
+  --text-2: #c4d1d9;
+  --muted: #b3c2ce;
+  --signal: var(--automation-cyan);
+  --cyan: var(--automation-cyan);
+  --cyan-2: #8adef8;
+  --ink-on-accent: #081721;
+  color: var(--text);
+  color-scheme: dark;
+  background-color: var(--bg);
+}
+.division-bar { border-bottom: 1px solid var(--line); }
+.division-bar-inner { display: flex; align-items: center; justify-content: space-between; gap: 8px 20px; }
+.division-nav { display: flex; flex-wrap: wrap; align-items: stretch; gap: 2px 18px; }
+.division-nav > a { display: inline-flex; align-items: center; gap: 6px; min-height: 35px; border-bottom: 2px solid transparent; color: var(--text-2); font: 500 .71rem/1.35 var(--font-mono); }
+.division-nav > a:first-child svg { color: var(--design-brass); }
+.division-nav > a:first-child:hover, .division-nav > a:first-child:focus-visible { color: var(--design-brass); }
+.division-nav > a[aria-current="true"] { color: var(--cyan-2); border-bottom-color: var(--signal); }
+.division-note { color: var(--muted); font: 400 .7rem/1.4 var(--font-mono); text-align: right; }
+.site-header { border-bottom-color: var(--line); backdrop-filter: none; }
+@media (max-width: 535px) {
+  .division-note { display: none; }
+  .division-nav { column-gap: 13px; }
+}
