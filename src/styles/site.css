@@ -435,10 +435,11 @@ main h1 { color: var(--automation-heading); }
 .division-bar-inner { display: flex; align-items: center; justify-content: space-between; gap: 8px 20px; }
 .division-nav { display: flex; flex-wrap: wrap; align-items: stretch; gap: 2px 18px; }
 .division-nav > a { display: inline-flex; align-items: center; gap: 6px; min-height: 35px; border-bottom: 2px solid transparent; color: var(--text-2); font: 500 .71rem/1.35 var(--font-mono); }
-.division-nav > a:first-child svg { color: var(--design-brass); }
-.division-nav > a:first-child:hover, .division-nav > a:first-child:focus-visible { color: var(--design-brass); }
+.division-nav > a:hover, .division-nav > a:focus-visible { color: var(--design-brass); }
 .division-nav > a[aria-current="true"] { color: var(--cyan-2); border-bottom-color: var(--signal); }
 .division-note { color: var(--muted); font: 400 .7rem/1.4 var(--font-mono); text-align: right; }
+.division-note a { display: inline-flex; align-items: center; gap: 4px; color: var(--cyan-2); }
+.division-note a:hover { text-decoration: underline; }
 .site-header { border-bottom-color: var(--line); backdrop-filter: none; }
 @media (max-width: 535px) {
   .division-note { display: none; }

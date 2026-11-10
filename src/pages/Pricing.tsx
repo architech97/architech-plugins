@@ -48,7 +48,7 @@ export default function Pricing() {
               ['Can I try a plugin before buying?', 'Yes. Every catalog product has a browser demo. You can also request a guided session for a specific tool.'],
               ['What does a browser demo run?', 'Each demo runs an interactive scenario on sample data in your browser. Native operations run in the desktop plugin.'],
               ['Do you build custom tools?', 'Yes: custom Revit add-ins and AI automations. Use the custom development form to describe the workflow.'],
-              ['How will licences be delivered?', 'Licence delivery, accounts and billing will be added with the launch of paid plans. This staging site does not take payments.'],
+              ['How will licences be delivered?', 'Licence delivery, accounts and billing will be added with the launch of paid plans.'],
             ].map(([q, a]) => (
               <details key={q}><summary>{q}<ChevronDown size={18} /></summary><p>{a}</p></details>
             ))}

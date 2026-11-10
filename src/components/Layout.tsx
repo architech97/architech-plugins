@@ -2,7 +2,11 @@ import { useEffect, useRef, useState, type ReactNode } from 'react'
 import { Link, NavLink, Outlet, useLocation } from 'react-router-dom'
 import { ArrowUpRight, Menu, X } from 'lucide-react'
 import { Logo } from './Brand'
-import { CONTACT } from '../data/contact'
+import { AUTOMATION_PATH, CONTACT, SITE_ORIGIN } from '../data/contact'
+
+const unified = import.meta.env.BASE_URL === AUTOMATION_PATH
+const homeUrl = unified ? '/' : SITE_ORIGIN + '/'
+const designUrl = unified ? '/design/' : CONTACT.designSite
 
 const NAV = [
   { to: '/plugins', label: 'Plugins' },
@@ -15,7 +19,8 @@ export function Layout() {
   const [open, setOpen] = useState(false)
   const nav = useRef<HTMLElement>(null)
   const menu = useRef<HTMLButtonElement>(null)
-  const { pathname, hash } = useLocation()
+  const { pathname, search, hash } = useLocation()
+  const primaryUrl = SITE_ORIGIN + AUTOMATION_PATH + pathname.slice(1) + search + hash
   useEffect(() => {
     setOpen(false)
     window.scrollTo({ top: 0, behavior: 'instant' })
@@ -44,10 +49,13 @@ export function Layout() {
         <div className="division-bar">
           <div className="wrap division-bar-inner">
             <nav className="division-nav" aria-label="ArchiTECH divisions">
-              <a href={CONTACT.designSite}>ArchiTECH Design <ArrowUpRight size={12} aria-hidden="true" /></a>
+              <a href={homeUrl}>ArchiTECH</a>
+              <a href={designUrl}>ArchiTECH Design</a>
               <Link to="/" aria-current="true">ArchiTECH Automation</Link>
             </nav>
-            <p className="division-note">Staging preview · Browser demos use sample data</p>
+            <p className="division-note">
+              {unified ? 'Browser demos use sample data' : <a href={primaryUrl}>Open on the main site <ArrowUpRight size={12} aria-hidden="true" /></a>}
+            </p>
           </div>
         </div>
         <div className="wrap bar">
@@ -99,7 +107,9 @@ function Footer() {
             <h4>Contact</h4>
             <a href={`mailto:${CONTACT.email}`}>{CONTACT.email}</a>
             <a href={CONTACT.linkedin} target="_blank" rel="noreferrer">LinkedIn</a>
-            <a href={CONTACT.designSite} target="_blank" rel="noreferrer">ArchiTECH Design ↗</a>
+            <a href={designUrl}>ArchiTECH Design</a>
+            <a href={homeUrl}>Choose a division</a>
+            {!unified && <a href={SITE_ORIGIN + AUTOMATION_PATH}>Automation on the main site ↗</a>}
           </div>
         </div>
         <div className="footer-legal">

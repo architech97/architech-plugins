@@ -1,7 +1,8 @@
 import { defineConfig, runnerImport, type Plugin } from 'vite'
 import react from '@vitejs/plugin-react'
+import { AUTOMATION_PATH, SITE_ORIGIN } from './src/data/contact.ts'
 
-// Staging is served from https://<user>.github.io/architech-plugins/ ; a custom domain later sets BASE=/.
+// The GitHub Pages preview uses its repository base. The unified site mounts Automation at /automation/.
 const base = process.env.BASE ?? '/architech-plugins/'
 
 const staticRoutes: Plugin = {
@@ -23,9 +24,19 @@ const staticRoutes: Plugin = {
         if (product.demo) routes.add(`demos/${product.demo}`)
       }
 
+      const template = String(shell.source)
+      const page = (route = '') => {
+        const canonical = SITE_ORIGIN + AUTOMATION_PATH + (route ? route + '/' : '')
+        const html = base === AUTOMATION_PATH
+          ? template.replace(/\s*<meta name="robots" content="noindex, nofollow" \/>/, '')
+          : template
+        return html.replace('</head>', `  <link rel="canonical" href="${canonical}" />\n  </head>`)
+      }
+
       // GitHub Pages serves these directory indexes with a successful response on direct visits.
+      shell.source = page()
       for (const route of routes) {
-        this.emitFile({ type: 'asset', fileName: `${route}/index.html`, source: shell.source })
+        this.emitFile({ type: 'asset', fileName: `${route}/index.html`, source: page(route) })
       }
     },
   },

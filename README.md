@@ -1,10 +1,10 @@
-# ArchiTECH Automation · Plugins website (staging)
+# ArchiTECH Automation · Plugins website
 
 The commercial marketplace for ArchiTECH's BIM productivity software: 65 products (58 Revit tools in the
 Arch Folio, Arch Forge and Arch Sentinel suites, plus ArchiTECH-I3D and the AI & MCP connectors), with an interactive browser demo for each product.
 
-This is a **staging preview**. It is separate from the ArchiTECH Design website (architechdesign.in), which
-this repository does not touch. The site is marked `noindex` until it is approved.
+The primary site is [architechdesign.in/automation/](https://architechdesign.in/automation/).
+The [GitHub Pages preview](https://architech97.github.io/architech-plugins/) remains available for existing links and is marked `noindex`.
 
 ## What is in this repository
 
@@ -60,5 +60,7 @@ npm run dev
 npm run build   # type-check and build to dist/
 ```
 
-Pushing to `main` deploys `dist/` to GitHub Pages through `.github/workflows/deploy.yml`. The build emits static entry points for direct product and demo links. For a custom domain,
-build with `BASE=/` and update `public/404.html`.
+Pushing to `main` deploys the preview through `.github/workflows/deploy.yml`.
+The build emits static entry points for direct product and demo links. The unified site's
+workflow builds the commit pinned in [architech-design](https://github.com/architech97/architech-design)
+with `BASE=/automation/` and publishes both divisions in one GitHub Pages deployment.
