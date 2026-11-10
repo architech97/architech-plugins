@@ -14,6 +14,10 @@
 .mt-table td { white-space: pre-wrap; overflow-wrap: anywhere; }
 .mt-table td.wrap { white-space: pre-wrap; min-width: 88px; }
 .mt-table tbody tr { cursor: default; }
+.mt-transform-table table { table-layout: fixed; min-width: 370px; }
+.mt-transform-table th:first-child { width: 39px; }
+.mt-transform-table th:nth-child(2), .mt-transform-table th:nth-child(3) { width: 26%; }
+.mt-scroll-hint { display: none; }
 .mt-detail { display: block; }
 .mt-apply { justify-content: space-between; }
 .mt-status, .mt-error, .mt-merge-preview p { margin: 0; }
@@ -34,6 +38,10 @@
   .mt-nav button { min-height: 36px; }
 }
 @media (max-width: 420px) {
+  .ad:has(.mt-layout) .ad-head { gap: 6px; padding-inline: 10px; }
+  .ad:has(.mt-layout) .ad-brand { gap: 0; }
+  .ad:has(.mt-layout) :is(.ad-logo, .ad-divider, .ad-caption) { display: none; }
   .mt-fields { grid-template-columns: 1fr; }
   .mt-layout .ad-card { padding: 9px; }
+  .mt-scroll-hint { display: inline; }
 }

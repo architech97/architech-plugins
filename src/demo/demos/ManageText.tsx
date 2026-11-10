@@ -243,7 +243,8 @@ export default function ManageText({ theme, setTheme, done, rewind, notify, clos
                 <Btn sm demo="manage-text-refresh" onClick={refresh}>Refresh</Btn>
               </div>
               {error && <p className="mt-error" role="alert">{error}</p>}
-              <div className="ad-table-wrap mt-table" tabIndex={0} role="region" aria-label="Before and after preview">
+              <span className="ad-note mt-scroll-hint">Scroll the preview sideways to see note and view details.</span>
+              <div className="ad-table-wrap mt-table mt-transform-table" tabIndex={0} role="region" aria-label="Before and after preview">
                 <table className="ad-table"><thead><tr><th scope="col">Tick</th><th scope="col">Before</th><th scope="col">After</th><th scope="col">Note</th><th scope="col">View (sheet)</th></tr></thead>
                   <tbody>{shown.map((note) => <tr key={note.id}>
                     <td><Check title={'Tick ' + note.name} checked={ticked(note)} onChange={(value) => setTicks({ ...ticks, [note.id]: value })} /></td>
