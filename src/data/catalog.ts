@@ -2,7 +2,6 @@ import generated from './tools.generated.json'
 import reconstructed from './dialogReconstructions.json'
 import { EXTRAS } from './extras'
 import { PROBLEMS } from './problems'
-import { RIBBON_PRODUCTS } from './ribbonProducts'
 import type { DialogShot, Product } from './types'
 
 /** Interactive demos available today, by tool key. More are added through src/demo/registry.ts. */
@@ -35,7 +34,7 @@ const tools: Product[] = (generated as Omit<Product, 'status'>[]).map((t) => ({
 
 const SUITE_ORDER = ['folio', 'forge', 'sentinel', 'i3d', 'ai']
 
-export const PRODUCTS: Product[] = [...tools, ...RIBBON_PRODUCTS, ...EXTRAS.map((e) => ({ ...e, demo: e.slug }))].sort(
+export const PRODUCTS: Product[] = [...tools, ...EXTRAS.map((e) => ({ ...e, demo: e.slug }))].sort(
   (a, b) => SUITE_ORDER.indexOf(a.suite) - SUITE_ORDER.indexOf(b.suite) || a.panel.localeCompare(b.panel) || a.name.localeCompare(b.name),
 )
 
@@ -46,7 +45,7 @@ export const STATS = {
   products: PRODUCTS.length,
   revitTools: tools.length,
   dialogs: tools.reduce((n, t) => n + t.dialogs.length, 0),
-  demos: PRODUCTS.filter((product) => product.demo).length,
+  demos: tools.length + EXTRAS.length,
   crafted: Object.keys(DEMO_BY_KEY).length,
   softwares: new Set(PRODUCTS.flatMap((p) => p.software)).size,
 }
