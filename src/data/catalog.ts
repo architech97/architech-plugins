@@ -27,7 +27,7 @@ const tools: Product[] = (generated as Omit<Product, 'status'>[]).map((t) => ({
   platform: 'Windows · Autodesk Revit',
 }))
 
-const SUITE_ORDER = ['folio', 'forge', 'sentinel', 'i3d', 'ai', 'pyrevit']
+const SUITE_ORDER = ['folio', 'forge', 'sentinel', 'i3d', 'ai']
 
 export const PRODUCTS: Product[] = [...tools, ...EXTRAS].sort(
   (a, b) => SUITE_ORDER.indexOf(a.suite) - SUITE_ORDER.indexOf(b.suite) || a.panel.localeCompare(b.panel) || a.name.localeCompare(b.name),

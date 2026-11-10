@@ -47,7 +47,7 @@ export default function Pricing() {
               ['Which Revit versions are supported?', 'The Revit tools currently ship for Revit 2024. Each product page lists its exact versions; support for other Revit years is on the roadmap.'],
               ['Can I try a plugin before buying?', 'Yes. The live demos let you use replicas of the real dialogs in your browser, and you can request a guided demo of any tool on a sample model.'],
               ['Are the demos the real plugins?', 'No. They are browser simulations built from the plugins\' actual layouts, labels and rules, running on sample data. They never run Revit or read a model.'],
-              ['Do you build custom tools?', 'Yes: custom Revit add-ins, pyRevit tools and AI automations. Use the custom development form to describe the workflow.'],
+              ['Do you build custom tools?', 'Yes: custom Revit add-ins and AI automations. Use the custom development form to describe the workflow.'],
               ['How will licences be delivered?', 'Licence delivery, accounts and billing will be added with the launch of paid plans. This staging site does not take payments.'],
             ].map(([q, a]) => (
               <details key={q}><summary>{q}<ChevronDown size={18} /></summary><p>{a}</p></details>

@@ -37,8 +37,8 @@ export default function Home() {
       <section className="section" style={{ paddingTop: 30 }}>
         <div className="wrap">
           <Reveal className="section-head">
-            <div><span className="eyebrow">Product suites</span><h2>One platform, six product lines.</h2></div>
-            <p className="lead">Every Revit tool lives on the ArchiTECH ribbon in one of three suites. I3D, the AI connectors and the pyRevit edition extend the same workflows.</p>
+            <div><span className="eyebrow">Product suites</span><h2>One platform, five product lines.</h2></div>
+            <p className="lead">Every Revit tool lives on the ArchiTECH ribbon in one of three suites. I3D and the AI connectors extend the same workflows.</p>
           </Reveal>
           <div className="grid-3">
             {SUITES.map((s, i) => (
@@ -140,7 +140,7 @@ export default function Home() {
               <div>
                 <span className="eyebrow">Custom development</span>
                 <h2 style={{ margin: '12px 0 12px' }}>Need a tool your team doesn't have yet?</h2>
-                <p className="lead">Commission a custom Revit add-in, a pyRevit tool or an AI automation, built to the same standards as the ArchiTECH suites.</p>
+                <p className="lead">Commission a custom Revit add-in or an AI automation, built to the same standards as the ArchiTECH suites.</p>
               </div>
               <div style={{ display: 'grid', gap: 12 }}>
                 <Link className="btn btn-primary" to="/custom-development"><Wrench size={17} /> Start an inquiry</Link>

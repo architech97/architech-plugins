@@ -98,18 +98,4 @@ export const EXTRAS: Product[] = [
     safeguards: [],
     dialogs: [],
   },
-  {
-    slug: 'pyrevit-edition', key: 'pyRevit', name: 'ArchiTECH pyRevit Edition', suite: 'pyrevit', panel: 'pyRevit extension',
-    software: ['Revit', 'pyRevit'], revit: [], status: 'available',
-    tagline: 'The ArchiTECH toolset as a pyRevit extension: 57 tools on three tabs.',
-    description: 'The original ArchiTECH toolset, delivered as a pyRevit extension. Archi Checker covers coordination, health, QA/QC and repair; Archi Core covers annotation, parameter mapping, rooms and system tools; Archi Docs covers drafting, finishes and patterns, graphics, schedules, sheets, templates, viewports and views by room.',
-    problem: 'Teams that standardise on pyRevit want the ArchiTECH workflows without a compiled add-in.',
-    capabilities: [
-      'Archi Checker: 18 tools (Coordination, Detail Model Group, Health, QA QC, Repair).',
-      'Archi Core: 15 tools (Annotation, Parameter Mapping, QA QC, Room, System).',
-      'Archi Docs: 24 tools (Annotation, Drafting, Finishes & Pattern, Graphic, Schedule, Sheets, Template, Viewport, Views by Room).',
-    ],
-    safeguards: [],
-    dialogs: [],
-  },
 ]

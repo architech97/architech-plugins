@@ -1,4 +1,4 @@
-export type SuiteId = 'folio' | 'forge' | 'sentinel' | 'i3d' | 'ai' | 'pyrevit'
+export type SuiteId = 'folio' | 'forge' | 'sentinel' | 'i3d' | 'ai'
 
 export interface DialogShot {
   title: string

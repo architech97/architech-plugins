@@ -5,7 +5,7 @@ import { CONTACT } from '../data/contact'
 import { productBySlug } from '../data/catalog'
 
 const TYPES: Record<string, string> = { custom: 'Custom plugin development', demo: 'Request a guided demo', pricing: 'Pricing and licensing', partnership: 'Studio or enterprise licensing' }
-const PLATFORMS = ['Revit (C#)', 'pyRevit', 'Rhino', 'SketchUp', 'AutoCAD', 'Blender', 'AI / MCP automation', 'Not sure yet']
+const PLATFORMS = ['Revit (C#)', 'Rhino', 'SketchUp', 'AutoCAD', 'Blender', 'AI / MCP automation', 'Not sure yet']
 
 export default function CustomDev() {
   const [params] = useSearchParams()
@@ -38,7 +38,7 @@ export default function CustomDev() {
         <div>
           <span className="eyebrow">Custom development · demos · licensing</span>
           <h1 style={{ fontSize: 'clamp(2.2rem, 4.4vw, 3.4rem)', margin: '14px 0 16px' }}>Tell us about your workflow.</h1>
-          <p className="lead">Commission a Revit add-in, a pyRevit tool or an AI automation; book a guided demo of any plugin; or ask about licensing for your team.</p>
+          <p className="lead">Commission a Revit add-in or an AI automation; book a guided demo of any plugin; or ask about licensing for your team.</p>
           <div className="glass" style={{ padding: 24, marginTop: 30, display: 'grid', gap: 14 }}>
             <h3>What happens next</h3>
             <ol style={{ margin: 0, paddingLeft: 20, color: 'var(--text-2)', display: 'grid', gap: 8 }}>

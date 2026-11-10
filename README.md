@@ -1,8 +1,7 @@
 # ArchiTECH Automation · Plugins website (staging)
 
-The commercial marketplace for ArchiTECH's BIM productivity software: 66 products (58 Revit tools in the
-Arch Folio, Arch Forge and Arch Sentinel suites, plus ArchiTECH-I3D, the AI & MCP connectors and the pyRevit
-edition), with interactive browser demos of the real plugin dialogs.
+The commercial marketplace for ArchiTECH's BIM productivity software: 65 products (58 Revit tools in the
+Arch Folio, Arch Forge and Arch Sentinel suites, plus ArchiTECH-I3D and the AI & MCP connectors), with interactive browser demos of the real plugin dialogs.
 
 This is a **staging preview**. It is separate from the ArchiTECH Design website (architechdesign.in), which
 this repository does not touch. The site is marked `noindex` until it is approved.
@@ -24,7 +23,7 @@ Vite + React + TypeScript, static output for GitHub Pages. No backend.
 
 | Path | Purpose |
 |---|---|
-| `src/data/` | The catalogue: `tools.generated.json` (generated from the plugin sources), `problems.ts`, `extras.ts` (I3D, MCP, Assistant, pyRevit), `suites.ts`, `catalog.ts` |
+| `src/data/` | The catalogue: `tools.generated.json` (generated from the plugin sources), `problems.ts`, `extras.ts` (I3D, MCP, Assistant), `suites.ts`, `catalog.ts` |
 | `src/demo/` | The demo framework: `DemoPlayer` (simulated Revit window, guided steps, notifications, log), `ui.tsx` (dialog primitives), `dialog.css` (the plugins' own Dark/Light palette), `sample.ts`, `registry.ts` |
 | `src/demo/demos/` | One component per interactive demo |
 | `src/pages/` | Home, catalogue, product, demos, pricing, custom development |

@@ -26,11 +26,6 @@ export const SUITES: Suite[] = [
     focus: 'AI connectors across design tools',
     summary: 'Model Context Protocol connectors and an assistant that bring guarded, verifiable AI automation to Revit, Rhino, SketchUp, AutoCAD and Blender.',
   },
-  {
-    id: 'pyrevit', name: 'pyRevit Edition', short: 'pyRevit', color: 'var(--suite-pyrevit)',
-    focus: 'Script-based extension',
-    summary: 'The original ArchiTECH toolset as a pyRevit extension: Archi Checker, Archi Core and Archi Docs tabs.',
-  },
 ]
 
 export const suiteById = (id: SuiteId) => SUITES.find((s) => s.id === id)!
