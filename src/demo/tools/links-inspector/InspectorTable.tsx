@@ -1,7 +1,7 @@
 import { useEffect, useRef, useState } from 'react'
 import type { ReactNode } from 'react'
 import { Btn } from '../../ui'
-import { useReducedMotion } from '../../kit'
+import { animateOnce, useReducedMotion } from '../../kit'
 import './inspector.css'
 
 export interface InspectorRecord {
@@ -21,8 +21,8 @@ export function InspectorTable({ rows, columns, selected, onSelect, onDetail, ac
   const body = useRef<HTMLTableSectionElement>(null)
   useEffect(() => {
     if (reduced || !body.current) return
-    const animation = body.current.animate([{ opacity: .4, transform: 'translateY(5px)' }, { opacity: 1, transform: 'translateY(0)' }], { duration: 420, easing: 'ease-out' })
-    return () => animation.cancel()
+    const animation = animateOnce(body.current, [{ opacity: .4, transform: 'translateY(5px)' }, { opacity: 1, transform: 'translateY(0)' }], reduced, 420)
+    return () => animation?.cancel()
   }, [actionKey, sort, reduced])
   const shown = sort ? [...rows].sort((a, b) => {
     const av = a.values[sort.key], bv = b.values[sort.key]
