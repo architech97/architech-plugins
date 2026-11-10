@@ -1,5 +1,6 @@
 import { useMemo, useState } from 'react'
 import { RevitDialog, Btn, Check, Radio, Select, TextBox, SearchBox } from '../ui'
+import './crafted.css'
 import { SHEETS, type Sheet } from '../sample'
 import type { DemoContext } from '../types'
 
@@ -17,6 +18,9 @@ const SECTIONS = [
 type Section = (typeof SECTIONS)[number][0]
 
 interface Rule { find: string; replace: string; prefix: string; suffix: string }
+const keyOf = (number: string) => number.trim().toLowerCase()
+const VIEWS = ['Living Room Enlarged Plan', 'North Interior Elevation', 'Finish Schedule']
+const latestRevision = (sheet: Sheet) => [sheet.revision, ...(sheet.addedRevisions ?? [])].filter((revision) => revision !== '—').sort().at(-1) ?? '—'
 const empty: Rule = { find: '', replace: '', prefix: '', suffix: '' }
 const REVISIONS = [
   { seq: 1, number: 'P01', date: '12.09.2026', description: 'Planning submission', issued: true },
@@ -27,7 +31,7 @@ const REVISIONS = [
 function applyRule(r: Rule, value: string, s: Sheet, seq: string, ignoreCase: boolean) {
   const expand = (t: string) => t.replace(/\{(\w+)\}/g, (m, k: string) => ({ number: s.number, name: s.name, revision: s.revision, seq } as Record<string, string>)[k.toLowerCase()] ?? m)
   let v = value
-  if (r.find) v = v.replace(new RegExp(r.find.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'), ignoreCase ? 'gi' : 'g'), expand(r.replace))
+  if (r.find) v = v.replace(new RegExp(r.find.replace(/[.*+?^${}()|[\]\\]/g, '\\$&'), ignoreCase ? 'gi' : 'g'), () => expand(r.replace))
   return (expand(r.prefix) + v + expand(r.suffix)).trim()
 }
 
@@ -53,6 +57,10 @@ export default function SheetManager({ theme, setTheme, done, notify, close }: D
   const [paramValue, setParamValue] = useState('No')
   const [revTicked, setRevTicked] = useState<Set<number>>(new Set([3]))
   const [revAdd, setRevAdd] = useState(true)
+  const [pickedViews, setPickedViews] = useState<Set<string>>(new Set())
+  const [placedViews, setPlacedViews] = useState<Record<string, number>>({})
+  const [destination, setDestination] = useState('new')
+  const [layout, setLayout] = useState('2 side by side')
 
   const shown = useMemo(() => sheets.filter((s) => {
     const q = search.trim().toLowerCase()
@@ -64,48 +72,86 @@ export default function SheetManager({ theme, setTheme, done, notify, close }: D
   }), [sheets, search, kind, tickedOnly, ticked])
 
   const tickedList = sheets.filter((s) => ticked.has(s.id))
-  const plan = useMemo(() => {
-    const start = parseInt(seq.start) || 0, step = parseInt(seq.step) || 1, pad = Math.min(6, parseInt(seq.pad) || 0)
-    const changing = new Set(tickedList.map((s) => s.id))
-    const taken = new Set(sheets.filter((s) => !changing.has(s.id)).map((s) => s.number.toLowerCase()))
-    const planned: { sheet: Sheet; number: string; name: string; skip?: string }[] = []
-    tickedList.forEach((s, i) => {
-      const sq = String(start + i * step).padStart(pad, '0')
-      const n = applyRule(num, s.number, s, sq, ignoreCase), nm = applyRule(name, s.name, s, sq, ignoreCase)
-      let skip: string | undefined
-      if (n !== s.number && taken.has(n.toLowerCase())) skip = `${n} is already in use`
-      else if (planned.some((p) => p.number.toLowerCase() === n.toLowerCase())) skip = `${n} is planned twice`
-      if (!skip) taken.add(n.toLowerCase())
-      planned.push({ sheet: s, number: n, name: nm, skip })
+  const changing = new Set(tickedList.map((sheet) => sheet.id))
+  const occupied = new Set(sheets.filter((sheet) => !changing.has(sheet.id)).map((sheet) => keyOf(sheet.number)))
+  const plan = tickedList.map((sheet, index) => {
+    const value = (parseInt(seq.start) || 0) + index * (parseInt(seq.step) || 1)
+    const sequence = String(value).padStart(Math.max(0, Math.min(6, parseInt(seq.pad) || 0)), '0')
+    return { sheet, number: applyRule(num, sheet.number, sheet, sequence, ignoreCase), name: applyRule(name, sheet.name, sheet, sequence, ignoreCase), skip: '' }
+  })
+  for (const item of plan) {
+    if (!item.number || !item.name) item.skip = 'Number and name are required'
+    else if (plan.some((other) => other !== item && keyOf(other.number) === keyOf(item.number))) item.skip = 'The number is planned more than once'
+    if (item.skip) occupied.add(keyOf(item.sheet.number))
+  }
+  let clashes = true
+  while (clashes) {
+    clashes = false
+    for (const item of plan) {
+      if (!item.skip && occupied.has(keyOf(item.number))) {
+        item.skip = item.number + ' is already in use'
+        occupied.add(keyOf(item.sheet.number))
+        clashes = true
+      }
+    }
+  }
+  const changes = plan.filter((item) => !item.skip && (item.number !== item.sheet.number || item.name !== item.sheet.name))
+  const available = <T extends { number: string; name: string }>(rows: T[]) => {
+    const taken = new Set(sheets.map((sheet) => keyOf(sheet.number)))
+    return rows.filter((row) => {
+      const key = keyOf(row.number)
+      if (!key || !row.name.trim() || taken.has(key)) return false
+      taken.add(key)
+      return true
     })
-    return planned
-  }, [tickedList, num, name, seq, ignoreCase, sheets])
-  const changes = plan.filter((p) => !p.skip && (p.number !== p.sheet.number || p.name !== p.sheet.name))
+  }
+  const creation = available(createRows.flatMap((row) => row.number.split(',').flatMap((part) => {
+    const number = part.trim()
+    const range = /^(.*?)(\d+)::(.*?)(\d+)$/.exec(number)
+    if (!range) return number.includes('::') ? [] : [{ ...row, number }]
+    const [, prefix, first, endPrefix, last] = range
+    const count = Number(last) - Number(first) + 1
+    return prefix === endPrefix && count > 0 && count <= 100
+      ? Array.from({ length: count }, (_, index) => ({ ...row, number: prefix + String(Number(first) + index).padStart(first.length, '0') }))
+      : []
+  })))
+  const duplicate = available(tickedList.flatMap((sheet) => Array.from({ length: +copies }, (_, index) => ({
+    ...sheet, number: sheet.number + dupSuffix.trim() + (+copies > 1 ? index + 1 : ''), views: dupMode === 'Sheet only' ? 0 : sheet.views,
+  }))))
+  const revisions = REVISIONS.filter((revision) => !revision.issued && revTicked.has(revision.seq)).map((revision) => revision.number)
 
   const toggle = (id: number, v: boolean) => {
-    const t = new Set(ticked); v ? t.add(id) : t.delete(id); setTicked(t)
+    const t = new Set(ticked); if (v) t.add(id); else t.delete(id); setTicked(t)
     if (t.size >= 2) done('tick')
   }
   const tickShown = () => { const t = new Set(ticked); shown.forEach((s) => t.add(s.id)); setTicked(t); if (t.size >= 2) done('tick') }
   const setRule = (which: 'num' | 'name', k: keyof Rule, v: string) => {
     (which === 'num' ? setNum : setName)((r) => ({ ...r, [k]: v }))
-    if (which === 'num' && (k === 'find' || k === 'prefix' || k === 'replace') && v) { done('rule'); window.setTimeout(() => done('preview'), 1400) }
+    if (v) done('rule')
   }
 
   const runLabel = (() => {
     const n = tickedList.length
     switch (section) {
-      case 'Create': return `Create ${createRows.filter((r) => r.number).length} sheets`
-      case 'Duplicate': return `Duplicate ${n} sheet${n === 1 ? '' : 's'}${+copies > 1 ? ` ×${copies}` : ''}`
+      case 'Create': return `Create ${creation.length} sheets`
+      case 'Duplicate': return 'Duplicate ' + duplicate.length + ' sheets'
       case 'Renumber / Rename': return `Renumber / rename ${changes.length} sheet${changes.length === 1 ? '' : 's'}`
       case 'Set parameter': return `Set on ${n} sheet${n === 1 ? '' : 's'}`
       case 'Revisions': return `${revAdd ? 'Add to' : 'Remove from'} ${n} sheet${n === 1 ? '' : 's'}`
       default: return 'Place selected views'
     }
   })()
-  const canRun = section === 'Create' ? createRows.some((r) => r.number) : section === 'Renumber / Rename' ? changes.length > 0 : section === 'Place on sheet' ? false : tickedList.length > 0
+  const canRun = ({
+    Create: creation.length > 0,
+    Duplicate: duplicate.length > 0,
+    'Renumber / Rename': changes.length > 0,
+    'Set parameter': tickedList.length > 0 && (param !== 'Title block type' || (paramValue.trim() && tickedList.some((sheet) => !sheet.placeholder))),
+    Revisions: tickedList.length > 0 && revisions.length > 0,
+    'Place on sheet': pickedViews.size > 0,
+  })[section]
 
   const run = () => {
+    const nextId = Math.max(...sheets.map((sheet) => sheet.id)) + 1
     if (section === 'Renumber / Rename') {
       const byId = new Map(changes.map((p) => [p.sheet.id, p]))
       setSheets((all) => all.map((s) => (byId.has(s.id) ? { ...s, number: byId.get(s.id)!.number, name: byId.get(s.id)!.name } : s)))
@@ -113,27 +159,50 @@ export default function SheetManager({ theme, setTheme, done, notify, close }: D
       setResult(`Renumbered or renamed ${changes.length} of ${plan.length} sheets${skipped.length ? ` · ${skipped.length} skipped` : ''}`)
       notify({ kind: 'success', text: `Renumbered or renamed ${changes.length} sheets. In Revit this is one Undo step.` })
       skipped.forEach((p) => notify({ kind: 'warning', text: `${p.sheet.number} skipped: ${p.skip}` }))
-      setNum(empty); setName(empty); done('run')
+      setNum(empty); setName(empty); done('preview'); done('run')
     } else if (section === 'Create') {
-      const rows = createRows.filter((r) => r.number)
-      setSheets((all) => [...all, ...rows.map((r, i) => ({ id: 500 + all.length + i, number: r.number, name: r.name, titleBlock: createReal ? 'A1 Landscape' : '—', revision: '—', views: 0, inSheetList: true, placeholder: !createReal }))])
+      const rows = creation
+      setSheets((all) => [...all, ...rows.map((r, i) => ({ id: nextId + i, number: r.number, name: r.name, titleBlock: createReal ? 'A1 Landscape' : '—', revision: '—', views: 0, inSheetList: true, placeholder: !createReal }))])
       setResult(`Created ${rows.length} ${createReal ? 'sheets' : 'placeholder sheets'}`)
       notify({ kind: 'success', text: `Created ${rows.length} ${createReal ? 'sheets with the A1 Landscape title block' : 'placeholder sheets'} (simulated).` })
     } else if (section === 'Duplicate') {
-      const c = +copies
-      const add: Sheet[] = []
-      tickedList.forEach((s) => { for (let i = 1; i <= c; i++) add.push({ ...s, id: 700 + add.length + sheets.length, number: s.number + dupSuffix + (c > 1 ? i : ''), views: dupMode === 'Sheet only' ? 0 : s.views }) })
+      const add = duplicate.map((sheet, index) => ({ ...sheet, id: nextId + index }))
       setSheets((all) => [...all, ...add])
       setResult(`Duplicated ${tickedList.length} sheets into ${add.length} new sheets`)
       notify({ kind: 'success', text: `${add.length} new sheets (${dupMode.toLowerCase()}). One Undo reverses the whole run.` })
     } else if (section === 'Set parameter') {
-      if (param === 'Appears In Sheet List') setSheets((all) => all.map((s) => (ticked.has(s.id) ? { ...s, inSheetList: paramValue === 'Yes' } : s)))
-      setResult(`Set ${param} on ${tickedList.length} sheets`)
-      notify({ kind: 'success', text: `${param} = ${paramValue} on ${tickedList.length} sheets.` })
+      const target = tickedList.filter((sheet) => param !== 'Title block type' || !sheet.placeholder)
+      const ids = new Set(target.map((sheet) => sheet.id))
+      setSheets(sheets.map((sheet) => {
+        if (!ids.has(sheet.id)) return sheet
+        if (param === 'Appears In Sheet List') return { ...sheet, inSheetList: paramValue === 'Yes' }
+        if (param === 'Drawn By') return { ...sheet, drawnBy: paramValue }
+        if (param === 'Checked By') return { ...sheet, checkedBy: paramValue }
+        return { ...sheet, titleBlock: paramValue.trim() }
+      }))
+      setResult('Set ' + param + ' on ' + target.length + ' sample sheets.')
     } else if (section === 'Revisions') {
-      const rev = REVISIONS.filter((r) => revTicked.has(r.seq)).map((r) => r.number)
-      setResult(`${revAdd ? 'Added' : 'Removed'} ${rev.join(', ') || 'no revisions'} on ${tickedList.length} sheets`)
-      notify({ kind: 'success', text: `${revAdd ? 'Added' : 'Removed'} ${rev.join(', ')} ${revAdd ? 'to' : 'from'} ${tickedList.length} sheets' Revisions on Sheet.` })
+      setSheets(sheets.map((sheet) => {
+        if (!ticked.has(sheet.id)) return sheet
+        const previous = sheet.addedRevisions ?? []
+        return { ...sheet, addedRevisions: revAdd ? [...new Set([...previous, ...revisions])] : previous.filter((revision) => !revisions.includes(revision)) }
+      }))
+      setResult((revAdd ? 'Added ' : 'Removed ') + revisions.join(', ') + ' on ' + tickedList.length + ' sample sheets.')
+    } else {
+      const existing = sheets.find((sheet) => !sheet.placeholder && (destination === 'new' ? keyOf(sheet.number) === 'a-801' : String(sheet.id) === destination))
+      const number = existing?.number ?? 'A-801'
+      if (!existing && sheets.some((sheet) => keyOf(sheet.number) === 'a-801')) {
+        setResult(number + ' is already used by a placeholder. Choose an existing sheet.')
+        return
+      }
+      const capacity = layout === '2 side by side' ? 2 : 1
+      const targetId = existing?.id ?? nextId
+      const placed = [...pickedViews].slice(0, capacity)
+      setPlacedViews({ ...placedViews, ...Object.fromEntries(placed.map((view) => [view, targetId])) })
+      setPickedViews(new Set([...pickedViews].slice(capacity)))
+      setSheets(existing ? sheets.map((sheet) => sheet.id === existing.id ? { ...sheet, views: sheet.views + placed.length } : sheet)
+        : [...sheets, { id: nextId, number, name: 'Interior View Studies', titleBlock: 'A1 Landscape', revision: '—', views: placed.length, inSheetList: true, placeholder: false }])
+      setResult('Placed ' + placed.length + ' sample views on ' + number + '.')
     }
   }
 
@@ -145,7 +214,7 @@ export default function SheetManager({ theme, setTheme, done, notify, close }: D
   }
 
   return (
-    <RevitDialog theme={theme} onTheme={setTheme} title="Sheet Manager" caption="Sample Residence · 12 sheets and placeholders" onClose={close}
+    <RevitDialog theme={theme} onTheme={setTheme} title="Sheet Manager" caption={'Sample Residence · ' + sheets.length + ' sheets and placeholders'} onClose={close}
       footer={<>
         <span className="ad-status">{result || (tickedList.length ? `${tickedList.length} ticked` : 'Tick the sheets to work on.')}</span>
         <Btn onClick={close}>Close</Btn>
@@ -164,7 +233,7 @@ export default function SheetManager({ theme, setTheme, done, notify, close }: D
             <Btn sm onClick={() => notify({ kind: 'info', text: 'Read the model again (ticks are kept).' })}>Refresh</Btn>
           </div>
           <div className="ad-row">
-            <SearchBox value={search} onChange={setSearch} placeholder="Search sheet number, name, title block or revision..." width={300} demo="search" />
+            <SearchBox value={search} onChange={setSearch} placeholder="Search sheet number, name, title block or revision..." width="min(300px, 100%)" demo="search" />
             <Select label="Sheet kind" value={kind} onChange={setKind} options={['All sheets', 'Sheets', 'Placeholders']} width={130} />
             <Btn sm onClick={() => setTickedOnly(!tickedOnly)} style={tickedOnly ? { borderColor: 'var(--d-accent)' } : undefined}>Ticked only</Btn>
             <Btn sm onClick={tickShown} demo="tick-shown">Tick shown</Btn>
@@ -176,7 +245,7 @@ export default function SheetManager({ theme, setTheme, done, notify, close }: D
                 <th style={{ width: 34 }}><Check checked={shown.length > 0 && shown.every((s) => ticked.has(s.id))} onChange={(v) => { const t = new Set(ticked); shown.forEach((s) => (v ? t.add(s.id) : t.delete(s.id))); setTicked(t); if (t.size >= 2) done('tick') }} title="Tick / untick the rows shown" /></th>
                 <th>Number</th><th>Name</th>
                 {section === 'Renumber / Rename' && <><th>New number</th><th>New name</th></>}
-                <th>Title block</th><th>Current revision</th><th>Views</th><th>In sheet list</th><th>Placeholder</th>
+                <th>Title block</th>{section === 'Set parameter' && (param === 'Drawn By' || param === 'Checked By') && <th>{param}</th>}<th>Current revision</th><th>Views</th><th>In sheet list</th><th>Placeholder</th>
               </tr></thead>
               <tbody>
                 {shown.map((s) => {
@@ -186,7 +255,7 @@ export default function SheetManager({ theme, setTheme, done, notify, close }: D
                       <td onClick={(e) => e.stopPropagation()}><Check checked={ticked.has(s.id)} onChange={(v) => toggle(s.id, v)} title={`Tick ${s.number}`} /></td>
                       <td className="num">{s.number}</td><td>{s.name}</td>
                       {section === 'Renumber / Rename' && <><td className={p && p.number !== s.number ? 'changed' : ''}>{p && p.number !== s.number ? p.number : ''}</td><td className={p && p.name !== s.name ? 'changed' : ''}>{p && p.name !== s.name ? p.name : ''}</td></>}
-                      <td>{s.titleBlock}</td><td>{s.revision}</td><td className="num">{s.views}</td><td>{s.inSheetList ? 'Yes' : 'No'}</td><td>{s.placeholder ? 'Yes' : 'No'}</td>
+                      <td>{s.titleBlock}</td>{section === 'Set parameter' && (param === 'Drawn By' || param === 'Checked By') && <td>{(param === 'Drawn By' ? s.drawnBy : s.checkedBy) || '—'}</td>}<td>{latestRevision(s)}</td><td className="num">{s.views}</td><td>{s.inSheetList ? 'Yes' : 'No'}</td><td>{s.placeholder ? 'Yes' : 'No'}</td>
                     </tr>
                   )
                 })}
@@ -197,8 +266,8 @@ export default function SheetManager({ theme, setTheme, done, notify, close }: D
           <span className="ad-note">{shown.length} of {sheets.length} shown · {ticked.size} ticked</span>
 
           {section === 'Renumber / Rename' && (
-            <div className="ad-grid2" style={{ gridTemplateColumns: 'minmax(0,1.1fr) minmax(0,1fr)' }}>
-              <div className="ad-card" style={{ display: 'grid', gridTemplateColumns: '84px 1fr 1fr', gap: 6, alignItems: 'center' }}>
+            <div className="ad-grid2 crafted-layout" style={{ gridTemplateColumns: 'minmax(0,1.1fr) minmax(0,1fr)' }}>
+              <div className="ad-card" style={{ display: 'grid', gridTemplateColumns: 'minmax(60px,auto) minmax(0,1fr) minmax(0,1fr)', gap: 6, alignItems: 'center' }}>
                 <span /><span className="ad-label">Number</span><span className="ad-label">Name</span>
                 {(['Find:', 'Replace with:', 'Prefix:', 'Suffix:'] as const).map((l, i) => (
                   <FragmentRow key={l} label={l} a={ruleBox('num')[i]} b={ruleBox('name')[i]} />
@@ -225,17 +294,26 @@ export default function SheetManager({ theme, setTheme, done, notify, close }: D
                     </span>
                   ))}
                 </div>
+                <Btn sm disabled={!plan.length} onClick={() => done('preview')}>Mark preview reviewed</Btn>
               </div>
             </div>
           )}
 
           {section === 'Create' && (
-            <div className="ad-grid2">
+            <div className="ad-grid2 crafted-layout">
               <div style={{ display: 'flex', flexDirection: 'column', gap: 6 }}>
                 <span className="ad-note">Type, or paste two columns from Excel (number, name). A number can be a range (A103::A106) or a list (M00A,M00B).</span>
                 {createRows.map((r, i) => (
                   <div className="ad-row" key={i}>
-                    <TextBox style={{ width: 90 }} value={r.number} aria-label="Sheet number" onChange={(e) => setCreateRows(createRows.map((x, j) => (j === i ? { ...x, number: e.target.value } : x)))} />
+                    <TextBox style={{ width: 90 }} value={r.number} aria-label="Sheet number" onPaste={(event) => {
+                      const text = event.clipboardData.getData('text/plain')
+                      if (!text.includes('\t')) return
+                      event.preventDefault()
+                      setCreateRows(text.trim().split(/\r?\n/).map((line) => {
+                        const [number, name = ''] = line.split('\t')
+                        return { number: number.trim(), name: name.trim() }
+                      }))
+                    }} onChange={(e) => setCreateRows(createRows.map((x, j) => (j === i ? { ...x, number: e.target.value } : x)))} />
                     <TextBox style={{ flex: 1 }} value={r.name} aria-label="Sheet name" onChange={(e) => setCreateRows(createRows.map((x, j) => (j === i ? { ...x, name: e.target.value } : x)))} />
                   </div>
                 ))}
@@ -244,20 +322,21 @@ export default function SheetManager({ theme, setTheme, done, notify, close }: D
                 <Radio name="create" label="Sheets with title block: A1 Landscape" checked={createReal} onChange={() => setCreateReal(true)} />
                 <Radio name="create" label="Placeholder sheets (drawing list only)" checked={!createReal} onChange={() => setCreateReal(false)} />
               </div>
-              <div><span className="ad-label">Preview</span><div className="ad-list" style={{ marginTop: 6 }}>{createRows.filter((r) => r.number).map((r, i) => (
-                <span key={i} className={`li ${sheets.some((s) => s.number === r.number) ? 'err' : ''}`}>{sheets.some((s) => s.number === r.number) ? `✕ ${r.number} already exists` : <><b>{r.number}</b> {r.name}</>}</span>))}</div></div>
+              <div><span className="ad-label">Preview</span><div className="ad-list" style={{ marginTop: 6 }}>{creation.length ? creation.map((row) => <span key={row.number} className="li"><b>{row.number}</b> {row.name}</span>)
+                  : <span className="li">Enter a unique sheet number and name.</span>}</div></div>
             </div>
           )}
 
           {section === 'Duplicate' && (
-            <div className="ad-grid2">
+            <div className="ad-grid2 crafted-layout">
               <div className="ad-card" style={{ display: 'grid', gap: 8 }}>
                 <div className="ad-row"><span className="ad-note" style={{ width: 90 }}>Duplicate:</span><Select label="Duplicate mode" value={dupMode} onChange={setDupMode} options={['Sheet only', 'With views - duplicate', 'With views - with detailing', 'With views - as dependent']} width={210} /></div>
                 <div className="ad-row"><span className="ad-note" style={{ width: 90 }}>Copies:</span><Select label="Copies" value={copies} onChange={setCopies} options={['1', '2', '3', '4', '5', '6', '7', '8', '9']} width={70} /></div>
                 <div className="ad-row"><span className="ad-note" style={{ width: 90 }}>Number suffix:</span><TextBox style={{ width: 110 }} value={dupSuffix} onChange={(e) => setDupSuffix(e.target.value)} aria-label="Number suffix" /></div>
                 <span className="ad-note">The title block, sheet parameters and the sheet's own notes and lines are copied. One Undo reverses the whole run.</span>
               </div>
-              <div><span className="ad-label">Preview</span><div className="ad-list" style={{ marginTop: 6 }}>{tickedList.length === 0 ? <span className="li">Tick the sheets to duplicate.</span> : tickedList.flatMap((s) => Array.from({ length: +copies }, (_, i) => <span className="li" key={s.id + '-' + i}><b>{s.number + dupSuffix + (+copies > 1 ? i + 1 : '')}</b> {s.name}</span>))}</div></div>
+              <div><span className="ad-label">Preview</span><div className="ad-list" style={{ marginTop: 6 }}>{tickedList.length === 0 ? <span className="li">Tick the sheets to duplicate.</span> : duplicate.length ? duplicate.map((row) => <span className="li" key={row.number}><b>{row.number}</b> {row.name}</span>)
+                  : <span className="li">All proposed numbers already exist.</span>}</div></div>
             </div>
           )}
 
@@ -270,7 +349,7 @@ export default function SheetManager({ theme, setTheme, done, notify, close }: D
           )}
 
           {section === 'Revisions' && (
-            <div className="ad-grid2">
+            <div className="ad-grid2 crafted-layout">
               <div style={{ display: 'grid', gap: 6 }}>
                 <Radio name="rev" label="Add to the ticked sheets" checked={revAdd} onChange={() => setRevAdd(true)} />
                 <Radio name="rev" label="Remove from the ticked sheets" checked={!revAdd} onChange={() => setRevAdd(false)} />
@@ -278,12 +357,27 @@ export default function SheetManager({ theme, setTheme, done, notify, close }: D
               </div>
               <div className="ad-table-wrap"><table className="ad-table"><thead><tr><th /><th>Seq.</th><th>Number</th><th>Date</th><th>Description</th><th>Issued</th></tr></thead>
                 <tbody>{REVISIONS.map((r) => (
-                  <tr key={r.seq} className={revTicked.has(r.seq) ? 'sel' : ''}><td><Check checked={revTicked.has(r.seq)} onChange={(v) => { const t = new Set(revTicked); v ? t.add(r.seq) : t.delete(r.seq); setRevTicked(t) }} title={`Tick ${r.number}`} /></td><td>{r.seq}</td><td>{r.number}</td><td>{r.date}</td><td>{r.description}</td><td>{r.issued ? 'Yes' : 'No'}</td></tr>))}</tbody></table></div>
+                  <tr key={r.seq} className={revTicked.has(r.seq) ? 'sel' : ''}><td>{r.issued ? '—' : <Check checked={revTicked.has(r.seq)} onChange={(v) => { const t = new Set(revTicked); if (v) t.add(r.seq); else t.delete(r.seq); setRevTicked(t) }} title={`Tick ${r.number}`} />}</td><td>{r.seq}</td><td>{r.number}</td><td>{r.date}</td><td>{r.description}</td><td>{r.issued ? 'Yes' : 'No'}</td></tr>))}</tbody></table></div>
             </div>
           )}
 
           {section === 'Place on sheet' && (
-            <div className="ad-card"><span className="ad-note">Place on sheet puts views and schedules on existing or new sheets in a layout. The same placement panel is demonstrated in the Room to View demo.</span></div>
+            <div className="ad-card crafted-action-list">
+              <span className="ad-label">Sample views and schedules</span>
+              {VIEWS.map((view) => placedViews[view] ? <span key={view}>{view} · Placed on {sheets.find((sheet) => sheet.id === placedViews[view])?.number}</span>
+                : <Check key={view} label={view} checked={pickedViews.has(view)} onChange={(checked) => {
+                  const next = new Set(pickedViews)
+                  if (checked) next.add(view); else next.delete(view)
+                  setPickedViews(next)
+                }} />)}
+              <div className="ad-row">
+                <select className="ad-select crafted-responsive-input" aria-label="Destination sheet" value={destination} onChange={(event) => setDestination(event.target.value)}>
+                  <option value="new">New A-801</option>
+                  {sheets.filter((sheet) => !sheet.placeholder).map((sheet) => <option key={sheet.id} value={sheet.id}>{sheet.number}</option>)}
+                </select>
+                <Select label="Viewport layout" value={layout} onChange={setLayout} options={['2 side by side', '1 view, title block centre']} />
+              </div>
+            </div>
           )}
         </div>
       </div>

@@ -1,14 +1,15 @@
 import { useEffect, useId, useRef, useState } from 'react'
-import { ArrowRight, Check, CircleAlert, FileCode2, ScanLine, ShieldCheck } from 'lucide-react'
+import { ArrowRight, Check, CircleAlert, FileCode2, RotateCcw, ScanLine, ShieldCheck } from 'lucide-react'
+import { DEMO_PROJECT } from '../data/demoProject'
 import { asset } from '../components/Brand'
 import type { DemoContext } from './types'
-import { BLOCKS, CAMERA_POINTS, OBSTACLES, RHINO_DIMENSIONS, SHEETS, SKETCHUP_HEIGHTS } from './connectorRegistry'
+import { BLOCKS, CAMERA_POINTS, EXISTING_SHEETS, OBSTACLES, RHINO_DIMENSIONS, SHEET_CHOICES, SKETCHUP_HEIGHTS } from './connectorRegistry'
 import type { Result, Scenario } from './connectorRegistry'
 import './connector.css'
 
 type Phase = 'ready' | 'prepared' | 'denied' | 'applied' | 'inspected'
 
-function Plan({ applied }: { applied: boolean }) {
+function Plan({ applied, block }: { applied: boolean; block: string | null }) {
   return (
     <>
       <g className="cd-lines" fill="none">
@@ -17,7 +18,11 @@ function Plan({ applied }: { applied: boolean }) {
         <path className="cd-line-dashed" d="M125 82h42v34h-42z M167 73h40v26h-40z M260 104h65v49h-65z M124 165h62v15h-62z" />
       </g>
       {BLOCKS.flatMap(({ label, points }, group) => points.map(([x, y], index) => (
-        <circle className={applied ? 'cd-block is-counted' : 'cd-block'} style={{ animationDelay: (group * 4 + index) * 35 + 'ms' }} key={label + index} cx={x} cy={y} r={group === 2 ? 5 : 3.5} />
+        <g className={'cd-block' + (applied ? ' is-counted' : '') + (block && block !== label ? ' is-muted' : '')} key={label + index} transform={'translate(' + x + ' ' + y + ')'}>
+          {group === 0 && <path d="M-4 3v-6a6 6 0 0 1 6 6z" />}
+          {group === 1 && <circle r="3.5" />}
+          {group === 2 && <rect x="-5" y="-3" width="10" height="6" rx="1" />}
+        </g>
       )))}
     </>
   )
@@ -50,6 +55,7 @@ function Solid({ scene, option, applied }: { scene: 'rhino' | 'sketchup'; option
       <text className="cd-svg-label" x="226" y="42">+Z</text>
       <text className="cd-svg-label" x="226" y="215">−Z</text>
       <text className="cd-svg-label" x="235" y="164">ORIGIN</text>
+      <text className="cd-svg-label" x="18" y="225">{sketchup ? 'SIGNED Z ' + (height > 0 ? '+' : '−') + Math.abs(height) + ' mm' : width + ' × ' + depth + ' × ' + height + ' mm'}</text>
     </>
   )
 }
@@ -74,10 +80,14 @@ function CameraPlan({ option, applied, failed }: { option: number; applied: bool
   )
 }
 
-function Viewport({ scenario, option, phase, failed }: { scenario: Scenario; option: number; phase: Phase; failed?: boolean }) {
+function Viewport({ scenario, option, phase, failed, block, setBlock }: {
+  scenario: Scenario; option: number; phase: Phase; failed?: boolean; block: string | null; setBlock: (value: string | null) => void
+}) {
   const grid = useId()
   const applied = phase === 'applied' || phase === 'inspected'
   const { scene } = scenario
+  const viewportStatus = !applied ? 'Fixture preview' : failed ? 'Sample unchanged' : scene === 'drawing' ? 'Read-only takeoff complete' : 'Sample state updated'
+  const sheetNumber = SHEET_CHOICES[option]
   return (
     <div className="cd-viewport">
       <div className="cd-viewport-label"><ScanLine size={13} /><span>{scene === 'sheet' ? 'SHEET INDEX' : scene === 'drawing' ? 'MODEL SPACE' : scene === 'blender' ? 'CAMERA PLAN' : 'PERSPECTIVE'}</span></div>
@@ -85,35 +95,66 @@ function Viewport({ scenario, option, phase, failed }: { scenario: Scenario; opt
         <defs><pattern id={grid} width="22" height="22" patternUnits="userSpaceOnUse"><path d="M 22 0 L 0 0 0 22" fill="none" stroke="currentColor" strokeWidth=".65" /></pattern></defs>
         <rect className="cd-grid" width="100%" height="100%" fill={'url(#' + grid + ')'} />
         {scene === 'sheet' && <>
-          <rect x="71" y="28" width="318" height="184" rx="3" className="cd-sheet" />
-          {applied && <>
-            <path className="cd-sheet" d="M100 74H359V183H100Z M100 156H359 M290 156V183" />
-            <text className="cd-svg-label cd-sheet-name" x="111" y="112">BUILDING SECTIONS</text>
-            <text className="cd-svg-label" x="111" y="173">A1 TITLE BLOCK</text>
-            <text className="cd-svg-label cd-sheet-number" x="303" y="174">{SHEETS[option]}</text>
-          </>}
-          {!applied && <text className="cd-svg-label" x="230" y="125" textAnchor="middle">NO NEW SHEET IN SAMPLE INDEX</text>}
+          <rect x="54" y="35" width="352" height="172" rx="3" className="cd-sheet" />
+          <text className="cd-svg-label cd-sheet-head" x="72" y="60">NUMBER</text>
+          <text className="cd-svg-label cd-sheet-head" x="142" y="60">SHEET NAME</text>
+          {EXISTING_SHEETS.map((sheet, index) => {
+            const y = 73 + index * 34
+            return <g key={sheet.number} className={applied && failed && sheet.number === sheetNumber ? 'cd-index-row is-conflict' : 'cd-index-row'}>
+              <rect x="67" y={y} width="326" height="29" rx="3" />
+              <text x="78" y={y + 18}>{sheet.number}</text>
+              <text x="142" y={y + 18}>{sheet.name}</text>
+            </g>
+          })}
+          {applied && !failed ? <g className="cd-index-row is-new">
+            <rect x="67" y="141" width="326" height="29" rx="3" />
+            <text x="78" y="159">{sheetNumber}</text>
+            <text x="142" y="159">Building Sections</text>
+            <text x="352" y="159">NEW</text>
+          </g> : <text className="cd-svg-label" x="76" y="160">{applied ? 'NUMBER IN USE · NO SHEET CREATED' : 'NO NEW SHEET CREATED'}</text>}
+          <text className="cd-svg-label" x="76" y="190">{DEMO_PROJECT.code} / EXCERPT</text>
         </>}
-        {scene === 'drawing' && <Plan applied={applied} />}
+        {scene === 'drawing' && <Plan applied={applied} block={block} />}
         {(scene === 'rhino' || scene === 'sketchup') && <Solid scene={scene} option={option} applied={applied} />}
         {scene === 'blender' && <CameraPlan option={option} applied={applied} failed={failed} />}
       </svg>
-      <div className="cd-viewport-foot"><span>{scenario.file}</span><span>{applied ? (failed ? 'Sample path blocked' : 'Sample state updated') : 'Fixture preview'}</span></div>
+      {scene === 'drawing' && phase === 'inspected' && <div className="cd-block-controls" role="group" aria-label="Highlight block symbols in the drawing">
+        <span>Highlight</span>
+        <button className="cd-action secondary" type="button" aria-pressed={!block} onClick={() => setBlock(null)}>All blocks</button>
+        {BLOCKS.map(({ label }) => <button key={label} className="cd-action secondary" type="button" aria-pressed={block === label} onClick={() => setBlock(label)}>{label}</button>)}
+        <output className="cd-visually-hidden" aria-live="polite">{block ? 'Highlighting ' + block + ' in ModelSpace' : 'Showing all block references'}</output>
+      </div>}
+      <div className="cd-viewport-foot"><span>{scenario.file}</span><span>{viewportStatus}</span></div>
     </div>
   )
 }
 
-export default function ConnectorDemo({ scenario, done, notify }: DemoContext & { scenario: Scenario }) {
+export default function ConnectorDemo({ scenario, done, rewind, notify }: DemoContext & { scenario: Scenario }) {
   const [option, setOption] = useState(0)
   const [phase, setPhase] = useState<Phase>('ready')
   const [result, setResult] = useState<Result>()
+  const [block, setBlock] = useState<string | null>(null)
+  const restarted = useRef(false)
+  const requestField = useRef<HTMLSelectElement>(null)
   const nextAction = useRef<HTMLButtonElement>(null)
   const resultPanel = useRef<HTMLElement>(null)
 
   useEffect(() => {
     if (phase === 'inspected') resultPanel.current?.focus()
     else if (phase !== 'ready') nextAction.current?.focus()
+    else if (restarted.current) {
+      (requestField.current ?? nextAction.current)?.focus()
+      restarted.current = false
+    }
   }, [phase])
+
+  function restart() {
+    restarted.current = true
+    setPhase('ready')
+    setResult(undefined)
+    setBlock(null)
+    rewind('prepare')
+  }
 
   function stage() {
     setPhase('prepared')
@@ -139,16 +180,19 @@ export default function ConnectorDemo({ scenario, done, notify }: DemoContext & 
   }
 
   return (
-    <div className="cd">
-      <div className="cd-head"><span><FileCode2 size={16} /> Tool sandbox</span><span className="cd-pill"><i /> Browser fixture</span></div>
+    <section className="cd" aria-label={scenario.host + ' connector simulation'}>
+      <header className="cd-head">
+        <span className="cd-app-icon"><FileCode2 size={18} /></span>
+        <div><strong>{scenario.host} connector</strong><small>{scenario.scene === 'drawing' ? 'Read-only takeoff' : 'Browser tool sandbox'}</small></div>
+        <span className="cd-pill"><i /> {DEMO_PROJECT.code} · Browser fixture</span>
+      </header>
       <div className="cd-body">
-        <Viewport scenario={scenario} option={option} phase={phase} failed={result?.failed} />
         <div className="cd-request">
           <div className="cd-micro">Sample request</div>
           {scenario.option && phase === 'ready' && (
             <label className="cd-option">
               <span>{scenario.option.label}</span>
-              <select value={option} onChange={(event) => setOption(Number(event.target.value))}>
+              <select ref={requestField} value={option} onChange={(event) => setOption(Number(event.target.value))}>
                 {scenario.option.values.map((value, index) => <option key={value} value={index}>{value}</option>)}
               </select>
             </label>
@@ -159,24 +203,30 @@ export default function ConnectorDemo({ scenario, done, notify }: DemoContext & 
           {phase === 'denied' && <div className="cd-feedback"><CircleAlert size={15} /> Write denied. Sample document unchanged.</div>}
           {phase === 'applied' && <div className="cd-feedback"><Check size={15} /> Sample result available for inspection.</div>}
           {phase !== 'inspected' && <div className="cd-actions">
-            {phase === 'ready' && <button className="cd-action" data-demo="connector-prepare" type="button" onClick={stage}>Prepare tool call <ArrowRight size={15} /></button>}
+            {phase === 'ready' && <button ref={nextAction} className="cd-action" data-demo="connector-prepare" type="button" onClick={stage}>Prepare tool call <ArrowRight size={15} /></button>}
             {phase === 'prepared' && <>
               <button ref={nextAction} className="cd-action" data-demo="connector-apply" type="button" onClick={apply}>{scenario.action}</button>
               {scenario.approval && <button className="cd-action secondary" type="button" onClick={deny}>Deny</button>}
+              {scenario.option && <button className="cd-action secondary" type="button" onClick={restart}>Edit request</button>}
             </>}
-            {phase === 'denied' && <button ref={nextAction} className="cd-action secondary" data-demo="connector-apply" type="button" onClick={stage}>Review again</button>}
+            {phase === 'denied' && <>
+              <button ref={nextAction} className="cd-action secondary" data-demo="connector-apply" type="button" onClick={stage}>Review again</button>
+              <button className="cd-action secondary" type="button" onClick={restart}>Edit request</button>
+            </>}
             {phase === 'applied' && <button ref={nextAction} className="cd-action" data-demo="connector-inspect" type="button" onClick={inspect}>Inspect result <ArrowRight size={15} /></button>}
           </div>}
         </div>
-        {phase === 'inspected' && result && <section className="cd-result" ref={resultPanel} tabIndex={-1} aria-label="Sample result">
+        <Viewport scenario={scenario} option={option} phase={phase} failed={result?.failed} block={block} setBlock={setBlock} />
+        {phase === 'inspected' && result && <section className={'cd-result' + (result.failed ? ' is-failed' : '')} ref={resultPanel} tabIndex={-1} aria-label="Sample result">
           <div className="cd-result-heading">{result.failed ? <CircleAlert size={18} /> : <Check size={18} />}<div><span className="cd-micro">Sample result</span><h3>{result.title}</h3></div></div>
           <dl>{result.rows.map(([label, value]) => <div key={label}><dt>{label}</dt><dd>{value}</dd></div>)}</dl>
           {scenario.scene === 'blender' && !result.failed && <figure className="cd-recording">
             <video controls playsInline preload="metadata" src={asset('media/connectors/blender-walkthrough.mp4')} aria-label="Recorded camera walkthrough from Blender" />
-            <figcaption>Recorded Blender output from the furnished-room project.</figcaption>
+            <figcaption>Recorded output from the separate Blender furnished-room validation project.</figcaption>
           </figure>}
+          <button className="cd-action secondary cd-restart" type="button" onClick={restart}><RotateCcw size={14} /> {scenario.scene === 'blender' ? 'Try another route' : 'Run another sample'}</button>
         </section>}
       </div>
-    </div>
+    </section>
   )
 }

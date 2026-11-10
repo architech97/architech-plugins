@@ -1,6 +1,6 @@
 // Sample BIM data for the simulations: an invented two-storey residence. Not a real project.
 
-export interface Sheet { id: number; number: string; name: string; titleBlock: string; revision: string; views: number; inSheetList: boolean; placeholder: boolean }
+export interface Sheet { id: number; number: string; name: string; titleBlock: string; revision: string; views: number; inSheetList: boolean; placeholder: boolean; drawnBy?: string; checkedBy?: string; addedRevisions?: string[] }
 export const SHEETS: Sheet[] = [
   { id: 101, number: 'A-000', name: 'Cover Sheet', titleBlock: 'A1 Landscape', revision: 'P02', views: 1, inSheetList: true, placeholder: false },
   { id: 102, number: 'A-001', name: 'Drawing List', titleBlock: 'A1 Landscape', revision: 'P02', views: 1, inSheetList: true, placeholder: false },
@@ -16,13 +16,13 @@ export const SHEETS: Sheet[] = [
   { id: 112, number: 'A-701', name: 'Wall Details', titleBlock: '—', revision: '—', views: 0, inSheetList: true, placeholder: true },
 ]
 
-export interface Room { id: number; number: string; name: string; level: string; area: number; status: 'Ready' | 'Review'; note: string }
+export interface Room { id: number; number: string; name: string; level: string; area: number; status: 'Ready' | 'Review'; note: string; straightWalls?: number }
 export const ROOMS: Room[] = [
-  { id: 201, number: '101', name: 'Living Room', level: 'Level 01', area: 32.4, status: 'Ready', note: '' },
+  { id: 201, number: '101', name: 'Living Room', level: 'Level 01', area: 32.4, straightWalls: 5, status: 'Ready', note: '' },
   { id: 202, number: '102', name: 'Kitchen', level: 'Level 01', area: 14.8, status: 'Ready', note: '' },
   { id: 203, number: '103', name: 'Dining', level: 'Level 01', area: 16.2, status: 'Ready', note: '' },
   { id: 204, number: '104', name: 'Powder Room', level: 'Level 01', area: 3.1, status: 'Ready', note: '' },
-  { id: 205, number: '105', name: 'Entrance Hall', level: 'Level 01', area: 9.6, status: 'Review', note: 'Curved boundary segment: skipped for elevations' },
+  { id: 205, number: '105', name: 'Entrance Hall', level: 'Level 01', area: 9.6, straightWalls: 3, status: 'Review', note: 'Curved boundary segment: skipped for elevations' },
   { id: 206, number: '201', name: 'Master Bedroom', level: 'Level 02', area: 21.0, status: 'Ready', note: '' },
   { id: 207, number: '202', name: 'Bedroom 2', level: 'Level 02', area: 14.2, status: 'Ready', note: '' },
   { id: 208, number: '203', name: 'Bathroom', level: 'Level 02', area: 7.4, status: 'Ready', note: '' },
@@ -49,7 +49,7 @@ export interface PurgeItem { id: number; tag: string; name: string; info: string
 // Line styles, Filled regions, Text note types, Model and Detail groups (plus opt-in unplaced rooms and areas).
 export const PURGE: PurgeItem[] = [
   { id: 901, tag: 'MAT', name: 'Concrete - Cast In Situ', info: 'Material', detail: 'Used in 6 types', used: true },
-  { id: 902, tag: 'MAT', name: 'Concrete - Cast In Situ 1', info: 'Material', detail: 'Imported copy', used: false },
+  { id: 902, tag: 'MAT', name: 'Concrete - Cast In Situ 1', info: 'Material', detail: 'Duplicate copy', used: false },
   { id: 903, tag: 'MAT', name: 'Glass - Clear 2', info: 'Material', detail: 'Not referenced', used: false },
   { id: 904, tag: 'PAT', name: 'Diagonal crosshatch 3mm', info: 'Drafting pattern', detail: 'Not referenced', used: false },
   { id: 905, tag: 'PAT', name: 'Tile 300x300', info: 'Model pattern', detail: 'Used by 2 materials', used: true },
@@ -68,7 +68,7 @@ export const PURGE_KINDS: Record<string, string> = {
   'L-S': 'Line styles', 'F-R': 'Filled regions', TXT: 'Text note types', 'M-G': 'Model groups', 'D-G': 'Detail groups',
 }
 
-export interface ParamElement { id: number; category: string; family: string; type: string; values: Record<string, string> }
+export interface ParamElement { id: number; category: string; family: string; type: string; values: Record<string, string>; activeView?: boolean }
 export const PARAM_CATEGORIES = ['Doors', 'Windows', 'Furniture']
 export const PARAMS: Record<string, { name: string; isType: boolean }[]> = {
   Doors: [{ name: 'Comments', isType: false }, { name: 'Mark', isType: false }, { name: 'Fire Rating', isType: true }, { name: 'Type Comments', isType: true }],
@@ -76,14 +76,14 @@ export const PARAMS: Record<string, { name: string; isType: boolean }[]> = {
   Furniture: [{ name: 'Comments', isType: false }, { name: 'Mark', isType: false }],
 }
 export const ELEMENTS: ParamElement[] = [
-  { id: 355210, category: 'Doors', family: 'Single-Flush', type: '900 x 2100mm', values: { Comments: 'internal', Mark: 'D01', 'Fire Rating': '—', 'Type Comments': '' } },
+  { id: 355210, activeView: true, category: 'Doors', family: 'Single-Flush', type: '900 x 2100mm', values: { Comments: 'internal', Mark: 'D01', 'Fire Rating': '—', 'Type Comments': '' } },
   { id: 355211, category: 'Doors', family: 'Single-Flush', type: '900 x 2100mm', values: { Comments: 'internal', Mark: 'D02', 'Fire Rating': '—', 'Type Comments': '' } },
-  { id: 355240, category: 'Doors', family: 'Single-Flush', type: '800 x 2100mm', values: { Comments: 'internal - bathroom', Mark: 'D03', 'Fire Rating': '—', 'Type Comments': '' } },
+  { id: 355240, activeView: true, category: 'Doors', family: 'Single-Flush', type: '800 x 2100mm', values: { Comments: 'internal - bathroom', Mark: 'D03', 'Fire Rating': '—', 'Type Comments': '' } },
   { id: 355241, category: 'Doors', family: 'Double-Glass', type: '1800 x 2100mm', values: { Comments: 'external', Mark: 'D04', 'Fire Rating': '—', 'Type Comments': '' } },
-  { id: 355300, category: 'Doors', family: 'Single-Flush', type: '900 x 2100mm', values: { Comments: 'internal', Mark: 'D05', 'Fire Rating': '—', 'Type Comments': '' } },
+  { id: 355300, activeView: true, category: 'Doors', family: 'Single-Flush', type: '900 x 2100mm', values: { Comments: 'internal', Mark: 'D05', 'Fire Rating': '—', 'Type Comments': '' } },
   { id: 361001, category: 'Windows', family: 'Fixed', type: '1200 x 1500mm', values: { Comments: 'living', Mark: 'W01', 'Type Mark': 'W-A' } },
-  { id: 361002, category: 'Windows', family: 'Casement', type: '600 x 1200mm', values: { Comments: 'kitchen', Mark: 'W02', 'Type Mark': 'W-B' } },
-  { id: 371010, category: 'Furniture', family: 'Sofa', type: '3 Seater', values: { Comments: 'FF&E', Mark: 'F01' } },
+  { id: 361002, activeView: true, category: 'Windows', family: 'Casement', type: '600 x 1200mm', values: { Comments: 'kitchen', Mark: 'W02', 'Type Mark': 'W-B' } },
+  { id: 371010, activeView: true, category: 'Furniture', family: 'Sofa', type: '3 Seater', values: { Comments: 'FF&E', Mark: 'F01' } },
 ]
 
 export const FLOOR_TYPES = ['Finish - Porcelain Tile 10mm', 'Finish - Engineered Oak 15mm', 'Finish - Screed 40mm']

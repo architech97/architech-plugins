@@ -13,35 +13,50 @@ const NAV = [
 
 export function Layout() {
   const [open, setOpen] = useState(false)
+  const nav = useRef<HTMLElement>(null)
+  const menu = useRef<HTMLButtonElement>(null)
   const { pathname, hash } = useLocation()
   useEffect(() => {
     setOpen(false)
     window.scrollTo({ top: 0, behavior: 'instant' })
+    const heading = document.querySelector('main h1')?.textContent?.replace(/\s+/g, ' ').trim()
+    document.title = heading ? heading + ' · ArchiTECH Automation' : 'ArchiTECH Automation'
   }, [pathname])
   useEffect(() => {
     if (hash) document.getElementById(hash.slice(1))?.scrollIntoView()
   }, [pathname, hash])
+  useEffect(() => {
+    if (!open) return
+    nav.current?.querySelector<HTMLElement>('a')?.focus()
+    const escape = (event: KeyboardEvent) => {
+      if (event.key !== 'Escape') return
+      setOpen(false)
+      menu.current?.focus()
+    }
+    window.addEventListener('keydown', escape)
+    return () => window.removeEventListener('keydown', escape)
+  }, [open])
   return (
     <>
       <div className="bg-grid" aria-hidden="true" />
-      <a className="sr-only" href="#main">Skip to content</a>
+      <a className="skip-link" href="#main">Skip to content</a>
       <div className="staging-strip">Staging preview · Browser demos use sample data</div>
       <header className="site-header">
         <div className="wrap bar">
           <Link to="/" aria-label="ArchiTECH Automation home"><Logo /></Link>
-          <nav className={'nav' + (open ? ' open' : '')} aria-label="Main">
-            {NAV.map((n) => <NavLink key={n.to} to={n.to} className={({ isActive }) => (isActive ? 'active' : '')}>{n.label}</NavLink>)}
+          <nav ref={nav} id="site-nav" className={'nav' + (open ? ' open' : '')} aria-label="Main">
+            {NAV.map((n) => <NavLink key={n.to} to={n.to} onClick={() => setOpen(false)} className={({ isActive }) => (isActive ? 'active' : '')}>{n.label}</NavLink>)}
           </nav>
           <div className="nav-cta">
             <Link className="btn btn-ghost btn-sm" to="/custom-development?type=demo">Request a demo</Link>
             <Link className="btn btn-primary btn-sm" to="/demos">Try a live demo</Link>
-            <button className="menu-btn" aria-label={open ? 'Close menu' : 'Open menu'} aria-expanded={open} onClick={() => setOpen(!open)}>
+            <button ref={menu} className="menu-btn" aria-controls="site-nav" aria-label={open ? 'Close menu' : 'Open menu'} aria-expanded={open} onClick={() => setOpen(!open)}>
               {open ? <X size={20} /> : <Menu size={20} />}
             </button>
           </div>
         </div>
       </header>
-      <main id="main"><Outlet /></main>
+      <main id="main" tabIndex={-1}><Outlet /></main>
       <Footer />
     </>
   )

@@ -1,6 +1,7 @@
 import { Suspense, lazy, useCallback, useEffect, useMemo, useRef, useState } from 'react'
-import { CheckCircle2, Circle, RotateCcw, Info, AlertTriangle, CheckCheck, Eye, Compass } from 'lucide-react'
+import { CheckCircle2, Circle, RotateCcw, Info, AlertTriangle, CheckCheck, Eye, Compass, LocateFixed } from 'lucide-react'
 import type { DemoDefinition, DemoNotice, DialogTheme } from './types'
+import { DEMO_PROJECT } from '../data/demoProject'
 import './dialog.css'
 import './player.css'
 
@@ -14,6 +15,7 @@ export function DemoPlayer({ demo, compact = false }: { demo: DemoDefinition; co
   const activeRun = useRef(0)
   const [doneIds, setDoneIds] = useState<string[]>([])
   const [guided, setGuided] = useState(true)
+  const [targetReady, setTargetReady] = useState(false)
   const [closed, setClosed] = useState(false)
   const [toasts, setToasts] = useState<LogEntry[]>([])
   const [log, setLog] = useState<LogEntry[]>([])
@@ -32,6 +34,19 @@ export function DemoPlayer({ demo, compact = false }: { demo: DemoDefinition; co
   const done = useCallback((id: string) => {
     if (activeRun.current === run && demo.steps.some((step) => step.id === id)) setDoneIds((d) => (d.includes(id) ? d : [...d, id]))
   }, [demo.steps, run])
+  const rewind = useCallback((id: string) => {
+    if (activeRun.current !== run) return
+    const index = demo.steps.findIndex((step) => step.id === id)
+    if (index >= 0) setDoneIds((ids) => ids.filter((completed) => demo.steps.findIndex((step) => step.id === completed) < index))
+  }, [demo.steps, run])
+  const jumpToControl = () => {
+    const target = stage.current?.querySelector<HTMLElement>('.demo-focus')
+    if (!target) { stage.current?.scrollIntoView({ block: 'start' }); return }
+    const selector = 'button:not(:disabled), input:not(:disabled), select:not(:disabled), textarea:not(:disabled), summary, [tabindex="0"]'
+    const control = target.matches(selector) ? target : target.querySelector<HTMLElement>(selector)
+    control?.focus({ preventScroll: true })
+    target.scrollIntoView({ block: 'center', inline: 'nearest' })
+  }
   const notify = useCallback((n: DemoNotice) => {
     if (activeRun.current !== run) return
     const e = { ...n, id: ++seq.current, at: new Date().toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', second: '2-digit' }) }
@@ -55,6 +70,7 @@ export function DemoPlayer({ demo, compact = false }: { demo: DemoDefinition; co
       const el = target ? root.querySelector(`[data-demo="${CSS.escape(target)}"]`) : null
       root.querySelectorAll('.demo-focus').forEach((x) => x !== el && x.classList.remove('demo-focus'))
       el?.classList.add('demo-focus')
+      setTargetReady(Boolean(el))
     }
     apply()
     const observer = new MutationObserver(apply)
@@ -66,8 +82,8 @@ export function DemoPlayer({ demo, compact = false }: { demo: DemoDefinition; co
     <div className={`player ${compact ? 'compact' : ''}`}>
       <div className="player-top">
         <div className="player-title">
-          <span className="badge-sim"><Info size={14} /> Browser simulation · sample data</span>
-          {demo.frame !== 'app' && <p className="small-screen-hint">Desktop dialogs are easier to use on a larger screen.</p>}
+          <span className="badge-sim" title={DEMO_PROJECT.code + ' · ' + DEMO_PROJECT.name}><Info size={14} /> Browser simulation · sample data</span>
+          {demo.frame !== 'app' && <p className="small-screen-hint">Use the guide to jump to the next control.</p>}
         </div>
         <div className="player-actions">
           <div className="seg" role="group" aria-label="Mode">
@@ -78,11 +94,19 @@ export function DemoPlayer({ demo, compact = false }: { demo: DemoDefinition; co
         </div>
       </div>
 
+      {guided && <div className="player-quick-guide">
+        <div aria-live="polite">
+          <span className="eyebrow">{current ? 'Step ' + (demo.steps.indexOf(current) + 1) + ' of ' + demo.steps.length : 'Guide complete'}</span>
+          {current && <><strong>{current.title}</strong><p>{current.hint}</p></>}
+        </div>
+        {current?.target && !closed && <button className="btn btn-ghost btn-sm" type="button" disabled={!targetReady} onClick={jumpToControl}><LocateFixed size={15} /> Find control</button>}
+      </div>}
+
       <div className="player-main">
         <div className={demo.frame === 'app' ? 'revit app-frame' : 'revit'} aria-label={demo.frame === 'app' ? demo.ribbon.button + ' simulation' : 'Simulated Revit window'}>
           <div className="revit-bar">
             <span className="revit-dots"><i /><i /><i /></span>
-            <span className="revit-file">{demo.frame === 'app' ? <>{demo.ribbon.button} <em>(simulated)</em></> : <>Autodesk Revit 2024 · Sample Residence.rvt <em>(sample data)</em></>}</span>
+            <span className="revit-file">{demo.frame === 'app' ? <>{demo.ribbon.button} <em>(simulated)</em></> : <>Autodesk Revit 2024 · {DEMO_PROJECT.name}.rvt <em>(sample data)</em></>}</span>
           </div>
           {demo.frame !== 'app' && <>
             <div className="revit-ribbon">
@@ -106,7 +130,7 @@ export function DemoPlayer({ demo, compact = false }: { demo: DemoDefinition; co
                 </div>
               ) : (
                 <Suspense fallback={<div className="loading">Loading the {demo.ribbon.button} dialog…</div>}>
-                  <Comp key={run} theme={theme} setTheme={setTheme} done={done} notify={notify} close={() => setClosed(true)} />
+                  <Comp key={run} theme={theme} setTheme={setTheme} done={done} rewind={rewind} notify={notify} close={() => setClosed(true)} />
                 </Suspense>
               )}
             </div>

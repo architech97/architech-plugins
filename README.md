@@ -17,6 +17,8 @@ Website code and public product information only:
 It contains **no plugin source code, licensing logic, credentials or client data**. The demos never run Revit,
 open a model or call any service.
 
+The AT-01 Sample Residence project board links four demos using fictional rooms, sheets and warning groups. Each demo starts with independent sample state. Sample reports are generated in the browser.
+
 ## Stack
 
 Vite + React + TypeScript, static output for GitHub Pages. No backend.

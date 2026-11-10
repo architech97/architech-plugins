@@ -35,7 +35,7 @@ const CRAFTED: Omit<DemoDefinition, 'kind'>[] = [
       { id: 'pick', title: 'Review a warning group', hint: 'Click a row to read its full description and affected element IDs.', target: 'grid' },
       { id: 'isolate', title: 'Isolate the affected elements', hint: 'Press Isolate affected elements to review them in the view.', target: 'isolate' },
       { id: 'search', title: 'Search by element ID', hint: 'Type an element ID from the list (for example 301178) into the search box.', target: 'search' },
-      { id: 'export', title: 'Export the report', hint: 'Export all warnings (.xlsx) writes every group, including ones the filters hide.', target: 'export' },
+      { id: 'export', title: 'Export the report', hint: 'Download the sample CSV. It includes every warning group, even those hidden by filters.', target: 'export' },
     ],
     load: () => import('./demos/WarningsInspector'),
   },
@@ -49,7 +49,7 @@ const CRAFTED: Omit<DemoDefinition, 'kind'>[] = [
       { id: 'scan', title: 'Read the scan', hint: 'Unused entries are listed by default. Tick Used to see referenced ones too.', target: 'show-used' },
       { id: 'search', title: 'Find CAD-import leftovers', hint: 'Search "IMPORT" to find line styles and patterns brought in by CAD imports.', target: 'search' },
       { id: 'select', title: 'Select what is safe', hint: 'Use Select all visible, or tick rows one by one.', target: 'select-visible' },
-      { id: 'purge', title: 'Purge selected', hint: 'Purge selected deletes the ticked entries in one undoable step.', target: 'purge' },
+      { id: 'purge', title: 'Purge selected', hint: 'Choose Purge selected, review the scope, then confirm. Used types are kept.', target: 'purge' },
     ],
     load: () => import('./demos/PurgeMerge'),
   },
@@ -121,7 +121,7 @@ function defineDemo(product: Product): DemoDefinition {
         'Controls use sample values, and actions simulate what the tool would do on a model.',
       ],
       steps: generatedSteps(product.slug),
-      load: async () => ({ default: (await import('./GeneratedDemo')).makeGenerated(product.slug, product.tagline) }),
+      load: async () => ({ default: (await import('./GeneratedDemo')).makeGenerated(product.slug) }),
     }
   }
 

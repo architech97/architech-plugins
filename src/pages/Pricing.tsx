@@ -20,18 +20,18 @@ export default function Pricing() {
       <section className="section" style={{ paddingTop: 48 }}>
         <div className="wrap">
           <span className="eyebrow">Pricing &amp; licensing</span>
-          <h1 style={{ fontSize: 'clamp(2.2rem, 4.4vw, 3.4rem)', margin: '14px 0 14px' }}>Plans for individuals, teams and studios.</h1>
-          <p className="lead">Prices are being finalised. Register your interest and you will be told first, or ask for a quote for your team now.</p>
+          <h1 style={{ fontSize: 'clamp(2.2rem, 4.4vw, 3.4rem)', margin: '14px 0 14px' }}>Licensing by suite and team size</h1>
+          <p className="lead">Compare the planned licence options. Ask about a Revit suite, the complete collection or a studio quote.</p>
           {product && <div className="notice" style={{ marginTop: 22 }}>You came from <b style={{ color: 'var(--text)' }}>{product.name}</b>. It is part of {SUITES.find((s) => s.id === product.suite)?.name}.</div>}
           <div className="grid-3" style={{ marginTop: 36 }}>
             {plans.map((p, i) => (
               <Reveal key={p.name} delay={i * 60}>
                 <div className={`glass plan ${p.featured ? 'featured' : ''}`} style={{ height: '100%' }}>
-                  {p.featured && <span className="chip chip-dot" style={{ alignSelf: 'flex-start' }}>Best value</span>}
+                  {p.featured && <span className="chip chip-dot" style={{ alignSelf: 'flex-start' }}>All Revit suites</span>}
                   <div><h3 style={{ fontSize: '1.4rem' }}>{p.name}</h3><span className="muted" style={{ fontSize: 14 }}>{p.for}</span></div>
-                  <div><span className="price">To be announced</span><div className="muted" style={{ fontSize: 13, marginTop: 6 }}>Monthly and annual terms planned</div></div>
+                  <div><span className="price">Pricing on inquiry</span><div className="muted" style={{ fontSize: 13, marginTop: 6 }}>Commercial terms will be confirmed at launch</div></div>
                   <ul>{p.items.map((x) => <li key={x}><Check size={16} /><span>{x}</span></li>)}</ul>
-                  <Link className={`btn ${p.featured ? 'btn-primary' : 'btn-ghost'}`} style={{ marginTop: 'auto' }} to={`/custom-development?type=pricing&plan=${encodeURIComponent(p.name)}${product ? `&product=${product.slug}` : ''}`}>{i === 2 ? 'Request a quote' : 'Notify me at launch'}</Link>
+                  <Link className={`btn ${p.featured ? 'btn-primary' : 'btn-ghost'}`} style={{ marginTop: 'auto' }} to={`/custom-development?type=pricing&plan=${encodeURIComponent(p.name)}${product ? `&product=${product.slug}` : ''}`}>{i === 2 ? 'Request a quote' : 'Ask about this plan'}</Link>
                 </div>
               </Reveal>
             ))}
@@ -44,9 +44,9 @@ export default function Pricing() {
           <h2 style={{ margin: '12px 0 20px' }}>Before you buy</h2>
           <div className="faq">
             {[
-              ['Which Revit versions are supported?', 'The Revit tools currently ship for Revit 2024. Each product page lists its exact versions; support for other Revit years is on the roadmap.'],
-              ['Can I try a plugin before buying?', 'Yes. The live demos let you use replicas of the real dialogs in your browser, and you can request a guided demo of any tool on a sample model.'],
-              ['Are the demos the real plugins?', 'No. They are browser simulations built from the plugins\' actual layouts, labels and rules, running on sample data. They never run Revit or read a model.'],
+              ['Which Revit versions are supported?', 'Arch Folio, Forge and Sentinel list Revit 2024. Check each product page for the supported host and version, especially for I3D and the Revit MCP connector.'],
+              ['Can I try a plugin before buying?', 'Yes. Every catalog product has a browser demo. You can also request a guided session for a specific tool.'],
+              ['What does a browser demo run?', 'Each demo runs an interactive scenario on sample data in your browser. Native operations run in the desktop plugin.'],
               ['Do you build custom tools?', 'Yes: custom Revit add-ins and AI automations. Use the custom development form to describe the workflow.'],
               ['How will licences be delivered?', 'Licence delivery, accounts and billing will be added with the launch of paid plans. This staging site does not take payments.'],
             ].map(([q, a]) => (

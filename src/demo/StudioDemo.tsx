@@ -1,17 +1,20 @@
 import { useEffect, useId, useRef, useState } from 'react'
 import { ArrowRight, Box, Check, FileImage, Layers3, MessageSquare, Ruler, ScanLine, Search, ShieldCheck } from 'lucide-react'
 import { asset } from '../components/Brand'
+import { DEMO_PROJECT } from '../data/demoProject'
 import type { DemoContext } from './types'
 import './studio.css'
 
 const I3D_STAGES = ['Source', 'Asset', 'Engine', 'Material', 'Result']
-const SAMPLE_MODEL = 'Gallery Fit-out.rvt'
+const I3D_STAGE_STEP = ['source', 'scale', 'engine', 'material', 'export']
+const SAMPLE_MODEL = DEMO_PROJECT.name + '.rvt'
 const SAMPLE_WALL = '401284'
 const ORIGINAL_COMMENT = 'Site review pending'
 
-export function I3d({ done, notify }: DemoContext) {
+export function I3d({ done, rewind, notify }: DemoContext) {
   const [stage, setStage] = useState(0)
   const workbench = useRef<HTMLDivElement>(null)
+  const exportAction = useRef<HTMLButtonElement>(null)
   const moveFocus = useRef(false)
   const heightHint = useId()
   const [unlocked, setUnlocked] = useState(0)
@@ -22,15 +25,19 @@ export function I3d({ done, notify }: DemoContext) {
   const [exportState, setExportState] = useState<'ready' | 'review' | 'complete'>('ready')
   const height = Number(size)
   const validSize = Number.isSafeInteger(height) && height >= 1 && height <= 100000
-  const heightLabel = validSize ? new Intl.NumberFormat('en-IN').format(height) : '—'
+  const dimensions = [height * 1.353788, height * 1.280508, height].map(value => validSize ? Math.round(value).toLocaleString('en-IN') : '—')
+  const heightLabel = dimensions[2]
+  const showReference = stage < 2 && source === 'photo'
+  const geometryPreview = !showReference && (stage < 3 || material === 'plain')
   const format = source === 'photo' ? 'Dragon reference photo' : 'Dragon sample mesh'
   const appearance = material === 'photo' ? 'Photo texture' : 'Untextured'
 
   useEffect(() => {
     if (!moveFocus.current) return
-    workbench.current?.focus()
+    if (stage === 4 && exportState !== 'complete') exportAction.current?.focus()
+    else workbench.current?.focus()
     moveFocus.current = false
-  }, [stage])
+  }, [stage, exportState])
 
   function next(step: string, message: string) {
     moveFocus.current = true
@@ -38,12 +45,12 @@ export function I3d({ done, notify }: DemoContext) {
     notify({ kind: 'info', text: message })
     setUnlocked(Math.max(unlocked, stage + 1))
     setStage(stage + 1)
-    setExportState('ready')
   }
 
   function edit() {
     setUnlocked(stage)
     setExportState('ready')
+    rewind(I3D_STAGE_STEP[stage])
   }
 
   return (
@@ -51,7 +58,7 @@ export function I3d({ done, notify }: DemoContext) {
       <header className="studio-header">
         <span className="studio-icon"><Box size={18} /></span>
         <div><strong>I3D Desktop</strong><span className="studio-subtitle">Photo or mesh to Revit family</span></div>
-        <span className="studio-chip"><span /> Sample asset</span>
+        <span className="studio-chip"><span /> {DEMO_PROJECT.code} · Sample asset</span>
       </header>
       <nav className="studio-navigation" aria-label="I3D workflow stages">
         {I3D_STAGES.map((label, index) => (
@@ -67,8 +74,8 @@ export function I3d({ done, notify }: DemoContext) {
             <h3>Choose a starting point</h3>
             <p>Generate a shape from the supplied photo, or start with a prepared mesh.</p>
             <div className="studio-options" role="group" aria-label="Sample source">
-              <button type="button" aria-pressed={source === 'photo'} onClick={() => { setSource('photo'); edit() }}><FileImage size={16} /> Sample photo</button>
-              <button type="button" aria-pressed={source === 'mesh'} onClick={() => { setSource('mesh'); edit() }}><Box size={16} /> Sample mesh</button>
+              <button type="button" aria-pressed={source === 'photo'} onClick={() => { if (source !== 'photo') { setSource('photo'); edit() } }}><FileImage size={16} /> Sample photo</button>
+              <button type="button" aria-pressed={source === 'mesh'} onClick={() => { if (source !== 'mesh') { setSource('mesh'); edit() } }}><Box size={16} /> Sample mesh</button>
             </div>
             <button className="studio-action" data-demo="i3d-source" type="button" onClick={() => next('source', format + ' selected.')}>Use sample source <ArrowRight size={16} /></button>
           </>}
@@ -77,12 +84,12 @@ export function I3d({ done, notify }: DemoContext) {
             <h3>Set the real-world size</h3>
             <p>Enter a known height in millimetres. The sample scales proportionally.</p>
             <div className="studio-fields">
-              <label>Known height (mm)<input aria-describedby={heightHint} type="number" min="1" max="100000" step="1" value={size} onChange={event => { setSize(event.target.value); edit() }} /></label>
+              <label>Known height (mm)<input aria-describedby={heightHint} aria-invalid={!validSize} inputMode="numeric" type="number" min="1" max="100000" step="1" value={size} onChange={event => { setSize(event.target.value); edit() }} /></label>
               <label>Revit category<select value={category} onChange={event => { setCategory(event.target.value); edit() }}>
                 <option>Generic Models</option><option>Furniture</option><option>Casework</option><option>Lighting Fixtures</option>
               </select></label>
             </div>
-            <p className="studio-note" id={heightHint}>{validSize ? 'Width and depth follow the sample proportions.' : 'Enter a whole number between 1 and 100,000 mm.'}</p>
+            <p className={'studio-note' + (!validSize ? ' is-error' : '')} id={heightHint}>{validSize ? 'Width and depth follow the sample proportions.' : 'Enter a whole number between 1 and 100,000 mm.'}</p>
             <button className="studio-action" data-demo="i3d-scale" type="button" disabled={!validSize} onClick={() => next('scale', `Sample height set to ${heightLabel} mm.`)}>Lock scale <Ruler size={16} /></button>
           </>}
           {stage === 2 && <>
@@ -97,8 +104,8 @@ export function I3d({ done, notify }: DemoContext) {
             <h3>Choose the appearance</h3>
             <p>Keep the geometry plain, or use the prepared photo texture on the same shape.</p>
             <div className="studio-options" role="group" aria-label="Appearance">
-              <button type="button" aria-pressed={material === 'photo'} onClick={() => { setMaterial('photo'); edit() }}><FileImage size={16} /> Photo texture</button>
-              <button type="button" aria-pressed={material === 'plain'} onClick={() => { setMaterial('plain'); edit() }}><Layers3 size={16} /> Untextured</button>
+              <button type="button" aria-pressed={material === 'photo'} onClick={() => { if (material !== 'photo') { setMaterial('photo'); edit() } }}><FileImage size={16} /> Photo texture</button>
+              <button type="button" aria-pressed={material === 'plain'} onClick={() => { if (material !== 'plain') { setMaterial('plain'); edit() } }}><Layers3 size={16} /> Untextured</button>
             </div>
             <button className="studio-action" data-demo="i3d-material" type="button" onClick={() => next('material', appearance + ' selected for the export preview.')}>Review export <ArrowRight size={16} /></button>
           </>}
@@ -110,39 +117,42 @@ export function I3d({ done, notify }: DemoContext) {
               <div><dt>Family</dt><dd>Dragon.rfa</dd></div>
               <div><dt>Category</dt><dd>{category}</dd></div>
               <div><dt>Appearance</dt><dd>{appearance}</dd></div>
+              <div><dt>Width × depth × height</dt><dd>{dimensions.join(' × ')} mm</dd></div>
+              <div><dt>Target document</dt><dd>{SAMPLE_MODEL}</dd></div>
             </dl>
-            {exportState === 'ready' && <button className="studio-action" data-demo="i3d-export" type="button" disabled={!validSize} onClick={() => { setExportState('review'); done('export') }}>Request export &amp; place <ArrowRight size={16} /></button>}
+            {exportState === 'ready' && <button ref={exportAction} className="studio-action" data-demo="i3d-export" type="button" disabled={!validSize} onClick={() => { moveFocus.current = true; setExportState('review'); done('export') }}>Request export &amp; place <ArrowRight size={16} /></button>}
             {exportState === 'review' && <div className="studio-gate" aria-label="Simulated Revit approval">
               <p><ShieldCheck size={16} /> <strong>Sample Revit approval</strong></p>
-              <p>Save Dragon.rfa, load it and place one instance in the sample project.</p>
+              <p>Save Dragon.rfa, load it and place one instance in {SAMPLE_MODEL}.</p>
               <div className="studio-actions">
-                <button className="studio-secondary" type="button" onClick={() => { setExportState('ready'); notify({ kind: 'warning', text: 'Simulated export cancelled before saving or placement.' }) }}>Cancel</button>
-                <button className="studio-action" data-demo="i3d-approve" type="button" onClick={() => { setExportState('complete'); done('approve'); notify({ kind: 'success', text: `Simulated export at ${heightLabel} mm. Family saved, loaded and one instance placed.` }) }}>Approve sample export</button>
+                <button className="studio-secondary" type="button" onClick={() => { moveFocus.current = true; setExportState('ready'); rewind('export'); notify({ kind: 'warning', text: 'Simulated export cancelled before saving or placement.' }) }}>Cancel</button>
+                <button ref={exportAction} className="studio-action" data-demo="i3d-approve" type="button" onClick={() => { moveFocus.current = true; setExportState('complete'); done('approve'); notify({ kind: 'success', text: `Simulated export at ${heightLabel} mm. Family saved, loaded and one instance placed.` }) }}>Approve sample export</button>
               </div>
             </div>}
-            {exportState === 'complete' && <ul className="studio-receipt" role="status" aria-label="Simulated export results">
-              <li><Check size={15} /> <strong>File saved</strong><span>Dragon.rfa</span></li>
-              <li><Check size={15} /> <strong>Family loaded</strong><span>{category}</span></li>
-              <li><Check size={15} /> <strong>Instance placed</strong><span>1 at {heightLabel} mm</span></li>
-            </ul>}
+            {exportState === 'complete' && <>
+              <ul className="studio-receipt" role="status" aria-label="Simulated export results">
+                <li><Check size={15} /> <strong>File saved</strong><span>Dragon.rfa</span></li>
+                <li><Check size={15} /> <strong>Family loaded</strong><span>{category}</span></li>
+                <li><Check size={15} /> <strong>Instance placed</strong><span>1 instance in {DEMO_PROJECT.code}</span></li>
+              </ul>
+              <button className="studio-secondary" type="button" onClick={() => { moveFocus.current = true; setStage(1) }}>Adjust size or category</button>
+            </>}
           </>}
         </div>
         <div className="studio-preview">
-          <div className="studio-preview-label"><span><Box size={14} /> Dragon / 001</span><span>{stage < 2 ? 'Reference' : 'Asset preview'}</span></div>
+          <div className="studio-preview-label"><span><Box size={14} /> Dragon / 001</span><span>{showReference ? 'Reference image' : 'Mesh preview'}</span></div>
           <figure>
-            <div className={`studio-image ${stage >= 3 && material === 'plain' ? 'is-plain' : ''}`}>
-              <img src={asset('media/i3d/desktop-0.6.36.webp')} alt="Dragon mesh shown in ArchiTECH I3D Desktop" />
+            <div className={'studio-image' + (showReference ? ' is-reference' : '') + (geometryPreview ? ' is-plain' : '')}>
+              <img src={asset(showReference ? 'media/i3d/dragon-reference.webp' : 'media/i3d/desktop-0.6.36.webp')} alt={showReference ? 'Dragon reference image from the I3D sample materials' : 'Dragon mesh shown in ArchiTECH I3D Desktop'} />
             </div>
-            <figcaption>{stage >= 3 && material === 'plain' ? 'Grayscale sample preview' : 'Sample asset from I3D Desktop'}</figcaption>
+            <figcaption>{showReference ? 'Source image from the I3D sample materials' : geometryPreview ? 'Grayscale illustration of the prepared mesh' : 'Textured mesh capture from I3D Desktop'}</figcaption>
           </figure>
           <dl className="studio-dimensions">
-            <div><dt>Width</dt><dd>{validSize ? Math.round(height * 1.353788).toLocaleString('en-IN') : '—'}</dd></div>
-            <div><dt>Depth</dt><dd>{validSize ? Math.round(height * 1.280508).toLocaleString('en-IN') : '—'}</dd></div>
-            <div><dt>Height</dt><dd>{heightLabel}</dd></div>
+            {['Width', 'Depth', 'Height'].map((axis, index) => <div key={axis}><dt>{axis}</dt><dd>{dimensions[index]}</dd></div>)}
           </dl>
           <p className="studio-note">Proportional sample dimensions in mm</p>
           <details className="studio-capture">
-            <summary>View the Revit placement capture</summary>
+            <summary>View the separate Revit validation capture</summary>
             <img src={asset('media/i3d/revit-placement-0.6.36.webp')} alt="I3D Dragon families placed in Revit 2024" loading="lazy" />
           </details>
         </div>
@@ -153,29 +163,55 @@ export function I3d({ done, notify }: DemoContext) {
 
 const MODES = ['Ask', 'Search', 'Build'] as const
 const MODE_ICONS = { Ask: MessageSquare, Search, Build: Layers3 }
+const ASK_EXAMPLES = [
+  { question: 'What is the difference between instance and type parameters?', response: 'An instance parameter belongs to an individual element. A type parameter is shared by elements of the same type. Use instance Comments to track an observation on a specific wall.' },
+  { question: 'How can I confirm that a model update took effect?', response: 'Read the target element after the operation, then compare the stored parameter value with the requested value. Keep the element ID and parameter name in the receipt.' },
+]
 type Mode = typeof MODES[number]
 type BuildState = 'draft' | 'review' | 'denied' | 'approved'
 
-export function Assistant({ done, notify }: DemoContext) {
+export function Assistant({ done, rewind, notify }: DemoContext) {
   const [mode, setMode] = useState<Mode>('Build')
   const planGrid = useId()
+  const buildAction = useRef<HTMLButtonElement>(null)
+  const buildField = useRef<HTMLInputElement>(null)
+  const receipt = useRef<HTMLDivElement>(null)
+  const focusBuild = useRef(false)
+  const inputHint = useId()
+  const [question, setQuestion] = useState(0)
   const [answer, setAnswer] = useState(false)
-  const [searchResult, setSearchResult] = useState<string | null>(null)
+  const [searchId, setSearchId] = useState(SAMPLE_WALL)
+  const [searchResult, setSearchResult] = useState<{ id: string; comment?: string } | null>(null)
   const [build, setBuild] = useState<BuildState>('draft')
   const [value, setValue] = useState('Ready for issue')
   const [previous, setPrevious] = useState(ORIGINAL_COMMENT)
   const [current, setCurrent] = useState(ORIGINAL_COMMENT)
   const [readback, setReadback] = useState(false)
   const requested = value.trim()
+  const validSearch = /^[0-9]{1,8}$/.test(searchId.trim())
+
+  useEffect(() => {
+    if (!focusBuild.current) return
+    if (readback) receipt.current?.focus()
+    else if (build === 'draft') buildField.current?.focus()
+    else buildAction.current?.focus()
+    focusBuild.current = false
+  }, [build, readback])
 
   function draftAgain() {
+    focusBuild.current = true
     setBuild('draft')
     setReadback(false)
+    rewind('proposal')
   }
 
   function decide(approved: boolean) {
+    focusBuild.current = true
     setBuild(approved ? 'approved' : 'denied')
-    if (approved) setCurrent(requested)
+    if (approved) {
+      setCurrent(requested)
+      setSearchResult(null)
+    }
     done('decision')
     notify(approved
       ? { kind: 'success', text: `Simulated Connector committed one update for wall ${SAMPLE_WALL}.` }
@@ -183,6 +219,7 @@ export function Assistant({ done, notify }: DemoContext) {
   }
 
   function verify() {
+    focusBuild.current = true
     setReadback(true)
     done('readback')
     notify({ kind: 'info', text: `Sample readback for wall ${SAMPLE_WALL}: Comments = “${current}”.` })
@@ -193,7 +230,7 @@ export function Assistant({ done, notify }: DemoContext) {
       <header className="studio-header">
         <span className="studio-icon"><MessageSquare size={18} /></span>
         <div><strong>ArchiTECH Assistant</strong><span className="studio-subtitle">Ask, Search and Build</span></div>
-        <span className="studio-chip"><span /> Sample workspace</span>
+        <span className="studio-chip"><span /> {DEMO_PROJECT.code} · Sample workspace</span>
       </header>
       <nav className="studio-navigation" aria-label="Assistant modes">
         {MODES.map(label => {
@@ -206,23 +243,30 @@ export function Assistant({ done, notify }: DemoContext) {
           {mode === 'Ask' && <>
             <p className="studio-kicker">Ask / Reference</p>
             <h3>Ask a Revit question</h3>
-            <blockquote>What is the difference between instance and type parameters?</blockquote>
-            {!answer && <button className="studio-action" type="button" onClick={() => { setAnswer(true); notify({ kind: 'info', text: 'The browser displayed the prepared Ask response.' }) }}>Show sample answer <ArrowRight size={16} /></button>}
-            {answer && <div className="studio-answer" role="status"><strong>Sample response</strong><p>An instance parameter belongs to an individual element. A type parameter is shared by elements of the same type. Use instance Comments to track an observation on a specific wall.</p></div>}
+            <label className="studio-field">Sample question<select value={question} onChange={event => { setQuestion(Number(event.target.value)); setAnswer(false) }}>
+              {ASK_EXAMPLES.map(({ question: label }, index) => <option key={label} value={index}>{label}</option>)}
+            </select></label>
+            <button className="studio-action" type="button" onClick={() => setAnswer(true)}>Show sample answer <ArrowRight size={16} /></button>
+            {answer && <div className="studio-answer" role="status"><strong>Prepared reference answer</strong><p>{ASK_EXAMPLES[question].response}</p></div>}
           </>}
           {mode === 'Search' && <>
             <p className="studio-kicker">Search / Read-only query</p>
             <h3>Find a wall by ID</h3>
-            <blockquote>Find wall {SAMPLE_WALL} and show its current instance Comments.</blockquote>
-            {searchResult !== null && <div className="studio-answer" role="status">
-              <strong>1 matching wall</strong>
-              <p>Wall {SAMPLE_WALL} · Level 01</p>
-              <p>Instance Comments · {searchResult}</p>
+            <p>Read a wall’s current instance Comments in {DEMO_PROJECT.name}. Try {SAMPLE_WALL} or enter another ID.</p>
+            <form className="studio-build-form" onSubmit={event => {
+              event.preventDefault()
+              if (!validSearch) return
+              const id = searchId.trim()
+              setSearchResult({ id, comment: id === SAMPLE_WALL ? current : undefined })
+            }}>
+              <label>Wall element ID<input inputMode="numeric" maxLength={8} value={searchId} onChange={event => { setSearchId(event.target.value); setSearchResult(null) }} /></label>
+              <button className="studio-action" type="submit" disabled={!validSearch}>{searchResult ? 'Refresh sample query' : 'Query sample model'} <Search size={16} /></button>
+            </form>
+            {searchResult && <div className="studio-answer" role="status">
+              <strong>{searchResult.comment !== undefined ? '1 matching wall' : 'No matching wall'}</strong>
+              {searchResult.comment !== undefined ? <><p>Wall {searchResult.id} · Level 01</p><p>Instance Comments · {searchResult.comment}</p></>
+                : <p>Element {searchResult.id} does not exist in this sample. Try {SAMPLE_WALL}.</p>}
             </div>}
-            <button className="studio-action" type="button" onClick={() => {
-              setSearchResult(current)
-              notify({ kind: 'info', text: 'Read-only query found sample wall ' + SAMPLE_WALL + '.' })
-            }}>{searchResult === null ? 'Query sample model' : 'Refresh sample query'} <Search size={16} /></button>
           </>}
           {mode === 'Build' && <>
             <p className="studio-kicker">Build / Scoped update</p>
@@ -233,11 +277,12 @@ export function Assistant({ done, notify }: DemoContext) {
                 event.preventDefault()
                 if (!requested || requested === current) return
                 setPrevious(current)
+                focusBuild.current = true
                 setBuild('review')
                 done('proposal')
-                notify({ kind: 'info', text: 'Sample tool call prepared for one wall. Approval is pending.' })
               }}>
-                <label>New instance Comments<input value={value} maxLength={80} onChange={event => setValue(event.target.value)} /></label>
+                <label>New instance Comments<input ref={buildField} aria-describedby={inputHint} value={value} maxLength={80} onChange={event => setValue(event.target.value)} /></label>
+                <p className="studio-note" id={inputHint}>{!requested ? 'Enter a Comments value to preview it.' : requested === current ? 'Enter a different value from the stored Comments.' : 'The change applies to one wall instance.'}</p>
                 <button className="studio-action" data-demo="assistant-propose" type="submit" disabled={!requested || requested === current}>Preview change <ArrowRight size={16} /></button>
               </form>
             </> : <>
@@ -247,19 +292,27 @@ export function Assistant({ done, notify }: DemoContext) {
                   <div><dt>Before</dt><dd>{previous}</dd></div>
                   <div><dt>Requested</dt><dd>{requested}</dd></div>
                 </dl>
+                <details className="studio-call">
+                  <summary>View tool arguments</summary>
+                  <pre tabIndex={0} aria-label="Tool arguments">{JSON.stringify({
+                    capability_id: 'set_parameters',
+                    arguments: { updates: [{ element_id: Number(SAMPLE_WALL), parameter: 'Comments', value: requested }] },
+                    expected_document_fingerprint: { documentId: 'sample-residence' },
+                  }, null, 2)}</pre>
+                </details>
               </div>
               {build === 'review' ? <div className="studio-gate" aria-label="Sample Connector approval">
                 <p><ShieldCheck size={16} /> <strong>Revit Connector approval</strong></p>
                 <p>The sample write is scoped to one instance. Choose whether to open the transaction.</p>
                 <div className="studio-actions" data-demo="assistant-decide">
                   <button className="studio-secondary" type="button" onClick={() => decide(false)}>Deny</button>
-                  <button className="studio-action" type="button" onClick={() => decide(true)}>Approve once</button>
+                  <button ref={buildAction} className="studio-action" type="button" onClick={() => decide(true)}>Approve once</button>
                 </div>
               </div> : <>
                 <p className="studio-note" role="status">{build === 'approved' ? 'Sample transaction committed.' : 'Denied. The transaction never started.'}</p>
                 {readback
-                  ? <div className="studio-answer studio-verified" role="status"><strong><Check size={16} /> {build === 'approved' ? 'Update verified in sample model' : 'Original value verified in sample model'}</strong><p>Wall {SAMPLE_WALL} · Comments · {current}</p></div>
-                  : <button className="studio-action" data-demo="assistant-readback" type="button" onClick={verify}>Read back Comments <ScanLine size={16} /></button>}
+                  ? <div className="studio-answer studio-verified" ref={receipt} tabIndex={-1} role="status"><strong><Check size={16} /> {build === 'approved' ? 'Update verified in sample model' : 'Unchanged value verified in sample model'}</strong><p>Wall {SAMPLE_WALL} · Comments · {current}</p></div>
+                  : <button ref={buildAction} className="studio-action" data-demo="assistant-readback" type="button" onClick={verify}>Read back Comments <ScanLine size={16} /></button>}
                 <button className="studio-secondary" type="button" onClick={draftAgain}>{build === 'approved' ? 'Draft another change' : 'Reopen proposal'}</button>
               </>}
             </>}
@@ -280,6 +333,7 @@ export function Assistant({ done, notify }: DemoContext) {
             <div><dt>Document</dt><dd>{SAMPLE_MODEL}</dd></div>
             <div><dt>Element</dt><dd>Basic Wall · {SAMPLE_WALL}</dd></div>
             <div><dt>Level</dt><dd>Level 01</dd></div>
+            <div><dt>Stored Comments</dt><dd>{current}</dd></div>
           </dl>
           <p className="studio-note">Illustrative project and element IDs</p>
         </aside>

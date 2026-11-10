@@ -1,4 +1,4 @@
-import { useState } from 'react'
+import { useEffect, useRef, useState } from 'react'
 import { Link, useParams, useSearchParams } from 'react-router-dom'
 import { ArrowDown, ArrowLeft, ArrowRight, ArrowUpRight, Play, Search, X } from 'lucide-react'
 import { demoById, demoForProduct } from '../demo/registry'
@@ -6,6 +6,8 @@ import { DemoPlayer } from '../demo/DemoPlayer'
 import type { DemoDefinition } from '../demo/types'
 import { PRODUCTS, productBySlug, searchText } from '../data/catalog'
 import { SUITES, suiteById } from '../data/suites'
+import { DEMO_PROJECT, PROJECT_WORKFLOW } from '../data/demoProject'
+import { ROOMS, SHEETS, WARNINGS } from '../demo/sample'
 import { asset } from '../components/Brand'
 import NotFound from './NotFound'
 import './demos.css'
@@ -14,23 +16,22 @@ const entries = PRODUCTS.flatMap((product) => {
   const demo = demoForProduct(product.slug)
   return demo ? [{ product, demo }] : []
 })
-const featured = [
-  { id: 'sheet-manager', title: 'Prepare a drawing set', detail: 'Preview a sheet renumbering before applying it.', image: 'media/dialogs/sheet-manager/sheetmanagerwindow-dark.webp' },
-  { id: 'warnings-inspector', title: 'Triage model warnings', detail: 'Isolate affected elements and export the scan.', image: 'media/dialogs/warnings-inspector/warningswindow-dark.webp' },
-  { id: 'architech-i3d', title: 'Take an asset into Revit', detail: 'Size a sample asset and step through family export.', image: 'media/i3d/revit-placement-0.6.36.webp' },
-]
-
 const labelFor = (demo: DemoDefinition) => demo.kind === 'crafted' ? 'Guided simulation' : demo.kind === 'replica' ? 'Dialog explorer' : 'Workflow simulation'
 const indexNumber = (i: number) => String(i + 1).padStart(2, '0')
 
 const viewNames = ['Plan', 'Assembly', 'Review'] as const
 type View = typeof viewNames[number]
+const drawingTasks: Record<View, { note: string; id: string; label: string }> = {
+  Plan: { note: '01 / Room layout', id: 'room-to-view', label: 'Generate room views' },
+  Assembly: { note: '02 / Floors, ceilings and linings', id: 'room-to-finishes', label: 'Review room finishes' },
+  Review: { note: '03 / Model checks', id: 'warnings-inspector', label: 'Inspect warnings' },
+}
 
 function DrawingStage() {
   const [view, setView] = useState<View>('Assembly')
   return (
     <figure className="drawing-stage" data-view={view.toLowerCase()}>
-      <figcaption><span>Sample residence</span><span>AT / 01</span></figcaption>
+      <figcaption><span>{DEMO_PROJECT.name}</span><span>{DEMO_PROJECT.code} / {DEMO_PROJECT.revision}</span></figcaption>
       <div className="drawing-plate">
         <svg viewBox="0 0 620 380" role="img" aria-labelledby="drawing-title drawing-desc">
           <title id="drawing-title">{view} drawing</title>
@@ -86,11 +87,75 @@ function DrawingStage() {
       <div className="drawing-controls" role="group" aria-label="Drawing view">
         {viewNames.map((name, i) => (
           <button key={name} type="button" aria-pressed={view === name} onClick={() => setView(name)}>
-            <small>{indexNumber(i)}</small>{name}
+            <small aria-hidden="true">{indexNumber(i)}</small>{name}
           </button>
         ))}
       </div>
+      <div className="drawing-note">
+        <span aria-live="polite">{drawingTasks[view].note}</span>
+        <Link to={'/demos/' + drawingTasks[view].id}>{drawingTasks[view].label} <ArrowUpRight size={14} /></Link>
+      </div>
     </figure>
+  )
+}
+
+function ProjectBoard() {
+  const [selected, setSelected] = useState(0)
+  const [running, setRunning] = useState(false)
+  const workspace = useRef<HTMLElement>(null)
+  const step = PROJECT_WORKFLOW[selected]
+  const demo = demoById(step.id)!
+  const product = productBySlug(demo.productSlug)!
+  const preview = product.dialogs[0]?.dark
+  useEffect(() => {
+    if (running) {
+      workspace.current?.focus({ preventScroll: true })
+      workspace.current?.scrollIntoView({ block: 'start' })
+    }
+  }, [running, selected])
+
+  return (
+    <section className="wrap project-board" id="sample-project" aria-labelledby="sample-project-title">
+      <div className="demo-section-title">
+        <div><p className="demo-kicker">01 / Sample project</p><h2 id="sample-project-title">{DEMO_PROJECT.name}</h2></div>
+        <p>Follow four tasks from model setup to drawing review. Each demo opens a fresh copy of the fictional data.</p>
+      </div>
+      <dl className="project-metadata">
+        <div><dt>Project</dt><dd>{DEMO_PROJECT.code}</dd></div>
+        <div><dt>Issue</dt><dd>{DEMO_PROJECT.revision} · {DEMO_PROJECT.stage}</dd></div>
+        <div><dt>Rooms</dt><dd>{ROOMS.length}</dd></div>
+        <div><dt>Drawing sheets</dt><dd>{SHEETS.length}</dd></div>
+        <div><dt>Warning groups</dt><dd>{WARNINGS.length}</dd></div>
+        <div><dt>Units</dt><dd>{DEMO_PROJECT.units}</dd></div>
+      </dl>
+      <div className="project-workbench">
+        <div className="project-stops" role="group" aria-label="Sample project workflow">
+          {PROJECT_WORKFLOW.map((item, i) => (
+            <button type="button" key={item.id} aria-pressed={i === selected} onClick={() => { setSelected(i); setRunning(false) }}>
+              <span className="project-stop-index">{indexNumber(i)}</span>
+              <span><small>{item.phase}</small><strong>{item.title}</strong></span>
+              <ArrowRight size={17} aria-hidden="true" />
+            </button>
+          ))}
+        </div>
+        <div className="project-preview">
+          <div className="project-preview-visual" key={step.id}>{preview && <img src={asset(preview)} alt="" loading="lazy" decoding="async" />}</div>
+          <div className="project-preview-copy">
+            <div><p className="demo-kicker">{product.name}</p><h3>{step.title}</h3><p>{step.detail}</p></div>
+            <button className="demo-button" type="button" onClick={() => setRunning(!running)} aria-expanded={running} aria-controls={running ? 'project-workspace' : undefined}>{running ? <X size={15} /> : <Play size={15} />} {running ? 'Close demo' : 'Start here'}</button>
+          </div>
+        </div>
+      </div>
+      {running && (
+        <section className="project-workspace" id="project-workspace" ref={workspace} tabIndex={-1} aria-label={demo.title}>
+          <header>
+            <div><p className="demo-kicker">{DEMO_PROJECT.code} / {step.phase}</p><h3>{demo.title}</h3></div>
+            <Link to={'/demos/' + demo.id} className="demo-text-link">Open dedicated page <ArrowUpRight size={15} /></Link>
+          </header>
+          <DemoPlayer key={demo.id} demo={demo} />
+        </section>
+      )}
+    </section>
   )
 }
 
@@ -125,7 +190,7 @@ export function DemoHub() {
             <p className="demo-intro">Prepare a drawing set, review a model or try a CAD automation workflow. Every product in the catalog has a hands-on demo you can run with sample data.</p>
             <div className="demo-opening-actions">
               <a href="#demo-index" className="demo-button">Browse {entries.length} demos <ArrowDown size={16} /></a>
-              <Link to="/demos/sheet-manager" className="demo-text-link"><Play size={15} /> Try Sheet Manager</Link>
+              <a href="#sample-project" className="demo-text-link"><Play size={15} /> Start the sample project</a>
             </div>
             <p className="demo-footnote">Browser simulations <span /> Sample projects <span /> No install</p>
           </div>
@@ -133,23 +198,7 @@ export function DemoHub() {
         </div>
       </section>
 
-      <section className="wrap demo-featured" aria-labelledby="demo-featured-title">
-        <div className="demo-section-title">
-          <div><p className="demo-kicker">01 / Featured workflows</p><h2 id="demo-featured-title">Start with a task</h2></div>
-          <p>Three demos for documentation, model review and asset creation.</p>
-        </div>
-        <div className="demo-feature-grid">
-          {featured.map((item, i) => (
-            <Link className="demo-feature" to={`/demos/${item.id}`} key={item.id}>
-              <div className="demo-feature-image">
-                <img src={asset(productBySlug(item.id)?.dialogs[0]?.dark ?? item.image)} alt="" loading="lazy" decoding="async" />
-                <span>{indexNumber(i)}</span>
-              </div>
-              <div className="demo-feature-copy"><div><h3>{item.title}</h3><p>{item.detail}</p></div><ArrowUpRight size={20} aria-hidden="true" /></div>
-            </Link>
-          ))}
-        </div>
-      </section>
+      <ProjectBoard />
 
       <section className="wrap demo-index" id="demo-index" aria-labelledby="demo-index-title">
         <div className="demo-section-title">
@@ -195,6 +244,8 @@ export function DemoPage() {
   const demo = demoById(id)
   if (!demo) return <NotFound />
   const product = productBySlug(demo.productSlug)
+  const sequence = PROJECT_WORKFLOW.findIndex((step) => step.id === demo.id)
+  const next = sequence >= 0 ? PROJECT_WORKFLOW[sequence + 1] : undefined
   return (
     <div className="demo-detail">
       <header className="demo-detail-header">
@@ -212,6 +263,14 @@ export function DemoPage() {
       </header>
       <div className="wrap-wide demo-detail-body">
         <DemoPlayer key={demo.id} demo={demo} />
+        {sequence >= 0 && (
+          <div className="demo-project-next">
+            <div><p className="demo-kicker">{DEMO_PROJECT.code} / {PROJECT_WORKFLOW[sequence].phase} / {indexNumber(sequence)} of {PROJECT_WORKFLOW.length}</p><strong>{DEMO_PROJECT.name}</strong></div>
+            {next
+              ? <Link to={'/demos/' + next.id}>Next · {next.title} <ArrowRight size={16} /></Link>
+              : <Link to="/demos#sample-project">Back to the project board <ArrowRight size={16} /></Link>}
+          </div>
+        )}
         <details className="demo-basis">
           <summary>About this simulation</summary>
           <p>{demo.basis.join(' ')}</p>

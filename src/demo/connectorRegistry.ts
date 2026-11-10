@@ -1,4 +1,6 @@
 import { createElement } from 'react'
+import { DEMO_PROJECT } from '../data/demoProject'
+import { SHEETS } from './sample'
 import type { DemoContext, DemoDefinition, DemoStep } from './types'
 
 export type Scene = 'sheet' | 'drawing' | 'rhino' | 'sketchup' | 'blender'
@@ -10,6 +12,7 @@ export type Result = {
 }
 export type Scenario = {
   title: string
+  host: string
   summary: string
   basis: string[]
   file: string
@@ -23,7 +26,8 @@ export type Scenario = {
   approval?: boolean
 }
 
-export const SHEETS = ['A-302', 'A-303']
+export const SHEET_CHOICES = ['A-302', 'A-303', 'A-301']
+export const EXISTING_SHEETS = SHEETS.filter(({ number }) => number === 'A-101' || number === 'A-301')
 export const RHINO_DIMENSIONS: Point[] = [[1200, 600, 300], [900, 450, 600]]
 export const SKETCHUP_HEIGHTS = [300, -300]
 export const BLOCKS = [
@@ -51,12 +55,13 @@ function inspectCamera(option: number): Result {
       ))
     })
   }))
-  const blocked = clearance < 0.08
+  const required = 0.08
+  const blocked = clearance < required
   return {
     title: blocked ? 'Path refused at clearance check' : 'Sample camera path accepted',
     rows: [
       ['Sampled clearance', (clearance * 1000).toFixed(0) + ' mm'],
-      ['Required clearance', '80 mm'],
+      ['Required clearance', Math.round(required * 1000) + ' mm'],
       ['Camera result', blocked ? 'No camera path created' : '3 waypoints · 97 frames'],
     ],
     failed: blocked,
@@ -66,30 +71,41 @@ function inspectCamera(option: number): Result {
 const SCENARIOS: Record<string, Scenario> = {
   'revit-mcp': {
     title: 'Create and verify a Revit sheet',
+    host: 'Revit',
     summary: 'Choose a sheet number, review the document-bound call and confirm the new sheet in the sample index.',
     basis: ['The Revit bridge accepts a document fingerprint beside the tool arguments. Model writes use a native approval gate and a separate readback.'],
-    file: 'Sample Residence.rvt',
+    file: DEMO_PROJECT.name + '.rvt',
     scene: 'sheet',
     tool: 'bridge_run',
     approval: true,
     action: 'Approve once',
-    option: { label: 'Sheet number', values: SHEETS },
-    request: (option) => 'Create sheet ' + SHEETS[option] + ' named Building Sections using the A1 title block.',
+    option: { label: 'Sheet number', values: ['A-302 · Available', 'A-303 · Available', 'A-301 · In use'] },
+    request: (option) => 'Create sheet ' + SHEET_CHOICES[option] + ' named Building Sections using the A1 title block.',
     arguments: (option) => ({
       capability_id: 'create.sheet',
-      arguments: { number: SHEETS[option], name: 'Building Sections', title_block: 'A1', on_collision: 'error' },
+      arguments: { number: SHEET_CHOICES[option], name: 'Building Sections', title_block: 'A1', on_collision: 'error' },
       expected_document_fingerprint: { documentId: 'sample-residence' },
     }),
-    inspect: (option) => ({
-      title: 'Sheet found in sample index',
-      rows: [['Sheet number', SHEETS[option]], ['Sheet name', 'Building Sections'], ['Title block', 'A1']],
-    }),
+    inspect: (option) => {
+      const number = SHEET_CHOICES[option]
+      const existing = SHEETS.find((sheet) => sheet.number === number)
+      if (existing) return {
+        title: 'Duplicate sheet number refused',
+        rows: [['Requested number', number], ['Existing sheet', existing.name], ['Sample changes', 'No sheet created']],
+        failed: true,
+      }
+      return {
+        title: 'Sheet found in sample index',
+        rows: [['Sheet number', number], ['Sheet name', 'Building Sections'], ['Title block', 'A1']],
+      }
+    },
   },
   'autocad-mcp': {
     title: 'Count blocks in an AutoCAD drawing',
+    host: 'AutoCAD',
     summary: 'Run a read-only takeoff against a sample drawing and inspect the quantities by block and layer.',
     basis: ['AutoCAD get_block_takeoff reads ModelSpace block references, groups them by name and layer, and returns counts and attribute samples. This scene uses synthetic block references.'],
-    file: 'Sample Office.dwg',
+    file: DEMO_PROJECT.name + ' - Fit-out.dwg',
     scene: 'drawing',
     tool: 'get_block_takeoff',
     action: 'Run sample takeoff',
@@ -102,9 +118,10 @@ const SCENARIOS: Record<string, Scenario> = {
   },
   'rhino-mcp': {
     title: 'Create a Rhino solid and check its bounds',
+    host: 'Rhino',
     summary: 'Choose a plinth profile, approve the geometry call and inspect the measured solid.',
     basis: ['Rhino create_geometry takes primitives in document units. The native bridge checks writes against the intended document and can independently verify an analytic box.'],
-    file: 'Gallery Study.3dm',
+    file: DEMO_PROJECT.name + ' - Plinth Study.3dm',
     scene: 'rhino',
     tool: 'create_geometry',
     approval: true,
@@ -126,9 +143,10 @@ const SCENARIOS: Record<string, Scenario> = {
   },
   'sketchup-mcp': {
     title: 'Check signed extrusion in SketchUp',
+    host: 'SketchUp',
     summary: 'Create the same sample group above or below its origin and verify the resulting world-space limits.',
     basis: ['SketchUp create_component interprets box dimensions in millimetres. Positive height extends along +Z and negative height extends along −Z from the requested origin. The bounding-box tool reads back the resulting extent.'],
-    file: 'Massing Study.skp',
+    file: DEMO_PROJECT.name + ' - Massing.skp',
     scene: 'sketchup',
     tool: 'create_component',
     approval: true,
@@ -147,9 +165,10 @@ const SCENARIOS: Record<string, Scenario> = {
   },
   'blender-mcp': {
     title: 'Review a Blender camera path',
+    host: 'Blender',
     summary: 'Check a sample walkthrough for obstacle clearance, then view a recorded Blender output.',
     basis: ['The Blender connector checks camera path intersections and sampled clearance before writing the path, without an approval dialog. The browser uses simple obstacle boxes. The recording comes from the furnished-room Blender validation project.'],
-    file: 'Furnished Room.blend',
+    file: DEMO_PROJECT.name + ' - Walkthrough.blend',
     scene: 'blender',
     tool: 'architech_blender_camera_path',
     action: 'Check sample path',

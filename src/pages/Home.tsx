@@ -2,11 +2,10 @@ import { Link } from 'react-router-dom'
 import { ArrowRight, PlayCircle, ShieldCheck, Undo2, Eye, Layers, Moon, Wrench, Sparkles, Boxes } from 'lucide-react'
 import { PRODUCTS, STATS } from '../data/catalog'
 import { SUITES } from '../data/suites'
-import { DEMOS, demoById } from '../demo/registry'
-import { DemoPlayer } from '../demo/DemoPlayer'
 import { Reveal } from '../components/Layout'
-import { asset, Mark } from '../components/Brand'
+import { asset } from '../components/Brand'
 import { ProductCard } from '../components/ProductCard'
+import { DEMO_PROJECT, PROJECT_WORKFLOW } from '../data/demoProject'
 
 export default function Home() {
   const count = (id: string) => PRODUCTS.filter((p) => p.suite === id).length
@@ -17,20 +16,22 @@ export default function Home() {
         <div className="wrap hero-grid">
           <div>
             <span className="eyebrow">BIM automation software · Revit · AI</span>
-            <h1>Professional BIM tools you can <span className="grad-text">try before you buy</span>.</h1>
-            <p className="lead">ArchiTECH Automation is a suite of {STATS.products} productivity products for architects, BIM teams and design studios: documentation, modelling, model health and AI connectors, built from six years of architectural and BIM practice.</p>
+            <h1>From model to drawing set</h1>
+            <p className="lead">Prepare drawings, build models and review standards with ArchiTECH Automation. Try the tools on a sample project before you choose a suite.</p>
             <div className="hero-cta">
-              <Link className="btn btn-primary" to="/demos"><PlayCircle size={18} /> Try a live plugin demo</Link>
+              <Link className="btn btn-primary" to="/demos"><PlayCircle size={18} /> Try a browser demo</Link>
               <Link className="btn btn-ghost" to="/plugins">Browse {STATS.products} products <ArrowRight size={17} /></Link>
-            </div>
-            <div className="hero-stats">
-              <div><b>{STATS.products}</b><span>products in the catalogue</span></div>
-              <div><b>{STATS.revitTools}</b><span>Revit tools in three suites</span></div>
-              <div><b>{STATS.dialogs}</b><span>real dialogs, Dark and Light</span></div>
-              <div><b>{STATS.demos}</b><span>interactive demos</span></div>
             </div>
           </div>
           <HeroVisual />
+        </div>
+        <div className="wrap">
+          <dl className="home-counts">
+            <div><dt>Products</dt><dd>{STATS.products}</dd></div>
+            <div><dt>Revit tools</dt><dd>{STATS.revitTools}</dd></div>
+            <div><dt>Product lines</dt><dd>{SUITES.length}</dd></div>
+            <div><dt>Interactive demos</dt><dd>{STATS.demos}</dd></div>
+          </dl>
         </div>
       </section>
 
@@ -59,25 +60,18 @@ export default function Home() {
       </section>
 
       <section className="section" id="live-demo">
-        <div className="wrap-wide">
-          <Reveal className="section-head">
-            <div><span className="eyebrow">Interactive demo</span><h2>Try Sheet Manager in your browser.</h2></div>
-            <p className="lead">Work through a sample drawing set in a browser recreation of the Sheet Manager dialog. The demo library also includes the other Revit tools, I3D, Assistant and the MCP connectors.</p>
-          </Reveal>
-          <Reveal><DemoPlayer demo={demoById('sheet-manager')!} /></Reveal>
-          <div className="grid-3" style={{ marginTop: 28 }}>
-            {DEMOS.filter((d) => d.kind === 'crafted' && d.id !== 'sheet-manager').map((d, i) => (
-              <Reveal key={d.id} delay={i * 50}>
-                <Link to={`/demos/${d.id}`} className="glass suite-card" style={{ ['--suite' as string]: 'var(--cyan)' }}>
-                  <span className="chip chip-dot" style={{ alignSelf: 'flex-start' }}>{d.ribbon.tab} · {d.ribbon.panel}</span>
-                  <h3>{d.title}</h3>
-                  <p>{d.summary}</p>
-                  <span className="accent-text" style={{ fontWeight: 500, marginTop: 'auto' }}><PlayCircle size={15} style={{ verticalAlign: -3 }} /> Open the demo</span>
-                </Link>
-              </Reveal>
-            ))}
+        <div className="wrap">
+          <div className="home-project">
+            <div>
+              <span className="eyebrow">Sample project / {DEMO_PROJECT.code}</span>
+              <h2>Work through {DEMO_PROJECT.name}</h2>
+              <p>Generate room views, review finishes, prepare a drawing set and check model warnings on fictional project data.</p>
+              <Link to="/demos#sample-project" className="btn btn-primary"><PlayCircle size={17} /> Open the project board</Link>
+            </div>
+            <ol>
+              {PROJECT_WORKFLOW.map((step) => <li key={step.id}><Link to={'/demos/' + step.id}><span>{step.phase}</span><strong>{step.title}</strong><ArrowRight size={17} /></Link></li>)}
+            </ol>
           </div>
-          <Link className="btn btn-ghost" style={{ marginTop: 26 }} to="/demos">Browse all demos <ArrowRight size={16} /></Link>
         </div>
       </section>
 
@@ -92,7 +86,7 @@ export default function Home() {
               { icon: Eye, t: 'Preview before writing', d: 'Renumbering, parameter edits, finishes and more show the planned result first; only what you approve is written.' },
               { icon: Undo2, t: 'One undoable step', d: 'Batch runs are written as a single Revit transaction, so one Ctrl+Z reverses the whole run.' },
               { icon: ShieldCheck, t: 'Skips are named, not hidden', d: 'Borrowed, edited or unsupported elements are left alone and listed with the reason.' },
-              { icon: Moon, t: 'Dark and Light', d: 'Every dialog switches theme from its own header, and remembers the choice for the next one.' },
+              { icon: Moon, t: 'Dark and Light', d: 'Switch themes in the dialog header or compare the supplied screenshots.' },
               { icon: Layers, t: 'One ribbon, one design system', d: 'All 58 Revit tools install on the ArchiTECH ribbon and share one dialog design system, theme and interaction patterns.' },
               { icon: Boxes, t: 'Data in and out', d: 'Excel and CSV round trips for schedules, sheets, parameters and reports.' },
             ].map((f, i) => (
@@ -109,7 +103,7 @@ export default function Home() {
       <section className="section">
         <div className="wrap">
           <Reveal className="section-head">
-            <div><span className="eyebrow">Featured</span><h2>Start with the workflows teams ask for most.</h2></div>
+            <div><span className="eyebrow">Featured</span><h2>Start with a common BIM task.</h2></div>
             <Link className="btn btn-ghost" to="/plugins">See the full catalogue <ArrowRight size={17} /></Link>
           </Reveal>
           <div className="grid-2" style={{ gridTemplateColumns: 'repeat(auto-fit, minmax(270px, 1fr))' }}>
@@ -123,7 +117,7 @@ export default function Home() {
           <Reveal>
             <span className="eyebrow">ArchiTECH-I3D · AI connectors</span>
             <h2 style={{ margin: '14px 0 16px' }}>From a product photo to a Revit family. From a prompt to a guarded model edit.</h2>
-            <p className="lead">I3D turns a photo or mesh into a dimensioned, textured asset and places it in Revit, running locally on one NVIDIA GPU. The MCP connectors give AI assistants typed, guarded tools in Revit, Rhino, SketchUp, AutoCAD and Blender, with results checked against the model.</p>
+            <p className="lead">I3D turns a photo or mesh into a dimensioned, textured asset and places it in Revit, running locally on one NVIDIA GPU. The MCP connectors give AI assistants typed tools in Revit, Rhino, SketchUp, AutoCAD and Blender.</p>
             <div className="hero-cta"><Link className="btn btn-primary" to="/plugins/architech-i3d"><Sparkles size={17} /> Explore I3D</Link><Link className="btn btn-ghost" to="/plugins?suite=ai">AI &amp; MCP connectors</Link></div>
           </Reveal>
           <Reveal delay={100}>
@@ -155,21 +149,18 @@ export default function Home() {
   )
 }
 
-const shot = (slug: string, mode: 'dark' | 'light') => PRODUCTS.find((p) => p.slug === slug)?.dialogs[0]?.[mode] ?? ''
-
 function HeroVisual() {
+  const shot = PRODUCTS.find((p) => p.slug === 'sheet-manager')?.dialogs[0]?.dark
   return (
-    <div className="hero-visual" aria-hidden="true">
-      <div className="hv-glow" />
-      <div className="hv-frame glass">
-        <img src={asset(shot('warnings-inspector', 'dark'))} alt="" />
+    <figure className="home-proof">
+      <figcaption><span>{DEMO_PROJECT.name} / {DEMO_PROJECT.code}</span><span>{DEMO_PROJECT.revision}</span></figcaption>
+      <div className="home-proof-media">
+        {shot && <img src={asset(shot)} alt="Sheet Manager dialog with numbered sample drawing sheets" fetchPriority="high" />}
       </div>
-      <div className="hv-frame hv-back glass">
-        <img src={asset(shot('room-to-view', 'light'))} alt="" />
+      <div className="home-proof-caption">
+        <div><strong>Sheet Manager</strong><span>Renumber a sample drawing set</span></div>
+        <Link to="/demos/sheet-manager" aria-label="Try Sheet Manager"><PlayCircle size={24} /></Link>
       </div>
-      <div className="hv-chip c1"><PlayCircle size={14} /> Interactive demos</div>
-      <div className="hv-chip c2"><Mark size={16} /> 58 Revit tools</div>
-      <div className="hv-chip c3"><Moon size={14} /> Dark · Light</div>
-    </div>
+    </figure>
   )
 }

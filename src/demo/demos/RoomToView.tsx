@@ -1,5 +1,6 @@
 import { useMemo, useState } from 'react'
-import { RevitDialog, Btn, Check, Radio, Select, TextBox, SearchBox, Progress } from '../ui'
+import { RevitDialog, Btn, Check, Radio, Select, TextBox, SearchBox } from '../ui'
+import './crafted.css'
 import { ROOMS, SCALES, TEMPLATES } from '../sample'
 import type { DemoContext } from '../types'
 
@@ -21,15 +22,18 @@ export default function RoomToView({ theme, setTheme, done, notify, close }: Dem
   const [ticked, setTicked] = useState<Set<number>>(new Set())
   const [q, setQ] = useState('')
   const [level, setLevel] = useState('All levels')
-  const [opt, setOpt] = useState({ floor: true, floorCrop: true, floorOffset: '100', floorScale: '1:50', floorTemplate: '<None>', ceiling: true, ceilingTemplate: '<None>', threeD: false, elev: true, layout: 'four', n: true, e: true, s: true, w: true, elevScale: '1:25', elevTemplate: '<None>', mask: false })
-  const [created, setCreated] = useState<string[]>([])
+  const [opt, setOpt] = useState({ ceilingCrop: true, boxPadding: '300', floor: true, floorCrop: true, floorOffset: '100', floorScale: '1:50', floorTemplate: '<None>', ceiling: true, ceilingTemplate: '<None>', threeD: false, elev: true, layout: 'four', n: true, e: true, s: true, w: true, elevScale: '1:25', elevTemplate: '<None>', mask: false })
+  const [created, setCreated] = useState<Record<string, string>>({})
+  const [placed, setPlaced] = useState<Record<string, string>>({})
+  const [perRoom, setPerRoom] = useState(true)
+  const [layout, setLayout] = useState('Plan + 4 elevations')
   const [placeTicked, setPlaceTicked] = useState<Set<string>>(new Set())
-  const [busy, setBusy] = useState(0)
+
   const [status, setStatus] = useState('Tick Include on each step you want made.')
 
   const rooms = useMemo(() => ROOMS.filter((r) => (level === 'All levels' || r.level === level) && (!q || `${r.number} ${r.name} ${r.level}`.toLowerCase().includes(q.toLowerCase()))), [q, level])
-  const set = (k: keyof typeof opt, v: unknown) => setOpt((o) => ({ ...o, [k]: v }))
-  const tick = (id: number, v: boolean) => { const t = new Set(ticked); v ? t.add(id) : t.delete(id); setTicked(t); if (t.size >= 1) done('rooms') }
+  const set = <K extends keyof typeof opt>(k: K, v: typeof opt[K]) => setOpt((o) => ({ ...o, [k]: v }))
+  const tick = (id: number, v: boolean) => { const t = new Set(ticked); if (v) t.add(id); else t.delete(id); setTicked(t); if (t.size >= 1) done('rooms') }
 
   const planned = useMemo(() => {
     const names: string[] = []
@@ -38,28 +42,62 @@ export default function RoomToView({ theme, setTheme, done, notify, close }: Dem
       if (opt.floor) names.push(`${base} - Floor Plan`)
       if (opt.ceiling) names.push(`${base} - Ceiling Plan`)
       if (opt.threeD) names.push(`${base} - 3D`)
-      if (opt.elev && r.status !== 'Review') {
+      if (opt.elev) {
         if (opt.layout === 'dir') (['n', 'e', 's', 'w'] as const).forEach((d) => opt[d] && names.push(`${base} - Elevation ${({ n: 'North', e: 'East', s: 'South', w: 'West' })[d]}`))
-        else ['A', 'B', 'C', 'D'].forEach((x) => names.push(`${base} - Elevation ${x}`))
+        else (opt.layout === 'all' ? ['A', 'B', 'C', 'D', 'E'].slice(0, r.straightWalls ?? 4) : ['A', 'B', 'C', 'D']).forEach((x) => names.push(`${base} - Elevation ${x}`))
       }
     })
     return names
   }, [ticked, opt])
 
+  const numeric = (value: string) => value.trim() !== '' && Number.isFinite(Number(value)) && Number(value) >= 0
+  const validOptions = (!opt.floor || !opt.floorCrop || numeric(opt.floorOffset)) && (!opt.threeD || numeric(opt.boxPadding))
+  const newViews = planned.filter((view) => !created[view])
+  const selectedRooms = ROOMS.filter((room) => ticked.has(room.id))
+  const curved = selectedRooms.filter((room) => room.status === 'Review' && opt.elev)
+  const viewKind = (view: string) => view.slice(view.lastIndexOf(' - ') + 3)
+  const preflight = () => {
+    const message = selectedRooms.length + ' rooms checked. ' + newViews.length + ' new views planned.' + (curved.length ? ' Curved boundaries skipped for ' + curved.map((room) => room.name).join(', ') + '.' : '')
+    setStatus(message)
+    notify({ kind: curved.length ? 'warning' : 'info', text: message })
+  }
   const create = () => {
-    let p = 0; setBusy(1)
-    const t = window.setInterval(() => {
-      p += 12.5; setBusy(Math.min(100, p))
-      if (p >= 100) {
-        window.clearInterval(t); setBusy(0)
-        setCreated(planned); setPlaceTicked(new Set(planned))
-        const skipped = ROOMS.filter((r) => ticked.has(r.id) && r.status === 'Review' && opt.elev)
-        setStatus(`Created ${planned.length} views for ${ticked.size} rooms in one undo step.`)
-        notify({ kind: 'success', text: `Created ${planned.length} views for ${ticked.size} rooms (simulated). The whole batch is one undo step.` })
-        skipped.forEach((r) => notify({ kind: 'warning', text: `${r.number} ${r.name}: ${r.note}.` }))
-        done('create'); setStep('Place on Sheet')
-      }
-    }, 140)
+    const settingsFor = (view: string) => {
+      const kind = viewKind(view)
+      if (kind === 'Floor Plan') return [opt.floorScale, opt.floorTemplate, opt.floorCrop ? 'Crop: ' + opt.floorOffset + ' mm' : 'No room crop'].join(' · ')
+      if (kind === 'Ceiling Plan') return [opt.ceilingTemplate, opt.ceilingCrop ? 'Room crop' : 'No room crop'].join(' · ')
+      if (kind === '3D') return 'Section box padding: ' + opt.boxPadding + ' mm'
+      return [opt.elevScale, opt.elevTemplate, opt.mask ? 'Room interior masked' : 'No interior mask'].join(' · ')
+    }
+    setCreated({ ...created, ...Object.fromEntries(newViews.map((view) => [view, settingsFor(view)])) })
+    setPlaceTicked(new Set(newViews))
+    const message = 'Created ' + newViews.length + ' new sample views.'
+    setStatus(message)
+    notify({ kind: 'success', text: message })
+    curved.forEach((room) => notify({ kind: 'warning', text: room.number + ' ' + room.name + ': ' + room.note + '.' }))
+    done('create')
+    setStep('Place on Sheet')
+  }
+  const place = () => {
+    const next = { ...placed }
+    const skipped: string[] = []
+    for (const view of placeTicked) {
+      const sheet = perRoom ? 'INT-' + view.split(' ')[0] : 'INT-001'
+      const existing = Object.keys(next).filter((name) => next[name] === sheet)
+      const kind = viewKind(view)
+      const group = kind.startsWith('Elevation') ? 'elev' : kind.endsWith('Plan') ? 'plan' : 'other'
+      const fits = layout === '4 in a 2 × 2 grid' ? existing.length < 4
+        : group === 'elev' ? existing.filter((name) => viewKind(name).startsWith('Elevation')).length < 4
+          : group === 'plan' && !existing.some((name) => viewKind(name).endsWith('Plan'))
+      if (fits) next[view] = sheet
+      else skipped.push(view)
+    }
+    setPlaced(next)
+    setPlaceTicked(new Set(skipped))
+    const count = placeTicked.size - skipped.length
+    const message = 'Placed ' + count + ' sample views. ' + skipped.length + ' did not fit the selected layout.'
+    setStatus(message)
+    notify({ kind: skipped.length ? 'warning' : 'success', text: message })
   }
 
   return (
@@ -67,9 +105,10 @@ export default function RoomToView({ theme, setTheme, done, notify, close }: Dem
       footer={<>
         <span className="ad-status">{status}</span>
         <Btn onClick={close}>Close</Btn>
-        {step === 'Place on Sheet' && created.length > 0
-          ? <Btn primary disabled={placeTicked.size === 0} onClick={() => { notify({ kind: 'success', text: `Placed ${placeTicked.size} views on new sheets, one room per sheet (simulated). Views that do not fit stay unplaced and are named in the report.` }); setStatus(`Placed ${placeTicked.size} views.`) }}>Place selected views</Btn>
-          : <Btn primary demo="create" disabled={ticked.size === 0 || planned.length === 0 || busy > 0} onClick={create}>Create</Btn>}
+        {step === 'Place on Sheet' && Object.keys(created).length > 0
+          ? <Btn primary disabled={placeTicked.size === 0} onClick={place}>Place selected views</Btn>
+          : <Btn primary demo="create" disabled={!newViews.length || !validOptions} onClick={create}>Create</Btn>}
+
       </>}>
       <div className="ad-split" style={{ margin: '-16px -20px', minHeight: 500 }}>
         <nav className="ad-nav" aria-label="Room to View steps">
@@ -80,13 +119,13 @@ export default function RoomToView({ theme, setTheme, done, notify, close }: Dem
         </nav>
         <div style={{ padding: '14px 18px', display: 'flex', flexDirection: 'column', gap: 10, minWidth: 0 }}>
           <div><div className="ad-h">{step}</div><div className="ad-note">{STEPS.find(([s]) => s === step)![1]}</div></div>
-          {busy > 0 && <Progress value={busy} />}
+          {!validOptions && <p className="ad-result">Enter a non-negative numeric crop offset or section box padding.</p>}
 
           {step === 'Rooms' && <>
             <div className="ad-row">
-              <SearchBox value={q} onChange={setQ} placeholder="Search room number, name or level..." width={260} />
+              <SearchBox value={q} onChange={setQ} placeholder="Search room number, name or level..." width="min(260px, 100%)" />
               <Select label="Level" value={level} onChange={setLevel} options={['All levels', 'Level 01', 'Level 02']} width={120} />
-              <Btn sm onClick={() => notify({ kind: 'info', text: 'Preflight checks each ticked room before anything is made.' })}>Preflight</Btn>
+              <Btn sm disabled={!ticked.size} onClick={preflight}>Preflight</Btn>
               <Btn sm onClick={() => { const t = new Set(ticked); rooms.forEach((r) => t.add(r.id)); setTicked(t); if (t.size) done('rooms') }}>Tick shown</Btn>
               <Btn sm onClick={() => setTicked(new Set())}>Clear ticks</Btn>
             </div>
@@ -110,19 +149,19 @@ export default function RoomToView({ theme, setTheme, done, notify, close }: Dem
             <div className="ad-row"><span className="ad-note" style={{ width: 90 }}>Offset (mm):</span><TextBox style={{ width: 80 }} value={opt.floorOffset} onChange={(e) => set('floorOffset', e.target.value)} aria-label="Floor plan crop offset" /></div>
             <div className="ad-row"><span className="ad-note" style={{ width: 90 }}>View scale:</span><Select label="Floor plan scale" value={opt.floorScale} onChange={(v) => set('floorScale', v)} options={SCALES} width={90} /></div>
             <span className="ad-label">View template</span>
-            <Select label="Floor plan view template" value={opt.floorTemplate} onChange={(v) => set('floorTemplate', v)} options={TEMPLATES} width={240} />
+            <Select label="Floor plan view template" value={opt.floorTemplate} onChange={(v) => set('floorTemplate', v)} options={TEMPLATES} width="min(240px, 100%)" />
           </div>}
 
           {step === 'Ceiling Plan' && <div className="ad-card" style={{ display: 'grid', gap: 9, maxWidth: 520 }}>
             <Check label="Include Ceiling Plan" checked={opt.ceiling} onChange={(v) => set('ceiling', v)} />
-            <Check label="Match crop to room boundary" checked onChange={() => {}} />
+            <Check label="Match crop to room boundary" checked={opt.ceilingCrop} onChange={(value) => set('ceilingCrop', value)} />
             <span className="ad-label">View template</span>
-            <Select label="Ceiling plan view template" value={opt.ceilingTemplate} onChange={(v) => set('ceilingTemplate', v)} options={TEMPLATES} width={240} />
+            <Select label="Ceiling plan view template" value={opt.ceilingTemplate} onChange={(v) => set('ceilingTemplate', v)} options={TEMPLATES} width="min(240px, 100%)" />
           </div>}
 
           {step === '3D View' && <div className="ad-card" style={{ display: 'grid', gap: 9, maxWidth: 520 }}>
             <Check label="Include 3D view with section box" checked={opt.threeD} onChange={(v) => set('threeD', v)} />
-            <div className="ad-row"><span className="ad-note" style={{ width: 120 }}>Box padding (mm):</span><TextBox style={{ width: 80 }} defaultValue="300" aria-label="Box padding" /></div>
+            <div className="ad-row"><span className="ad-note" style={{ width: 120 }}>Box padding (mm):</span><TextBox style={{ width: 80 }} value={opt.boxPadding} onChange={(event) => set('boxPadding', event.target.value)} aria-label="Box padding" /></div>
           </div>}
 
           {step === 'Elevations' && <div className="ad-card" style={{ display: 'grid', gap: 9 }}>
@@ -135,7 +174,7 @@ export default function RoomToView({ theme, setTheme, done, notify, close }: Dem
             <span className="ad-note">Distance into the room from the finish boundary. Curved boundaries are skipped.</span>
             <div className="ad-row"><span className="ad-note" style={{ width: 90 }}>View scale:</span><Select label="Elevation scale" value={opt.elevScale} onChange={(v) => set('elevScale', v)} options={SCALES} width={90} /></div>
             <span className="ad-label">View template</span>
-            <Select label="Elevation view template" value={opt.elevTemplate} onChange={(v) => set('elevTemplate', v)} options={TEMPLATES} width={240} />
+            <Select label="Elevation view template" value={opt.elevTemplate} onChange={(v) => set('elevTemplate', v)} options={TEMPLATES} width="min(240px, 100%)" />
           </div>}
 
           {step === 'Masking' && <div className="ad-card" style={{ display: 'grid', gap: 9, maxWidth: 560 }}>
@@ -143,19 +182,35 @@ export default function RoomToView({ theme, setTheme, done, notify, close }: Dem
             <span className="ad-note">Hides everything outside the room: past the wall finish, below the floor finish top, and above the ceiling finish (the ceiling finish stays visible). Needs Elevations ticked.</span>
           </div>}
 
-          {step === 'Place on Sheet' && (created.length === 0
+          {step === 'Place on Sheet' && (Object.keys(created).length === 0
             ? <div className="ad-card"><span className="ad-note">Create the views first; the new views are listed here to place on sheets.</span></div>
             : <>
               <span className="ad-label">1&nbsp; Select views</span>
               <div className="ad-table-wrap" style={{ maxHeight: 220 }}>
-                <table className="ad-table"><thead><tr><th /><th>Type</th><th>View</th></tr></thead>
-                  <tbody>{created.map((v) => (
-                    <tr key={v} className={placeTicked.has(v) ? 'sel' : ''}><td><Check checked={placeTicked.has(v)} onChange={(c) => { const t = new Set(placeTicked); c ? t.add(v) : t.delete(v); setPlaceTicked(t) }} title={`Place ${v}`} /></td>
-                      <td>{v.includes('Floor') ? 'Floor Plan' : v.includes('Ceiling') ? 'Ceiling Plan' : v.includes('3D') ? '3D View' : 'Elevation'}</td><td>{v}</td></tr>))}</tbody></table>
+                <table className="ad-table">
+                  <thead><tr><th>Pick</th><th>View</th><th>Settings</th><th>Placement</th></tr></thead>
+                  <tbody>{Object.entries(created).map(([view, settings]) => (
+                    <tr key={view} className={placeTicked.has(view) ? 'sel' : ''}>
+                      <td>{!placed[view] && <Check checked={placeTicked.has(view)} onChange={(checked) => {
+                        const next = new Set(placeTicked)
+                        if (checked) next.add(view); else next.delete(view)
+                        setPlaceTicked(next)
+                      }} title={'Place ' + view} />}</td>
+                      <td>{view}</td><td>{settings}</td><td>{placed[view] || 'Unplaced'}</td>
+                    </tr>
+                  ))}</tbody>
+                </table>
               </div>
-              <div className="ad-grid2">
-                <div className="ad-card" style={{ display: 'grid', gap: 6 }}><span className="ad-label">2&nbsp; Sheet and viewport title</span><Radio name="sheet" label="Create new sheet" checked onChange={() => {}} /><Check label="Keep each room on its own new sheet" checked onChange={() => {}} /></div>
-                <div className="ad-card" style={{ display: 'grid', gap: 6 }}><span className="ad-label">3&nbsp; Layout</span><Select label="Layout on each sheet" value="Plan + 4 elevations" onChange={() => {}} options={['Plan + 4 elevations', 'Grid', 'Same spot as reference sheet']} width="100%" /><span className="ad-note">Nothing is scaled automatically. A view that does not fit stays unplaced and is named in the report.</span></div>
+              <div className="ad-grid2 crafted-layout">
+                <div className="ad-card" style={{ display: 'grid', gap: 6 }}>
+                  <span className="ad-label">2&nbsp; New sheet</span>
+                  <Check label="Keep each room on its own new sheet" checked={perRoom} onChange={setPerRoom} />
+                </div>
+                <div className="ad-card" style={{ display: 'grid', gap: 6 }}>
+                  <span className="ad-label">3&nbsp; Layout</span>
+                  <Select label="Layout on each sheet" value={layout} onChange={setLayout} options={['Plan + 4 elevations', '4 in a 2 × 2 grid']} width="100%" />
+                  <span className="ad-note">Views that exceed the sample sheet capacity remain unplaced.</span>
+                </div>
               </div>
             </>)}
         </div>

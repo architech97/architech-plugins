@@ -18,6 +18,8 @@ export interface DemoContext {
   setTheme: (t: DialogTheme) => void
   /** Mark a step done; the player advances when it is the current one. */
   done: (stepId: string) => void
+  /** Reopen a guided step and clear all later completions when the fixture changes. */
+  rewind: (stepId: string) => void
   /** Toast plus an entry in the "what happened" log (simulated outcome). */
   notify: (n: DemoNotice) => void
   /** Close the dialog (the player shows a reopen prompt). */

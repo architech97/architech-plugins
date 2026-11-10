@@ -34,7 +34,7 @@ export default function Product() {
               <h1>{p.name}</h1>
               <p className="lead">{p.tagline}</p>
               <div className="hero-cta">
-                {demo && <a className="btn btn-primary" href="#demo"><PlayCircle size={18} /> Try the live demo</a>}
+                {demo && <a className="btn btn-primary" href="#demo"><PlayCircle size={18} /> Run the browser demo</a>}
                 <Link className={`btn ${demo ? 'btn-ghost' : 'btn-primary'}`} to={`/custom-development?type=demo&product=${p.slug}`}><MessageSquare size={17} /> Request a demo</Link>
                 <Link className="btn btn-ghost" to={`/pricing?product=${p.slug}`}><Tag size={17} /> Pricing</Link>
               </div>
@@ -60,7 +60,7 @@ export default function Product() {
               <h3>What slows teams down</h3>
               <p>{p.problem}</p>
             </div></Reveal>
-            <Reveal delay={80}><div className="glass ps-card" style={{ height: '100%', borderColor: 'rgba(34,211,238,.35)' }}>
+            <Reveal delay={80}><div className="glass ps-card" style={{ height: '100%', borderColor: 'var(--line-strong)' }}>
               <span className="eyebrow">The solution</span>
               <h3>What {p.name} does</h3>
               <p>{p.tagline}{p.capabilities[0] && p.capabilities[0] !== p.tagline ? ` ${p.capabilities[0]}` : ''}</p>
@@ -74,11 +74,11 @@ export default function Product() {
           <div className="wrap-wide">
             <Reveal className="section-head">
               <div><span className="eyebrow">Interactive demonstration</span><h2>{demo.title}</h2></div>
-              <p className="lead">{demo.summary}</p>
+              <Link className="btn btn-ghost" to={'/demos/' + demo.id}>Open dedicated demo <ArrowRight size={17} /></Link>
             </Reveal>
-            <DemoPlayer demo={demo} />
+            <DemoPlayer key={demo.id} demo={demo} />
             <div className="notice" style={{ marginTop: 16 }}>
-              <b style={{ color: 'var(--text)' }}>How this simulation was built.</b> {demo.basis.join(' ')} It runs entirely in your browser on sample data and never opens, reads or changes a Revit model.
+              <b style={{ color: 'var(--text)' }}>How this simulation was built.</b> {demo.basis.join(' ')} The browser workspace runs on sample data.
             </div>
           </div>
         </section>
@@ -125,9 +125,6 @@ export default function Product() {
           </div>
         </section>
       )}
-      {p.dialogs.length === 0 && isRevitTool && (
-        <section className="section" style={{ paddingTop: 0, paddingBottom: 40 }}><div className="wrap"><div className="notice">Screenshots and an interactive demo for {p.name} are being added. Request a guided demo to see it working now.</div></div></section>
-      )}
 
       <section className="section" style={{ paddingTop: 20 }}>
         <div className="wrap grid-2" style={{ alignItems: 'start', gap: 28 }}>
@@ -143,7 +140,7 @@ export default function Product() {
               <ul className="feature-list" style={{ marginTop: 16 }}>
                 {isRevitTool && <li><FileCheck2 size={18} /><span>Ships as a compiled Revit add-in on the ArchiTECH ribbon, built for Revit {revit}.</span></li>}
                 {p.dialogs.length > 0 && <li><FileCheck2 size={18} /><span>Every dialog shown here was rendered from the plugin's own layout and checked for readable text contrast in Dark and Light.</span></li>}
-                {demo && <li><FileCheck2 size={18} /><span>The interactive demo follows the dialog's real labels, options and rules, listed under the demo.</span></li>}
+                {demo && <li><FileCheck2 size={18} /><span>The demo includes a guide and a description of the workflow it represents.</span></li>}
                 <li><AlertCircle size={18} /><span>Measured time savings will be published per tool after pilot projects. No productivity figure on this site is estimated.</span></li>
               </ul>
             </div>
