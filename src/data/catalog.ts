@@ -1,7 +1,8 @@
 import generated from './tools.generated.json'
+import reconstructed from './dialogReconstructions.json'
 import { EXTRAS } from './extras'
 import { PROBLEMS } from './problems'
-import type { Product } from './types'
+import type { DialogShot, Product } from './types'
 
 /** Interactive demos available today, by tool key. More are added through src/demo/registry.ts. */
 export const DEMO_BY_KEY: Record<string, string> = {
@@ -11,6 +12,7 @@ export const DEMO_BY_KEY: Record<string, string> = {
   RoomFinishes: 'room-to-finishes',
   OneParameter: 'one-parameter',
   RoomViews: 'room-to-view',
+  ModelChecker: 'model-health',
 }
 
 // Where a ribbon tooltip is older than the dialog, the dialog's own subtitle is used.
@@ -18,8 +20,11 @@ const TAGLINES: Record<string, string> = {
   RoomViews: 'Plans, a 3D view and elevations for every ticked room, then place them on sheets.',
 }
 
+const reconstructedDialogs = reconstructed as Record<string, DialogShot[]>
+
 const tools: Product[] = (generated as Omit<Product, 'status'>[]).map((t) => ({
   ...t,
+  dialogs: [...t.dialogs, ...(reconstructedDialogs[t.slug] ?? [])],
   tagline: TAGLINES[t.key] ?? t.tagline,
   status: 'available',
   problem: PROBLEMS[t.key],

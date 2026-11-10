@@ -6,6 +6,7 @@ export interface DialogShot {
   light?: string
   w?: number
   h?: number
+  source?: 'reconstructed'
 }
 
 export interface Product {

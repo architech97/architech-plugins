@@ -13,6 +13,9 @@ import NotFound from './NotFound'
 import './product-evidence.css'
 
 const WORKFLOW_EXAMPLES: Partial<Record<string, { input: string; result: string; reference?: string }>> = {
+  'sheet-export': { input: 'AT-01 drawing sheets and one or more export formats', result: 'Review output filenames and download a sample manifest or drawing register.' },
+  'parameter-manager': { input: 'An Asset Tag project parameter bound to Doors and Windows', result: 'Apply the definition to sample data and export the resulting parameter list to CSV.' },
+  'model-health': { input: 'Selected inventory categories in the AT-01 sample model', result: 'Review the inventory and export a sample Model Health report.' },
   'sheet-manager': {
     input: 'A-101 Ground Floor Plan and A-102 First Floor Plan',
     result: 'Check the occupied A-102 number, then issue the two plans as GA-101 and GA-102.',
@@ -30,13 +33,13 @@ const WORKFLOW_EXAMPLES: Partial<Record<string, { input: string; result: string;
     result: 'Review six affected element IDs and download the CSV for all nine warning groups.',
   },
   'architech-i3d': {
-    input: 'Dragon reference image or prepared mesh, with a known height in millimetres',
+    input: 'Prepared chair mesh or Dragon photo or mesh, with a known height in millimetres',
     result: 'Review family save, load and placement as separate sample outcomes.',
-    reference: 'Dragon asset fixture',
+    reference: 'Chair and Dragon sample fixtures',
   },
   'architech-assistant': {
-    input: 'Wall 401284 and its instance Comments value',
-    result: 'Deny or approve one sample update, then read back the exact stored value.',
+    input: 'The active Revit view, or wall 401284 and its instance Comments value',
+    result: 'Inspect the Cover view response or review a proposed Comments update and check the resulting value.',
   },
 }
 
@@ -58,7 +61,7 @@ const DEMO_FORMATS = {
   },
 }
 
-const CHAIR_PREVIEW = 'media/i3d/chair-result-preview.webp'
+const CHAIR_PREVIEW = 'media/i3d/chair-mesh.png'
 const DRAGON_PLACEMENT = 'media/i3d/revit-placement-0.6.36.webp'
 
 export default function Product() {
@@ -90,6 +93,7 @@ export default function Product() {
               <p className="lead">{p.tagline}</p>
               <div className="hero-cta">
                 {format && <a className="btn btn-primary" href="#demo"><PlayCircle size={18} /> {format.action}</a>}
+                {(p.dialogs.length > 0 || p.media?.length) && <a className="btn btn-ghost" href="#dialog-reference">View {p.dialogs.length ? 'dialogs' : 'desktop visuals'}</a>}
                 <Link className={`btn ${demo ? 'btn-ghost' : 'btn-primary'}`} to={`/custom-development?type=demo&product=${p.slug}`}><MessageSquare size={17} /> Request a walkthrough</Link>
                 <Link className="btn btn-ghost" to={`/pricing?product=${p.slug}`}><Tag size={17} /> Pricing</Link>
               </div>
@@ -182,18 +186,18 @@ export default function Product() {
       </section>
 
       {(p.dialogs.length > 0 || p.media?.length) && (
-        <section className="section" style={{ paddingTop: 20 }}>
+        <section className="section" id="dialog-reference" style={{ paddingTop: 20, scrollMarginTop: '124px' }}>
           <div className="wrap">
             <Reveal className="section-head">
-              <div><span className="eyebrow">Product reference</span><h2>{p.dialogs.length ? 'Dialog layout renders' : 'Desktop captures and illustrations'}</h2></div>
-              {p.dialogs.length > 0 && <p className="lead">{p.dialogs.length} dialog{p.dialogs.length > 1 ? 's' : ''} rendered from the plugin layout with sample data in both themes.</p>}
+              <div><span className="eyebrow">Product reference</span><h2>{p.dialogs.length ? 'Plugin dialogs' : 'Desktop captures and illustrations'}</h2></div>
+              {p.dialogs.length > 0 && <p className="lead">{p.dialogs.length} dialog{p.dialogs.length > 1 ? 's' : ''} with sample data. Select a window or enlarge it to inspect the controls.</p>}
             </Reveal>
-            {p.dialogs.length > 0 && <Reveal><DialogGallery dialogs={p.dialogs} name={p.name} /></Reveal>}
+            {p.dialogs.length > 0 && <Reveal><DialogGallery key={p.slug} dialogs={p.dialogs} name={p.name} /></Reveal>}
             {p.media && (
               <div className={hasChairPreview ? 'grid-2 product-media-pair' : 'grid-3'} style={{ marginTop: 20 }}>
                 {hasChairPreview && (
                   <figure id="desktop-chair-preview" className="product-media">
-                    <img src={asset(CHAIR_PREVIEW)} alt="Upholstered chair in the textured 3D result preview in I3D Desktop" loading="lazy" />
+                <img src={asset(CHAIR_PREVIEW)} alt="Upholstered chair in the textured I3D Desktop Material workspace" loading="lazy" />
                     <figcaption>
                       <strong>Captured in I3D Desktop</strong>
                       <span>Chair geometry and texture at the desktop preview stage, before export.</span>
@@ -232,7 +236,7 @@ export default function Product() {
               <span className="eyebrow">Evidence and scope</span>
               <ul className="feature-list" style={{ marginTop: 16 }}>
                 {isRevitTool && <li><FileCheck2 size={18} /><span>The native add-in targets Revit {revit}. Its ribbon location is {ribbon}.</span></li>}
-                {p.dialogs.length > 0 && <li><FileCheck2 size={18} /><span>Dialog images are renders of exported layouts populated with sample data.</span></li>}
+                {p.dialogs.length > 0 && <li><FileCheck2 size={18} /><span>Dialog references are rendered from XAML or reconstructed from code-built controls. They use sample data.</span></li>}
                 {format && <li><FileCheck2 size={18} /><span>{format.label}. {format.description}</span></li>}
                 {hasRecordedPlacement && <li><FileCheck2 size={18} /><span>The Revit placement image records a separate host run of the Dragon fixture.</span></li>}
               </ul>

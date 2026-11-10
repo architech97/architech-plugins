@@ -2,8 +2,10 @@
 .player-top { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 12px; }
 .player-actions { display: flex; flex-wrap: wrap; gap: 10px; align-items: center; }
 .player-main { display: grid; grid-template-columns: minmax(0, 1fr) 320px; gap: 16px; align-items: stretch; }
-.player.compact .player-main { grid-template-columns: 1fr; }
+.player.compact .player-main, .player.is-expanded .player-main { grid-template-columns: 1fr; }
 .player.compact .steps-panel { display: none; }
+.player.is-expanded .revit-ribbon, .player.is-expanded .revit-panel, .player.is-expanded .revit-plan { display: none; }
+.player.is-expanded .revit-canvas { padding: 8px; background: #202228; min-height: 0; }
 
 /* simulated Revit frame */
 .revit { border-radius: 16px; overflow: hidden; border: 1px solid var(--line-strong); background: #1b1d22; box-shadow: var(--shadow); display: flex; flex-direction: column; min-width: 0; }
@@ -83,6 +85,7 @@
 @media (prefers-reduced-motion: reduce) { .steps-progress i { transition: none; } }
 
 .player-quick-guide { display: none; }
+.player.is-expanded .player-quick-guide { display: grid; }
 @media (max-width: 1100px) {
   .player-quick-guide { display: grid; grid-template-columns: minmax(0, 1fr) auto; align-items: start; gap: 10px 18px; padding: 14px 16px; border: 1px solid var(--line-strong); border-left: 3px solid var(--signal); border-radius: 5px; background: var(--panel); }
   .player-quick-guide strong { display: block; margin: 5px 0 3px; font-size: .93rem; }
@@ -127,6 +130,13 @@
 }
 .project-workspace .player { border: 0; padding: 0; }
 .player .steps-panel, .player .player-quick-guide { background: var(--panel); }
+.player.is-expanded .player-quick-guide {
+  grid-template-columns: minmax(0, 1fr) auto; align-items: start; gap: 8px 16px; padding: 12px;
+  border: 1px solid var(--line); border-left: 3px solid var(--signal); border-radius: 5px;
+}
+.player.is-expanded .player-quick-guide strong { display: block; }
+.player.is-expanded .player-quick-guide p { color: var(--text-2); font-size: .86rem; }
+@media (max-width: 500px) { .player.is-expanded .player-quick-guide { grid-template-columns: 1fr; } }
 .player .rp-btn { background: #7b9be620; box-shadow: inset 0 0 0 1px #7b9be670; }
 .player .step-list li.cur { background: #7b9be61a; box-shadow: inset 0 0 0 1px #7b9be665; }
 .player .toast, .player .loading, .player .reopen { background: var(--bg); }

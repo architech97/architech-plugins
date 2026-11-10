@@ -445,3 +445,7 @@ main h1 { color: var(--automation-heading); }
   .division-note { display: none; }
   .division-nav { column-gap: 13px; }
 }
+@media (max-width: 380px) {
+  .division-nav { column-gap: 9px; }
+  .division-nav > a { font-size: .66rem; }
+}

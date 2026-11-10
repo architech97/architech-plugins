@@ -60,15 +60,6 @@ const CASES: Record<string, CommandCase> = {
     action: 'Review families',
     downloadable: true,
   },
-  'model-health': {
-    input: 'Sample rule check',
-    choices: [
-      { option: 'Model warnings', rows: [['Overlapping walls', '3 · Review'], ['Duplicate marks', '2 · Review'], ['Report', 'Model Health · Warnings']] },
-      { option: 'Link inventory', rows: [['Revit links', '2 loaded · 1 unloaded'], ['Embedded CAD', '1 · Review'], ['Report', 'Model Health · Links']] },
-    ],
-    action: 'Run selected check',
-    downloadable: true,
-  },
   'split-floor-ceiling': {
     input: 'Selected elements',
     choices: [

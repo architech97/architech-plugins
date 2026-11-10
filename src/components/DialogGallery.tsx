@@ -13,6 +13,7 @@ export function DialogGallery({ dialogs, name }: { dialogs: DialogShot[]; name: 
   const actualMode = shot[mode] ? mode : otherMode
   const src = shot[actualMode]
   if (!src) return null
+  const source = shot.source === 'reconstructed' ? 'Source-derived reconstruction with sample data.' : 'Rendered from the dialog layout with sample data.'
   const caption = name + ' · ' + shot.title + ' · ' + actualMode + ' theme'
 
   return (
@@ -34,7 +35,7 @@ export function DialogGallery({ dialogs, name }: { dialogs: DialogShot[]; name: 
         <img src={asset(src)} alt={caption} width={shot.w} height={shot.h} loading="lazy" decoding="async" />
         <span className="shot-zoom" aria-hidden="true"><Maximize2 size={18} /></span>
       </button>
-      <p className="caption">Dialog layout rendered with sample rows.</p>
+      <p className="caption" aria-live="polite">{i + 1} of {dialogs.length} · {shot.title} · {actualMode === 'dark' ? 'Dark' : 'Light'} theme. {source}</p>
       <dialog className="shot-modal" ref={lightbox} aria-label={shot.title + ' enlarged'} onClick={(e) => { if (e.target === e.currentTarget) e.currentTarget.close() }}>
         <div className="shot-modal-body">
           <button type="button" className="btn btn-ghost btn-sm" autoFocus onClick={() => lightbox.current?.close()}><X size={16} /> Close preview</button>

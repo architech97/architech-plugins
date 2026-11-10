@@ -1,5 +1,5 @@
 import { Suspense, lazy, useCallback, useEffect, useMemo, useRef, useState } from 'react'
-import { CheckCircle2, Circle, RotateCcw, Info, AlertTriangle, CheckCheck, Eye, Compass, LocateFixed } from 'lucide-react'
+import { CheckCircle2, Circle, RotateCcw, Info, AlertTriangle, CheckCheck, Eye, Compass, LocateFixed, Maximize2, Minimize2 } from 'lucide-react'
 import type { DemoDefinition, DemoNotice, DialogTheme } from './types'
 import { DEMO_PROJECT } from '../data/demoProject'
 import './dialog.css'
@@ -15,6 +15,7 @@ export function DemoPlayer({ demo, compact = false }: { demo: DemoDefinition; co
   const activeRun = useRef(0)
   const [doneIds, setDoneIds] = useState<string[]>([])
   const [guided, setGuided] = useState(true)
+  const [expanded, setExpanded] = useState(false)
   const [targetReady, setTargetReady] = useState(false)
   const [closed, setClosed] = useState(false)
   const [toasts, setToasts] = useState<LogEntry[]>([])
@@ -79,7 +80,7 @@ export function DemoPlayer({ demo, compact = false }: { demo: DemoDefinition; co
   }, [current?.target, guided, closed, run])
 
   return (
-    <div className={`player ${compact ? 'compact' : ''}`}>
+    <div className={`player${compact ? ' compact' : ''}${expanded ? ' is-expanded' : ''}`}>
       <div className="player-top">
         <div className="player-title">
           <span className="badge-sim" title={DEMO_PROJECT.code + ' · ' + DEMO_PROJECT.name}><Info size={14} /> Browser simulation · sample data</span>
@@ -90,6 +91,9 @@ export function DemoPlayer({ demo, compact = false }: { demo: DemoDefinition; co
             <button aria-pressed={guided} className={guided ? 'on' : ''} onClick={() => setGuided(true)}><Compass size={14} style={{ marginRight: 6, verticalAlign: -2 }} />Guided</button>
             <button aria-pressed={!guided} className={!guided ? 'on' : ''} onClick={() => setGuided(false)}><Eye size={14} style={{ marginRight: 6, verticalAlign: -2 }} />Explore</button>
           </div>
+          {!compact && <button className="btn btn-ghost btn-sm" aria-pressed={expanded} onClick={() => setExpanded(!expanded)}>
+            {expanded ? <Minimize2 size={15} /> : <Maximize2 size={15} />} {expanded ? 'Standard view' : 'Expand dialog'}
+          </button>}
           <button className="btn btn-ghost btn-sm" onClick={reset}><RotateCcw size={15} /> Reset</button>
         </div>
       </div>
@@ -122,7 +126,7 @@ export function DemoPlayer({ demo, compact = false }: { demo: DemoDefinition; co
               <g fill="none" stroke="currentColor" strokeWidth="2"><path d="M30 30h340v200H30z" /><path d="M30 120h150M180 30v200M260 120h110M260 120v110" /></g>
               <g fill="none" stroke="currentColor" strokeWidth="1" strokeDasharray="4 4" opacity=".6"><path d="M60 60h90v40H60zM210 50h130v50H210z" /></g>
             </svg>}
-            <div className="dialog-host" style={{ maxWidth: demo.width }}>
+            <div className="dialog-host" style={{ maxWidth: expanded ? undefined : demo.width }}>
               {closed ? (
                 <div className="reopen">
                   <p>The dialog is closed.</p>

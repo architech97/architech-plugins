@@ -5,6 +5,7 @@ import { demoById, demoForProduct } from '../demo/registry'
 import { DemoPlayer } from '../demo/DemoPlayer'
 import type { DemoDefinition } from '../demo/types'
 import { PRODUCTS, productBySlug, searchText } from '../data/catalog'
+import { FEATURED_TOOLS } from '../data/featured'
 import { SUITES, suiteById } from '../data/suites'
 import { DEMO_PROJECT, PROJECT_WORKFLOW } from '../data/demoProject'
 import { ROOMS, SHEETS, WARNINGS } from '../demo/sample'
@@ -206,7 +207,8 @@ export function DemoHub() {
   const term = query.trim().toLowerCase()
   const words = term.split(/\s+/).filter(Boolean)
   const relevant = entries.filter(({ product, demo }) => {
-    const text = [searchText(product), suiteById(product.suite).name, demo.title, demo.summary].join(' ').toLowerCase()
+    const featuredName = FEATURED_TOOLS.find(tool => tool.slug === product.slug)?.title
+    const text = [searchText(product), suiteById(product.suite).name, demo.title, demo.summary, featuredName].join(' ').toLowerCase()
     return words.every((word) => text.includes(word))
   })
   const matching = relevant.filter(({ demo }) => !format || demo.kind === format)
@@ -270,6 +272,16 @@ export function DemoHub() {
       </section>
 
       <ProjectBoard />
+
+      <section className="wrap demo-index demo-featured" aria-labelledby="featured-demos-title">
+        <div className="demo-section-title"><div><p className="demo-kicker">Featured workflows</p><h2 id="featured-demos-title">One tool from each Revit suite</h2></div></div>
+        <ul className="demo-rows">
+          {FEATURED_TOOLS.map(tool => <li key={tool.slug}><Link to={'/demos/' + tool.slug}>
+            <span><strong>{tool.title}</strong><br /><small>{tool.task}</small></span>
+            <span className="demo-kicker">{tool.suite}</span><ArrowUpRight size={17} aria-hidden="true" />
+          </Link></li>)}
+        </ul>
+      </section>
 
       <section ref={index} className="wrap demo-index" id="demo-index" aria-labelledby="demo-index-title">
         <div className="demo-section-title">
@@ -339,7 +351,10 @@ export function DemoPage() {
               <p>{demo.summary}</p>
               <p className="demo-detail-format">{demoFormats[demo.kind].detail}</p>
             </div>
-            {product && <Link className="demo-text-link" to={`/plugins/${product.slug}`}>Product details <ArrowUpRight size={16} /></Link>}
+            {product && <div className="demo-detail-links">
+              <Link className="demo-text-link" to={`/plugins/${product.slug}`}>Product details <ArrowUpRight size={16} /></Link>
+              {(product.dialogs.length > 0 || product.media?.length) && <Link className="demo-text-link" to={`/plugins/${product.slug}#dialog-reference`}>View {product.dialogs.length ? 'dialog layouts' : 'desktop visuals'} <ArrowUpRight size={16} /></Link>}
+            </div>}
           </div>
         </div>
       </header>

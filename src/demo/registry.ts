@@ -10,6 +10,40 @@ import { studioDemos } from './studioRegistry'
 // DemoContext), add an entry here, and map the tool key to its id in src/data/catalog.ts.
 const CRAFTED: Omit<DemoDefinition, 'kind'>[] = [
   {
+    id: 'sheet-export', productSlug: 'sheet-export', width: 1080,
+    ribbon: { tab: 'Arch Folio', panel: 'Publish', button: 'Sheet Export' },
+    title: 'Sheet Export: publish a drawing set',
+    summary: 'Select sheets, configure export formats and review the filenames before downloading a sample drawing register.',
+    basis: [
+      'Selection, Format and Create stages follow ArchSheetExportWindow.xaml and use the AT-01 sample sheets.',
+      'The browser generates a CSV output manifest and drawing register. The Revit add-in produces drawing files and an optional XLSX register.',
+    ],
+    steps: [
+      { id: 'selection', title: 'Select sheets', hint: 'Tick individual sheets or use Tick shown, then continue to Format.', target: 'tick-shown' },
+      { id: 'format', title: 'Set export formats', hint: 'Choose PDF or other formats. Try combining the sheets into one PDF, then continue to Create.', target: 'continue-format' },
+      { id: 'export', title: 'Review and run the export', hint: 'Check the filenames, run the sample export and download its manifest or drawing register.', target: 'run-sheet-export' },
+    ],
+    load: () => import('./demos/SheetExport'),
+  },
+  {
+    id: 'parameter-manager', productSlug: 'parameter-manager', width: 1080,
+    ribbon: { tab: 'Arch Forge', panel: 'Parameters', button: 'Parameter Manager' },
+    title: 'Parameter Manager: define and bind a project parameter',
+    summary: 'Create a project parameter, assign categories and export the resulting definitions.',
+    basis: [
+      'Parameters and Categories use the names, data types and category bindings shown in ParameterManagerWindow.xaml.',
+      'The exercise applies changes to a browser fixture and downloads a CSV of its definitions.',
+    ],
+    steps: [
+      { id: 'add', title: 'Draft a parameter', hint: 'Use Add Parameter and review the name, data type and instance or type setting.', target: 'add-parameter' },
+      { id: 'categories', title: 'Open Categories', hint: 'Switch to Categories to assign the new definition.', target: 'parameter-categories' },
+      { id: 'bind', title: 'Choose its categories', hint: 'Tick one or more categories, such as Doors and Windows.', target: 'assign-categories' },
+      { id: 'apply', title: 'Apply the definition', hint: 'Apply and check the receipt for the name, binding and categories.', target: 'apply-parameter' },
+      { id: 'csv', title: 'Export the definitions', hint: 'Download a sample CSV to inspect the new definition and the existing rows.', target: 'parameter-csv' },
+    ],
+    load: () => import('./demos/ParameterManager'),
+  },
+  {
     id: 'sheet-manager', productSlug: 'sheet-manager', width: 1060,
     ribbon: { tab: 'Arch Folio', panel: 'Sheets', button: 'Sheet Manager' },
     title: 'Sheet Manager: renumber a sheet set',
@@ -98,6 +132,25 @@ const CRAFTED: Omit<DemoDefinition, 'kind'>[] = [
       { id: 'create', title: 'Create the views', hint: 'Press Create to generate the views for every ticked room.', target: 'create' },
     ],
     load: () => import('./demos/RoomToView'),
+  },
+  {
+    id: 'model-health', productSlug: 'model-health', width: 980,
+    ribbon: { tab: 'Arch Sentinel', panel: 'Model Health', button: 'Model Health' },
+    title: 'Model Health: export and review a report',
+    summary: 'Select inventory sections, run a sample health check, review its findings and download a section CSV.',
+    basis: [
+      'ReportSelectionForm and ExportProgressForm supply the code-built WPF option labels, inventory categories and cancellation behavior.',
+      'CheckSetRunner supplies Model Check Reviews and the Result, Severity and Reason override fields. The dashboard follows the desktop export’s searchable and sortable section tables.',
+      'All model counts, receipts and downloadable CSV rows use the fictional AT-01 fixture.',
+    ],
+    steps: [
+      { id: 'categories', title: 'Choose inventory categories', hint: 'Keep the defaults or tick the model inventory sections you want to export.', target: 'health-categories' },
+      { id: 'run', title: 'Run the sample check', hint: 'Choose Run check to collect the selected inventory. Use Cancel after current section to see a partial receipt.', target: 'health-run' },
+      { id: 'review', title: 'Review the findings', hint: 'Mark a failure reviewed, edit an override or leave the results as they are, then finish the review.', target: 'health-review' },
+      { id: 'dashboard', title: 'Open the dashboard', hint: 'Check the sample receipt and open the dashboard to explore exported sections.', target: 'health-dashboard' },
+      { id: 'download', title: 'Download a section CSV', hint: 'Pick an inventory section, filter its rows and download the sample CSV.', target: 'health-download' },
+    ],
+    load: () => import('./demos/ModelHealthExport'),
   },
 ]
 

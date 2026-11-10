@@ -1,0 +1,13 @@
+.suite-flow-steps { display: flex; flex-wrap: wrap; gap: 5px; border-bottom: 1px solid var(--d-border); }
+.suite-flow-steps span { padding: 6px 9px; color: var(--d-muted); border-bottom: 2px solid transparent; font-weight: 600; }
+.suite-flow-steps [aria-current="step"] { color: var(--d-text); border-bottom-color: var(--d-accent); }
+.suite-flow-table { max-height: 315px; }
+.suite-flow-table td { overflow-wrap: anywhere; }
+.suite-flow-options { display: flex; flex-wrap: wrap; gap: 8px 15px; min-inline-size: 0; margin: 0; }
+.suite-flow-options legend { padding: 0 5px; font-weight: 600; }
+.suite-flow-fields, .suite-flow-receipt { display: grid; gap: 10px; }
+.suite-flow-fields > label:not(.ad-check) { display: grid; gap: 4px; justify-items: start; }
+.suite-flow-note { padding: 10px; color: var(--d-muted); }
+.suite-flow-error { color: var(--d-error); font-weight: 600; }
+.suite-flow-receipt > strong { color: var(--d-success); }
+.suite-flow-table:focus-visible { outline: 2px solid var(--d-accent); outline-offset: 2px; }

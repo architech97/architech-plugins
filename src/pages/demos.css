@@ -110,6 +110,10 @@
 .demo-rows a { display: grid; grid-template-columns: minmax(0, 1fr) minmax(115px, .26fr) auto; align-items: center; gap: 12px; min-height: 63px; padding: 9px 8px; color: var(--demo-ink); transition: background .16s, color .16s; }
 .demo-rows a:hover, .demo-rows a:focus-visible { background: #e9eced; color: var(--demo-key); }
 .demo-rows svg { color: var(--demo-key); }
+.demo-featured { padding-top: 32px; padding-bottom: 34px; }
+.demo-featured .demo-rows { border-block: 1px solid var(--demo-rule); }
+.demo-featured .demo-rows small { color: var(--demo-muted); }
+.demo-detail-links { display: flex; flex-wrap: wrap; gap: 8px 18px; }
 .demo-row-format[data-format="crafted"] { color: var(--demo-key); font-weight: 600; }
 .demo-row-main { display: grid; gap: 1px; }
 .demo-row-main strong { font-weight: 600; }

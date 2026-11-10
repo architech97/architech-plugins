@@ -1,20 +1,12 @@
 import { useState } from 'react'
-import { ArrowRight, ArrowUpRight, Check, CircleAlert, Play, ScanLine } from 'lucide-react'
+import { ArrowRight, ArrowUpRight, Play } from 'lucide-react'
 import { Link } from 'react-router-dom'
 import { PRODUCTS, STATS } from '../data/catalog'
 import { SUITES } from '../data/suites'
 import { asset } from '../components/Brand'
 import { DEMO_PROJECT, PROJECT_WORKFLOW } from '../data/demoProject'
-import { SHEETS } from '../demo/sample'
+import { FEATURED_TOOLS } from '../data/featured'
 import './home.css'
-
-const plans = SHEETS.filter(({ number }) => number === 'A-101' || number === 'A-102')
-const registerModes = [
-  { id: 'existing', label: 'Current set' },
-  { id: 'proposed', label: 'Preview changes' },
-  { id: 'conflict', label: 'Check collision' },
-] as const
-type RegisterMode = typeof registerModes[number]['id']
 
 const nativeViews = [
   { id: 'axon', label: '3D view', reference: 'A901 · Roof perspective', file: 'snowdon-axon.webp', alt: 'Snowdon Towers roof gardens and street façades in an elevated Revit camera view' },
@@ -22,44 +14,30 @@ const nativeViews = [
 ] as const
 const snowdonSource = 'https://help.autodesk.com/cloudhelp/2024/ENU/Revit-GetStarted/files/GUID-5DA26FF7-85B3-4E9D-A9F2-FADDD02D88D6.htm'
 
-function SheetRegister() {
-  const [mode, setMode] = useState<RegisterMode>('proposed')
-  const conflict = mode === 'conflict'
-  const proposed = mode === 'proposed'
+function FeaturedWorkflows() {
+  const [selected, setSelected] = useState(0)
+  const tool = FEATURED_TOOLS[selected]
   return (
-    <figure className="issue-preview">
-      <figcaption><span><ScanLine size={15} /> Sheet Manager</span><span>{DEMO_PROJECT.code} / {DEMO_PROJECT.revision}</span></figcaption>
-      <div className="issue-paper">
-        <div className="issue-heading">
-          <div><p>Drawing register / Browser sample</p><h2>Floor plans</h2></div>
-          <span className="issue-stamp">A–100<br />SERIES</span>
-        </div>
-        <div className="issue-controls" role="group" aria-label="Sheet register example">
-          {registerModes.map(({ id, label }) => <button type="button" key={id} aria-pressed={mode === id} onClick={() => setMode(id)}>{label}</button>)}
-        </div>
-        <table className="issue-table">
-          <thead><tr><th scope="col">Drawing</th><th scope="col">Current</th><th scope="col">{mode === 'existing' ? 'Issue' : 'Proposed'}</th></tr></thead>
-          <tbody>
-            {plans.map((sheet, i) => (
-              <tr key={sheet.id}>
-                <th scope="row">{sheet.name}<small>{sheet.titleBlock} · {sheet.views} views</small></th>
-                <td>{sheet.number}</td>
-                <td>
-                  {proposed ? <b className="issue-number" key={mode}>{sheet.number.replace(/^A-/, 'GA-')}</b>
-                    : conflict && i === 0 ? <b className="issue-number issue-error" key={mode}>A-102</b>
-                    : conflict ? <span title="Outside the change scope">—</span> : sheet.revision}
-                </td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
-        <div className={'issue-status' + (conflict ? ' is-conflict' : '')} role="status">
-          {conflict ? <CircleAlert size={16} /> : <Check size={16} />}
-          {conflict ? 'Blocked · A-102 is already in use.' : proposed ? '2 sheets ready for review. View placements are retained.' : '2 floor plans in revision P02.'}
-        </div>
+    <div className="hero-workflows">
+      <div className="hero-workflow-nav" role="group" aria-label="Featured suite tools">
+        {FEATURED_TOOLS.map(({ suite, title, slug }, index) => <button type="button" key={slug}
+          aria-pressed={selected === index} onClick={() => setSelected(index)}>
+          <span aria-hidden="true">0{index + 1}</span>
+          <span><small>{suite}</small><strong>{title}</strong></span>
+          <ArrowRight size={15} aria-hidden="true" />
+        </button>)}
       </div>
-      <div className="issue-footer"><span>{DEMO_PROJECT.name}</span><Link to="/demos/sheet-manager">Try the full demo <ArrowUpRight size={16} /></Link></div>
-    </figure>
+      <figure className="hero-tool-plate">
+        <div className="hero-plate-header"><span>{tool.suite} / {tool.title}</span><span>{tool.previewLabel}</span></div>
+        <Link to={'/plugins/' + tool.slug + '#dialog-reference'} className="hero-plate-image" aria-label={'Inspect the ' + tool.title + ' dialog'}>
+          <img key={tool.slug} src={asset(tool.preview)} alt={tool.alt} decoding="async" />
+        </Link>
+        <figcaption>
+          <div aria-live="polite"><strong>{tool.task}</strong><p>{tool.description}</p></div>
+          <Link to={'/demos/' + tool.slug} className="btn btn-sm btn-primary"><Play size={14} aria-hidden="true" /> Try {tool.title}</Link>
+        </figcaption>
+      </figure>
+    </div>
   )
 }
 
@@ -90,10 +68,6 @@ function RevitViews() {
             <a className="native-credit" href={snowdonSource}>Model source · Autodesk Snowdon Towers <ArrowUpRight size={13} /></a>
           </div>
         </div>
-        <div className="native-asset">
-          <img src={asset('media/i3d/chair-result-preview.webp')} alt="Textured chair in the ArchiTECH I3D result preview" width={548} height={672} loading="lazy" decoding="async" />
-          <div><p className="eyebrow">ArchiTECH I3D / Desktop capture</p><h3>Inspect a textured asset</h3><p>The chair is shown in I3D’s result preview. The browser exercise steps through sizing and simulated Revit family export.</p><Link to="/demos/architech-i3d">Try the I3D workflow <ArrowUpRight size={16} /></Link></div>
-        </div>
       </div>
     </section>
   )
@@ -103,18 +77,42 @@ export default function Home() {
   return (
     <div className="automation-home">
       <section className="automation-hero">
-        <div className="wrap automation-hero-grid">
+        <div className="wrap-wide automation-hero-grid">
           <div className="automation-hero-copy">
-            <p className="eyebrow">ArchiTECH Automation / BIM tools</p>
-            <h1><span>From model</span>{' '}<span>to drawing set</span></h1>
-            <p className="lead">Prepare sheets, generate room views and review model warnings. Start with a sample project or explore the tools for your software.</p>
+            <p className="eyebrow">ArchiTECH Automation / Revit &amp; CAD</p>
+            <h1>From model to handover</h1>
+            <p className="lead">Publish drawing sets, manage parameters and review model health on a sample project.</p>
             <div className="hero-cta">
-              <Link className="btn btn-primary" to="/demos#sample-project"><Play size={17} /> Start the sample project</Link>
-              <Link className="home-secondary" to="/plugins">Browse {STATS.products} tools <ArrowRight size={17} /></Link>
+              <Link className="btn btn-primary" to="/demos#demo-index">Browse {STATS.demos} browser demos <ArrowRight size={17} /></Link>
+              <Link className="home-secondary" to="/plugins">Tool catalog <ArrowUpRight size={15} /></Link>
             </div>
             <p className="automation-hero-meta"><span>Browser demos · Sample data</span><a href="#revit-views">View the native Revit model</a></p>
           </div>
-          <SheetRegister />
+          <FeaturedWorkflows />
+        </div>
+      </section>
+
+      <section className="section home-desktop" aria-labelledby="home-desktop-title">
+        <div className="wrap">
+          <div className="native-title">
+            <div><p className="eyebrow">Desktop workflows</p><h2 id="home-desktop-title">I3D and Assistant in use</h2></div>
+            <p>See the original interfaces, then try the workflow in your browser.</p>
+          </div>
+          <div className="home-desktop-grid">
+            <article>
+              <img src={asset('media/i3d/material-workspace.png')} alt="I3D Material workspace showing the original textured chair mesh" loading="lazy" decoding="async" />
+              <div><p className="eyebrow">I3D / Desktop capture</p><h3>Set the material for a Revit asset</h3>
+                <Link to="/demos/architech-i3d">Try the I3D workflow <ArrowUpRight size={16} /></Link></div>
+            </article>
+            <article>
+              <div className="home-assistant-capture">
+                <img src={asset('media/assistant/active-view-exchange.png')} alt="Assistant replies Cover to a question about the active Revit view" loading="lazy" decoding="async" />
+                <img src={asset('media/assistant/composer-modes.png')} alt="Assistant composer with Ask, Search and Build modes" loading="lazy" decoding="async" />
+              </div>
+              <div><p className="eyebrow">Assistant / Desktop capture</p><h3>Ask about the active Revit view</h3>
+                <Link to="/demos/architech-assistant">Try the Assistant workflow <ArrowUpRight size={16} /></Link></div>
+            </article>
+          </div>
         </div>
       </section>
 

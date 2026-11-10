@@ -29,8 +29,8 @@ export const EXTRAS: Product[] = [
     ],
     dialogs: [],
     media: [
+      { src: 'media/i3d/material-workspace.png', alt: 'Native I3D Material workspace showing a textured chair mesh before export', kind: 'image' },
       { src: 'media/i3d/workflow.gif', alt: 'I3D workflow animation: source, geometry preparation, Revit family', kind: 'animation' },
-      { src: 'media/i3d/desktop-0.6.36.webp', alt: 'ArchiTECH-I3D Desktop 0.6.36 main window', kind: 'image' },
       { src: 'media/i3d/revit-placement-0.6.36.webp', alt: 'An I3D asset placed in Revit as a native family', kind: 'image' },
     ],
   },
@@ -97,5 +97,9 @@ export const EXTRAS: Product[] = [
     capabilities: ['Ask, Search and Build modes.', 'Local or server models.', 'One planning loop.'],
     safeguards: [],
     dialogs: [],
+    media: [
+      { src: 'media/assistant/active-view-exchange.png', alt: 'Native Assistant readback of the active Revit view, Cover', kind: 'image' },
+      { src: 'media/assistant/composer-modes.png', alt: 'Native Assistant composer with Ask, Search and Build controls', kind: 'image' },
+    ],
   },
 ]

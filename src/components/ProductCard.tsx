@@ -163,7 +163,7 @@ export function ProductCard({ p }: { p: Product }) {
               ? <img src={asset(shot)} alt={dialog ? dialog.title + ' interface' : media?.alt ?? ''} style={{ ['--preview-scale' as string]: previewScale }} loading="lazy" decoding="async" />
               : specimen && <SpecimenDrawing specimen={specimen} />}
           </div>
-          <figcaption>{dialog ? 'Plugin dialog' : shot ? 'Desktop capture' : 'Workflow specimen'}</figcaption>
+          <figcaption>{dialog ? (dialog.source === 'reconstructed' ? 'Source-derived dialog' : 'Plugin dialog') : shot ? 'Desktop capture' : 'Workflow specimen'}</figcaption>
         </figure>
       )}
       <div className="product-card-body">
