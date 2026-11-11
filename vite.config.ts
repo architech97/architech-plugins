@@ -26,6 +26,12 @@ const staticRoutes: Plugin = {
         ['plugins', { title: 'Plugins' + suffix, description: `The ${STATS.revitTools} Revit tools in Arch Folio, Arch Forge and Arch Sentinel, with ArchiTECH I3D, ArchiTECH Assistant and the ArchiTECH MCP Connector.` }],
         ['connect', { title: 'Discuss a workflow' + suffix, description: 'Tell me about a repetitive BIM task, ask how one of these tools works, or suggest an improvement.' }],
         ['coverage', { title: 'Dialog coverage' + suffix, description: `What each walkthrough covers across ${STATS.dialogs} dialogs, what it is based on, and what is not simulated yet.` }],
+        ['pricing', { title: 'Discuss a tool' + suffix, description: 'Pricing depends on the tool, host application and deployment scope. This legacy route continues to the workflow contact page.' }],
+        ['custom-development', { title: 'Discuss a custom workflow' + suffix, description: 'Describe a repetitive BIM task or integration requirement. This legacy route continues to the workflow contact page.' }],
+      ])
+      const legacyRedirects = new Map<string, string>([
+        ['pricing', 'connect'],
+        ['custom-development', 'connect'],
       ])
       for (const product of PRODUCTS) {
         meta.set(`plugins/${product.slug}`, { title: product.name + suffix, description: product.tagline })
@@ -41,7 +47,8 @@ const staticRoutes: Plugin = {
 
       const template = String(shell.source)
       const page = (route = '') => {
-        const canonical = SITE_ORIGIN + AUTOMATION_PATH + (route ? route + '/' : '')
+        const canonicalRoute = legacyRedirects.get(route) ?? route
+        const canonical = SITE_ORIGIN + AUTOMATION_PATH + (canonicalRoute ? canonicalRoute + '/' : '')
         const html = base === AUTOMATION_PATH
           ? template.replace(/\s*<meta name="robots" content="noindex, nofollow" \/>/, '')
           : template
@@ -50,7 +57,10 @@ const staticRoutes: Plugin = {
           .replace(/<title>[^<]*<\/title>/, () => `<title>${escape(info.title)}</title>`)
           .replace(/(<meta (?:name="description"|property="og:description") content=")[^"]*"/g, (_, tag) => tag + escape(info.description) + '"')
           .replace(/(<meta property="og:title" content=")[^"]*"/, (_, tag) => tag + escape(info.title) + '"')
-        return titled
+        const indexed = legacyRedirects.has(route)
+          ? titled.replace('</head>', '  <meta name="robots" content="noindex, follow" />\n  </head>')
+          : titled
+        return indexed
           .replace(/(<meta property="og:url" content=")[^"]*"/, (_, tag) => tag + canonical + '"')
           .replace('</head>', `  <link rel="canonical" href="${canonical}" />\n  </head>`)
       }

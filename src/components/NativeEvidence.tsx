@@ -1,5 +1,5 @@
 import { useRef, useState } from 'react'
-import { ArrowDown, ArrowLeft, ArrowRight, ArrowUpRight, Maximize2, X } from 'lucide-react'
+import { ArrowDown, ArrowLeft, ArrowRight, Maximize2, X } from 'lucide-react'
 import { asset } from './Brand'
 import './nativeEvidence.css'
 
@@ -94,7 +94,7 @@ export function NativeEvidence({ title, context, build, captures }: NativeEviden
             </div>
             <div className="native-evidence-modal-actions">
               <button type="button" aria-pressed={actualSize} onClick={() => setActualSize(!actualSize)} disabled={unavailable}>Actual size</button>
-              {!unavailable && <a href={src} target="_blank" rel="noreferrer" aria-label="Open image in a new tab">Open image <ArrowUpRight size={15} aria-hidden="true" /></a>}
+              {!unavailable && <a href={src} target="_blank" rel="noreferrer" aria-label="Open image in a new tab">Open image <Maximize2 size={15} aria-hidden="true" /></a>}
             </div>
           </footer>
         </div>

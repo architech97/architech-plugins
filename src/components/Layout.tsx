@@ -3,7 +3,7 @@ import { Link, NavLink, Outlet, useLocation } from 'react-router-dom'
 import { ArrowRight } from 'lucide-react'
 import { Mark } from './Brand'
 import { AUTOMATION_PATH, CONTACT, SITE_ORIGIN } from '../data/contact'
-import { useImageFade, useScrollProgress, useSiteMotion } from './motion'
+import { useContinuityBackground, useImageFade, useScrollProgress, useSiteMotion } from './motion'
 
 const unified = import.meta.env.BASE_URL === AUTOMATION_PATH
 const homeUrl = unified ? '/' : SITE_ORIGIN + '/'
@@ -21,6 +21,7 @@ export function Layout() {
   const subnav = useScrollProgress<HTMLElement>()
   useImageFade()
   useSiteMotion()
+  useContinuityBackground(pathname)
   useEffect(() => {
     window.scrollTo({ top: 0, behavior: 'instant' })
     const heading = document.querySelector('main h1')?.textContent?.replace(/\s+/g, ' ').trim()
@@ -49,7 +50,7 @@ export function Layout() {
           <Link className="ax-subnav-cta" to="/demos#sample-project">Try a walkthrough <ArrowRight size={14} aria-hidden="true" /></Link>
         </div>
       </nav>
-      <main id="main" tabIndex={-1}><div key={pathname} className="route-in"><Outlet /></div></main>
+      <main id="main" tabIndex={-1}><div key={pathname}><Outlet /></div></main>
       <Footer />
     </>
   )
@@ -66,21 +67,21 @@ function Footer() {
           <p className="ax-foot-reply">I reply within one working day.</p>
         </div>
         <div className="ax-foot-col">
-          <h2 className="ax-foot-h">Contact</h2>
+          <p className="ax-foot-h">Contact</p>
           <a href={`mailto:${CONTACT.email}`}>{CONTACT.email}</a>
           {CONTACT.phones.map((phone) => <a key={phone} href={'tel:' + phone.replace(/\s/g, '')}>{phone}</a>)}
           {CONTACT.whatsapp && <a href={'https://wa.me/' + CONTACT.whatsapp} rel="noreferrer">WhatsApp ↗</a>}
           <a href={CONTACT.linkedin} rel="noreferrer">LinkedIn ↗</a>
         </div>
         <div className="ax-foot-col">
-          <h2 className="ax-foot-h">Work</h2>
+          <p className="ax-foot-h">Work</p>
           <a href={designUrl}>Design portfolio →</a>
           <Link to="/">Automation →</Link>
           <Link to="/demos">Browser demos →</Link>
           <Link to="/connect">Discuss a workflow →</Link>
         </div>
         <div className="ax-foot-col">
-          <h2 className="ax-foot-h">Products</h2>
+          <p className="ax-foot-h">Products</p>
           <Link to="/plugins?suite=folio">Arch Folio</Link>
           <Link to="/plugins?suite=forge">Arch Forge</Link>
           <Link to="/plugins?suite=sentinel">Arch Sentinel</Link>

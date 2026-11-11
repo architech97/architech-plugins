@@ -123,7 +123,7 @@ export default function Coverage() {
         </div>
         <div className="coverage-tools">
           <div className="demo-filter" role="group" aria-label="Filter by suite">
-            {[{ id: '', short: 'All' }, ...SUITES].map((item) => <button type="button" key={item.id} aria-pressed={item.id === suite} onClick={() => setSuite(item.id)}>{item.id === 'ai' ? 'AI & MCP' : item.short}</button>)}
+            {[{ id: '', short: 'All' }, ...SUITES].map((item) => <button type="button" key={item.id} aria-pressed={item.id === suite} onClick={() => setSuite(item.id)}>{item.id === 'ai' ? 'MCP Connector' : item.short}</button>)}
           </div>
           <label className="coverage-search"><Search size={17} aria-hidden="true" /><input type="search" aria-label="Search tools and dialogs" placeholder="Search tools and dialogs" value={query} onChange={(event) => setQuery(event.target.value)} /></label>
           <button type="button" className="btn btn-ghost btn-sm" onClick={download}><Download size={15} /> Download CSV</button>

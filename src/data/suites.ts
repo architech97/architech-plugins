@@ -22,9 +22,9 @@ export const SUITES: Suite[] = [
     summary: 'Turn a product photo or an existing mesh into a dimensioned, textured 3D asset and place it in Revit.',
   },
   {
-    id: 'ai', name: 'ArchiTECH MCP Connector & Assistant', short: 'MCP', color: 'var(--suite-ai)',
-    focus: 'AI connectors across design tools',
-    summary: 'Model Context Protocol connectors and an assistant that bring guarded, verifiable AI automation to Revit, Rhino, SketchUp, AutoCAD and Blender.',
+    id: 'ai', name: 'ArchiTECH MCP Connector', short: 'MCP', color: 'var(--suite-ai)',
+    focus: 'MCP and AI across design tools',
+    summary: 'The ArchiTECH MCP Connector and ArchiTECH Assistant bring guarded, verifiable AI automation to Revit, Rhino, SketchUp, AutoCAD and Blender.',
   },
 ]
 

@@ -104,7 +104,7 @@
 }
 
 .player {
-  --bg: #121315;
+  --bg: #171311;
   --panel: #1b1c1f;
   --panel-2: #272c34;
   --line: #3b4049;
@@ -117,7 +117,7 @@
   --cyan-2: #b3c5f2;
   --blue: #537abf;
   --blue-2: #8ba7e8;
-  --ink-on-accent: #121315;
+  --ink-on-accent: #171311;
   --ok: #a4d4a3;
   --warn: #efd095;
   --bad: #f8b1a4;
@@ -128,6 +128,7 @@
   border-radius: 7px;
   padding: clamp(8px,1.3vw,18px);
 }
+.player :focus-visible { outline-color: #c3d2f7; }
 .project-workspace .player { border: 0; padding: 0; }
 .player .steps-panel, .player .player-quick-guide { background: var(--panel); }
 .player.is-expanded .player-quick-guide {

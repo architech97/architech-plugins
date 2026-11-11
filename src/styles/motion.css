@@ -7,7 +7,7 @@
 
 
 /* A soft light follows the pointer across the drafting grid. */
-.bg-grid::before { content: ''; position: absolute; inset: 0; opacity: var(--glow, 0); transition: opacity .6s;
+.bg-grid::before { content: ''; position: absolute; inset: 0; opacity: var(--glow, 0); transition: opacity var(--t-reveal) var(--ease);
   background: radial-gradient(520px circle at var(--gx, 50%) var(--gy, 30%), rgba(123, 155, 230, .2), transparent 70%); }
 
 /* Cards light up under the pointer. */
@@ -16,19 +16,19 @@
 
 /* Thumbnails drift a little with the pointer. */
 a:hover > .product-thumb img, .pcard:hover .product-preview-art img { translate: calc(var(--px, 0) * -7px) calc(var(--py, 0) * -7px); }
-.product-preview-art img { transition: translate .5s var(--ease), transform .8s var(--ease), opacity .5s; }
+.product-preview-art img { transition: translate var(--t-reveal) var(--ease), transform var(--t-scene) var(--ease), opacity var(--t-reveal) var(--ease); }
 
 
 /* Primary buttons: a sheen crosses on hover. */
 .btn-primary, .demo-button { position: relative; overflow: hidden; }
 .btn-primary::after, .demo-button::after { content: ''; position: absolute; inset: 0; pointer-events: none; transform: translateX(-120%) skewX(-18deg); background: linear-gradient(90deg, transparent, rgba(255, 255, 255, .28), transparent); }
-.btn-primary:hover::after, .demo-button:hover::after { transform: translateX(120%) skewX(-18deg); transition: transform .8s var(--ease); }
+.btn-primary:hover::after, .demo-button:hover::after { transform: translateX(120%) skewX(-18deg); transition: transform var(--t-reveal) var(--ease); }
 
 
 /* Wall of real dialogs. */
 .dialog-wall { padding: clamp(40px, 6vw, 80px) 0 0; }
 .dialog-wall .marquee { border-top: 0; padding: 0; gap: 14px; }
-.dialog-wall .marquee-row a { width: clamp(220px, 24vw, 330px); filter: none; transition: border-color .3s, transform .5s var(--ease); }
+.dialog-wall .marquee-row a { width: clamp(220px, 24vw, 330px); filter: none; transition: border-color var(--t-ui) var(--ease), transform var(--t-reveal) var(--ease); }
 .dialog-wall .marquee-row a:hover { transform: translateY(-4px); }
 .dialog-wall .marquee-row span { background: rgba(23, 19, 17, .9); color: #f1efea; }
 .dialog-wall-head { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: end; gap: 8px 24px; margin-bottom: 22px; }
@@ -43,17 +43,17 @@ a:hover > .product-thumb img, .pcard:hover .product-preview-art img { translate:
 }
 
 /* Walkthrough player feedback. */
-.step-list li.done svg { animation: pop .45s var(--ease); }
+.step-list li.done svg { animation: pop var(--t-reveal) var(--ease); }
 @keyframes pop { 0% { transform: scale(.4); } 60% { transform: scale(1.25); } 100% { transform: scale(1); } }
-.toast { animation: toast-in .4s var(--ease) both; }
+.toast { animation: toast-in var(--t-ui) var(--ease) both; }
 @keyframes toast-in { from { opacity: 0; transform: translateY(-10px) scale(.97); } to { opacity: 1; transform: none; } }
-.demo-focus { animation: focus-ring 1.8s ease-in-out infinite; }
+.demo-focus { animation: focus-ring var(--t-scene) var(--ease) 2; }
 @keyframes focus-ring { 0%, 100% { box-shadow: 0 0 0 2px rgba(123, 155, 230, .95), 0 0 0 6px rgba(123, 155, 230, 0); } 50% { box-shadow: 0 0 0 2px rgba(123, 155, 230, .95), 0 0 0 9px rgba(123, 155, 230, .28); } }
-.inquiry-draft { animation: route-in .45s var(--ease) both; }
-.shot img, .shot-modal img { animation: route-in .35s var(--ease) both; }
-.coverage-table tbody tr { transition: background .2s; }
+.inquiry-draft { animation: route-in var(--t-reveal) var(--ease) both; }
+.shot img, .shot-modal img { animation: route-in var(--t-reveal) var(--ease) both; }
+.coverage-table tbody tr { transition: background var(--t-ui) var(--ease); }
 .coverage-table tbody tr:hover { background: #e9edf5; }
-.field input, .field select, .field textarea { transition: border-color .2s, box-shadow .25s; }
+.field input, .field select, .field textarea { transition: border-color var(--t-ui) var(--ease), box-shadow var(--t-ui) var(--ease); }
 .field input:focus, .field select:focus, .field textarea:focus { box-shadow: 0 0 0 4px rgba(49, 86, 148, .14); }
 
 @media (prefers-reduced-motion: reduce) {

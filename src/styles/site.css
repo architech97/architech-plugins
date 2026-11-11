@@ -39,6 +39,8 @@
 * { box-sizing: border-box; }
 html { scroll-behavior: smooth; }
 body { margin: 0; background: var(--bg); color: var(--text); font: 400 16px/1.6 var(--font-body); -webkit-font-smoothing: antialiased; text-rendering: optimizeLegibility; overflow-x: hidden; }
+main { overflow-x: clip; }
+main [data-continuity-bg]:not(.wall-band) { background-color: transparent; }
 img { max-width: 100%; display: block; }
 a { color: var(--cyan-2); text-decoration: none; }
 a:hover { color: var(--text); }
@@ -76,20 +78,20 @@ p { margin: 0; text-wrap: pretty; }
 
 /* cursor spotlight on interactive panels */
 .spot { position: relative; isolation: isolate; }
-.spot::before { content: ''; position: absolute; inset: -1px; border-radius: inherit; pointer-events: none; z-index: -1; opacity: 0; transition: opacity .3s;
+.spot::before { content: ''; position: absolute; inset: -1px; border-radius: inherit; pointer-events: none; z-index: -1; opacity: 0; transition: opacity var(--t-ui) var(--ease);
   background: radial-gradient(380px circle at var(--mx, 50%) var(--my, 50%), #a7794e26, transparent 60%); }
 .spot:hover::before { opacity: 1; }
 
 /* buttons */
-.btn { display: inline-flex; align-items: center; justify-content: center; gap: 10px; min-height: 46px; padding: 0 20px; border-radius: 2px; border: 1px solid transparent; font: 500 15px/1 var(--font-body); letter-spacing: -0.01em; cursor: pointer; transition: transform .25s var(--ease), background .2s, border-color .2s, color .2s; white-space: nowrap; }
+.btn { display: inline-flex; align-items: center; justify-content: center; gap: 10px; min-height: 46px; padding: 0 20px; border-radius: 2px; border: 1px solid transparent; font: 500 15px/1 var(--font-body); letter-spacing: -0.01em; cursor: pointer; transition: transform var(--t-ui) var(--ease), background var(--t-ui) var(--ease), border-color var(--t-ui) var(--ease), color var(--t-ui) var(--ease); white-space: nowrap; }
 .btn:active { transform: scale(0.98); }
-.btn-primary { background: var(--text); color: var(--bg); }
+.btn-primary { background: var(--text); color: var(--paper); }
 .btn-primary:hover { background: var(--taupe-d); color: var(--paper); }
 .btn-ghost { background: transparent; border-color: var(--line-strong); color: var(--text); }
 .btn-ghost:hover { border-color: var(--signal); color: var(--text); }
 .btn-sm { min-height: 38px; padding: 0 14px; font-size: 14px; border-radius: 2px; }
 .btn[disabled] { opacity: .45; cursor: not-allowed; }
-.btn svg { transition: transform .25s var(--ease); }
+.btn svg { transition: transform var(--t-ui) var(--ease); }
 .btn:hover svg:last-child:not(:first-child) { transform: translateX(3px); }
 
 .chip { display: inline-flex; align-items: center; gap: 6px; padding: 4px 8px; border-radius: 2px; font: 500 11.5px/1.2 var(--font-mono); border: 1px solid var(--line-strong); color: var(--text-2); white-space: nowrap; }
@@ -244,7 +246,7 @@ p { margin: 0; text-wrap: pretty; }
 .gallery-head { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: 14px; margin-bottom: 16px; }
 .seg { display: inline-flex; padding: 3px; border-radius: 2px; border: 1px solid var(--line-strong); }
 .seg button { min-height: 34px; padding: 0 12px; border-radius: 2px; border: 0; background: none; color: var(--text-2); cursor: pointer; font-weight: 500; font-size: 13.5px; white-space: nowrap; }
-.seg button.on { background: var(--text); color: var(--bg); }
+.seg button.on { background: var(--text); color: var(--paper); }
 .seg button:disabled { opacity: .4; }
 .shot { border-radius: 2px; overflow: hidden; border: 1px solid var(--line-strong); background: var(--panel); cursor: zoom-in; padding: 0; display: block; width: 100%; }
 .shot img { width: 100%; height: auto; }
@@ -374,8 +376,8 @@ p { margin: 0; text-wrap: pretty; }
 .shot-modal-body img { max-height: calc(100dvh - 104px); object-fit: contain; }
 .gallery-head .seg button { display: inline-flex; align-items: center; gap: 5px; }
 #demo { scroll-margin-top: 112px; }
-.skip-link { position: fixed; z-index: 60; left: 10px; top: 10px; transform: translateY(-160%); color: var(--bg); background: var(--text); padding: 9px 12px; border-radius: 2px; font-weight: 600; }
-.skip-link:focus { transform: none; color: var(--bg); }
+.skip-link { position: fixed; z-index: 60; left: 10px; top: 10px; transform: translateY(-160%); color: var(--paper); background: var(--text); padding: 9px 12px; border-radius: 2px; font-weight: 600; }
+.skip-link:focus { transform: none; color: var(--paper); }
 
 /* ArchiTECH divisions share the public canvas. The masthead identifies Automation. */
 :root {

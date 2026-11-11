@@ -209,7 +209,7 @@ function ProjectBoard() {
   }
 
   return (
-    <section className="wrap project-board" id="sample-project" tabIndex={-1} aria-labelledby="sample-project-title">
+    <section className="wrap project-board" data-continuity-bg="paper-2" id="sample-project" tabIndex={-1} aria-labelledby="sample-project-title">
       <div className="demo-section-title">
         <div><p className="demo-kicker">01 / Sample project</p><h2 id="sample-project-title">{DEMO_PROJECT.name}</h2></div>
         <p>Work through four guided BIM tasks using fictional project records. Each task starts from its own fixture, so edits are local to that demo.</p>
@@ -327,7 +327,7 @@ export function DemoHub() {
 
   return (
     <div className="demo-library">
-      <section className="demo-opening" aria-labelledby="demo-library-title">
+      <section className="demo-opening" data-continuity-bg="paper" aria-labelledby="demo-library-title">
         <div className="wrap demo-opening-grid">
           <div className="demo-opening-copy">
             <p className="demo-kicker">ArchiTECH Automation <span /> Interactive library</p>
@@ -348,13 +348,13 @@ export function DemoHub() {
             </div>
             <p className="demo-footnote">Sample data <span /> No install</p>
           </div>
-          <DrawingStage />
+          <div className="demo-stage-feather"><DrawingStage /></div>
         </div>
       </section>
 
       <ProjectBoard />
 
-      <section className="wrap demo-featured-large" aria-labelledby="featured-demos-title">
+      <section className="wrap demo-featured-large" data-continuity-bg="paper" aria-labelledby="featured-demos-title">
         <div className="demo-section-title"><div><p className="demo-kicker">Featured</p><h2 id="featured-demos-title">One tool from each Revit suite</h2></div></div>
         <ul className="demo-feature-grid">
           {FEATURED_TOOLS.map((tool) => {
@@ -371,7 +371,7 @@ export function DemoHub() {
         </ul>
       </section>
 
-      <section ref={index} className="wrap demo-index" id="demo-index" aria-labelledby="demo-index-title">
+      <section ref={index} className="wrap demo-index" data-continuity-bg="paper" id="demo-index" aria-labelledby="demo-index-title">
         <div className="demo-section-title">
           <div><p className="demo-kicker">02 / Index by job</p><h2 id="demo-index-title">Find a walkthrough</h2></div>
           <DemoSearch input={indexSearch} label="Search demos" value={query} onChange={(value) => filter('q', value)} />
@@ -420,7 +420,7 @@ export function DemoPage() {
   const player = <DemoPlayer key={demo.id} demo={demo} />
   return (
     <div className="demo-detail">
-      <header className="demo-detail-header">
+      <header className="demo-detail-header" data-continuity-bg="paper">
         <div className="wrap-wide">
           <Link to={{ pathname: '/demos', search: librarySearch, hash: '#demo-index' }} className="demo-text-link"><ArrowLeft size={16} /> Demo library</Link>
           <div className="demo-detail-title">
@@ -439,7 +439,7 @@ export function DemoPage() {
           </div>
         </div>
       </header>
-      <div className="wrap-wide demo-detail-body">
+      <div className="wrap-wide demo-detail-body" data-continuity-bg="paper">
         {evidence ? <>
           <NativeEvidence key={demo.id} {...evidence} />
           <section id="browser-exercise" className="native-browser-exercise" tabIndex={-1} aria-labelledby="browser-exercise-title">
@@ -451,9 +451,9 @@ export function DemoPage() {
               </div>
               <a className="demo-text-link" href="#native-build">Back to native captures <ArrowRight size={16} aria-hidden="true" /></a>
             </header>
-            {player}
+            <div className="demo-stage-feather demo-player-feather">{player}</div>
           </section>
-        </> : player}
+        </> : <div className="demo-stage-feather demo-player-feather">{player}</div>}
         {sequence >= 0 && (
           <div className="demo-project-next">
             <div><p className="demo-kicker">{DEMO_PROJECT.code} / {PROJECT_WORKFLOW[sequence].phase} / {indexNumber(sequence)} of {PROJECT_WORKFLOW.length}</p><strong>{DEMO_PROJECT.name}</strong></div>

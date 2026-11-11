@@ -2,6 +2,87 @@ import { useEffect, useRef, useState } from 'react'
 
 const reducedMotion = () => matchMedia('(prefers-reduced-motion: reduce)').matches
 
+type Rgb = readonly [number, number, number]
+const CONTINUITY_COLORS: Record<string, Rgb> = {
+  paper: [243, 238, 230],
+  'paper-2': [235, 228, 216],
+  stone: [217, 205, 189],
+}
+
+const rgb = (color: Rgb) => `rgb(${color[0]} ${color[1]} ${color[2]})`
+const blend = (from: Rgb, to: Rgb, progress: number): Rgb => [
+  Math.round(from[0] + (to[0] - from[0]) * progress),
+  Math.round(from[1] + (to[1] - from[1]) * progress),
+  Math.round(from[2] + (to[2] - from[2]) * progress),
+]
+
+/**
+ * Keeps one light, contrast-safe background on the body. Each marked section is
+ * transparent; its next boundary is blended over at least 40vh. Dark demo desks
+ * remain self-contained surfaces, so foreground colours never have to interpolate.
+ * IntersectionObserver wakes the calculation near boundaries and scroll rAF is the
+ * browser fallback. Reduced motion receives the first section's static colour.
+ */
+export function useContinuityBackground(routeKey: string) {
+  useEffect(() => {
+    const body = document.body
+    const motion = matchMedia('(prefers-reduced-motion: reduce)')
+    let anchors: HTMLElement[] = []
+    let frame = 0
+    let intersection: IntersectionObserver | undefined
+
+    const color = (anchor?: HTMLElement) => CONTINUITY_COLORS[anchor?.dataset.continuityBg ?? ''] ?? CONTINUITY_COLORS.paper
+    const paint = (value: Rgb) => body.style.setProperty('--bg', rgb(value))
+    const render = () => {
+      frame = 0
+      if (!anchors.length) { paint(CONTINUITY_COLORS.paper); return }
+      if (motion.matches || anchors.length === 1) { paint(color(anchors[0])); return }
+
+      const center = window.scrollY + window.innerHeight * .5
+      const band = Math.max(160, window.innerHeight * .4)
+      let current = color(anchors[0])
+      for (let index = 1; index < anchors.length; index += 1) {
+        const boundary = anchors[index].getBoundingClientRect().top + window.scrollY
+        const start = boundary - band * .5
+        const end = boundary + band * .5
+        if (center < start) { paint(current); return }
+        if (center <= end) {
+          paint(blend(current, color(anchors[index]), Math.max(0, Math.min(1, (center - start) / band))))
+          return
+        }
+        current = color(anchors[index])
+      }
+      paint(current)
+    }
+    const queue = () => { if (!frame) frame = requestAnimationFrame(render) }
+    const observe = () => {
+      anchors = Array.from(document.querySelectorAll<HTMLElement>('[data-continuity-bg]'))
+      intersection?.disconnect()
+      if ('IntersectionObserver' in window) {
+        intersection = new IntersectionObserver(queue, { rootMargin: '60% 0px 60%' })
+        anchors.forEach((anchor) => intersection?.observe(anchor))
+      }
+      queue()
+    }
+
+    const mutations = new MutationObserver(observe)
+    mutations.observe(document.querySelector('main') ?? body, { childList: true, subtree: true })
+    observe()
+    addEventListener('scroll', queue, { passive: true })
+    addEventListener('resize', queue)
+    motion.addEventListener('change', queue)
+    return () => {
+      mutations.disconnect()
+      intersection?.disconnect()
+      removeEventListener('scroll', queue)
+      removeEventListener('resize', queue)
+      motion.removeEventListener('change', queue)
+      cancelAnimationFrame(frame)
+      body.style.removeProperty('--bg')
+    }
+  }, [routeKey])
+}
+
 /** Counts up to `to` the first time it scrolls into view. Shows the final value without motion. */
 export function CountUp({ to }: { to: number }) {
   const ref = useRef<HTMLSpanElement>(null)

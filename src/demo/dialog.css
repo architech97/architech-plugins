@@ -19,7 +19,7 @@
 }
 
 .ad { background: var(--d-bg); color: var(--d-text); border: 1px solid var(--d-border); border-radius: 10px;
-  font: 400 12.5px/1.45 'Segoe UI Variable Text', 'Segoe UI', Inter, system-ui, sans-serif; display: flex; flex-direction: column;
+  font: 400 12px/1.35 "Segoe UI", Selawik, system-ui, sans-serif; display: flex; flex-direction: column;
   box-shadow: 0 28px 70px -24px rgba(0, 0, 0, .7), 0 0 0 1px rgba(0, 0, 0, .25); overflow: hidden; width: 100%; min-height: 0; text-align: left; }
 .ad * { box-sizing: border-box; }
 .ad-head { display: grid; grid-template-columns: 1fr auto auto; align-items: center; gap: 10px; min-height: 58px; padding: 10px 14px 10px 22px; border-bottom: 1px solid var(--d-sep); }

@@ -240,7 +240,7 @@ export function I3d({ done, rewind, notify }: DemoContext) {
           </dl>
           <p className="studio-note">Proportional sample dimensions in mm</p>
           {source === 'chair'
-            ? <NativeCapture title="See the native Material workspace" images={[{ path: 'media/i3d/material-workspace.png', alt: 'I3D Material workspace with textured and untextured options and the chair mesh' }]} />
+            ? <NativeCapture title="See the native Material workspace" images={[{ path: 'media/i3d/material-workspace.webp', alt: 'I3D Material workspace with textured and untextured options and the chair mesh' }]} />
             : <NativeCapture title="See the separate Dragon placement capture" images={[{ path: 'media/i3d/revit-placement-0.6.36.webp', alt: 'Dragon families placed during a separate Revit 2024 run' }]} />}
         </div>
       </div>

@@ -190,7 +190,7 @@ const DESKTOP = [
 export default function Home() {
   return (
     <div className="automation-home">
-      <section className="ah">
+      <section className="ah" data-continuity-bg="paper">
         <div className="wrap-wide ah-grid">
           <div className="ah-copy">
             <p className="ah-by">Navneet Singh <span>Revit add-ins</span></p>
@@ -206,7 +206,7 @@ export default function Home() {
         </div>
       </section>
 
-      <section className="try" aria-labelledby="try-title">
+      <section className="try" data-continuity-bg="paper-2" aria-labelledby="try-title">
         <div className="wrap-wide">
           <div className="split-head">
             <h2 id="try-title">Try one, right here</h2>
@@ -216,7 +216,7 @@ export default function Home() {
         </div>
       </section>
 
-      <section className="suites" aria-labelledby="suites-title">
+      <section className="suites" data-continuity-bg="paper" aria-labelledby="suites-title">
         <div className="wrap">
           <div className="split-head">
             <h2 id="suites-title">Three suites, one ribbon</h2>
@@ -226,9 +226,9 @@ export default function Home() {
         </div>
       </section>
 
-      <div className="wall-band"><DialogWall /></div>
+      <div className="wall-band" data-continuity-bg="paper"><DialogWall /></div>
 
-      <section className="path" id="live-demo" aria-labelledby="home-project-title">
+      <section className="path" data-continuity-bg="paper-2" id="live-demo" aria-labelledby="home-project-title">
         <div className="wrap">
           <div className="split-head">
             <h2 id="home-project-title">Follow one sample project</h2>
@@ -244,7 +244,7 @@ export default function Home() {
         </div>
       </section>
 
-      <section className="home-desktop" aria-labelledby="home-desktop-title">
+      <section className="home-desktop" data-continuity-bg="paper" aria-labelledby="home-desktop-title">
         <div className="wrap">
           <div className="split-head">
             <h2 id="home-desktop-title">Beyond the ribbon</h2>
@@ -262,7 +262,7 @@ export default function Home() {
         </div>
       </section>
 
-      <section className="ah-contact">
+      <section className="ah-contact" data-continuity-bg="paper">
         <div className="wrap ah-contact-grid">
           <h2>Is there a task your team repeats every week?</h2>
           <div>
