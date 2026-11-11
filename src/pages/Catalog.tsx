@@ -4,6 +4,7 @@ import { ArrowUpRight, ListFilter, Search, X } from 'lucide-react'
 import { PRODUCTS, searchText } from '../data/catalog'
 import { SUITES, suiteById } from '../data/suites'
 import { ProductCard } from '../components/ProductCard'
+import './pages-v2.css'
 
 const TASKS = [
   { id: 'drawings', label: 'Prepare drawings', note: 'Views, details and annotation', panels: ['Views', 'View Templates', 'Detailing', 'Annotation'] },
@@ -84,17 +85,14 @@ export default function Catalog() {
     <section className="section catalog-section" aria-labelledby="catalog-title">
       <div className="wrap">
         <header className="catalog-heading">
-          <div>
-            <span className="eyebrow">ArchiTECH Automation / Plugin catalogue</span>
-            <h1 id="catalog-title">Find the right tool for the task.</h1>
-          </div>
-          <p className="lead">Browse {PRODUCTS.length} design and BIM tools by what you need to do. Every tool has a browser demo you can try with sample data.</p>
+          <h1 id="catalog-title">{PRODUCTS.length} tools, <em>sorted by the job</em></h1>
+          <p className="lead">Pick what you need to get done. Every tool has a page with its windows and a walkthrough you can try on sample data.</p>
         </header>
 
         <div className="catalog-tasks" role="group" aria-label="Browse by task">
           <div className="catalog-task-heading">
-            <h2>Browse by task</h2>
-            <button type="button" aria-pressed={!task} onClick={() => update('task', '')}>All tools <span>{PRODUCTS.length}</span></button>
+            <h2>What do you need to do?</h2>
+            <button type="button" aria-pressed={!task} onClick={() => update('task', '')}>Show all {PRODUCTS.length}</button>
           </div>
           <div className="catalog-task-options">
             {TASKS.map((item, index) => (
