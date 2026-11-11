@@ -65,14 +65,15 @@ function LiveStage() {
 /** Group the real ribbon panels without changing the catalog or tool names. */
 const RIBBON_GROUPS = {
   folio: [
-    { name: 'Publish', panels: ['Publish'] },
-    { name: 'Views & sheets', panels: ['Views', 'View Templates', 'Sheets', 'Schedules'] },
-    { name: 'Annotation', panels: ['Annotation', 'Detailing'] },
+    { name: 'Sheets', panels: ['Sheets', 'Publish', 'Schedules'] },
+    { name: 'Views', panels: ['Views', 'View Templates'] },
+    { name: 'Annotation', panels: ['Annotation'] },
+    { name: 'Detailing', panels: ['Detailing'] },
   ],
   forge: [
-    { name: 'Rooms & finishes', panels: ['Rooms', 'Finishes'] },
     { name: 'Parameters', panels: ['Parameters'] },
-    { name: 'Scan to BIM', panels: ['Scan to BIM'] },
+    { name: 'Finishes', panels: ['Finishes'] },
+    { name: 'Rooms & Scan to BIM', panels: ['Rooms', 'Scan to BIM'] },
   ],
   sentinel: [
     { name: 'Model health', panels: ['Model Health'] },
@@ -103,6 +104,7 @@ function Ribbon() {
   const [tab, setTab] = useState(0)
   const [group, setGroup] = useState(0)
   const [hover, setHover] = useState<Product>()
+  const [details, setDetails] = useState(false)
   const selectSuite = (index: number) => { setTab(index); setGroup(0); setHover(undefined) }
   const selectGroup = (index: number) => { setGroup(index); setHover(undefined) }
   const navigate = (event: KeyboardEvent<HTMLButtonElement>, index: number, count: number, select: (index: number) => void) => {
@@ -121,12 +123,12 @@ function Ribbon() {
           <button type="button" role="tab" key={r.suite.id} id={'ribbon-tab-' + r.suite.id}
             aria-selected={tab === i} aria-controls={'ribbon-suite-' + r.suite.id} tabIndex={tab === i ? 0 : -1}
             onClick={() => selectSuite(i)} onKeyDown={(event) => navigate(event, i, RIBBON.length, selectSuite)}>
-            {r.suite.name}<small>{r.count} tools</small>
+            {r.suite.name}
           </button>
         ))}
       </div>
       <div className="ribbon-suites">
-        {RIBBON.map(({ suite, groups }, suiteIndex) => {
+        {RIBBON.map(({ suite, groups, count }, suiteIndex) => {
           const shot = SUITE_SHOTS[suite.id]
           return (
             <div className="ribbon-suite" key={suite.id} role="tabpanel" id={'ribbon-suite-' + suite.id}
@@ -151,13 +153,13 @@ function Ribbon() {
                   </div>
                 ))}
               </div>
-              <details className="ribbon-details">
+              <details className="ribbon-details" open={details} onToggle={(event) => setDetails(event.currentTarget.open)}>
                 <summary>Suite details</summary>
                 <p className="ribbon-panel-note">Ribbon panels: {(groups[group] ?? groups[0]).panels.map((item) => item.panel).join(', ')}.</p>
                 <div className="ribbon-tip" aria-live="polite">
                   <b>{hover?.name ?? suite.focus}</b>
                   <span>{hover?.tagline ?? SUITE_TASKS[suite.id]}</span>
-                  <Link to={'/plugins?suite=' + suite.id}>All {suite.short} tools</Link>
+                  <Link to={'/plugins?suite=' + suite.id}>All {count} {suite.short} tools</Link>
                 </div>
               </details>
               <figure className="ribbon-shot">

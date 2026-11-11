@@ -126,21 +126,23 @@
 .ribbon { --rb-bg: var(--home-ribbon-paper); }
 .ribbon-tabs { display: flex; overflow-x: auto; border-bottom: .75px solid var(--line-strong); }
 .ribbon-tabs button { flex: none; margin-bottom: -.75px; padding: 10px clamp(10px, 1.6vw, 20px) 9px; background: none; border: .75px solid var(--clear); border-bottom: 0; border-radius: 2px 2px 0 0; color: var(--text-2); font: 500 .95rem/1.2 var(--font-body); cursor: pointer; text-align: left; transition: color var(--t-ui), background var(--t-ui); }
-.ribbon-tabs small { margin-left: 10px; font: 400 12px var(--font-body); color: var(--muted); }
 .ribbon-tabs button:hover { color: var(--text); }
 .ribbon-tabs button[aria-selected="true"] { color: var(--text); background: var(--rb-bg); border-color: var(--line-strong); box-shadow: inset 0 2px var(--brass); }
 /* Stacked, invisible panels reserve the largest state without exposing inactive links. */
 .ribbon-suites, .ribbon-groups { display: grid; min-width: 0; }
 .ribbon-suite, .ribbon-bar { grid-area: 1 / 1; min-width: 0; }
-.ribbon-suite[hidden] { display: block; visibility: hidden; }
-.ribbon-bar[hidden] { display: block; visibility: hidden; }
+/* Every suite is as tall as the tallest; the tool bar, not empty space, takes up the difference. */
+.ribbon-suite { display: grid; grid-template-rows: auto 1fr auto auto; }
+.ribbon-suite[hidden] { display: grid; visibility: hidden; }
+.ribbon-bar[hidden] { display: grid; visibility: hidden; }
 .ribbon-group-tabs { display: flex; min-height: 48px; gap: 4px; align-items: stretch; padding: 4px; background: var(--rb-bg); border-inline: .75px solid var(--line-strong); }
 .ribbon-group-tabs button { padding: 8px 16px; border: 0; border-radius: 2px; background: none; color: var(--text-2); font: 400 .95rem/1.3 var(--font-body); cursor: pointer; }
 .ribbon-group-tabs button:hover { background: var(--home-ribbon-hover); }
 .ribbon-group-tabs button[aria-selected="true"] { background: var(--panel-2); color: var(--text); box-shadow: inset 0 -2px var(--brass-ink); }
 .ribbon [role="tab"]:focus-visible { outline: 2px solid var(--focus); outline-offset: -4px; }
-.ribbon-bar { display: block; min-height: 152px; padding: 8px; background: var(--rb-bg); border: .75px solid var(--line-strong); border-top: 0; }
-.ribbon-tools { list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 4px 14px; }
+.ribbon-bar { display: grid; padding: 8px; background: var(--rb-bg); border: .75px solid var(--line-strong); border-top: 0; }
+.ribbon-tools { list-style: none; margin: 0; padding: 0; display: grid; grid-auto-flow: column; grid-template-rows: repeat(2, minmax(44px, 1fr)); grid-auto-columns: minmax(0, 1fr); gap: 4px 16px; }
+.ribbon-tools li { display: grid; }
 .ribbon-tools a { display: flex; align-items: center; min-height: 44px; padding: 8px 10px; border-radius: 2px; color: var(--text); font: 400 .95rem/1.35 var(--font-body); overflow-wrap: anywhere; transition: background var(--t-ui); }
 .ribbon-tools a:hover, .ribbon-tools a:focus-visible { background: var(--home-ribbon-hover); color: var(--text); }
 .ribbon-details { border-bottom: .75px solid var(--line); }
@@ -204,10 +206,10 @@
 @media (max-width: 900px) {
   .ah-grid, .split-head, .ah-contact-grid, .home-desktop-grid { grid-template-columns: minmax(0, 1fr); }
   .ribbon-tip { grid-template-columns: minmax(0, 1fr); min-height: 16rem; }
-  .ribbon-tabs small { display: block; margin: 2px 0 0; }
   .ribbon-group-tabs { display: grid; grid-template-columns: repeat(2, minmax(0, 1fr)); min-height: 96px; }
   .ribbon-group-tabs button { padding-inline: 8px; }
-  .ribbon-tools { grid-template-columns: repeat(2, minmax(0, 1fr)); gap: 4px 10px; }
+  .ribbon-tools { grid-auto-flow: row; grid-template-rows: none; grid-template-columns: repeat(2, minmax(0, 1fr)); grid-auto-rows: minmax(44px, 1fr); gap: 4px 12px; }
+  .ribbon-tools li + li + li { border-top: .75px solid var(--line); }
   .home-desktop-grid { gap: var(--s-4); }
   .path-steps { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   .path-steps li:nth-child(3) { border-left: 0; }
@@ -225,6 +227,8 @@
   .path-steps { grid-template-columns: minmax(0, 1fr); }
   .path-steps li + li { border-left: 0; border-top: 1px solid var(--line); }
   .hero-stage-tabs small { display: none; }
+  .ribbon-tools { column-gap: 8px; }
+  .ribbon-tools a { padding-inline: 4px; }
   .ah h1 { font-size: clamp(2.7rem, 14vw, 3.6rem); }
 }
 @media (prefers-reduced-motion: reduce) {
