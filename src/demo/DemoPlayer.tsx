@@ -79,6 +79,12 @@ export function DemoPlayer({ demo, compact = false }: { demo: DemoDefinition; co
     return () => { observer.disconnect(); root.querySelectorAll('.demo-focus').forEach((x) => x.classList.remove('demo-focus')) }
   }, [current?.target, guided, closed, run])
 
+  // Back reopens the previous step; Next moves on without performing the action.
+  const stepNav = <>
+    <button className="btn btn-ghost btn-sm" type="button" disabled={doneIds.length === 0} onClick={() => rewind(demo.steps[Math.max(0, (current ? demo.steps.indexOf(current) : demo.steps.length) - 1)].id)}>Back</button>
+    <button className="btn btn-ghost btn-sm" type="button" disabled={!current} onClick={() => current && done(current.id)}>Next</button>
+  </>
+
   return (
     <div className={`player${compact ? ' compact' : ''}${expanded ? ' is-expanded' : ''}`}>
       <div className="player-top">
@@ -104,8 +110,7 @@ export function DemoPlayer({ demo, compact = false }: { demo: DemoDefinition; co
           {current && <><strong>{current.title}</strong><p>{current.hint}</p></>}
         </div>
         <div className="player-step-nav">
-          <button className="btn btn-ghost btn-sm" type="button" disabled={doneIds.length === 0} onClick={() => rewind(demo.steps[Math.max(0, (current ? demo.steps.indexOf(current) : demo.steps.length) - 1)].id)}>Back</button>
-          <button className="btn btn-ghost btn-sm" type="button" disabled={!current} onClick={() => current && done(current.id)}>Next</button>
+          {stepNav}
           {current?.target && !closed && <button className="btn btn-ghost btn-sm" type="button" disabled={!targetReady} onClick={jumpToControl}><LocateFixed size={15} /> Find control</button>}
         </div>
       </div>}
@@ -159,6 +164,7 @@ export function DemoPlayer({ demo, compact = false }: { demo: DemoDefinition; co
             <span className="mono muted" style={{ fontSize: 12 }}>{doneIds.length}/{demo.steps.length}</span>
           </div>
           <div className="steps-progress" role="progressbar" aria-label="Guided workflow progress" aria-valuenow={progress}><i style={{ width: `${progress}%` }} /></div>
+          {guided && demo.steps.length > 0 && <div className="player-step-nav">{stepNav}</div>}
           <ol className="step-list">
             {demo.steps.map((s, i) => {
               const isDone = doneIds.includes(s.id)

@@ -285,5 +285,11 @@
     "panel": "MCP Connector"
    }
   ]
+ },
+ "hidden": {
+  "Point Cloud": "point-cloud-slicer",
+  "Detail Groups": "group-manager",
+  "Model Groups": "group-manager",
+  "Ungroup Models": "group-manager"
  }
 }
