@@ -49,7 +49,7 @@
   margin-top: 16px;
   padding: 13px 16px;
   border: 1px solid var(--line);
-  border-radius: 8px;
+  border-radius: 2px;
   color: var(--text-2);
   font-size: .875rem;
 }
@@ -60,10 +60,10 @@
   margin: 0;
   padding: 10px;
   border: 1px solid var(--line);
-  border-radius: 8px;
+  border-radius: 2px;
   background: var(--panel);
 }
-.product-media img { display: block; width: 100%; border-radius: 4px; }
+.product-media img { display: block; width: 100%; border-radius: 2px; }
 .product-media figcaption { display: grid; gap: 4px; padding: 10px 2px 0; font-size: .875rem; color: var(--text-2); }
 .product-media figcaption strong { color: var(--text); }
 .product-media-pair .product-media img {

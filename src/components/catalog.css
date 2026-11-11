@@ -50,7 +50,7 @@
 .catalog-task-heading button {
   min-height: 40px;
   padding: 0 10px;
-  border-radius: 4px;
+  border-radius: 2px;
   font-size: .83rem;
   font-weight: 600;
 }
@@ -79,7 +79,7 @@
   gap: 9px;
   min-height: 67px;
   padding: 10px 11px;
-  border-radius: 5px;
+  border-radius: 2px;
   text-align: left;
 }
 
@@ -160,7 +160,7 @@
 .pcard.product-card {
   padding: 0;
   gap: 0;
-  border-radius: 8px;
+  border-radius: 2px;
   transform: none;
 }
 
@@ -175,7 +175,7 @@
 .product-preview-art {
   aspect-ratio: 2 / 1;
   overflow: hidden;
-  border-radius: 7px 7px 0 0;
+  border-radius: 2px 7px 0 0;
   border-bottom: 1px solid var(--line);
 }
 
@@ -299,7 +299,7 @@
 .product-hosts li {
   padding: 3px 6px;
   border: 1px solid var(--line);
-  border-radius: 3px;
+  border-radius: 2px;
   color: var(--text-2);
   font: 500 .66rem/1.25 var(--font-mono);
 }

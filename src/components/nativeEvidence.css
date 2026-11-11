@@ -35,7 +35,7 @@
 .native-evidence-workbench {
   background: var(--native-plate);
   border: 1px solid var(--native-rule);
-  border-radius: 5px;
+  border-radius: 2px;
   color: var(--native-ink);
   overflow: hidden;
 }
@@ -104,7 +104,7 @@
   padding: 6px 9px;
   background: #121315;
   border: 1px solid #626b7a;
-  border-radius: 4px;
+  border-radius: 2px;
   font-size: .76rem;
 }
 
@@ -142,7 +142,7 @@
   padding: 0;
   overflow: hidden;
   border: 1px solid #656d7d;
-  border-radius: 5px;
+  border-radius: 2px;
   background: var(--native-plate);
   color: var(--native-ink);
 }
@@ -176,7 +176,7 @@
   padding: 5px 9px;
   background: #21252f;
   border: 1px solid #656d7d;
-  border-radius: 4px;
+  border-radius: 2px;
   color: var(--native-ink);
   cursor: pointer;
   font-size: .82rem;

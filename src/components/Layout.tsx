@@ -20,11 +20,10 @@ export function Layout() {
   const [open, setOpen] = useState(false)
   const nav = useRef<HTMLElement>(null)
   const menu = useRef<HTMLButtonElement>(null)
-  const { pathname, search, hash } = useLocation()
+  const { pathname, hash } = useLocation()
   const header = useScrollProgress<HTMLElement>()
   useImageFade()
   useSiteMotion()
-  const primaryUrl = SITE_ORIGIN + AUTOMATION_PATH + pathname.slice(1) + search + hash
   useEffect(() => {
     setOpen(false)
     window.scrollTo({ top: 0, behavior: 'instant' })
@@ -47,27 +46,15 @@ export function Layout() {
   }, [open])
   return (
     <>
-      <div className="bg-grid" aria-hidden="true" />
       <a className="skip-link" href="#main">Skip to content</a>
       <header className="site-header" ref={header}>
-        <div className="division-bar">
-          <div className="wrap division-bar-inner">
-            <nav className="division-nav" aria-label="ArchiTECH divisions">
-              <a href={homeUrl}>ArchiTECH</a>
-              <a href={designUrl}>ArchiTECH Design</a>
-              <Link to="/" aria-current="true">ArchiTECH Automation</Link>
-            </nav>
-            <p className="division-note">
-              {unified ? 'Browser demos use sample data' : <a href={primaryUrl}>Open on the main site <ArrowUpRight size={12} aria-hidden="true" /></a>}
-            </p>
-          </div>
-        </div>
         <div className="wrap bar">
           <Link to="/" aria-label="ArchiTECH Automation home"><Logo /></Link>
           <nav ref={nav} id="site-nav" className={'nav' + (open ? ' open' : '')} aria-label="Main">
             {NAV.map((n) => <NavLink key={n.to} to={n.to} onClick={() => setOpen(false)} className={({ isActive }) => (isActive ? 'active' : '')}>{n.label}</NavLink>)}
           </nav>
           <div className="nav-cta">
+            <a className="header-division" href={designUrl}>Design portfolio <ArrowUpRight size={14} aria-hidden="true" /></a>
             <Link className="btn btn-primary btn-sm" to="/demos#sample-project">Try a walkthrough</Link>
             <button ref={menu} className="menu-btn" aria-controls="site-nav" aria-label={open ? 'Close menu' : 'Open menu'} aria-expanded={open} onClick={() => setOpen(!open)}>
               {open ? <X size={20} /> : <Menu size={20} />}
