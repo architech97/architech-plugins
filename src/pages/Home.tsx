@@ -110,11 +110,11 @@ export default function Home() {
         <div className="wrap-wide">
           <div className="hero-top">
             <div>
-              <p className="eyebrow">ArchiTECH Automation / Revit &amp; CAD</p>
+              <p className="eyebrow">Navneet Singh / BIM tools for Revit &amp; CAD</p>
               <h1><span><i>From model</i></span> <span><i>to handover</i></span></h1>
             </div>
             <div className="hero-top-side">
-              <p className="lead">Publish drawing sets, manage parameters and review model health. Try the real dialogs below, on a sample project, before you install anything.</p>
+              <p className="lead">Tools I have developed for publishing drawing sets, managing parameters and reviewing model health. Try the real dialogs below on a sample project.</p>
               <div className="hero-cta">
                 <Link className="btn btn-primary" to="/demos#demo-index">Browse {STATS.demos} browser demos <ArrowRight size={17} /></Link>
                 <Link className="home-secondary" to="/plugins">Tool catalog <ArrowUpRight size={15} /></Link>
@@ -198,9 +198,9 @@ export default function Home() {
 
       <section className="automation-contact">
         <Reveal className="wrap">
-          <h2>Have a workflow of your own?</h2>
-          <p>Tell us what your team repeats every week. We build custom Revit and CAD tools around it.</p>
-          <Link className="btn btn-primary" to="/custom-development">Describe your workflow <ArrowRight size={16} /></Link>
+          <h2>Have a workflow in mind?</h2>
+          <p>Tell me about a task your team repeats every week, or share a suggestion for one of these tools.</p>
+          <Link className="btn btn-primary" to="/connect">Discuss a workflow <ArrowRight size={16} /></Link>
         </Reveal>
       </section>
     </div>

@@ -1,5 +1,5 @@
 import { Link, useParams } from 'react-router-dom'
-import { ArrowRight, CheckCircle2, ShieldCheck, PlayCircle, MessageSquare, Tag, AlertCircle, FileCheck2 } from 'lucide-react'
+import { ArrowRight, CheckCircle2, ShieldCheck, PlayCircle, MessageSquare, AlertCircle, FileCheck2 } from 'lucide-react'
 import { DEMO_PROJECT } from '../data/demoProject'
 import { PRODUCTS, productBySlug } from '../data/catalog'
 import { suiteById } from '../data/suites'
@@ -94,8 +94,7 @@ export default function Product() {
               <div className="hero-cta">
                 {format && <a className="btn btn-primary" href="#demo"><PlayCircle size={18} /> {format.action}</a>}
                 {(p.dialogs.length > 0 || p.media?.length) && <a className="btn btn-ghost" href="#dialog-reference">View {p.dialogs.length ? 'dialogs' : 'desktop visuals'}</a>}
-                <Link className={`btn ${demo ? 'btn-ghost' : 'btn-primary'}`} to={`/custom-development?type=demo&product=${p.slug}`}><MessageSquare size={17} /> Request a walkthrough</Link>
-                <Link className="btn btn-ghost" to={`/pricing?product=${p.slug}`}><Tag size={17} /> Pricing</Link>
+                <Link className={`btn ${demo ? 'btn-ghost' : 'btn-primary'}`} to={`/connect?type=walkthrough&product=${p.slug}`}><MessageSquare size={17} /> Request a walkthrough</Link>
               </div>
               {example ? (
                 <section className="product-scenario" aria-label="Sample workflow">
@@ -120,7 +119,6 @@ export default function Product() {
               <div className="spec-row"><span>Revit versions</span><span>{revit}</span></div>
               {p.platform && <div className="spec-row"><span>Platform</span><span>{p.platform}</span></div>}
               <div className="spec-row"><span>Browser demo</span><span>{format ? format.label : p.dialogs.length ? 'Dialog renders below' : p.media ? 'Product media below' : 'Guided demo on request'}</span></div>
-              <div className="spec-row"><span>Licensing</span><span>Pricing to be announced</span></div>
             </div>
           </div>
         </div>

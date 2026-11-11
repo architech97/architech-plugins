@@ -142,3 +142,5 @@
 .player .toast, .player .loading, .player .reopen { background: var(--bg); }
 .player .steps-complete { background: #a4d4a317; border-color: #a4d4a350; }
 .player .demo-focus { animation-iteration-count: 2; }
+
+.player-step-nav { display: flex; flex-wrap: wrap; gap: 6px; align-items: center; }

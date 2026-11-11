@@ -12,8 +12,8 @@ const designUrl = unified ? '/design/' : CONTACT.designSite
 const NAV = [
   { to: '/plugins', label: 'Plugins' },
   { to: '/demos', label: 'Demos' },
-  { to: '/pricing', label: 'Pricing' },
-  { to: '/custom-development', label: 'Custom development' },
+  { to: '/coverage', label: 'Coverage' },
+  { to: '/connect', label: 'Connect' },
 ]
 
 export function Layout() {
@@ -67,7 +67,7 @@ export function Layout() {
             {NAV.map((n) => <NavLink key={n.to} to={n.to} onClick={() => setOpen(false)} className={({ isActive }) => (isActive ? 'active' : '')}>{n.label}</NavLink>)}
           </nav>
           <div className="nav-cta">
-            <Link className="btn btn-primary btn-sm" to="/demos#sample-project">Try a workflow</Link>
+            <Link className="btn btn-primary btn-sm" to="/demos#sample-project">Try a walkthrough</Link>
             <button ref={menu} className="menu-btn" aria-controls="site-nav" aria-label={open ? 'Close menu' : 'Open menu'} aria-expanded={open} onClick={() => setOpen(!open)}>
               {open ? <X size={20} /> : <Menu size={20} />}
             </button>
@@ -88,7 +88,7 @@ function Footer() {
           <div>
             <Logo />
             <p className="muted" style={{ marginTop: 18, maxWidth: '36ch', fontSize: 14.5 }}>
-              BIM productivity software for architects, BIM teams and design studios, built from six years of architectural and BIM practice.
+              Tools and plugins developed by Navneet Singh to improve everyday BIM work for architects and designers. Shown here as browser walkthroughs on sample data.
             </p>
           </div>
           <div>
@@ -103,12 +103,13 @@ function Footer() {
             <h4>Explore</h4>
             <Link to="/demos">Browser demos</Link>
             <Link to="/plugins">Full catalogue</Link>
-            <Link to="/pricing">Pricing &amp; licensing</Link>
-            <Link to="/custom-development">Custom development</Link>
+            <Link to="/coverage">Dialog coverage</Link>
+            <Link to="/connect">Discuss a workflow</Link>
           </div>
           <div>
             <h4>Contact</h4>
             <a href={`mailto:${CONTACT.email}`}>{CONTACT.email}</a>
+            {CONTACT.phones.map((phone) => <a key={phone} href={'tel:' + phone.replace(/\s/g, '')}>{phone}</a>)}
             <a href={CONTACT.linkedin} target="_blank" rel="noreferrer">LinkedIn</a>
             <a href={designUrl}>ArchiTECH Design</a>
             <a href={homeUrl}>Choose a division</a>
@@ -117,7 +118,7 @@ function Footer() {
         </div>
         <div className="footer-legal">
           <span>© {new Date().getFullYear()} ArchiTECH · Navneet Singh. Autodesk, Revit and AutoCAD are trademarks of Autodesk, Inc.; Rhino, SketchUp and Blender are trademarks of their owners.</span>
-          <span>Demos run in your browser using sample data.</span>
+          <span>A personal portfolio. Demos are browser simulations on sample data; nothing connects to Revit.</span>
         </div>
       </div>
     </footer>

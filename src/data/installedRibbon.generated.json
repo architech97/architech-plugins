@@ -1,0 +1,289 @@
+{
+ "snapshot": "11 November 2026",
+ "revit": "2024",
+ "alias": {
+  "spot-elevation-line": "Spot Elev Override",
+  "purge-and-merge": "Purge & Merge",
+  "scope-box-synchronizer": "Scope Box Sync",
+  "family-name-synchronizer": "Family Name Sync",
+  "revit-mcp": "ArchiTECH MCP"
+ },
+ "tabs": {
+  "folio": [
+   {
+    "name": "Manage Text",
+    "panel": "Annotation"
+   },
+   {
+    "name": "Reorder Pro",
+    "panel": "Annotation"
+   },
+   {
+    "name": "Spell Check",
+    "panel": "Annotation"
+   },
+   {
+    "name": "Spot Elev Override",
+    "panel": "Annotation"
+   },
+   {
+    "name": "Text/Tag Align",
+    "panel": "Annotation"
+   },
+   {
+    "name": "Auto Dimension",
+    "panel": "Detailing"
+   },
+   {
+    "name": "Make Pattern",
+    "panel": "Detailing"
+   },
+   {
+    "name": "Manage Dimension",
+    "panel": "Detailing"
+   },
+   {
+    "name": "Split Region with Line",
+    "panel": "Detailing"
+   },
+   {
+    "name": "Sheet Export",
+    "panel": "Publish"
+   },
+   {
+    "name": "Excel to Schedule",
+    "panel": "Schedules"
+   },
+   {
+    "name": "Update Schedule",
+    "panel": "Schedules"
+   },
+   {
+    "name": "Sheet Manager",
+    "panel": "Sheets"
+   },
+   {
+    "name": "VP Manager",
+    "panel": "Sheets"
+   },
+   {
+    "name": "Folio Home",
+    "panel": "Start"
+   },
+   {
+    "name": "Graphic Overviews",
+    "panel": "View Templates"
+   },
+   {
+    "name": "Template Manager",
+    "panel": "View Templates"
+   },
+   {
+    "name": "Detail View",
+    "panel": "Views"
+   },
+   {
+    "name": "Room to View",
+    "panel": "Views"
+   },
+   {
+    "name": "View Manager",
+    "panel": "Views"
+   }
+  ],
+  "forge": [
+   {
+    "name": "FR to Finishes",
+    "panel": "Finishes"
+   },
+   {
+    "name": "Replace Materials",
+    "panel": "Finishes"
+   },
+   {
+    "name": "Room to Finishes",
+    "panel": "Finishes"
+   },
+   {
+    "name": "Split Floor / Ceiling",
+    "panel": "Finishes"
+   },
+   {
+    "name": "Assign Room Properties",
+    "panel": "Parameters"
+   },
+   {
+    "name": "Copy Param from Link",
+    "panel": "Parameters"
+   },
+   {
+    "name": "Family Param Transfer",
+    "panel": "Parameters"
+   },
+   {
+    "name": "One Parameter",
+    "panel": "Parameters"
+   },
+   {
+    "name": "Parameter Manager",
+    "panel": "Parameters"
+   },
+   {
+    "name": "Parameter Mapping",
+    "panel": "Parameters"
+   },
+   {
+    "name": "Shared Param Manager",
+    "panel": "Parameters"
+   },
+   {
+    "name": "Match Opening",
+    "panel": "Rooms"
+   },
+   {
+    "name": "Room Height Adjust",
+    "panel": "Rooms"
+   },
+   {
+    "name": "Room Level Assigner",
+    "panel": "Rooms"
+   },
+   {
+    "name": "Deviation Inspector",
+    "panel": "Scan to BIM"
+   },
+   {
+    "name": "Point Cloud",
+    "panel": "Scan to BIM"
+   },
+   {
+    "name": "Point Cloud On/Off",
+    "panel": "Scan to BIM"
+   },
+   {
+    "name": "Point Cloud Slicer",
+    "panel": "Scan to BIM"
+   },
+   {
+    "name": "Forge Home",
+    "panel": "Start"
+   }
+  ],
+  "sentinel": [
+   {
+    "name": "Compliance Guard",
+    "panel": "Clean Up"
+   },
+   {
+    "name": "Detail Groups",
+    "panel": "Clean Up"
+   },
+   {
+    "name": "Duplicates Resolver",
+    "panel": "Clean Up"
+   },
+   {
+    "name": "Group Manager",
+    "panel": "Clean Up"
+   },
+   {
+    "name": "Model Groups",
+    "panel": "Clean Up"
+   },
+   {
+    "name": "Off-Axis Resolver",
+    "panel": "Clean Up"
+   },
+   {
+    "name": "Purge & Merge",
+    "panel": "Clean Up"
+   },
+   {
+    "name": "Ungroup Models",
+    "panel": "Clean Up"
+   },
+   {
+    "name": "Coord Plan",
+    "panel": "Coordination"
+   },
+   {
+    "name": "Navis View",
+    "panel": "Coordination"
+   },
+   {
+    "name": "Scope Box Sync",
+    "panel": "Coordination"
+   },
+   {
+    "name": "Section Box",
+    "panel": "Coordination"
+   },
+   {
+    "name": "Links Inspector",
+    "panel": "Links"
+   },
+   {
+    "name": "Pin-Unpin Links",
+    "panel": "Links"
+   },
+   {
+    "name": "In-Place Converter",
+    "panel": "Model Health"
+   },
+   {
+    "name": "In-Place Inspector",
+    "panel": "Model Health"
+   },
+   {
+    "name": "Mirrored Auditor",
+    "panel": "Model Health"
+   },
+   {
+    "name": "Model Health",
+    "panel": "Model Health"
+   },
+   {
+    "name": "Structural QA",
+    "panel": "Model Health"
+   },
+   {
+    "name": "Warnings Inspector",
+    "panel": "Model Health"
+   },
+   {
+    "name": "Family Name Editor",
+    "panel": "Standards"
+   },
+   {
+    "name": "Family Name Sync",
+    "panel": "Standards"
+   },
+   {
+    "name": "Filter Usage Checker",
+    "panel": "Standards"
+   },
+   {
+    "name": "Model Query Pro",
+    "panel": "Standards"
+   },
+   {
+    "name": "Parameter Colorizer",
+    "panel": "Standards"
+   },
+   {
+    "name": "Workset Manager",
+    "panel": "Standards"
+   },
+   {
+    "name": "Sentinel Home",
+    "panel": "Start"
+   }
+  ],
+  "ai": [
+   {
+    "name": "ArchiTECH MCP",
+    "panel": "MCP Connector"
+   }
+  ]
+ }
+}

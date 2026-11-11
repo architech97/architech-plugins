@@ -103,7 +103,11 @@ export function DemoPlayer({ demo, compact = false }: { demo: DemoDefinition; co
           <span className="eyebrow">{current ? 'Step ' + (demo.steps.indexOf(current) + 1) + ' of ' + demo.steps.length : demo.steps.length ? 'Guide complete' : 'Loading guide'}</span>
           {current && <><strong>{current.title}</strong><p>{current.hint}</p></>}
         </div>
-        {current?.target && !closed && <button className="btn btn-ghost btn-sm" type="button" disabled={!targetReady} onClick={jumpToControl}><LocateFixed size={15} /> Find control</button>}
+        <div className="player-step-nav">
+          <button className="btn btn-ghost btn-sm" type="button" disabled={doneIds.length === 0} onClick={() => rewind(demo.steps[Math.max(0, (current ? demo.steps.indexOf(current) : demo.steps.length) - 1)].id)}>Back</button>
+          <button className="btn btn-ghost btn-sm" type="button" disabled={!current} onClick={() => current && done(current.id)}>Next</button>
+          {current?.target && !closed && <button className="btn btn-ghost btn-sm" type="button" disabled={!targetReady} onClick={jumpToControl}><LocateFixed size={15} /> Find control</button>}
+        </div>
       </div>}
 
       <div className="player-main">

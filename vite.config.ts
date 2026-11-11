@@ -18,7 +18,7 @@ const staticRoutes: Plugin = {
         PRODUCTS: { slug: string; demo?: string }[]
       }>('/src/data/catalog.ts', { root: this.environment.config.root })
 
-      const routes = new Set(['demos', 'plugins', 'pricing', 'custom-development'])
+      const routes = new Set(['demos', 'plugins', 'connect', 'coverage', 'pricing', 'custom-development'])
       for (const product of PRODUCTS) {
         routes.add(`plugins/${product.slug}`)
         if (product.demo) routes.add(`demos/${product.demo}`)
