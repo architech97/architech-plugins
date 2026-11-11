@@ -2,6 +2,7 @@ import { StrictMode, Suspense, lazy } from 'react'
 import { createRoot } from 'react-dom/client'
 import { BrowserRouter, Navigate, Route, Routes, useLocation } from 'react-router-dom'
 import './styles/site.css'
+import './styles/motion.css'
 import { Layout } from './components/Layout'
 import Home from './pages/Home'
 

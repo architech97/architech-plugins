@@ -71,6 +71,32 @@ function LiveHero() {
   )
 }
 
+// Two rows of real dialog renders drifting in opposite directions; each opens its walkthrough.
+const wall = PRODUCTS.filter((p) => p.demo && p.dialogs[0]?.dark && !p.dialogs[0].source).map((p) => ({ slug: p.demo!, name: p.name, src: p.dialogs[0].dark! }))
+const wallRows = [wall.filter((_, i) => i % 2 === 0).slice(0, 12), wall.filter((_, i) => i % 2 === 1).slice(0, 12)]
+
+function DialogWall() {
+  return (
+    <section className="dialog-wall" aria-labelledby="dialog-wall-title">
+      <div className="wrap dialog-wall-head">
+        <h2 id="dialog-wall-title">Every dialog, as built</h2>
+        <p>Rendered from each tool’s own layout. Pick one to open its walkthrough.</p>
+      </div>
+      <div className="marquee">
+        {wallRows.map((row, r) => (
+          <div className={'marquee-row' + (r ? ' rev' : '')} key={r}>
+            {[...row, ...row].map((item, i) => (
+              <Link key={item.slug + i} to={'/demos/' + item.slug} aria-hidden={i >= row.length} tabIndex={i >= row.length ? -1 : undefined}>
+                <img src={asset(item.src)} alt="" loading="lazy" decoding="async" /><span>{item.name}</span>
+              </Link>
+            ))}
+          </div>
+        ))}
+      </div>
+    </section>
+  )
+}
+
 function RevitViews() {
   const [index, setIndex] = useState(0)
   const view = nativeViews[index]
@@ -127,6 +153,8 @@ export default function Home() {
           </dl>
         </div>
       </section>
+
+      <DialogWall />
 
       <section className="home-band" id="live-demo" aria-labelledby="home-project-title">
         <div className="wrap home-band-grid">

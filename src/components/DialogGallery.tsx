@@ -32,7 +32,7 @@ export function DialogGallery({ dialogs, name }: { dialogs: DialogShot[]; name: 
         </div>
       </div>
       <button type="button" className="shot" onClick={() => lightbox.current?.showModal()} aria-label={'Enlarge the ' + shot.title + ' dialog'}>
-        <img src={asset(src)} alt={caption} width={shot.w} height={shot.h} loading="lazy" decoding="async" />
+        <img key={src} src={asset(src)} alt={caption} width={shot.w} height={shot.h} loading="lazy" decoding="async" />
         <span className="shot-zoom" aria-hidden="true"><Maximize2 size={18} /></span>
       </button>
       <p className="caption" aria-live="polite">{i + 1} of {dialogs.length} · {shot.title} · {actualMode === 'dark' ? 'Dark' : 'Light'} theme. {source}</p>

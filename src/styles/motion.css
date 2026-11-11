@@ -1,0 +1,77 @@
+/* Site-wide motion. Everything here is decoration on top of a page that works without it:
+   content is visible by default, and every effect is switched off under prefers-reduced-motion. */
+
+/* Route change: the new page settles in. Ends at transform: none, so fixed children are unaffected. */
+.route-in { animation: route-in .55s var(--ease) both; }
+@keyframes route-in { from { opacity: 0; transform: translateY(14px); } to { opacity: 1; transform: none; } }
+
+/* Scroll reveals, applied by useSiteMotion to common blocks. Staggered by position among siblings. */
+[data-mo="1"] { opacity: 0; transform: translateY(24px); transition: opacity .7s var(--ease), transform .7s var(--ease); transition-delay: calc(var(--mo-i, 0) * 60ms); }
+[data-mo="1"].mo-in { opacity: 1; transform: none; }
+
+/* A soft light follows the pointer across the drafting grid. */
+.bg-grid::before { content: ''; position: absolute; inset: 0; opacity: var(--glow, 0); transition: opacity .6s;
+  background: radial-gradient(520px circle at var(--gx, 50%) var(--gy, 30%), rgba(123, 155, 230, .2), transparent 70%); }
+
+/* Cards light up under the pointer. */
+[data-spot] { background-image: radial-gradient(380px circle at var(--mx, 50%) var(--my, 50%), rgba(49, 86, 148, .13), transparent 62%); background-repeat: no-repeat; }
+[data-spot]:not(:hover) { background-image: none; }
+
+/* Thumbnails drift a little with the pointer. */
+a:hover > .product-thumb img, .pcard:hover .product-preview-art img { translate: calc(var(--px, 0) * -7px) calc(var(--py, 0) * -7px); }
+.product-preview-art img { transition: translate .5s var(--ease), transform .8s var(--ease), opacity .5s; }
+
+/* Navigation: an underline that draws from the left. */
+.nav a { position: relative; }
+.nav a::after { content: ''; position: absolute; left: 12px; right: 12px; bottom: 4px; height: 1px; background: var(--signal); transform: scaleX(0); transform-origin: left; transition: transform .45s var(--ease); }
+.nav a:hover::after, .nav a.active::after { transform: scaleX(1); }
+
+/* Primary buttons: a sheen crosses on hover. */
+.btn-primary, .demo-button { position: relative; overflow: hidden; }
+.btn-primary::after, .demo-button::after { content: ''; position: absolute; inset: 0; pointer-events: none; transform: translateX(-120%) skewX(-18deg); background: linear-gradient(90deg, transparent, rgba(255, 255, 255, .28), transparent); }
+.btn-primary:hover::after, .demo-button:hover::after { transform: translateX(120%) skewX(-18deg); transition: transform .8s var(--ease); }
+
+/* The mark's blade swings out when the logo is hovered. */
+.site-header a:hover svg path:last-child { transform: rotate(-9deg); }
+.site-header svg path:last-child { transform-origin: 46% 48%; transform-box: fill-box; transition: transform .6s var(--ease); }
+
+/* Wall of real dialogs. */
+.dialog-wall { padding: clamp(40px, 6vw, 80px) 0 0; }
+.dialog-wall .marquee { border-top: 0; padding: 0; gap: 14px; }
+.dialog-wall .marquee-row a { width: clamp(220px, 24vw, 330px); filter: none; transition: border-color .3s, transform .5s var(--ease); }
+.dialog-wall .marquee-row a:hover { transform: translateY(-4px); }
+.dialog-wall .marquee-row span { background: rgba(18, 19, 21, .9); color: #f1efea; }
+.dialog-wall-head { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: end; gap: 8px 24px; margin-bottom: 22px; }
+.dialog-wall-head p { color: var(--text-2); max-width: 44ch; }
+
+/* Images settle as they scroll through the viewport (browsers with scroll-driven animations only). */
+@supports (animation-timeline: view()) {
+  .native-image img, .home-desktop-grid article > img, .native-capture img { animation: settle linear both; animation-timeline: view(); animation-range: entry 0% cover 45%; }
+  @keyframes settle { from { transform: scale(1.09); } to { transform: scale(1); } }
+  .home-band h2, .automation-contact h2 { animation: slide-x linear both; animation-timeline: view(); animation-range: entry 0% cover 40%; }
+  @keyframes slide-x { from { transform: translateX(-4vw); opacity: .35; } to { transform: none; opacity: 1; } }
+}
+
+/* Walkthrough player feedback. */
+.step-list li.done svg { animation: pop .45s var(--ease); }
+@keyframes pop { 0% { transform: scale(.4); } 60% { transform: scale(1.25); } 100% { transform: scale(1); } }
+.toast { animation: toast-in .4s var(--ease) both; }
+@keyframes toast-in { from { opacity: 0; transform: translateY(-10px) scale(.97); } to { opacity: 1; transform: none; } }
+.demo-focus { animation: focus-ring 1.8s ease-in-out infinite; }
+@keyframes focus-ring { 0%, 100% { box-shadow: 0 0 0 2px rgba(123, 155, 230, .95), 0 0 0 6px rgba(123, 155, 230, 0); } 50% { box-shadow: 0 0 0 2px rgba(123, 155, 230, .95), 0 0 0 9px rgba(123, 155, 230, .28); } }
+.inquiry-draft { animation: route-in .45s var(--ease) both; }
+.shot img, .shot-modal img { animation: route-in .35s var(--ease) both; }
+.coverage-table tbody tr { transition: background .2s; }
+.coverage-table tbody tr:hover { background: #e9edf5; }
+.field input, .field select, .field textarea { transition: border-color .2s, box-shadow .25s; }
+.field input:focus, .field select:focus, .field textarea:focus { box-shadow: 0 0 0 4px rgba(49, 86, 148, .14); }
+
+@media (prefers-reduced-motion: reduce) {
+  .route-in, .step-list li.done svg, .toast, .demo-focus, .inquiry-draft, .shot img, .shot-modal img { animation: none; }
+  [data-mo="1"] { opacity: 1; transform: none; transition: none; }
+  .bg-grid::before, .btn-primary::after, .demo-button::after { display: none; }
+  .nav a::after, .site-header svg path:last-child, .product-preview-art img { transition: none; }
+  a:hover > .product-thumb img, .pcard:hover .product-preview-art img { translate: none; }
+  .native-image img, .home-desktop-grid article > img, .native-capture img, .home-band h2, .automation-contact h2 { animation: none; }
+}
+@media print { [data-mo="1"] { opacity: 1; transform: none; } }

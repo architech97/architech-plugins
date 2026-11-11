@@ -3,7 +3,7 @@ import { Link, NavLink, Outlet, useLocation } from 'react-router-dom'
 import { ArrowUpRight, Menu, X } from 'lucide-react'
 import { Logo } from './Brand'
 import { AUTOMATION_PATH, CONTACT, SITE_ORIGIN } from '../data/contact'
-import { useImageFade, useScrollProgress } from './motion'
+import { useImageFade, useScrollProgress, useSiteMotion } from './motion'
 
 const unified = import.meta.env.BASE_URL === AUTOMATION_PATH
 const homeUrl = unified ? '/' : SITE_ORIGIN + '/'
@@ -23,6 +23,7 @@ export function Layout() {
   const { pathname, search, hash } = useLocation()
   const header = useScrollProgress<HTMLElement>()
   useImageFade()
+  useSiteMotion()
   const primaryUrl = SITE_ORIGIN + AUTOMATION_PATH + pathname.slice(1) + search + hash
   useEffect(() => {
     setOpen(false)
@@ -74,7 +75,7 @@ export function Layout() {
           </div>
         </div>
       </header>
-      <main id="main" tabIndex={-1}><Outlet /></main>
+      <main id="main" tabIndex={-1}><div key={pathname} className="route-in"><Outlet /></div></main>
       <Footer />
     </>
   )

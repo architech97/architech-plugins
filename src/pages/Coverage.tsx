@@ -7,6 +7,7 @@ import { demoForProduct } from '../demo/registry'
 import { LAYOUTS } from '../demo/generatedRegistry'
 import installed from '../data/installedRibbon.generated.json'
 import type { Product } from '../data/types'
+import { CountUp } from '../components/motion'
 import './coverage.css'
 
 // One row per dialog or state that the site can show for a tool, with what backs it.
@@ -86,10 +87,10 @@ export default function Coverage() {
           <p className="lead">Every tool, every dialog the site can show, what it is based on and how far the browser walkthrough goes. Gaps are listed, not hidden.</p>
         </header>
         <dl className="coverage-summary">
-          <div><dt>Tools</dt><dd>{PRODUCTS.length}</dd></div>
-          <div><dt>Dialogs and states listed</dt><dd>{ALL.length}</dd></div>
-          <div><dt>Tools with a guided walkthrough</dt><dd>{guided}</dd></div>
-          <div><dt>Dialogs shown as reference only</dt><dd>{referenceOnly}</dd></div>
+          <div><dt>Tools</dt><dd><CountUp to={PRODUCTS.length} /></dd></div>
+          <div><dt>Dialogs and states listed</dt><dd><CountUp to={ALL.length} /></dd></div>
+          <div><dt>Tools with a guided walkthrough</dt><dd><CountUp to={guided} /></dd></div>
+          <div><dt>Dialogs shown as reference only</dt><dd><CountUp to={referenceOnly} /></dd></div>
         </dl>
         <div className="coverage-notes">
           <h2>What is not covered yet</h2>
