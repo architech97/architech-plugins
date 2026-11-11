@@ -147,7 +147,7 @@
 .wall-band { --feather: max(160px, 30vh); --lap: calc(var(--s-5) + 80px); position: relative; z-index: 1; margin-top: calc(-1 * var(--lap)); padding-bottom: calc(var(--feather) + var(--s-3)); color: var(--on-dark);
   background: linear-gradient(var(--home-clear) 0, var(--home-clear) var(--lap), var(--paper) var(--lap), var(--stone) calc(var(--lap) + var(--feather) * .35), var(--taupe-d) calc(var(--lap) + var(--feather)), var(--taupe-d) calc(100% - var(--feather)), var(--stone) calc(100% - var(--feather) * .35), var(--paper) 100%); }
 .wall-band .dialog-wall { padding: 0; }
-.wall-band .marquee { mask-image: linear-gradient(90deg, var(--clear), var(--home-shadow-solid) 10%, var(--home-shadow-solid) 90%, var(--clear)); }
+.wall-band .marquee { mask-image: linear-gradient(90deg, var(--clear), var(--home-shadow-solid) 10%, var(--home-shadow-solid) 90%, var(--clear)), linear-gradient(var(--home-shadow-solid) calc(100% - 120px), var(--clear)); mask-composite: intersect; }
 .wall-band .marquee-row { animation-duration: 160s; }
 .wall-band .marquee-row.rev { animation-duration: 200s; }
 .wall-band .marquee-row a { background: var(--paper); border-color: var(--home-wall-rule); box-shadow: 0 24px 40px -30px var(--home-night); }
@@ -158,10 +158,9 @@
 .wall-band .dialog-wall-head p { color: var(--on-dark-2); }
 .wall-band :focus-visible { outline-color: var(--focus-dark); }
 
-/* Sample project: a plan line runs up out of the dialog band and turns into the first step. */
+/* Sample project: the ruled steps carry the sequence without a stray leading line. */
 .path { position: relative; z-index: 2; padding: var(--s-6) 0 var(--s-5); scroll-margin-top: 90px; }
 .path-steps { position: relative; list-style: none; margin: 0; padding: 0; display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); border-top: .75px solid var(--taupe); }
-.path-steps::before { content: ''; position: absolute; left: calc(var(--pad) * -.5); bottom: 100%; width: calc(var(--pad) * .5); height: clamp(22rem, 34vw, 30rem); border-left: .75px solid var(--taupe); border-bottom: .75px solid var(--taupe); pointer-events: none; transform-origin: bottom; }
 .path-steps li + li { border-left: .75px solid var(--line); }
 .path-steps a { position: relative; display: grid; align-content: start; gap: 6px; height: 100%; padding: 18px clamp(12px, 1.6vw, 24px) 54px; color: var(--text); transition: background var(--t-reveal); }
 .path-steps a:hover { color: var(--text); background: var(--panel); }
@@ -194,7 +193,6 @@
   .ah-grid, .split-head, .ah-contact-grid, .home-desktop-grid { grid-template-columns: minmax(0, 1fr); }
   .ribbon-tip { grid-template-columns: minmax(0, 1fr); }
   .ribbon-tabs small { display: block; margin: 2px 0 0; }
-  .path-steps::before { left: 0; width: 18px; height: clamp(8rem, 36vw, 11rem); opacity: .78; }
   .home-desktop-grid { gap: var(--s-4); }
   .path-steps { grid-template-columns: repeat(2, minmax(0, 1fr)); }
   .path-steps li:nth-child(3) { border-left: 0; }

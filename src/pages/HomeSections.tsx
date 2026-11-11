@@ -54,7 +54,7 @@ function LiveStage() {
           : preview}
       </div>
       <div className="hero-stage-foot">
-        <div aria-live="polite"><strong>{tool.task}</strong><p>{tool.description}</p></div>
+        <div aria-live="polite"><strong>{tool.task}</strong></div>
         <Link to={'/demos/' + tool.slug} className="stage-link"><Play size={14} aria-hidden="true" /> Open the guided demo</Link>
       </div>
     </div>
@@ -72,6 +72,11 @@ const SUITE_SHOTS: Record<string, { shot: string; tool: string }> = {
   folio: { shot: 'media/dialogs/sheet-manager/sheetmanagerwindow-light.webp', tool: 'Sheet Manager' },
   forge: { shot: 'media/dialogs/parameter-manager/parametermanagerwindow-light.webp', tool: 'Parameter Manager' },
   sentinel: { shot: 'media/dialogs/warnings-inspector/warningswindow-light.webp', tool: 'Warnings Inspector' },
+}
+const SUITE_TASKS: Record<string, string> = {
+  folio: 'Views, sheets, annotation and publishing.',
+  forge: 'Rooms, finishes, parameters and Scan-to-BIM.',
+  sentinel: 'Warnings, BEP checks and model cleanup.',
 }
 
 function Ribbon() {
@@ -102,7 +107,7 @@ function Ribbon() {
       </div>
       <div className="ribbon-tip" aria-live="polite">
         <b>{hover?.name ?? suite.focus}</b>
-        <span>{hover?.tagline ?? suite.summary}</span>
+        <span>{hover?.tagline ?? SUITE_TASKS[suite.id]}</span>
         <Link to={'/plugins?suite=' + suite.id}>All {suite.short} tools</Link>
       </div>
       <figure className="ribbon-shot">
@@ -170,7 +175,7 @@ export default function HomeSections() {
         <div className="wrap-wide">
           <div className="split-head">
             <h2 id="try-title">Try one, right here</h2>
-            <p>These are the tools’ own windows, rebuilt for the browser. Tick, type and press the buttons. Nothing is sent or saved.</p>
+            <p>Try these windows on sample data. Nothing is sent or saved.</p>
           </div>
           <LiveStage />
         </div>
@@ -180,7 +185,7 @@ export default function HomeSections() {
         <div className="wrap">
           <div className="split-head">
             <h2 id="suites-title">Three suites, one ribbon</h2>
-            <p>The {STATS.revitTools} tools sit in three Revit tabs: {RIBBON.map((r) => `${r.suite.name} (${r.count})`).join(', ').replace(/, ([^,]*)$/, ' and $1')}. Point at a tool to see what it does.</p>
+            <p>Choose a tab, then a tool.</p>
           </div>
           <Ribbon />
         </div>
