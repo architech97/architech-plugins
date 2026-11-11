@@ -1,3 +1,7 @@
+:root {
+  --replica-pages-product-evidence-1: #0c131a;
+}
+
 .product-scenario {
   margin-top: 22px;
   padding-block: 12px;
@@ -6,9 +10,9 @@
 }
 .product-scenario-label {
   color: var(--signal);
-  font: 600 11px/1.45 var(--font-mono);
-  letter-spacing: .07em;
-  text-transform: uppercase;
+  font: 600 11px/1.45 var(--font-body);
+
+
 }
 .product-scenario dl {
   display: grid;
@@ -69,6 +73,6 @@
 .product-media-pair .product-media img {
   aspect-ratio: 16 / 10;
   object-fit: contain;
-  background: #0c131a;
+  background: var(--replica-pages-product-evidence-1);
 }
 #desktop-chair-preview, #recorded-placement { scroll-margin-top: 120px; }

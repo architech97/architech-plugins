@@ -265,7 +265,7 @@ export function makeGenerated(slug: string, workflow?: ToolWorkflow) {
     const mappingText = preparationFields.filter(({ label }) => ['Room property', 'On', 'Element parameter'].includes(label)).map(({ value }) => value).join(' → ')
     const scopeGrid = slug === 'update-schedule' ? nodes.findLastIndex((node) => node.k === 'grid') : firstOf.grid
     const scopedNode = nodes[scopeGrid]
-    const supplementalRecords = transfer ? TEMPLATE_NAMES : slug === 'detail-view' ? ['Level 01', 'Level 02', 'Roof'] : slug === 'spell-check' ? ['A-101 · Level 01 Floor Plan', 'A-102 · Level 02 Floor Plan', 'A-501 · Typical Details'] : []
+    const supplementalRecords = transfer ? TEMPLATE_NAMES : slug === 'detail-view' ? ['Level 01', 'Level 02', 'Roof'] : slug === 'spell-check' ? ['A-101, Level 01 Floor Plan', 'A-102, Level 02 Floor Plan', 'A-501, Typical Details'] : []
     const recordTotal = supplementalRecords.length || (scopedNode ? rowCount(scopedNode) : 0)
     const sampleKey = (index: number) => `${meta.win}:sample:${index}`
     const records = (supplementalRecords.length ? supplementalRecords.flatMap((label, index) => !query || label.toLowerCase().includes(query) ? [{ key: sampleKey(index), label, columns: { Record: label } }] : [])
@@ -322,7 +322,7 @@ export function makeGenerated(slug: string, workflow?: ToolWorkflow) {
       setValidation('')
       setPlan(undefined)
       setResult(output)
-      notify({ kind: 'success', text: `${plan.input.action} · sample receipt ready.` })
+      notify({ kind: 'success', text: `${plan.input.action}, sample receipt ready.` })
       done('apply')
     }
 
@@ -338,7 +338,7 @@ export function makeGenerated(slug: string, workflow?: ToolWorkflow) {
           if (n.icon) return null
           const single = n.h < (n.fs ?? 12) * 2
           const content = slug === 'assign-room-properties' && prepared && n.s?.startsWith('Build a mapping') ? mappingText : n.s
-          return <div key={key} style={{ ...pos, pointerEvents: 'none', width: single ? undefined : n.w + 2, height: single ? undefined : n.h + 2, minWidth: single && n.al ? n.w : undefined, fontSize: n.fs, fontWeight: n.fw, lineHeight: single ? `${n.h}px` : 1.36, color: col(n.c), whiteSpace: single ? 'nowrap' : 'normal', overflow: 'hidden', textAlign: n.al === 'c' ? 'center' : n.al === 'r' ? 'right' : 'left', opacity: n.o }}>{content}</div>
+          return <div key={key} style={{ ...pos, pointerEvents: 'none', width: single ? undefined : n.w + 2, height: single ? undefined : n.h + 2, minWidth: single && n.al ? n.w : undefined, fontSize: Math.max(11, n.fs ?? 12), fontWeight: n.fw, lineHeight: single ? `${n.h}px` : 1.36, color: col(n.c), whiteSpace: single ? 'nowrap' : 'normal', overflow: 'hidden', textAlign: n.al === 'c' ? 'center' : n.al === 'r' ? 'right' : 'left', opacity: n.o }}>{content}</div>
         }
         case 'logo': return <img key={key} alt="ArchiTECH" style={{ ...pos, pointerEvents: 'none', objectFit: 'contain', objectPosition: 'left center' }} src={asset(theme === 'dark' ? 'media/brand/architech-logo-dark-ui.webp' : 'media/brand/architech-logo-light-ui.webp')} />
         case 'mark': return <img key={key} alt="" style={{ ...pos, pointerEvents: 'none', borderRadius: 10 }} src={asset('favicon.svg')} />
@@ -377,7 +377,7 @@ export function makeGenerated(slug: string, workflow?: ToolWorkflow) {
         case 'prog': return <div key={key} className="ad-progress" style={{ ...pos, pointerEvents: 'none' }}><i style={{ width: result ? '100%' : '0%' }} /></div>
         case 'exp': {
           const expanded = Boolean(vals[key] ?? n.on)
-          return <button key={key} aria-expanded={expanded} style={{ ...pos, display: 'flex', alignItems: 'center', gap: 8, background: 'none', border: 0, color: 'var(--d-text)', font: 'inherit', fontSize: 12.5, cursor: 'pointer', padding: 0, textAlign: 'left' }} onClick={() => set(key, !expanded, 'explore')}><span className="ad-disc" style={{ width: 18, height: 18, borderRadius: 9, border: '1px solid var(--d-control-border)', background: 'var(--d-input)', display: 'grid', placeItems: 'center', fontSize: 9 }}>{expanded ? '▴' : '▾'}</span>{n.s}</button>
+          return <button key={key} aria-expanded={expanded} style={{ ...pos, display: 'flex', alignItems: 'center', gap: 8, background: 'none', border: 0, color: 'var(--d-text)', font: 'inherit', fontSize: 12.5, cursor: 'pointer', padding: 0, textAlign: 'left' }} onClick={() => set(key, !expanded, 'explore')}><span className="ad-disc" style={{ width: 18, height: 18, borderRadius: 9, border: '1px solid var(--d-control-border)', background: 'var(--d-input)', display: 'grid', placeItems: 'center', fontSize: 11 }}>{expanded ? '▴' : '▾'}</span>{n.s}</button>
         }
         case 'btn': {
           const action = actionLabel(n)
@@ -400,7 +400,7 @@ export function makeGenerated(slug: string, workflow?: ToolWorkflow) {
             notify({ kind: 'info', text: n.tip ?? `${label} uses the active Revit document in the desktop plugin.` })
           }
           const disabled = isPreparation ? !canPrepare : resetsPreparation ? !prepared : action ? blockRun : !!n.off && !touched
-          return <button key={key} className={`ad-btn ${action || n.bg?.toUpperCase() === '#7B9BE6' ? 'primary' : ''}`} title={n.tip} disabled={disabled} aria-pressed={tickFilter ? tickedOnly : undefined} data-demo={i === firstOf.run ? 'gen-run' : undefined} style={{ ...pos, padding: '0 6px', minHeight: 0, overflow: 'hidden', fontSize: Math.min(12.5, Math.max(10.5, n.h * 0.42)) }} onClick={onClick}>{label}</button>
+          return <button key={key} className={`ad-btn ${action || n.bg?.toUpperCase() === '#7B9BE6' ? 'primary' : ''}`} title={n.tip} disabled={disabled} aria-pressed={tickFilter ? tickedOnly : undefined} data-demo={i === firstOf.run ? 'gen-run' : undefined} style={{ ...pos, padding: '0 6px', minHeight: 0, overflow: 'hidden', fontSize: Math.min(12.5, Math.max(11, n.h * 0.42)) }} onClick={onClick}>{label}</button>
         }
         case 'grid': {
           const cols = n.cols ?? []; const hh = n.hh ?? 30; const rows = showRecords ? shownRows(n, i) : []
@@ -462,7 +462,6 @@ export function makeGenerated(slug: string, workflow?: ToolWorkflow) {
     const preparationStatus = preparation && (prepared ? preparation.ready : `Choose ${preparation.caption} before applying changes.`)
     const resultPanel = result && (
       <section className="gen-result" aria-labelledby="generated-result-heading">
-        <span className="gen-kicker">Sample output · {DEMO_PROJECT.code}</span>
         <h3 id="generated-result-heading">Sample receipt</h3>
         <p role="status">{result.summary}</p>
         {result.rows.length > 0 && <dl>{result.rows.map(({ label, value }, index) => <div key={`${index}:${label}`}><dt>{label}</dt><dd>{value}</dd></div>)}</dl>}
@@ -489,7 +488,7 @@ export function makeGenerated(slug: string, workflow?: ToolWorkflow) {
         )}
         {!layoutView && (
           <section className="gen-workflow" aria-label={`${meta.title} browser workflow`}>
-            <header className="gen-workflow-title"><span className="gen-kicker">Interactive simulation · {DEMO_PROJECT.code}</span><h3>{meta.title}</h3><p>{DEMO_PROJECT.name} · Fictional project data</p></header>
+            <header className="gen-workflow-title"><h3>{meta.title}</h3><p>{DEMO_PROJECT.name}, Fictional project data</p></header>
             {!response?.layout && (
               <div className="gen-scope" role="status">
                 {response ? <>This workflow could not load. <button className="gen-action" type="button" onClick={() => setAttempt((previous) => previous + 1)}>Retry</button></> : 'Loading the sample workflow…'}
@@ -518,7 +517,7 @@ export function makeGenerated(slug: string, workflow?: ToolWorkflow) {
                     {records.map((record) => (
                       <label key={record.key} className="gen-record">
                         <input type="checkbox" checked={rowSelected(rowSelectionKey(record.key))} onChange={(event) => set(rowSelectionKey(record.key), event.target.checked, 'row')} />
-                        <span><strong>{record.label}</strong>{Object.entries(record.columns).filter(([, value]) => value && value !== '—').slice(2, 4).length > 0 && <small>{Object.entries(record.columns).filter(([, value]) => value && value !== '—').slice(2, 4).map(([name, value]) => `${name}: ${value}`).join(' · ')}</small>}</span>
+                        <span><strong>{record.label}</strong>{Object.entries(record.columns).filter(([, value]) => value && value !== '—').slice(2, 4).length > 0 && <small>{Object.entries(record.columns).filter(([, value]) => value && value !== '—').slice(2, 4).map(([name, value]) => `${name}: ${value}`).join(', ')}</small>}</span>
                       </label>
                     ))}
                   </div>
@@ -567,7 +566,7 @@ export function makeGenerated(slug: string, workflow?: ToolWorkflow) {
               <button className="ad-btn" onClick={() => {
                 const id = setting('Element ID', '348211').trim()
                 const row = [0, 1, 2, 3, 4, 5].find((index) => fixtureCell(slug, 'Element ID', index) === id)
-                notify(row === undefined ? { kind: 'warning', text: `Element ${id || 'ID'} was not found in the sample project.` } : { kind: 'info', text: `Element ${id} · ${fixtureCell(slug, 'Family', row)} · ${fixtureCell(slug, 'Level', row)}.` })
+                notify(row === undefined ? { kind: 'warning', text: `Element ${id || 'ID'} was not found in the sample project.` } : { kind: 'info', text: `Element ${id}, ${fixtureCell(slug, 'Family', row)}, ${fixtureCell(slug, 'Level', row)}.` })
               }}>Inspect ID</button>
             </div> : <div style={{ display: 'flex', flexWrap: 'wrap', gap: 10 }}>
               {['Room enclosure', 'Duplicate walls', 'FF&E metadata'].map((name) => <label key={name} className="ad-check"><input type="checkbox" checked={Boolean(vals[settingsKey(name)] ?? true)} onChange={(event) => setSetting(name, event.target.checked)} /><span className="ad-box" />{name}</label>)}

@@ -62,7 +62,7 @@ function inspectCamera(option: number): Result {
     rows: [
       ['Sampled clearance', (clearance * 1000).toFixed(0) + ' mm'],
       ['Required clearance', Math.round(required * 1000) + ' mm'],
-      ['Camera result', blocked ? 'No camera path created' : '3 waypoints · 97 frames'],
+      ['Camera result', blocked ? 'No camera path created' : '3 waypoints, 97 frames'],
     ],
     failed: blocked,
   }
@@ -79,7 +79,7 @@ const SCENARIOS: Record<string, Scenario> = {
     tool: 'bridge_run',
     approval: true,
     action: 'Approve once',
-    option: { label: 'Sheet number', values: ['A-302 · Available', 'A-303 · Available', 'A-301 · In use'] },
+    option: { label: 'Sheet number', values: ['A-302, Available', 'A-303, Available', 'A-301, In use'] },
     request: (option) => 'Create sheet ' + SHEET_CHOICES[option] + ' named Building Sections using the A1 title block.',
     arguments: (option) => ({
       capability_id: 'create.sheet',
@@ -113,7 +113,7 @@ const SCENARIOS: Record<string, Scenario> = {
     arguments: () => ({}),
     inspect: () => ({
       title: BLOCKS.reduce((count, block) => count + block.points.length, 0) + ' block references',
-      rows: BLOCKS.map(({ label, layer, points }) => [label + ' · ' + layer, String(points.length)]),
+      rows: BLOCKS.map(({ label, layer, points }) => [label + ', ' + layer, String(points.length)]),
     }),
   },
   'rhino-mcp': {
@@ -151,7 +151,7 @@ const SCENARIOS: Record<string, Scenario> = {
     tool: 'create_component',
     approval: true,
     action: 'Approve once',
-    option: { label: 'Extrusion', values: ['Above origin · +300 mm', 'Below origin · −300 mm'] },
+    option: { label: 'Extrusion', values: ['Above origin, +300 mm', 'Below origin, −300 mm'] },
     request: (option) => 'Create a 100 × 200 mm group with a ' + SKETCHUP_HEIGHTS[option] + ' mm signed extrusion at the world origin.',
     arguments: (option) => ({ name: 'Study Mass', shape: 'box', width: 100, depth: 200, height: SKETCHUP_HEIGHTS[option], position: [0, 0, 0] }),
     inspect: (option) => ({

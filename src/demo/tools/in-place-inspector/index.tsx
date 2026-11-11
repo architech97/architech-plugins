@@ -62,7 +62,7 @@ export default function InPlaceInspector(context: DemoContext) {
     downloadInspectorCsv('Sample-Residence-In-Place-Families.csv', columns, rows)
     log(`Exported ${rows.length} in-place family rows to Sample-Residence-In-Place-Families.csv. Native Export to Excel offers XLSX or CSV; this browser sample downloads CSV.`)
   }
-  return <div className="inspector-demo"><DialogShell theme={context.theme} onTheme={context.setTheme} title="In-Place Families Inspector" subtitle="Sample Residence · Sample data, fictional" onClose={context.close}
+  return <div className="inspector-demo"><DialogShell theme={context.theme} onTheme={context.setTheme} title="In-Place Families Inspector" subtitle="Sample Residence, Sample data, fictional" onClose={context.close}
     footer={<div className="inspector-footer"><p>{entries[entries.length - 1] ?? 'Select a family, then Show in 3D View / Select / Delete Family. Double-click for the full row detail.'}</p>
       <Btn demo="apply" disabled={!source} onClick={show}>Show in 3D View</Btn><Btn disabled={!source} onClick={selectInstances}>Select</Btn>
       <Btn danger disabled={!source} onClick={() => setConfirm(true)}>Delete Family</Btn><Btn onClick={exportReport}>Export to Excel</Btn><Btn onClick={context.close}>Close</Btn>
@@ -71,7 +71,7 @@ export default function InPlaceInspector(context: DemoContext) {
     <InspectorTable rows={rows} columns={columns} selected={selected} onSelect={select} onDetail={id => { select(id); setDetail(true) }} actionKey={actionKey} onSort={(key, descending) => { setSort({ key, descending }); setActionKey(value => value + 1); context.done('preview') }} />
     <div className="inspector-workbench">
       <section className="inspector-stage" data-demo="preview"><h3>{source ? source.name : 'Instance-count preview'}</h3>
-        <p>{source ? `${source.instances} instance(s) · ${source.category}` : 'The scan ranks the most heavily used in-place families first. Choose a column heading to sort.'}</p>
+        <p>{source ? `${source.instances} instance(s), ${source.category}` : 'The scan ranks the most heavily used in-place families first. Choose a column heading to sort.'}</p>
         <p>{row ? String(row.values.Recommendation) : '20+ uses: critical. 5–19 uses and unused families: warning. 1–4 uses: info.'}</p>
         <p>Conversion is a recommendation here. The native inspector offers Show in 3D View, Select and Delete Family.</p>
         {row && <Btn sm onClick={() => setDetail(value => !value)}>Open row detail</Btn>}

@@ -1,3 +1,15 @@
+:root {
+  --replica-components-catalog-1: #25282f;
+  --replica-components-catalog-2: #edf1f7;
+  --replica-components-catalog-3: #5c779e1e;
+  --replica-components-catalog-4: transparent;
+  --replica-components-catalog-5: #315694;
+  --replica-components-catalog-6: #28456e;
+  --replica-components-catalog-7: #6c84a7;
+  --replica-components-catalog-8: #577398;
+  --replica-components-catalog-9: #d4e1f5;
+}
+
 .catalog-section {
   padding-top: clamp(30px, 4vw, 56px);
 }
@@ -59,7 +71,7 @@
 .catalog-task-index,
 .catalog-task-count {
   color: var(--muted);
-  font: 500 .68rem/1.2 var(--font-mono);
+  font: 500 .6875rem/1.2 var(--font-body);
 }
 
 .catalog-task-heading button span {
@@ -181,7 +193,7 @@
 
 .product-preview-art.is-native,
 .product-preview-art.is-desktop {
-  background: #25282f;
+  background: var(--replica-components-catalog-1);
 }
 
 .product-preview-art img,
@@ -207,8 +219,8 @@
 }
 
 .product-preview-art.is-specimen {
-  background-color: #edf1f7;
-  background-image: linear-gradient(#5c779e1e 1px, transparent 1px), linear-gradient(90deg, #5c779e1e 1px, transparent 1px);
+  background-color: var(--replica-components-catalog-2);
+  background-image: linear-gradient(var(--replica-components-catalog-3) 1px, var(--replica-components-catalog-4) 1px), linear-gradient(90deg, var(--replica-components-catalog-3) 1px, var(--replica-components-catalog-4) 1px);
   background-size: 14px 14px;
 }
 
@@ -216,14 +228,14 @@
   padding: 6px 12px;
   border-bottom: 1px solid var(--line);
   color: var(--muted);
-  font: 500 .63rem/1.3 var(--font-mono);
-  letter-spacing: .065em;
-  text-transform: uppercase;
+  font: 500 .6875rem/1.3 var(--font-body);
+
+
 }
 
 .product-specimen {
   display: block;
-  color: #315694;
+  color: var(--replica-components-catalog-5);
 }
 
 .product-specimen path {
@@ -233,13 +245,13 @@
 }
 
 .product-specimen text {
-  fill: #28456e;
-  font: 500 9px var(--font-mono);
+  fill: var(--replica-components-catalog-6);
+  font: 500 11px var(--font-body);
 }
 
 .product-specimen .specimen-frame,
 .product-specimen .specimen-guides {
-  stroke: #6c84a7;
+  stroke: var(--replica-components-catalog-7);
   stroke-width: 1px;
 }
 
@@ -248,7 +260,7 @@
 }
 
 .product-specimen .specimen-lines {
-  stroke: #577398;
+  stroke: var(--replica-components-catalog-8);
   stroke-width: 1.65px;
 }
 
@@ -258,7 +270,7 @@
 }
 
 .product-specimen .specimen-shade {
-  fill: #d4e1f5;
+  fill: var(--replica-components-catalog-9);
 }
 
 .product-card-body {
@@ -269,7 +281,7 @@
 
 .product-card-body .suite-tag {
   justify-self: start;
-  font-size: .67rem;
+  font-size: .6875rem;
 }
 
 .product-card-body h3,
@@ -301,7 +313,7 @@
   border: 1px solid var(--line);
   border-radius: 2px;
   color: var(--text-2);
-  font: 500 .66rem/1.25 var(--font-mono);
+  font: 500 .6875rem/1.25 var(--font-body);
 }
 
 .product-card-actions {

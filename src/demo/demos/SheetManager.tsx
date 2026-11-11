@@ -180,7 +180,7 @@ export default function SheetManager({ theme, setTheme, done, rewind, notify, cl
       setReceipt(changes.map(({ sheet, number, name: sheetName }) => ({
         id: sheet.id, before: sheet.number, after: number, name: sheetName, revision: latestRevision(sheet), views: sheet.views,
       })))
-      setResult(`Renumbered or renamed ${changes.length} of ${plan.length} sheets${skipped.length ? ` · ${skipped.length} skipped` : ''}`)
+      setResult(`Renumbered or renamed ${changes.length} of ${plan.length} sheets${skipped.length ? `, ${skipped.length} skipped` : ''}`)
       notify({ kind: 'success', text: `Renumbered or renamed ${changes.length} sheets. In Revit this is one Undo step.` })
       skipped.forEach((p) => notify({ kind: 'warning', text: `${p.sheet.number} skipped: ${p.skip}` }))
       setNum(empty); setName(empty); done('preview'); done('run')
@@ -238,7 +238,7 @@ export default function SheetManager({ theme, setTheme, done, rewind, notify, cl
   }
 
   return (
-    <RevitDialog theme={theme} onTheme={setTheme} title="Sheet Manager" caption={'Sample Residence · ' + sheets.length + ' sheets and placeholders'} onClose={close}
+    <RevitDialog theme={theme} onTheme={setTheme} title="Sheet Manager" caption={'Sample Residence, ' + sheets.length + ' sheets and placeholders'} onClose={close}
       footer={<>
         <span className="ad-status">{result || (tickedList.length ? `${tickedList.length} ticked` : 'Tick the sheets to work on.')}</span>
         <Btn onClick={close}>Close</Btn>
@@ -296,7 +296,7 @@ export default function SheetManager({ theme, setTheme, done, rewind, notify, cl
               </tbody>
             </table>
           </div>
-          <span className="ad-note">{shown.length} of {sheets.length} shown · {ticked.size} ticked</span>
+          <span className="ad-note">{shown.length} of {sheets.length} shown, {ticked.size} ticked</span>
 
           {section === 'Renumber / Rename' && (
             <div className="ad-grid2 crafted-layout" style={{ gridTemplateColumns: 'minmax(0,1.1fr) minmax(0,1fr)' }}>
@@ -322,7 +322,7 @@ export default function SheetManager({ theme, setTheme, done, rewind, notify, cl
                   {plan.map((p) => (
                     <span key={p.sheet.id} className={`li ${p.skip ? 'err' : ''}`}>
                       {p.skip ? <>✕ {p.sheet.number}: skipped, {p.skip}</> : p.number !== p.sheet.number || p.name !== p.sheet.name
-                        ? <><b>{p.sheet.number}</b> → <b>{p.number}</b>{p.name !== p.sheet.name && <> · {p.name}</>}</>
+                        ? <><b>{p.sheet.number}</b> → <b>{p.number}</b>{p.name !== p.sheet.name && <>, {p.name}</>}</>
                         : <>{p.sheet.number}: no change</>}
                     </span>
                   ))}
@@ -336,10 +336,10 @@ export default function SheetManager({ theme, setTheme, done, rewind, notify, cl
           )}
           {section === 'Renumber / Rename' && receipt.length > 0 && (
             <div className="ad-result" role="status" aria-label="Last sample renumber">
-              <strong>Last sample renumber · {receipt.length} sheets changed</strong>
+              <strong>Last sample renumber, {receipt.length} sheets changed</strong>
               <ul style={{ marginBlock: 6, paddingInlineStart: 18 }}>
                 {receipt.map(({ id, before, after, name: sheetName, revision, views }) => (
-                  <li key={id}>{before} → <b>{after}</b> · {sheetName} · {revision} · {views} views</li>
+                  <li key={id}>{before} → <b>{after}</b>, {sheetName}, {revision}, {views} views</li>
                 ))}
               </ul>
             </div>
@@ -410,7 +410,7 @@ export default function SheetManager({ theme, setTheme, done, rewind, notify, cl
           {section === 'Place on sheet' && (
             <div className="ad-card crafted-action-list">
               <span className="ad-label">Sample views and schedules</span>
-              {VIEWS.map((view) => placedViews[view] ? <span key={view}>{view} · Placed on {sheets.find((sheet) => sheet.id === placedViews[view])?.number}</span>
+              {VIEWS.map((view) => placedViews[view] ? <span key={view}>{view}, Placed on {sheets.find((sheet) => sheet.id === placedViews[view])?.number}</span>
                 : <Check key={view} label={view} checked={pickedViews.has(view)} onChange={(checked) => {
                   const next = new Set(pickedViews)
                   if (checked) next.add(view); else next.delete(view)

@@ -112,11 +112,11 @@ export default function MirroredAuditor(ctx: DemoContext) {
       selected.map((row) =>
         changed.includes(row)
           ? row.id +
-            " · mirror state corrected · position " +
+            ", mirror state corrected, position " +
             row.position +
             ", type, host, hand and swing retained"
           : row.id +
-            " · unchanged · host or orientation could not be preserved",
+            ", unchanged, host or orientation could not be preserved",
       ),
     );
     setStatus(
@@ -215,13 +215,13 @@ export default function MirroredAuditor(ctx: DemoContext) {
         <div className="mirror-body">
           <div className="ad-row" data-demo="mirror-options">
             <span>
-              {instances.length} audited ·{" "}
+              {instances.length} audited,{" "}
               {
                 instances.filter(
                   (row) => !row.mirrored && (row.hand || row.facing),
                 ).length
               }{" "}
-              valid flips · {mirrored} mirrored
+              valid flips, {mirrored} mirrored
             </span>
             <SearchBox
               placeholder="Filter by family, type or level"

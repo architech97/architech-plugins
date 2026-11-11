@@ -10,13 +10,13 @@ import './style.css'
 
 const FIELDS = ['Rooms from', 'Element category', 'Room text property', 'Element parameter']
 const EMPTY = '— Choose —'
-const initialChoices: Record<string, string> = { 'Rooms from': 'Current Model', 'Element category': 'Doors', 'Room text property': 'Name · built-in', 'Element parameter': 'Comments · built-in' }
+const initialChoices: Record<string, string> = { 'Rooms from': 'Current Model', 'Element category': 'Doors', 'Room text property': 'Name, built-in', 'Element parameter': 'Comments, built-in' }
 const display = (label: string, value: string) => label === 'Rooms from' && value === 'This model' ? 'Current Model'
-  : label === 'Room text property' ? ({ 'Room Name': 'Name · built-in', 'Room Number': 'Number · built-in' } as Record<string, string>)[value] ?? value + ' · built-in'
-  : label === 'Element parameter' && ['Comments', 'Mark', 'Department'].includes(value) ? value + ' · built-in' : value
+  : label === 'Room text property' ? ({ 'Room Name': 'Name, built-in', 'Room Number': 'Number, built-in' } as Record<string, string>)[value] ?? value + ', built-in'
+  : label === 'Element parameter' && ['Comments', 'Mark', 'Department'].includes(value) ? value + ', built-in' : value
 const underlying = (label: string, value: string) => label === 'Rooms from' && value === 'Current Model' ? 'This model'
-  : label === 'Room text property' ? ({ 'Name · built-in': 'Room Name', 'Number · built-in': 'Room Number' } as Record<string, string>)[value] ?? value.replace(' · built-in', '')
-  : label === 'Element parameter' ? value.replace(' · built-in', '') : value
+  : label === 'Room text property' ? ({ 'Name, built-in': 'Room Name', 'Number, built-in': 'Room Number' } as Record<string, string>)[value] ?? value.replace(', built-in', '')
+  : label === 'Element parameter' ? value.replace(', built-in', '') : value
 type Plan = { input: WorkflowInput; output: WorkflowResult }
 
 function evaluate(input: WorkflowInput): WorkflowResult | string {
@@ -63,7 +63,7 @@ export default function CopyParamFromLink({ theme, setTheme, done, rewind, notif
   }
 
   return <DialogShell theme={theme} onTheme={setTheme} title="Copy Param from Link"
-    subtitle="Browser simulation · fictional Sample Residence" onClose={close}
+    subtitle="Browser simulation, fictional Sample Residence" onClose={close}
     footer={<><span className="ad-status">{ready ? 'Review the mapping before copying.' : 'Choose the source, category and both parameters.'}</span>
       <Btn onClick={close}>Cancel</Btn><Btn primary demo="copy-preview" disabled={!ready || !!plan} onClick={preview}>Copy</Btn></>}>
     <section className="ad-card copy-room-fields" data-demo="copy-configure" aria-label="Room property mapping">
@@ -83,7 +83,7 @@ export default function CopyParamFromLink({ theme, setTheme, done, rewind, notif
       setPlan(undefined)
       setResult(output)
       done('apply')
-      notify({ kind: 'success', text: 'Copy · sample receipt ready.' })
+      notify({ kind: 'success', text: 'Copy, sample receipt ready.' })
     }} />}
     {result && <Receipt title="Sample room-property copy" entries={result.rows.map(row => ({ label: row.label, detail: row.value }))} />}
   </DialogShell>

@@ -131,12 +131,12 @@ export default function SharedParamManager({ theme, setTheme, done, rewind, noti
     const next = [...bindings]
     const rows = picked.map(definition => {
       const existing = next.find(binding => binding.guid === definition.guid)
-      if (existing && existing.mode !== mode) return { label: definition.name + ' · skipped', detail: 'Already bound as ' + existing.mode + '. Its existing binding is retained.' }
+      if (existing && existing.mode !== mode) return { label: definition.name + ', skipped', detail: 'Already bound as ' + existing.mode + '. Its existing binding is retained.' }
       const combined = [...new Set([...(existing?.categories ?? []), ...categories])]
       const record = { guid: definition.guid, name: definition.name, mode, group: projectGroup, categories: combined }
       if (existing) next[next.indexOf(existing)] = record
       else next.push(record)
-      return { label: definition.name + (existing ? ' · updated' : ' · bound'), detail: mode + ' · ' + projectGroup + ' · ' + combined.join(', ') }
+      return { label: definition.name + (existing ? ', updated' : ', bound'), detail: mode + ', ' + projectGroup + ', ' + combined.join(', ') }
     })
     setBindings(next); setReceipt(rows); setStep(''); done('bind')
     notify({ kind: rows.some(row => row.label.endsWith('skipped')) ? 'warning' : 'success', text: 'Sample binding results ready.' })
@@ -164,7 +164,7 @@ export default function SharedParamManager({ theme, setTheme, done, rewind, noti
     setMessage('Imported: ' + added + ' added, ' + updated + " updated. Click 'Save File' to commit.")
   }
 
-  return <DialogShell theme={theme} onTheme={setTheme} title="Shared Param Manager" subtitle="Browser simulation · fictional definitions and bindings"
+  return <DialogShell theme={theme} onTheme={setTheme} title="Shared Param Manager" subtitle="Browser simulation, fictional definitions and bindings"
     onClose={() => requestNavigation('close')} footer={<><span className="ad-status">{dirty ? 'Unsaved sample file changes' : file || 'No file loaded'}</span><Btn onClick={() => requestNavigation('close')}>Close</Btn></>}>
     <section className="ad-card suite-flow-fields" aria-label="Shared parameter definitions file">
       <span>{file || 'No file loaded. Browse or create a new file.'}</span>
@@ -199,7 +199,7 @@ export default function SharedParamManager({ theme, setTheme, done, rewind, noti
     {workbook && <section className="ad-card suite-flow-fields" aria-label="Sample workbook">
       <b>{workbook === 'import' ? 'Review sample Excel import' : 'Export shared parameters'}</b>
       <p className="ad-note">The desktop tool reads and writes XLSX files. This browser exercise uses a prepared workbook import and downloads a CSV of the current definitions.</p>
-      {workbook === 'import' ? <><ul>{WORKBOOK_EDITS.map(entry => <li key={entry.guid}>{entry.name} · {entry.description}</li>)}</ul><Btn primary onClick={importWorkbook}>Import sample workbook</Btn></> :
+      {workbook === 'import' ? <><ul>{WORKBOOK_EDITS.map(entry => <li key={entry.guid}>{entry.name}, {entry.description}</li>)}</ul><Btn primary onClick={importWorkbook}>Import sample workbook</Btn></> :
         <Btn primary onClick={() => downloadCsv('AT-01-shared-parameters.csv', ['GUID', 'Name', 'Data Type', 'Group', 'Description'],
           definitions.map(entry => [entry.guid, entry.name, entry.type, entry.group, entry.description]))}>Download sample CSV</Btn>}
       <div><Btn onClick={() => setWorkbook('')}>Close preview</Btn></div>
@@ -219,7 +219,7 @@ export default function SharedParamManager({ theme, setTheme, done, rewind, noti
     {showBindings && <section className="ad-card suite-flow-fields" aria-label="Project parameter bindings">
       <b>Project parameter bindings ({bindings.length})</b>
       <p className="ad-note">Select bindings to remove. Removing a binding deletes that parameter’s values from every sample element.</p>
-      {bindings.map(binding => <Check key={binding.guid} label={binding.name + ' · ' + binding.mode + ' · ' + binding.categories.join(', ')}
+      {bindings.map(binding => <Check key={binding.guid} label={binding.name + ', ' + binding.mode + ', ' + binding.categories.join(', ')}
         checked={bindingTicks.includes(binding.guid)} onChange={checked => setBindingTicks(checked ? [...bindingTicks, binding.guid] : bindingTicks.filter(guid => guid !== binding.guid))} />)}
       <div className="ad-row"><Btn disabled={!bindingTicks.length} onClick={() => setDeleting('bindings')}>Remove</Btn><Btn onClick={() => setShowBindings(false)}>Close bindings</Btn></div>
     </section>}

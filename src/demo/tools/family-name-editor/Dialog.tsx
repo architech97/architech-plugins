@@ -185,7 +185,7 @@ export default function FamilyNameEditor(ctx: DemoContext) {
       pending.map((item) =>
         allowed.includes(item)
           ? item.row.name + " → " + item.to
-          : item.row.name + " · Skipped · empty or existing target name",
+          : item.row.name + ", Skipped, empty or existing target name",
       ),
     );
     setStatus(
@@ -468,7 +468,7 @@ export default function FamilyNameEditor(ctx: DemoContext) {
         theme={ctx.theme}
         onTheme={ctx.setTheme}
         title="Family Name Editor"
-        subtitle="Fictional Sample Residence · Naming convention review"
+        subtitle="Fictional Sample Residence, Naming convention review"
         onClose={ctx.close}
         footer={
           <>
@@ -523,7 +523,7 @@ export default function FamilyNameEditor(ctx: DemoContext) {
       >
         <div className="name-editor-layout">
           <aside className="ad-card name-editor-rail">
-            <b>CATEGORIES</b>
+            <b>Categories</b>
             <SearchBox
               placeholder="Search categories"
               value={catQuery}
@@ -561,7 +561,7 @@ export default function FamilyNameEditor(ctx: DemoContext) {
               ))}
           </aside>
           <aside className="ad-card name-editor-rail">
-            <b>FAMILIES</b>
+            <b>Families</b>
             <SearchBox
               placeholder="Search families"
               value={familyQuery}
@@ -599,7 +599,7 @@ export default function FamilyNameEditor(ctx: DemoContext) {
                   }
                 />
               ))}
-            <b>BEP CONFIG</b>
+            <b>BEP config</b>
             <Check
               label="Non-compliant only"
               checked={nonCompliant}

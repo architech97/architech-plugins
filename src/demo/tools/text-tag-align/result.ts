@@ -13,8 +13,8 @@ export const settings = () => [option('Primary reference', notes.map(({ name }) 
 export default function result({ action, fields }: WorkflowInput) {
   const horizontal = action === 'Align Horizontally'
   const reference = notes.find(({ name }) => name === field(fields, 'Primary reference')) ?? notes[0]
-  const rows = notes.filter((note) => note !== reference).map(({ id, name, x, y, shoulder }) => resultRow(id + ' · ' + name,
-    '(' + x + ', ' + y + ') → (' + (horizontal ? x : reference.x) + ', ' + (horizontal ? reference.y : y) + ') mm · Shoulder kept at (' + shoulder + ') mm'))
+  const rows = notes.filter((note) => note !== reference).map(({ id, name, x, y, shoulder }) => resultRow(id + ', ' + name,
+    '(' + x + ', ' + y + ') → (' + (horizontal ? x : reference.x) + ', ' + (horizontal ? reference.y : y) + ') mm, Shoulder kept at (' + shoulder + ') mm'))
   return { summary: 'Aligned ' + rows.length + ' sample heads to ' + reference.name + '. Leader shoulders and ends stayed in place.',
-    rows: [resultRow('Reference', reference.name + ' · ' + (horizontal ? 'Y = ' + reference.y : 'X = ' + reference.x) + ' mm'), ...rows] }
+    rows: [resultRow('Reference', reference.name + ', ' + (horizontal ? 'Y = ' + reference.y : 'X = ' + reference.x) + ' mm'), ...rows] }
 }

@@ -22,10 +22,10 @@ const initial: Viewport[] = [
 const alignments = ['Same position on its sheet as the reference (other sheets)', 'By model coordinates (same model point, other sheets)', "To the reference's edge, same sheet:"]
 const types = ['Title with Line', 'Title without Line', 'No Title']
 const sheets = sampleResidence.sheets.filter(({ placeholder }) => !placeholder).map(({ number }) => number)
-const label = (row: Viewport) => row.sheet + ' · ' + row.detail + ' · ' + row.view
+const label = (row: Viewport) => row.sheet + ', ' + row.detail + ', ' + row.view
 const freeViews = [
   { id: 901, view: 'Section B–B', kind: 'Section', scale: 50, placed: '' },
-  { id: 902, view: 'Room 101 · Ceiling Plan', kind: 'Ceiling Plan', scale: 50, placed: '' },
+  { id: 902, view: 'Room 101, Ceiling Plan', kind: 'Ceiling Plan', scale: 50, placed: '' },
   { id: 903, view: 'Door Schedule', kind: 'Schedule', scale: 1, placed: '' },
 ]
 
@@ -128,14 +128,14 @@ export default function VpManager(ctx: DemoContext) {
     }
     return row
   })
-  const preview = section === 4 ? unplaced.filter(({ id }) => viewPicks.includes(id)).map((view, index) => ({ label: view.view, value: destination + ' · ' + layout + ' · Slot ' + (index + 1) })) :
+  const preview = section === 4 ? unplaced.filter(({ id }) => viewPicks.includes(id)).map((view, index) => ({ label: view.view, value: destination + ', ' + layout + ', Slot ' + (index + 1) })) :
     picked.map((row, index) => {
       const next = planned[index]
       return { label: label(row), value: section === 0 ? row === ref ? 'Reference viewport' : next.x === row.x && next.y === row.y ? 'Unchanged or outside alignment sheet scope' :
         '(' + row.x + ', ' + row.y + ') → (' + next.x.toFixed(1) + ', ' + next.y.toFixed(1) + ') paper mm' :
-        section === 1 ? row.width + ' × ' + row.height + ' → ' + next.width + ' × ' + next.height + ' model mm · Crop ' + (next.crop ? 'shown' : 'hidden') :
+        section === 1 ? row.width + ' × ' + row.height + ' → ' + next.width + ' × ' + next.height + ' model mm, Crop ' + (next.crop ? 'shown' : 'hidden') :
           section === 2 ? titleAction === 'Viewport type:' ? row.type + ' → ' + next.type : titleAction === 'Detail numbers:' ? row.detail + ' → ' + next.detail : (row.title || row.view) + ' → ' + (next.title || row.view) :
-            section === 3 ? pinAction === 'Move to sheet:' ? row.sheet + ' → ' + next.sheet + ' · Position and pin retained' : String(row.pinned) + ' → ' + String(next.pinned) : '' }
+            section === 3 ? pinAction === 'Move to sheet:' ? row.sheet + ' → ' + next.sheet + ', Position and pin retained' : String(row.pinned) + ' → ' + String(next.pinned) : '' }
     })
   const action = section === 0 ? 'Align viewports' : section === 1 ? 'Crop views' : section === 2 ? titleAction === 'Viewport type:' ? 'Change viewport type' : titleAction === 'Detail numbers:' ? 'Renumber viewports' : 'Set title on views' :
     section === 3 ? pinAction === 'Move to sheet:' ? 'Move viewports' : pinAction.startsWith('Unpin') ? 'Unpin viewports' : 'Pin viewports' : 'Place on sheets'
@@ -158,9 +158,9 @@ export default function VpManager(ctx: DemoContext) {
       setUnplaced(unplaced.map((view) => viewPicks.includes(view.id) ? { ...view, placed: add.find((row) => row.view === view.view)!.sheet } : view))
       setViewPicks([])
     } else setRows(rows.map((row) => planned.find(({ id }) => id === row.id) ?? row))
-    setReceipt(preview.map(({ label, value }) => label + ' · ' + value).concat(matchTitles && section === 0 ? ['Viewport title offsets matched where the sample viewport was unpinned.'] : []))
+    setReceipt(preview.map(({ label, value }) => label + ', ' + value).concat(matchTitles && section === 0 ? ['Viewport title offsets matched where the sample viewport was unpinned.'] : []))
     ctx.done('configure'); ctx.done('row'); ctx.done('run'); ctx.done('apply'); ctx.done('review')
-    ctx.notify({ kind: 'success', text: action + ' · Sample fixture updated.' })
+    ctx.notify({ kind: 'success', text: action + ', Sample fixture updated.' })
   }
   return <FolioFrame ctx={ctx} title="VP Manager" sections={sections} section={section} onSection={setSection}
     footer={<><span className="ad-status">{problem || 'One Undo reverses the whole run. Sample data.'}</span><Btn onClick={ctx.close}>Close</Btn><Btn primary demo="vpmanager-run" disabled={!!problem} onClick={run}>{action}</Btn></>}>
@@ -200,7 +200,7 @@ export default function VpManager(ctx: DemoContext) {
       <div className="ad-row"><Btn onClick={() => setSheetSettings(!sheetSettings)} aria-expanded={sheetSettings}>Sheet Settings</Btn><Btn onClick={() => setLayoutSettings(!layoutSettings)} aria-expanded={layoutSettings}>Layout Settings</Btn></div>
       {sheetSettings && <FolioChoice label="Existing sheet" options={sheets} value={destination} onChange={setDestination} />}
       {layoutSettings && <FolioChoice label="Layout" options={['1 view, title block centre', '2 side by side']} value={layout} onChange={setLayout} />}
-      <p className="ad-note">{destination} · {layout}</p>
+      <p className="ad-note">{destination}, {layout}</p>
     </>}
     <FolioPreview rows={preview} />
     {receipt.length > 0 && <Receipt entries={receipt} title="Last sample operation" />}

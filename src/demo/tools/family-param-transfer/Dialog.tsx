@@ -94,15 +94,15 @@ export default function FamilyParamTransfer({ theme, setTheme, done, rewind, not
     const rows = confirm.definitions.map(parameter => {
       const same = next.find(item => item.id === parameter.id)
       const collision = next.find(item => item.name === parameter.name && item.id !== parameter.id)
-      if (same) return { label: parameter.name + ' · skipped', detail: parameter.kind === 'Shared' ? 'Shared parameter already present (same GUID).' : 'Family parameter already present.' }
-      if (collision) return { label: parameter.name + ' · skipped', detail: 'A different parameter with the same name is already present.' }
+      if (same) return { label: parameter.name + ', skipped', detail: parameter.kind === 'Shared' ? 'Shared parameter already present (same GUID).' : 'Family parameter already present.' }
+      if (collision) return { label: parameter.name + ', skipped', detail: 'A different parameter with the same name is already present.' }
       next.push(parameter)
       added++
-      return { label: parameter.name + ' · added', detail: parameter.type + ' · ' + parameter.binding + (parameter.kind === 'Shared' ? ' · shared GUID retained' : ' · family definition') }
+      return { label: parameter.name + ', added', detail: parameter.type + ', ' + parameter.binding + (parameter.kind === 'Shared' ? ', shared GUID retained' : ', family definition') }
     })
     setFamilies({ ...families, [confirm.target.family]: next })
     setReceipt([...rows, { label: confirm.target.display, detail: confirm.unsaved
-      ? 'Already open with unsaved edits · changed and left open for you to ' + (confirm.target.loaded ? 'load into the sample project.' : 'save.')
+      ? 'Already open with unsaved edits, changed and left open for you to ' + (confirm.target.loaded ? 'load into the sample project.' : 'save.')
       : confirm.target.loaded ? 'Reloaded into the sample project.' : 'Saved to the sample family file.' }])
     setConfirm(undefined)
     done('apply')
@@ -117,13 +117,13 @@ export default function FamilyParamTransfer({ theme, setTheme, done, rewind, not
     onClose={close} footer={<><span className="ad-status">{picked.length} parameter(s) selected</span>
       <Btn onClick={close}>Close</Btn><Btn primary demo="family-transfer" disabled={!picked.length || !targetKey} onClick={requestTransfer}>Transfer</Btn></>}>
     <section className="ad-card suite-flow-fields" data-demo="family-source" aria-label="Shared parameter file">
-      <b>1 · Shared parameter file</b>
+      <b>1, Shared parameter file</b>
       <p className="ad-note">Select the prepared sample file used to resolve shared definitions by GUID.</p>
       <div className="ad-row"><TextBox aria-label="Shared parameter file" value={sharedFile} onChange={event => { setSharedFile(event.target.value); clearOutput() }} />
         <Btn aria-label="Browse shared parameter file" onClick={() => browse('shared')}>Browse…</Btn></div>
     </section>
     <section className="ad-card suite-flow-fields" aria-label="Source parameters">
-      <b>2 · Source parameters</b>
+      <b>2, Source parameters</b>
       <div className="ad-row">{['Shared parameter file', 'Loaded family', 'Browse .rfa'].map(value => <Radio key={value} name={id + '-source'} label={value} checked={sourceMode === value} onChange={() => { setSourceMode(value); clearOutput() }} />)}</div>
       {sourceMode === 'Loaded family' && <Select label="Source family" value={sourceFamily} options={[EMPTY, ...FAMILIES]} onChange={value => { setSourceFamily(value); clearOutput() }} />}
       {sourceMode === 'Browse .rfa' && <div className="ad-row"><TextBox aria-label="Source family file" value={sourceFile} onChange={event => { setSourceFile(event.target.value); clearOutput() }} /><Btn aria-label="Browse source family file" onClick={() => browse('source')}>Browse…</Btn></div>}
@@ -141,7 +141,7 @@ export default function FamilyParamTransfer({ theme, setTheme, done, rewind, not
       }}>Open sample</Btn><Btn onClick={() => setPicker('')}>Cancel</Btn></div>
     </section>}
     <section className="ad-card suite-flow-fields" data-demo="family-parameters" aria-label="Parameters to transfer">
-      <div className="ad-row"><b>3 · Parameters to transfer</b><SearchBox placeholder="Filter parameters" value={query} onChange={setQuery} />
+      <div className="ad-row"><b>3, Parameters to transfer</b><SearchBox placeholder="Filter parameters" value={query} onChange={setQuery} />
         <Btn sm disabled={!shown.length} onClick={() => { setSelected([...new Set([...selected, ...shown.map(parameter => parameter.id)])]); clearOutput() }}>Select all</Btn>
         <Btn sm disabled={!selected.length} onClick={() => { setSelected([]); clearOutput() }}>Clear</Btn></div>
       <div className="ad-table-wrap suite-flow-table" tabIndex={0} role="region" aria-label="Sample parameter definitions">
@@ -155,7 +155,7 @@ export default function FamilyParamTransfer({ theme, setTheme, done, rewind, not
       </div>
     </section>
     <section className="ad-card suite-flow-fields" aria-label="Target family">
-      <b>4 · Target family</b>
+      <b>4, Target family</b>
       <div className="ad-row">{['Loaded family', 'Browse .rfa'].map(value => <Radio key={value} name={id + '-target'} label={value} checked={targetMode === value} onChange={() => { setTargetMode(value); clearOutput() }} />)}</div>
       {targetMode === 'Loaded family' ? <Select label="Target family" value={targetFamily} options={[EMPTY, ...FAMILIES]} onChange={value => { setTargetFamily(value); clearOutput() }} /> :
         <div className="ad-row"><TextBox aria-label="Target family file" value={targetFile} onChange={event => { setTargetFile(event.target.value); clearOutput() }} /><Btn aria-label="Browse target family file" onClick={() => browse('target')}>Browse…</Btn></div>}
@@ -166,6 +166,6 @@ export default function FamilyParamTransfer({ theme, setTheme, done, rewind, not
       content="Shared parameters keep their GUID. The target family will be reloaded into the project or saved to disk, unless it is already open with unsaved edits — then it is changed but left for you to load or save."
       confirmLabel="Yes" cancelLabel="No" onConfirm={apply} onCancel={() => setConfirm(undefined)} />
     {!!receipt.length && <Receipt title="Sample family transfer report" entries={receipt} />}
-    <details className="ad-card"><summary>Read back sample target definitions</summary><ul>{(families[targetKey] ?? []).map(parameter => <li key={parameter.id}>{parameter.name} · {parameter.kind} · {parameter.type}</li>)}</ul></details>
+    <details className="ad-card"><summary>Read back sample target definitions</summary><ul>{(families[targetKey] ?? []).map(parameter => <li key={parameter.id}>{parameter.name}, {parameter.kind}, {parameter.type}</li>)}</ul></details>
   </DialogShell>
 }

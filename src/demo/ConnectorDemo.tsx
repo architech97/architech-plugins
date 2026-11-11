@@ -54,8 +54,8 @@ function Solid({ scene, option, applied }: { scene: 'rhino' | 'sketchup'; option
       <circle cx={a[0]} cy={a[1]} r="3" className="cd-origin" />
       <text className="cd-svg-label" x="226" y="42">+Z</text>
       <text className="cd-svg-label" x="226" y="215">−Z</text>
-      <text className="cd-svg-label" x="235" y="164">ORIGIN</text>
-      <text className="cd-svg-label" x="18" y="225">{sketchup ? 'SIGNED Z ' + (height > 0 ? '+' : '−') + Math.abs(height) + ' mm' : width + ' × ' + depth + ' × ' + height + ' mm'}</text>
+      <text className="cd-svg-label" x="235" y="164">Origin</text>
+      <text className="cd-svg-label" x="18" y="225">{sketchup ? 'Signed Z ' + (height > 0 ? '+' : '−') + Math.abs(height) + ' mm' : width + ' × ' + depth + ' × ' + height + ' mm'}</text>
     </>
   )
 }
@@ -90,14 +90,14 @@ function Viewport({ scenario, option, phase, failed, block, setBlock }: {
   const sheetNumber = SHEET_CHOICES[option]
   return (
     <div className="cd-viewport">
-      <div className="cd-viewport-label"><ScanLine size={13} /><span>{scene === 'sheet' ? 'SHEET INDEX' : scene === 'drawing' ? 'MODEL SPACE' : scene === 'blender' ? 'CAMERA PLAN' : 'PERSPECTIVE'}</span></div>
+      <div className="cd-viewport-label"><ScanLine size={13} /><span>{scene === 'sheet' ? 'Sheet index' : scene === 'drawing' ? 'Model space' : scene === 'blender' ? 'Camera plan' : 'Perspective'}</span></div>
       <svg className="cd-scene" viewBox="0 0 460 242" role="img" aria-label={scenario.file + ' sample visualization'}>
         <defs><pattern id={grid} width="22" height="22" patternUnits="userSpaceOnUse"><path d="M 22 0 L 0 0 0 22" fill="none" stroke="currentColor" strokeWidth=".65" /></pattern></defs>
         <rect className="cd-grid" width="100%" height="100%" fill={'url(#' + grid + ')'} />
         {scene === 'sheet' && <>
           <rect x="54" y="35" width="352" height="172" rx="3" className="cd-sheet" />
-          <text className="cd-svg-label cd-sheet-head" x="72" y="60">NUMBER</text>
-          <text className="cd-svg-label cd-sheet-head" x="142" y="60">SHEET NAME</text>
+          <text className="cd-svg-label cd-sheet-head" x="72" y="60">Number</text>
+          <text className="cd-svg-label cd-sheet-head" x="142" y="60">Sheet name</text>
           {EXISTING_SHEETS.map((sheet, index) => {
             const y = 73 + index * 34
             return <g key={sheet.number} className={applied && failed && sheet.number === sheetNumber ? 'cd-index-row is-conflict' : 'cd-index-row'}>
@@ -110,9 +110,9 @@ function Viewport({ scenario, option, phase, failed, block, setBlock }: {
             <rect x="67" y="141" width="326" height="29" rx="3" />
             <text x="78" y="159">{sheetNumber}</text>
             <text x="142" y="159">Building Sections</text>
-            <text x="352" y="159">NEW</text>
-          </g> : <text className="cd-svg-label" x="76" y="160">{applied ? 'NUMBER IN USE · NO SHEET CREATED' : 'NO NEW SHEET CREATED'}</text>}
-          <text className="cd-svg-label" x="76" y="190">{DEMO_PROJECT.code} / EXCERPT</text>
+            <text x="352" y="159">New</text>
+          </g> : <text className="cd-svg-label" x="76" y="160">{applied ? 'Number in use. No sheet created' : 'No new sheet created'}</text>}
+          <text className="cd-svg-label" x="76" y="190">{DEMO_PROJECT.code} / excerpt</text>
         </>}
         {scene === 'drawing' && <Plan applied={applied} block={block} />}
         {(scene === 'rhino' || scene === 'sketchup') && <Solid scene={scene} option={option} applied={applied} />}
@@ -184,7 +184,7 @@ export default function ConnectorDemo({ scenario, done, rewind, notify }: DemoCo
       <header className="cd-head">
         <span className="cd-app-icon"><FileCode2 size={18} /></span>
         <div><strong>{scenario.host} connector</strong><small>{scenario.scene === 'drawing' ? 'Read-only takeoff' : 'Browser tool sandbox'}</small></div>
-        <span className="cd-pill"><i /> {DEMO_PROJECT.code} · Browser fixture</span>
+        <span className="cd-pill"> {DEMO_PROJECT.code}, Browser fixture</span>
       </header>
       <div className="cd-body">
         <div className="cd-request">
@@ -218,7 +218,7 @@ export default function ConnectorDemo({ scenario, done, rewind, notify }: DemoCo
         </div>
         <Viewport scenario={scenario} option={option} phase={phase} failed={result?.failed} block={block} setBlock={setBlock} />
         {phase === 'inspected' && result && <section className={'cd-result' + (result.failed ? ' is-failed' : '')} ref={resultPanel} tabIndex={-1} aria-label="Sample result">
-          <div className="cd-result-heading">{result.failed ? <CircleAlert size={18} /> : <Check size={18} />}<div><span className="cd-micro">Sample result</span><h3>{result.title}</h3></div></div>
+          <div className="cd-result-heading">{result.failed ? <CircleAlert size={18} /> : <Check size={18} />}<div><h3>{result.title}</h3></div></div>
           <dl>{result.rows.map(([label, value]) => <div key={label}><dt>{label}</dt><dd>{value}</dd></div>)}</dl>
           {scenario.scene === 'blender' && !result.failed && <figure className="cd-recording">
             <video controls playsInline preload="metadata" src={asset('media/connectors/blender-walkthrough.mp4')} aria-label="Recorded camera walkthrough from Blender" />

@@ -67,8 +67,8 @@ export default function AssignRoomProperties({ theme, setTheme, done, rewind, no
     notify({ kind: 'success', text: rows.length + ' sample room-property values written.' })
   }
 
-  const mapLabel = (mapping: RoomMapping) => roomPropertyName(mapping.source) + ' → ' + mapping.target + ' · ' + (mapping.isType ? 'Type' : 'Instance')
-  return <DialogShell theme={theme} onTheme={setTheme} title="Assign Room Properties" subtitle="Browser simulation · fictional Sample Residence"
+  const mapLabel = (mapping: RoomMapping) => roomPropertyName(mapping.source) + ' → ' + mapping.target + ', ' + (mapping.isType ? 'Type' : 'Instance')
+  return <DialogShell theme={theme} onTheme={setTheme} title="Assign Room Properties" subtitle="Browser simulation, fictional Sample Residence"
     onClose={close} footer={<><span className="ad-status">{mappings.length} mapping(s) across {categories.length} categories</span>
       <Btn onClick={close}>Cancel</Btn><Btn primary demo="assign-preview" disabled={!categories.length || !mappings.length || !!plan} onClick={preview}>Assign</Btn></>}>
     <label className="assign-source"><span>Rooms from</span><Select label="Rooms from" options={ROOM_SOURCES} value={source} onChange={value => {
@@ -77,7 +77,7 @@ export default function AssignRoomProperties({ theme, setTheme, done, rewind, no
       setSelectedMappings([])
       setProperty(EMPTY_CHOICE)
       invalidate()
-    }} /><span className="ad-note">9 placed sample rooms · Coordination phase</span></label>
+    }} /><span className="ad-note">9 placed sample rooms, Coordination phase</span></label>
     <div className="assign-layout" data-demo="assign-configure">
       <fieldset className="ad-card suite-flow-fields assign-categories"><legend>Categories</legend>
         {ROOM_DATA_CATEGORIES.map(category => <Check key={category} label={category} checked={categories.includes(category)} onChange={checked => {
@@ -126,7 +126,7 @@ export default function AssignRoomProperties({ theme, setTheme, done, rewind, no
           <tbody>{plan.map(row => <tr key={row.key}>
             <td><Check title={'Apply ' + row.id + ' ' + row.mapping.target} checked={ticked.includes(row.key)} disabled={!row.writable}
               onChange={checked => setTicked(checked ? [...ticked, row.key] : ticked.filter(key => key !== row.key))} /></td>
-            <td>{row.id} · {row.element}</td><td>{row.room}</td><td>{row.mapping.target} · {row.mapping.isType ? 'Type' : 'Instance'}</td>
+            <td>{row.id}, {row.element}</td><td>{row.room}</td><td>{row.mapping.target}, {row.mapping.isType ? 'Type' : 'Instance'}</td>
             <td>{row.before || '—'}</td><td>{row.after || '—'}</td><td>{row.status}</td>
           </tr>)}</tbody>
         </table>
@@ -134,7 +134,7 @@ export default function AssignRoomProperties({ theme, setTheme, done, rewind, no
       <div className="ad-row"><Btn primary demo="gen-apply" disabled={!ticked.length} onClick={apply}>Apply to sample</Btn><Btn onClick={() => setPlan(undefined)}>Cancel preview</Btn></div>
     </section>}
     {result && <Receipt title="Sample assignment readback" entries={result.map(row => ({
-      label: row.id + ' · ' + row.mapping.target,
+      label: row.id + ', ' + row.mapping.target,
       detail: (row.before || '—') + ' → ' + (model.find(element => element.id === row.id)?.values[row.mapping.target] ?? row.after),
     }))} />}
   </DialogShell>

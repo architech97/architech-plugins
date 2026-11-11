@@ -89,14 +89,14 @@ export default function ScopeBoxSync(ctx: DemoContext) {
         const after = next.find((row) => row.id === box.id)!;
         return (
           box.name +
-          " · " +
+          ", " +
           (box.hostId === undefined
             ? "Created host ID " + after.hostId
             : "Host ID " +
               box.hostId +
               " → " +
               after.hostId +
-              " · Re-pointed " +
+              ", Re-pointed " +
               box.assignments +
               " view/datum assignment(s)")
         );

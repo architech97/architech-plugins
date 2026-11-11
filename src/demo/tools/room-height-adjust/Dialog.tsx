@@ -71,11 +71,11 @@ export default function RoomHeightAdjust({ theme, setTheme, done, rewind, notify
     setRooms(nextRooms)
     reload(nextRooms)
     setReceipt(selected.map(room => {
-      if (room.readOnly) return { label: room.number + ' ' + room.name + ' · skipped', detail: 'Read-only Limit Offset. The sample height was retained.' }
+      if (room.readOnly) return { label: room.number + ' ' + room.name + ', skipped', detail: 'Read-only Limit Offset. The sample height was retained.' }
       const adjusted = nextRooms.find(item => item.id === room.id)!
       const upper = adjusted.upper ?? adjusted.level
-      return { label: adjusted.number + ' ' + adjusted.name + ' · ' + mm(adjusted.top - adjusted.base),
-        detail: 'Upper Limit ' + upper + ' · Limit Offset ' + mm(adjusted.top - elevation(upper)) }
+      return { label: adjusted.number + ' ' + adjusted.name + ', ' + mm(adjusted.top - adjusted.base),
+        detail: 'Upper Limit ' + upper + ', Limit Offset ' + mm(adjusted.top - elevation(upper)) }
     }))
     done('scope')
     done('review')

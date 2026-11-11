@@ -24,7 +24,7 @@ const viewData = [
   { id: 103, name: 'North Elevation', kind: 'Elevation', template: '(None)', state: 'All visible', filters: '' },
   { id: 104, name: 'Interior Plan 1:50', kind: 'View template', template: '(None)', state: 'CAD visible', filters: 'Existing to remain' },
 ]
-const filterData = [{ id: 201, name: 'Existing to remain', detail: 'Halftone · Existing phase' }, { id: 202, name: 'Fire-rated partitions', detail: 'Red projection lines · Fire Rating > 0' }, { id: 203, name: 'Doors by phase', detail: 'Solid blue lines · New Construction' }]
+const filterData = [{ id: 201, name: 'Existing to remain', detail: 'Halftone, Existing phase' }, { id: 202, name: 'Fire-rated partitions', detail: 'Red projection lines, Fire Rating > 0' }, { id: 203, name: 'Doors by phase', detail: 'Solid blue lines, New Construction' }]
 const links = sampleResidence.links.filter(({ kind, loaded }) => kind === 'Revit' && loaded)
 const hideMode = 'Hide imported CAD categories in the views I pick'
 const deleteMode = 'Delete every project-level imported CAD file'
@@ -72,7 +72,7 @@ export default function TemplateManager(ctx: DemoContext) {
   function finish(entries: string[]) {
     setReceipt(entries)
     ctx.done('configure'); ctx.done('row'); ctx.done('run'); ctx.done('apply'); ctx.done('review')
-    ctx.notify({ kind: 'success', text: 'Template Manager · Sample fixture updated.' })
+    ctx.notify({ kind: 'success', text: 'Template Manager, Sample fixture updated.' })
   }
   function transfer() {
     const chosen = sourceTemplates.filter(({ id }) => templatePicks.includes(id))
@@ -81,15 +81,15 @@ export default function TemplateManager(ctx: DemoContext) {
     const log: string[] = []
     for (const entry of chosen) {
       const existing = next.findIndex(({ name }) => name === entry.name)
-      if (existing >= 0 && strategy === 'Skip') { log.push(entry.name + ' · Existing destination template kept.'); continue }
+      if (existing >= 0 && strategy === 'Skip') { log.push(entry.name + ', Existing destination template kept.'); continue }
       if (existing >= 0 && strategy === 'Overwrite') {
-        log.push(entry.name + ' · Line weight ' + next[existing].lineWeight + ' → ' + entry.lineWeight)
+        log.push(entry.name + ', Line weight ' + next[existing].lineWeight + ' → ' + entry.lineWeight)
         next[existing] = { ...entry, id: next[existing].id }
       } else {
         let name = entry.name, count = 2
         while (next.some((item) => item.name === name)) name = entry.name + ' (' + count++ + ')'
         next.push({ ...entry, id: Math.max(0, ...next.map(({ id }) => id)) + 1, name })
-        log.push(name + ' · Copied to destination.')
+        log.push(name + ', Copied to destination.')
       }
     }
     setTemplates({ ...templates, [destination]: next })
@@ -99,9 +99,9 @@ export default function TemplateManager(ctx: DemoContext) {
     const next = { ...overrides }, log: string[] = []
     for (const template of hostTemplates.filter(({ id }) => hostPicks.includes(id))) for (const link of targets) {
       const key = template.name + '|' + link.name
-      if (next[key] && (!overwrite || skipCustom)) { log.push(template.name + ' · ' + link.name + ' · Existing override kept.'); continue }
+      if (next[key] && (!overwrite || skipCustom)) { log.push(template.name + ', ' + link.name + ', Existing override kept.'); continue }
       next[key] = 'Settings from ' + sourceLink
-      log.push(template.name + ' · ' + link.name + ' → Settings from ' + sourceLink)
+      log.push(template.name + ', ' + link.name + ' → Settings from ' + sourceLink)
     }
     setOverrides(next); finish(log)
   }
@@ -109,24 +109,24 @@ export default function TemplateManager(ctx: DemoContext) {
     const names = currentFilters.map(({ name }) => name).join(', ')
     setViews(views.map((view) => destPicks.includes(view.id) && view.name !== filterSource ? { ...view, filters: names } : view))
     setDestinationGuard(false)
-    finish(filterTargets.map(({ name }) => name + ' · Filters copied: ' + names))
+    finish(filterTargets.map(({ name }) => name + ', Filters copied: ' + names))
   }
   function copyGraphics() {
     setViews(views.map((view) => graphicsPicks.includes(view.id) && view.id !== source.id ? {
-      ...view, state: [eh && source.state, vg && 'V/G and filters copied from ' + source.name].filter(Boolean).join(' · '),
+      ...view, state: [eh && source.state, vg && 'V/G and filters copied from ' + source.name].filter(Boolean).join(', '),
       filters: vg ? source.filters : view.filters, template: assign ? source.template : view.template,
     } : view))
-    finish(views.filter(({ id }) => graphicsPicks.includes(id) && id !== source.id).map(({ name }) => name + ' · ' +
-      [eh && 'Hide state copied', vg && 'V/G copied', assign && 'Template ' + source.template].filter(Boolean).join(' · ')))
+    finish(views.filter(({ id }) => graphicsPicks.includes(id) && id !== source.id).map(({ name }) => name + ', ' +
+      [eh && 'Hide state copied', vg && 'V/G copied', assign && 'Template ' + source.template].filter(Boolean).join(', ')))
   }
   function importsOff() {
     if (importsMode === deleteMode) {
       setImports(imports.filter(({ attachment }) => attachment !== 'Embedded CAD'))
       setDeleteGuard(false)
-      finish(nativeImports.map(({ name }) => name + ' · Deleted project-level sample import.'))
+      finish(nativeImports.map(({ name }) => name + ', Deleted project-level sample import.'))
     } else {
       setViews(views.map((view) => importPicks.includes(view.id) ? { ...view, state: 'Imported CAD categories hidden' } : view))
-      finish(views.filter(({ id }) => importPicks.includes(id)).map(({ name }) => name + ' · Imported CAD categories hidden.'))
+      finish(views.filter(({ id }) => importPicks.includes(id)).map(({ name }) => name + ', Imported CAD categories hidden.'))
     }
   }
   function startOver() {
@@ -151,7 +151,7 @@ export default function TemplateManager(ctx: DemoContext) {
     else importsOff()
   }
   return <FolioFrame ctx={ctx} title="Template Manager" sections={sections} section={section} onSection={setSection}
-    footer={<><span className="ad-status">Working on Sample Residence · Choices stay while you switch.</span><Btn onClick={startOver}>Start over</Btn><Btn onClick={ctx.close}>Close</Btn>
+    footer={<><span className="ad-status">Working on Sample Residence, Choices stay while you switch.</span><Btn onClick={startOver}>Start over</Btn><Btn onClick={ctx.close}>Close</Btn>
       {!enabled && <span className="ad-hint">{section === 0 ? (transferTab === 'Transfer View Templates' ? 'Browse for a source model, then tick a template.' : 'Tick a host link and a target first.') : section === 1 ? 'Pick a filter source and tick a filter first.' : section === 2 ? 'Tick at least one option first.' : 'Tick an import first.'}</span>}
       <Btn primary demo="template-run" disabled={!enabled} onClick={run}>{footerAction}</Btn></>}>
     {section === 0 && <>
@@ -174,7 +174,7 @@ export default function TemplateManager(ctx: DemoContext) {
         <b className="ad-label">3 Copy to links (targets)</b><PreviewTable rows={links} caption="Target links" columns={[{ key: 'name', label: 'Revit link' }]} getId={(row) => row.id} ticked={linkPicks} onTicked={setLinkPicks} />
         <p className="ad-note">Ticking the source link has no effect. It is never its own target.</p>
         <Check label="Overwrite existing link settings" checked={overwrite} onChange={setOverwrite} /><Check label="Skip target links that already have overrides" checked={skipCustom} onChange={setSkipCustom} />
-        {Object.keys(overrides).length > 0 && <FolioPreview title="Current sample link settings" rows={Object.entries(overrides).map(([label, value]) => ({ label: label.replace('|', ' · '), value }))} />}
+        {Object.keys(overrides).length > 0 && <FolioPreview title="Current sample link settings" rows={Object.entries(overrides).map(([label, value]) => ({ label: label.replace('|', ', '), value }))} />}
       </>}
     </>}
     {section === 1 && <>
@@ -203,7 +203,7 @@ export default function TemplateManager(ctx: DemoContext) {
       {importsMode === hideMode ? <><div className="ad-row">{['All', 'Templates', 'Views'].map((name) => <Btn key={name} aria-pressed={importKind === name} onClick={() => setImportKind(name)}>{name}</Btn>)}</div>
         <PreviewTable rows={views.filter(({ kind }) => importKind === 'All' || (importKind === 'Templates' ? kind === 'View template' : kind !== 'View template'))} caption="Views and templates for Imports Off"
           columns={[{ key: 'name', label: 'View or template' }, { key: 'kind', label: 'Type' }, { key: 'state', label: 'Current state' }]} getId={(row) => row.id} ticked={importPicks} onTicked={setImportPicks} />
-      </> : <FolioPreview title="Project-level imports" rows={nativeImports.map(({ name, id }) => ({ label: name, value: 'ID ' + id + ' · Delete imported CAD instance' }))} />}
+      </> : <FolioPreview title="Project-level imports" rows={nativeImports.map(({ name, id }) => ({ label: name, value: 'ID ' + id + ', Delete imported CAD instance' }))} />}
       <ConfirmGuard open={deleteGuard} theme={ctx.theme} onTheme={ctx.setTheme} title="Imports Off" instruction={'Delete ' + nativeImports.length + ' project-level sample CAD imports?'}
         content="This removes the imported sample instances. The import list is updated after confirmation." confirmLabel="Delete imports" onConfirm={importsOff} onCancel={() => setDeleteGuard(false)} />
     </>}

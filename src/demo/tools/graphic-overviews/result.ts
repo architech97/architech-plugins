@@ -39,9 +39,9 @@ export default function result({ fields: currentFields, priorFields = [] }: Work
       const value = field(fields, label)
       return value ? [label + ' ' + value + ' cm'] : []
     })
-    if (name === 'Line weights') return scales.map((scale) => resultRow('Line weights · 1:' + scale, ['16 weights', text, ...layout].join(' · ')))
-    return [resultRow(name, ['Drafting view', text, ...layout].join(' · '))]
+    if (name === 'Line weights') return scales.map((scale) => resultRow('Line weights, 1:' + scale, ['16 weights', text, ...layout].join(', ')))
+    return [resultRow(name, ['Drafting view', text, ...layout].join(', '))]
   })
   return { summary: 'Prepared ' + rows.length + ' sample drafting views.',
-    rows: [...rows, resultRow('New sheet', enabled(fields, 'Place the views on a new sheet', true) ? 'Graphic Standards · ' + rows.length + ' view placements planned' : 'No sheet placement')] }
+    rows: [...rows, resultRow('New sheet', enabled(fields, 'Place the views on a new sheet', true) ? 'Graphic Standards, ' + rows.length + ' view placements planned' : 'No sheet placement')] }
 }

@@ -1,3 +1,9 @@
+:root {
+  --replica-demo-demos-exceltoschedule-1: transparent;
+  --replica-demo-demos-exceltoschedule-2: #0008;
+  --replica-demo-demos-exceltoschedule-3: #080b11ab;
+}
+
 .excel-layout {
   display: grid;
   grid-template-columns: minmax(17rem, .88fr) minmax(0, 1.12fr);
@@ -64,7 +70,7 @@
   padding: .16rem .25rem;
   border: 0;
   border-radius: .25rem;
-  background: transparent;
+  background: var(--replica-demo-demos-exceltoschedule-1);
   color: var(--d-text);
   font: inherit;
   font-weight: 600;
@@ -98,10 +104,10 @@
   background: var(--d-bg);
   color: var(--d-text);
   overflow: auto;
-  box-shadow: 0 22px 70px #0008;
+  box-shadow: 0 22px 70px var(--replica-demo-demos-exceltoschedule-2);
 }
 
-.excel-modal::backdrop { background: #080b11ab; }
+.excel-modal::backdrop { background: var(--replica-demo-demos-exceltoschedule-3); }
 .excel-modal h3 { margin: 0 0 .7rem; color: var(--d-text); font-size: 1rem; }
 .excel-modal p { margin: .45rem 0; color: var(--d-text-2); }
 .excel-modal form { display: grid; gap: .45rem; }
@@ -123,9 +129,9 @@
   width: 100%;
   min-height: 2rem;
   padding: .25rem .45rem;
-  border: 1px solid transparent;
+  border: 1px solid var(--replica-demo-demos-exceltoschedule-1);
   border-radius: .25rem;
-  background: transparent;
+  background: var(--replica-demo-demos-exceltoschedule-1);
   color: var(--d-text);
   font: inherit;
   text-align: left;

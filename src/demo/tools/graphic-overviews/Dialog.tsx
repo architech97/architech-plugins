@@ -43,7 +43,7 @@ export default function GraphicOverviews(ctx: DemoContext) {
       return { name, detail: value, sheet: place ? 'A-' + (801 + new Set(created.map(({ sheet }) => sheet).filter(Boolean)).size) : '' }
     })
     setCreated([...created, ...add])
-    setReceipt(add.map(({ name, sheet }) => name + (sheet ? ' · Placed on ' + sheet : ' · Unplaced')))
+    setReceipt(add.map(({ name, sheet }) => name + (sheet ? ', Placed on ' + sheet : ', Unplaced')))
     ctx.done('configure'); ctx.done('run'); ctx.done('apply'); ctx.done('review')
     ctx.notify({ kind: 'success', text: 'Created ' + add.length + ' sample drafting views.' })
   }
@@ -61,7 +61,7 @@ export default function GraphicOverviews(ctx: DemoContext) {
     </section>}
     <Check label="Place the views on a new sheet" checked={place} onChange={setPlace} />
     <FolioPreview rows={typeof output === 'string' ? [] : output.rows} />
-    {created.length > 0 && <FolioPreview title="Created sample drafting views" rows={created.map(({ name, detail, sheet }) => ({ label: name, value: detail + (sheet ? ' · ' + sheet : ' · Unplaced') }))} />}
+    {created.length > 0 && <FolioPreview title="Created sample drafting views" rows={created.map(({ name, detail, sheet }) => ({ label: name, value: detail + (sheet ? ', ' + sheet : ', Unplaced') }))} />}
     {receipt.length > 0 && <Receipt entries={receipt} title="Last sample run" />}
   </FolioFrame>
 }

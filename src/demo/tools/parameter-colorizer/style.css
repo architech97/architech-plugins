@@ -1,3 +1,10 @@
+:root {
+  --colorizer-sample-blue: #8ab8e6;
+  --colorizer-sample-green: #79c7b0;
+  --colorizer-sample-gold: #e4bc72;
+  --colorizer-on-sample: #14181d;
+}
+
 .colorizer-body {
   display: grid;
   gap: 12px;

@@ -30,7 +30,7 @@ const tools: Product[] = (generated as Omit<Product, 'status'>[]).map((t) => ({
   status: 'available',
   problem: PROBLEMS[t.key],
   demo: DEMO_BY_KEY[t.key] ?? t.slug,   // every tool has a live demo: hand-built, or generated from its dialog
-  platform: 'Windows · Autodesk Revit',
+  platform: 'Windows, Autodesk Revit',
 }))
 
 const SUITE_ORDER = ['folio', 'forge', 'sentinel', 'i3d', 'ai']

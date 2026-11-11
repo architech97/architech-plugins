@@ -45,7 +45,7 @@ function rowsFor(p: Product): Row[] {
   const found = states[p.slug]
   const stateRow: Row[] = found ? [{
     ...base, state: 'Confirmations, messages and empty states',
-    tabs: `${found.confirm} confirmation${found.confirm === 1 ? '' : 's'} · ${found.message} message dialog${found.message === 1 ? '' : 's'} · ${found.empty} empty state${found.empty === 1 ? '' : 's'}`,
+    tabs: `${found.confirm} confirmation${found.confirm === 1 ? '' : 's'}, ${found.message} message dialog${found.message === 1 ? '' : 's'}, ${found.empty} empty state${found.empty === 1 ? '' : 's'}`,
     source: 'Counted in the tool’s own project', walkthrough: 'Inventoried, not simulated', checks: ['Shown only where the sample task reaches them'],
   }] : []
   if (p.dialogs.length === 0) {
@@ -61,7 +61,7 @@ function rowsFor(p: Product): Row[] {
     const layout = layouts.find((item) => item.win === file)
     const explorable = demo?.kind === 'replica' && Boolean(layout)
     return {
-      ...base, state: dialog.title, tabs: layout?.tabs.join(' · ') ?? '',
+      ...base, state: dialog.title, tabs: layout?.tabs.join(', ') ?? '',
       source: dialog.source === 'reconstructed' ? 'Reconstructed from the tool’s source' : `Layout ${file}`,
       walkthrough: !demo ? 'None' : explorable || i === 0 ? FORMAT[demo.kind] : 'Reference render only',
       checks: [
@@ -99,7 +99,6 @@ export default function Coverage() {
       <div className="wrap">
         <header className="coverage-head">
           <div>
-            <span className="eyebrow">Dialog coverage</span>
             <h1>What each walkthrough covers</h1>
           </div>
           <p className="lead">Every tool, every dialog the site can show, what it is based on and how far the browser walkthrough goes. Gaps are listed, not hidden.</p>
@@ -128,7 +127,7 @@ export default function Coverage() {
           <label className="coverage-search"><Search size={17} aria-hidden="true" /><input type="search" aria-label="Search tools and dialogs" placeholder="Search tools and dialogs" value={query} onChange={(event) => setQuery(event.target.value)} /></label>
           <button type="button" className="btn btn-ghost btn-sm" onClick={download}><Download size={15} /> Download CSV</button>
         </div>
-        <p className="coverage-count" role="status">{rows.length} rows · {tools} tools</p>
+        <p className="coverage-count" role="status">{rows.length} rows, {tools} tools</p>
         <div className="coverage-scroll" tabIndex={0} role="region" aria-label="Dialog coverage matrix">
           <table className="coverage-table">
             <thead><tr><th>Suite</th><th>Tool</th><th>Dialog or state</th><th>Source reference</th><th>Walkthrough</th><th>Verification</th></tr></thead>

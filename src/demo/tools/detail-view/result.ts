@@ -4,8 +4,8 @@ import { cell, enabled, field, numberInRange, option, resultRow } from '../folio
 
 const detailTabs = ['Wall section', 'Ceiling detail', 'Floor detail', 'Wall detail']
 const heights = [[-300, 3200], [2600, 3200], [-300, 300], [900, 1500]]
-const targets = ['A-701 · Wall Details', 'A-702 · Level Details', 'Create new sample sheet']
-const placed = ['Wall Section · Level 01', 'Ceiling Detail · Level 01', 'Floor Detail · Level 02']
+const targets = ['A-701, Wall Details', 'A-702, Level Details', 'Create new sample sheet']
+const placed = ['Wall Section, Level 01', 'Ceiling Detail, Level 01', 'Floor Detail, Level 02']
 
 export const settings = (_window: string, tab: number) => tab === 5 ? [
   option('Target sheet', targets),
@@ -25,8 +25,8 @@ export default function result({ action, fields, priorFields = [], records, tab 
         const existing = cell(record, 'Placed On', 'Placed on')
         const indexOnSheet = Math.floor(index / capacity)
         const sheet = indexOnSheet === 0 && !target.startsWith('Create') ? target : 'New sample sheet ' + (indexOnSheet + 1)
-        return resultRow(view, sheet + ' · Slot ' + (index % capacity + 1) +
-          (existing && existing !== 'Unplaced' ? ' · Place a copy with detailing' : ''))
+        return resultRow(view, sheet + ', Slot ' + (index % capacity + 1) +
+          (existing && existing !== 'Unplaced' ? ', Place a copy with detailing' : ''))
       }),
     }
   }
@@ -47,8 +47,8 @@ export default function result({ action, fields, priorFields = [], records, tab 
     const base = (sampleResidence.levels.find(({ name }) => name === level)?.elevation ?? 0) * 1000
     return detailKinds.map((index) => {
       const { lower, upper, name } = configured[index]
-      return resultRow(level + ' · ' + (name || detailTabs[index]),
-        'From ' + (base + lower) + ' to ' + (base + upper) + ' mm elevation' + (index === 0 ? ' · Section' : ' · Callout in the wall section'))
+      return resultRow(level + ', ' + (name || detailTabs[index]),
+        'From ' + (base + lower) + ' to ' + (base + upper) + ' mm elevation' + (index === 0 ? ', Section' : ', Callout in the wall section'))
     })
   })
   return { summary: 'Prepared ' + rows.length + ' sample detail views across ' + records.length + ' levels.', rows }

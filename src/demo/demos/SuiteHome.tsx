@@ -183,7 +183,7 @@ export function makeSuiteHome(suite: LauncherSuite) {
               </footer>
             </section>
           </div>
-          <footer className="suite-home-footer"><span>Arch {definition.title.replace(' Home', '')} by ArchiTECH · Revit 2024 simulation</span><span>{scenario === 'noModel' ? 'No active model' : 'Sample model: ' + DEMO_PROJECT.name}</span></footer>
+          <footer className="suite-home-footer"><span>Arch {definition.title.replace(' Home', '')} by ArchiTECH, Revit 2024 simulation</span><span>{scenario === 'noModel' ? 'No active model' : 'Sample model: ' + DEMO_PROJECT.name}</span></footer>
         </section>
         {opened && selected?.slug === opened && selectedProduct && (
           <section className="suite-home-handoff" aria-label="Browser tool ready">

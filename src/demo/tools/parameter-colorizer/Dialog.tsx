@@ -6,7 +6,7 @@ import "./style.css";
 
 const categories = ["Doors", "Walls", "Windows"];
 const parameters = ["Comments", "Fire Rating", "Type Mark"];
-const colors = ["#8AB8E6", "#79C7B0", "#E4BC72"];
+const colors = ["var(--colorizer-sample-blue)", "var(--colorizer-sample-green)", "var(--colorizer-sample-gold)"];
 const elements = [
   { id: 348211, category: "Doors", values: ["Internal", "60 min", "D-01"] },
   { id: 348212, category: "Doors", values: ["Internal", "60 min", "D-01"] },
@@ -251,13 +251,13 @@ export default function ParameterColorizer(ctx: DemoContext) {
                     ? {
                         borderColor: overrides[element.id],
                         background: overrides[element.id],
-                        color: "#14181d",
+                        color: "var(--colorizer-on-sample)",
                       }
                     : undefined
                 }
               >
                 <p>
-                  {element.category} · {element.id}
+                  {element.category}, {element.id}
                 </p>
                 <small>
                   {overrides[element.id]
@@ -268,7 +268,7 @@ export default function ParameterColorizer(ctx: DemoContext) {
             ))}
           </section>
           <p className="colorizer-note">
-            Browser preview · Fictional sample elements in the active view.
+            Browser preview, Fictional sample elements in the active view.
           </p>
         </div>
       </DialogShell>

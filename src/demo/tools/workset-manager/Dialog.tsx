@@ -128,11 +128,11 @@ export default function WorksetManager(ctx: DemoContext) {
       list.map(
         (row) =>
           row.family +
-          " · " +
+          ", " +
           row.current +
           " → " +
           target(row) +
-          " · " +
+          ", " +
           row.count +
           " elements",
       ),
@@ -452,9 +452,9 @@ export default function WorksetManager(ctx: DemoContext) {
                   visible.map(
                     (row) =>
                       row.current +
-                      " · " +
+                      ", " +
                       row.family +
-                      " · " +
+                      ", " +
                       row.count +
                       " elements",
                   ),
@@ -534,7 +534,7 @@ export default function WorksetManager(ctx: DemoContext) {
       >
         <div className="workset-layout">
           <aside className="ad-card workset-rail">
-            <b>CATEGORIES</b>
+            <b>Categories</b>
             <SearchBox
               placeholder="Search categories"
               value={catQuery}
@@ -565,7 +565,7 @@ export default function WorksetManager(ctx: DemoContext) {
               ))}
           </aside>
           <aside className="ad-card workset-rail">
-            <b>FAMILIES</b>
+            <b>Families</b>
             <SearchBox
               placeholder="Search families"
               value={familyQuery}
@@ -596,7 +596,7 @@ export default function WorksetManager(ctx: DemoContext) {
                   }
                 />
               ))}
-            <b>WORKSET</b>
+            <b>Workset</b>
             <Select
               label="Workset filter"
               value={workset}

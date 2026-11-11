@@ -10,8 +10,8 @@ const METRICS = ['95th percentile', 'Mean', 'Maximum']
 const ELEMENTS = [
   { id: 301144, category: 'Walls', name: 'Interior Partition 115 mm', level: 'Level 01', count: 93, initial: 2, increment: .09 },
   { id: 301178, category: 'Walls', name: 'Concrete Core 200 mm', level: 'Level 01', count: 81, initial: 9, increment: .28 },
-  { id: 311202, category: 'Structural Columns', name: 'C-01 · 300 × 300', level: 'Level 02', count: 50, initial: 29, increment: .55 },
-  { id: 311205, category: 'Structural Columns', name: 'C-02 · 350 × 350', level: 'Level 02', count: 4, initial: 1, increment: .1 },
+  { id: 311202, category: 'Structural Columns', name: 'C-01, 300 × 300', level: 'Level 02', count: 50, initial: 29, increment: .55 },
+  { id: 311205, category: 'Structural Columns', name: 'C-02, 350 × 350', level: 'Level 02', count: 4, initial: 1, increment: .1 },
   { id: 301184, category: 'Walls', name: 'Service Core 200 mm', level: 'Level 02', count: 0, initial: 0, increment: 0 },
 ]
 type Result = ReturnType<typeof evaluate>
@@ -80,10 +80,10 @@ export default function DeviationInspector({ theme, setTheme, done, rewind, noti
     setAnalysis(analysis + 1)
     done('settings')
     done('analyze')
-    notify({ kind: 'info', text: 'Sample analysis complete · review measured and unmeasured rows.' })
+    notify({ kind: 'info', text: 'Sample analysis complete, review measured and unmeasured rows.' })
   }
 
-  return <DialogShell theme={theme} onTheme={setTheme} title="Deviation Inspector" subtitle="Browser simulation · fictional Scan to BIM measurements"
+  return <DialogShell theme={theme} onTheme={setTheme} title="Deviation Inspector" subtitle="Browser simulation, fictional Scan to BIM measurements"
     onClose={close} footer={<><span className="ad-status">{heatmap ? 'Sample heatmap shown' : 'Original sample graphics'}</span>
       <Btn disabled={!heatmap} onClick={() => { setHeatmap(false); setMessage('Original graphic overrides restored in the sample heatmap view.') }}>Clear Colours</Btn>
       <Btn disabled={!result.length} onClick={() => downloadCsv('AT-01-deviation-inspection.csv',

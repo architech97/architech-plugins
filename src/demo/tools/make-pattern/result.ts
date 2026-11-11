@@ -25,8 +25,8 @@ export default function result({ action, fields }: WorkflowInput) {
   return {
     summary: exportPAT ? 'Prepared a sample PAT definition for ' + name + '.' : 'Prepared ' + name + ' from the selected sample linework.',
     rows: [
-      resultRow('Pattern', type + ' · ' + source.text),
-      resultRow('Repeating grid', angle + '° · ' + spacing + (inches ? ' in' : ' mm') + ' apart'),
+      resultRow('Pattern', type + ', ' + source.text),
+      resultRow('Repeating grid', angle + '°, ' + spacing + (inches ? ' in' : ' mm') + ' apart'),
       exportPAT ? resultRow('PAT grid line', angle + ', 0, 0, 0, ' + spacing) :
         resultRow('Filled region', enabled(fields, 'Create Filled Region') ? 'New type uses the sample pattern as foreground' : 'Unchanged'),
     ],

@@ -45,7 +45,7 @@ export default function OneParameter({ theme, setTheme, done, notify, close }: D
   }
   const pickParam = (p: string) => {
     setParam(p); setProposed({}); setTicked(new Set())
-    setStatus(`${rows.length} elements · ${PARAMS[category].find((x) => x.name === p)?.isType ? 'type parameter: written once per type' : 'instance parameter'}`)
+    setStatus(`${rows.length} elements, ${PARAMS[category].find((x) => x.name === p)?.isType ? 'type parameter: written once per type' : 'instance parameter'}`)
     done('param')
   }
   const replaceInPreview = () => {

@@ -96,8 +96,8 @@ export default function ParameterManager({ theme, setTheme, done, rewind, notify
   return <>
     <div hidden={nestedOpen}>
     <RevitDialog theme={theme} onTheme={setTheme} title="Parameter Manager"
-      caption={mode === 'Families' && familyDocument ? `Sample family · ${sampleDocument}` : 'Project parameters · Category bindings'} onClose={close}
-      footer={!familyMode && <><span className="ad-status">Total {rows.length + (draft ? 1 : 0)} · Create {draft ? 1 : 0} · Modify 0 · Existing {rows.length}</span>
+      caption={mode === 'Families' && familyDocument ? `Sample family, ${sampleDocument}` : 'Project parameters, Category bindings'} onClose={close}
+      footer={!familyMode && <><span className="ad-status">Total {rows.length + (draft ? 1 : 0)}, Create {draft ? 1 : 0}, Modify 0, Existing {rows.length}</span>
         <Btn onClick={close}>Close</Btn>
         {draft && <Btn onClick={() => { setDraft(null); setMode('Parameters'); rewind('add') }}>Discard draft</Btn>}
         {mode === 'Parameters' && <Btn onClick={() => chooseMode('Categories')}>Next</Btn>}
@@ -152,7 +152,7 @@ export default function ParameterManager({ theme, setTheme, done, rewind, notify
       </fieldset>}
       {draft && duplicate && <p className="suite-flow-error" role="alert">A definition with this name already exists.</p>}
       {applied && <div className="ad-card suite-flow-receipt" role="status">
-        <strong>{applied.name} · {applied.binding} · {applied.categories.join(', ')}</strong>
+        <strong>{applied.name}, {applied.binding}, {applied.categories.join(', ')}</strong>
         <div className="ad-row"><Btn demo="parameter-csv" onClick={exportDefinitions}>Export to CSV</Btn></div>
       </div>}
       </>}

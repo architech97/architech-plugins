@@ -13,7 +13,7 @@ type Kind = '3D' | 'Plan'
 type View = { id: number; name: string; levelId: number; kind: Kind; owned: boolean; low: number; high: number; buffer: number }
 const INITIAL_VIEWS: View[] = [
   { id: 5801, name: 'PC_Slice - Level 01', levelId: LEVELS[0].id, kind: '3D', owned: false, low: 0, high: 3300, buffer: 0 },
-  { id: 5802, name: 'Survey Section · First Floor', levelId: LEVELS[1].id, kind: '3D', owned: true, low: 3200, high: 6600, buffer: 0 },
+  { id: 5802, name: 'Survey Section, First Floor', levelId: LEVELS[1].id, kind: '3D', owned: true, low: 3200, high: 6600, buffer: 0 },
 ]
 const OFFSETS = [
   { label: 'Bottom Offset', value: '-150' },
@@ -61,7 +61,7 @@ export default function PointCloudSlicer({ theme, setTheme, done, rewind, notify
     let nextId = Math.max(...views.map(view => view.id)) + 1
     for (const level of previewLevels) {
       if (!validLevels.includes(level)) {
-        rows.push({ label: level.name + ' · skipped', detail: 'The offsets leave no height to slice.' })
+        rows.push({ label: level.name + ', skipped', detail: 'The offsets leave no height to slice.' })
         continue
       }
       const kinds: Kind[] = [...(boxes ? ['3D' as const] : []), ...(plans ? ['Plan' as const] : [])]
@@ -76,8 +76,8 @@ export default function PointCloudSlicer({ theme, setTheme, done, rewind, notify
           names.add(name.toLowerCase())
           next.push(output)
         }
-        rows.push({ label: (existing ? 'Updated · ' : 'Created · ') + name, detail: 'ID ' + output.id + ' · ' +
-          (kind === '3D' ? 'Section box' : 'Crop and view range') + ' ' + output.low + ' to ' + output.high + ' mm · XY buffer ' + buffer + ' mm' })
+        rows.push({ label: (existing ? 'Updated, ' : 'Created, ') + name, detail: 'ID ' + output.id + ', ' +
+          (kind === '3D' ? 'Section box' : 'Crop and view range') + ' ' + output.low + ' to ' + output.high + ' mm, XY buffer ' + buffer + ' mm' })
       }
     }
     const count = validLevels.length * (Number(boxes) + Number(plans))
@@ -130,16 +130,16 @@ export default function PointCloudSlicer({ theme, setTheme, done, rewind, notify
       {previewLevels.map((level, index) => <g key={level.id} data-motion transform={'translate(36 ' + (24 + 73 * index) + ')'}>
         <rect width="528" height="60" rx="4" fill="var(--d-accent)" fillOpacity=".13" stroke="var(--d-accent)" />
         <text x="12" y="23" fill="currentColor">{level.name}</text>
-        <text x="12" y="43" fill="currentColor">{validLevels.includes(level) ? level.low + ' to ' + level.high + ' mm · XY buffer ' + buffer + ' mm' : 'Offsets leave no height to slice'}</text>
+        <text x="12" y="43" fill="currentColor">{validLevels.includes(level) ? level.low + ' to ' + level.high + ' mm, XY buffer ' + buffer + ' mm' : 'Offsets leave no height to slice'}</text>
       </g>)}
     </MiniView>}
     {!!receipt.length && <Receipt title="Sample slice result" entries={receipt} />}
     <details className="ad-card">
-      <summary>Sample project browser · {views.length} views</summary>
+      <summary>Sample project browser, {views.length} views</summary>
       <div className="ad-table-wrap suite-flow-table" tabIndex={0} role="region" aria-label="Sample view inventory">
         <table className="ad-table"><thead><tr>{['ID', 'Name', 'Kind', 'Ownership'].map(label => <th key={label} scope="col">{label}</th>)}</tr></thead>
           <tbody>{views.map(view => <tr key={view.id}>
-            <td>{view.id}</td><td>{view.name}</td><td>{view.kind}</td><td>{view.owned ? 'Forge-owned slice' : 'Legacy · retained'}</td>
+            <td>{view.id}</td><td>{view.name}</td><td>{view.kind}</td><td>{view.owned ? 'Forge-owned slice' : 'Legacy, retained'}</td>
           </tr>)}</tbody>
         </table>
       </div>

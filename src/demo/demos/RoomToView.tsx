@@ -67,10 +67,10 @@ export default function RoomToView({ theme, setTheme, done, notify, close }: Dem
   const create = () => {
     const settingsFor = (view: string) => {
       const kind = viewKind(view)
-      if (kind === 'Floor Plan') return [opt.floorScale, opt.floorTemplate, opt.floorCrop ? 'Crop: ' + opt.floorOffset + ' mm' : 'No room crop'].join(' · ')
-      if (kind === 'Ceiling Plan') return [opt.ceilingTemplate, opt.ceilingCrop ? 'Room crop' : 'No room crop'].join(' · ')
+      if (kind === 'Floor Plan') return [opt.floorScale, opt.floorTemplate, opt.floorCrop ? 'Crop: ' + opt.floorOffset + ' mm' : 'No room crop'].join(', ')
+      if (kind === 'Ceiling Plan') return [opt.ceilingTemplate, opt.ceilingCrop ? 'Room crop' : 'No room crop'].join(', ')
       if (kind === '3D') return 'Section box padding: ' + opt.boxPadding + ' mm'
-      return [opt.elevScale, opt.elevTemplate, opt.mask ? 'Room interior masked' : 'No interior mask'].join(' · ')
+      return [opt.elevScale, opt.elevTemplate, opt.mask ? 'Room interior masked' : 'No interior mask'].join(', ')
     }
     setCreated({ ...created, ...Object.fromEntries(newViews.map((view) => [view, settingsFor(view)])) })
     setPlaceTicked(new Set(newViews))
@@ -145,7 +145,7 @@ export default function RoomToView({ theme, setTheme, done, notify, close }: Dem
                   </tr>))}</tbody>
               </table>
             </div>
-            <span className="ad-note">{ticked.size} rooms ticked · {planned.length} views planned</span>
+            <span className="ad-note">{ticked.size} rooms ticked, {planned.length} views planned</span>
           </>}
 
           {step === 'Floor Plan' && <div className="ad-card" style={{ display: 'grid', gap: 9, maxWidth: 520 }}>

@@ -155,7 +155,7 @@ export default function ExcelToSchedule({ theme, setTheme, done, rewind, notify,
     const used = new Set(tables.map((table) => table.name.toLowerCase()))
     for (const sheet of chosen) {
       const data = readPreview(sheet, range, repeatTitles)
-      if (typeof data === 'string') { run.skipped.push(sheet.name + ' · ' + data); continue }
+      if (typeof data === 'string') { run.skipped.push(sheet.name + ', ' + data); continue }
       const base = plannedName(sheet)
       let name = base
       for (let n = 2; used.has(name.toLowerCase()); n++) name = `${base} (${n})`
@@ -172,7 +172,7 @@ export default function ExcelToSchedule({ theme, setTheme, done, rewind, notify,
       const table = match(sheet)
       if (!table) continue
       const change = updateTable(table, sheet, all)
-      if (typeof change === 'string') run.skipped.push(sheet.name + ' · ' + change)
+      if (typeof change === 'string') run.skipped.push(sheet.name + ', ' + change)
       else run.changes.push(change)
     }
     if (!run.changes.length) { warn(run.skipped[0] || 'No matching sample schedules to refresh.'); return }
@@ -256,7 +256,7 @@ export default function ExcelToSchedule({ theme, setTheme, done, rewind, notify,
         </div>
         <section className="excel-preview" aria-label="Worksheet preview">
           <div className="excel-heading"><h3 className="ad-label">Preview</h3>{preview && typeof preview !== 'string' && <span className="ad-note">{dimensions(preview)}</span>}</div>
-          {previewSheet && <p className="ad-note">{previewSheet.name}{preview && typeof preview !== 'string' && ` · ${preview.region}`}</p>}
+          {previewSheet && <p className="ad-note">{previewSheet.name}{preview && typeof preview !== 'string' && `, ${preview.region}`}</p>}
           {typeof preview === 'string' ? <p className="excel-empty ad-note" role="alert">{preview}</p>
             : preview ? <>
               <div className="ad-table-wrap excel-preview-table" style={textSize !== sizes[0] ? { fontSize: textSize === '2.5 mm' ? 11 : textSize === '3.5 mm' ? 13 : 16 } : undefined}>
@@ -269,7 +269,7 @@ export default function ExcelToSchedule({ theme, setTheme, done, rewind, notify,
             </> : <p className="excel-empty ad-note">Choose a worksheet to preview it.</p>}
           {receipt && <div className="excel-receipt" aria-label="Latest sample result">
             <strong>Latest sample result</strong>
-            {receipt.changes.map(({ table, preview: data }) => <p key={table.id}>{table.name} · {table.id} · {dimensions(data)} · {table.sheets.length ? 'Sheet placements ' + table.sheets.join(', ') : 'Unplaced'}</p>)}
+            {receipt.changes.map(({ table, preview: data }) => <p key={table.id}>{table.name}, {table.id}, {dimensions(data)}, {table.sheets.length ? 'Sheet placements ' + table.sheets.join(', ') : 'Unplaced'}</p>)}
           </div>}
         </section>
       </div>

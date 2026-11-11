@@ -18,7 +18,7 @@ const FAILURE_DEFINITIONS: Partial<Record<number, string>> = {
 }
 const classification = (id: number) => FAILURE_DEFINITIONS[id]
   ? 'Native failure definition (sample mapping)'
-  : id === 9 ? 'Description fallback · review required' : 'Unmapped native warning · review required'
+  : id === 9 ? 'Description fallback, review required' : 'Unmapped native warning, review required'
 
 export default function WarningsInspector({ theme, setTheme, done, notify, close }: DemoContext) {
   const [query, setQuery] = useState('')
@@ -77,7 +77,7 @@ export default function WarningsInspector({ theme, setTheme, done, notify, close
         <Btn onClick={() => { setQuery(''); setSeverity('All') }}>Clear filters</Btn>
         <Btn onClick={() => { setStale(false); setSelected(null); setStatus('Refreshed ' + WARNINGS.length + ' warning groups in the sample model.'); notify({ kind: 'info', text: 'Sample scan refreshed. Filters are retained.' }) }}>Refresh scan</Btn>
       </div>
-      <span className="ad-note">{rows.length} of {WARNINGS.length} warning types · {rows.reduce((count, row) => count + row.count, 0)} occurrences in this view</span>
+      <span className="ad-note">{rows.length} of {WARNINGS.length} warning types, {rows.reduce((count, row) => count + row.count, 0)} occurrences in this view</span>
       <div className="ad-grid2 crafted-layout" style={{ gridTemplateColumns: 'minmax(0, 1.7fr) minmax(0, 1fr)', alignItems: 'stretch' }}>
         <div className="ad-table-wrap" style={{ maxHeight: 290 }} data-demo="grid">
           <table className="ad-table">
@@ -99,8 +99,8 @@ export default function WarningsInspector({ theme, setTheme, done, notify, close
           {sel ? <>
             <span className={`ad-pill ${sevClass(sel.severity)}`} style={{ alignSelf: 'flex-start' }}>{sel.severity}</span>
             <span style={{ color: 'var(--d-text)' }}>{sel.description}</span>
-            <span className="ad-note">{sel.count} warnings · {sel.elements.length} unique elements</span>
-            <span className="ad-note">{classification(sel.id)}{FAILURE_DEFINITIONS[sel.id] ? ' · ' + FAILURE_DEFINITIONS[sel.id] : ''}</span>
+            <span className="ad-note">{sel.count} warnings, {sel.elements.length} unique elements</span>
+            <span className="ad-note">{classification(sel.id)}{FAILURE_DEFINITIONS[sel.id] ? ', ' + FAILURE_DEFINITIONS[sel.id] : ''}</span>
             <span className="ad-label">Affected element IDs</span>
             <textarea readOnly className="ad-input" style={{ height: 64, padding: 8, resize: 'none' }} value={sel.elements.join(', ')} aria-label="Affected element IDs" />
             <span className="ad-note">Review the geometry and design intent before making a correction. Known warnings use native failure IDs. Fallback classifications are marked for review.</span>
@@ -110,7 +110,7 @@ export default function WarningsInspector({ theme, setTheme, done, notify, close
         </div>
       </div>
       <div className="ad-row">
-        <span className="ad-note">Browser exercise · the native report exports an XLSX workbook</span>
+        <span className="ad-note">Browser exercise, the native report exports an XLSX workbook</span>
         <Btn sm disabled={stale} onClick={() => {
           setStale(true)
           setStatus('Model changed after this sample scan. Refresh before selecting, isolating or exporting results.')

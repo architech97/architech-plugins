@@ -35,7 +35,7 @@ export const EXTRAS: Product[] = [
     ],
   },
   {
-    slug: 'revit-mcp', key: 'RevitMCP', name: 'ArchiTECH MCP Connector · Revit', suite: 'ai', panel: 'MCP connectors',
+    slug: 'revit-mcp', key: 'RevitMCP', name: 'ArchiTECH MCP Connector (Revit)', suite: 'ai', panel: 'MCP connectors',
     software: ['Revit'], revit: ['2024', '2025'], status: 'enterprise',
     tagline: 'Native execution, typed tools, reviewed C# fallback and verified readback for Revit.',
     description: 'Local Revit 2024/2025 automation for AI assistants through the Model Context Protocol: a C# connector and command set inside Revit, a Node MCP server, typed tools, a guarded and reviewed C# fallback, and evidence-based readback of what actually changed in the model.',
@@ -49,7 +49,7 @@ export const EXTRAS: Product[] = [
     dialogs: [],
   },
   {
-    slug: 'rhino-mcp', key: 'RhinoMCP', name: 'ArchiTECH MCP Connector · Rhino', suite: 'ai', panel: 'MCP connectors',
+    slug: 'rhino-mcp', key: 'RhinoMCP', name: 'ArchiTECH MCP Connector (Rhino)', suite: 'ai', panel: 'MCP connectors',
     software: ['Rhino'], revit: [], status: 'enterprise',
     tagline: 'Rhino 8 MCP connector with native RhinoCommon execution.',
     description: 'Rhino 8 MCP connector with native RhinoCommon execution, guarded writes, active-object counts and independent readback.',
@@ -59,7 +59,7 @@ export const EXTRAS: Product[] = [
     dialogs: [],
   },
   {
-    slug: 'sketchup-mcp', key: 'SketchUpMCP', name: 'ArchiTECH MCP Connector · SketchUp', suite: 'ai', panel: 'MCP connectors',
+    slug: 'sketchup-mcp', key: 'SketchUpMCP', name: 'ArchiTECH MCP Connector (SketchUp)', suite: 'ai', panel: 'MCP connectors',
     software: ['SketchUp'], revit: [], status: 'enterprise',
     tagline: 'SketchUp MCP connector with a Ruby native bridge.',
     description: 'SketchUp MCP connector with a Ruby native bridge, signed geometry tools, guarded writes and verified world-space bounds.',
@@ -69,7 +69,7 @@ export const EXTRAS: Product[] = [
     dialogs: [],
   },
   {
-    slug: 'autocad-mcp', key: 'AutoCADMCP', name: 'ArchiTECH MCP Connector · AutoCAD', suite: 'ai', panel: 'MCP connectors',
+    slug: 'autocad-mcp', key: 'AutoCADMCP', name: 'ArchiTECH MCP Connector (AutoCAD)', suite: 'ai', panel: 'MCP connectors',
     software: ['AutoCAD'], revit: [], status: 'enterprise',
     tagline: 'AutoCAD MCP connector for native COM drafting.',
     description: 'AutoCAD MCP connector for native COM drafting, layers, blocks, AutoLISP and DXF workflows with guarded writes.',
@@ -79,7 +79,7 @@ export const EXTRAS: Product[] = [
     dialogs: [],
   },
   {
-    slug: 'blender-mcp', key: 'BlenderMCP', name: 'ArchiTECH MCP Connector · Blender', suite: 'ai', panel: 'MCP connectors',
+    slug: 'blender-mcp', key: 'BlenderMCP', name: 'ArchiTECH MCP Connector (Blender)', suite: 'ai', panel: 'MCP connectors',
     software: ['Blender'], revit: [], status: 'enterprise',
     tagline: 'Run native Blender scene, modelling and rendering workflows from an MCP client.',
     description: 'Blender MCP connector with a native bpy add-on, discoverable tools, guarded scene operations and explicit recovery semantics.',

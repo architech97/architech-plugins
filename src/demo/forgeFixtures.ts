@@ -79,7 +79,7 @@ const row = (label: string, value: string) => ({ label, value })
 const change = (label: string, before: string, after: string) => ({ label, value: before + ' → ' + after, before, after })
 const record = (label: string, columns: Record<string, string>): WorkflowRecord => ({ label, columns })
 const isIncluded = (records: WorkflowRecord[], id: string) => !records.length || records.some(item => item.columns['Sample ID'] === id)
-const elementLabel = (element: typeof ELEMENTS[number]) => element.id + ' · ' + element.family
+const elementLabel = (element: typeof ELEMENTS[number]) => element.id + ', ' + element.family
 const currentValue = (element: typeof ELEMENTS[number], parameter: string) => parameter === 'Mark' ? element.id
   : parameter === 'Comments' ? 'Review ' + element.family : '—'
 const elementRecord = (element: typeof ELEMENTS[number], parameter: string) => record(elementLabel(element), {
@@ -100,22 +100,22 @@ export function forgeResult({ slug, action, fields, records }: WorkflowInput): W
     const joined = mode === 'Floor' && get('Join the new Floors with bordering Walls') === 'On'
     const scope = sampleResidence.regions.filter(region => isIncluded(records, String(region.id)))
     const rows = scope.map(region => {
-      const label = region.name + ' · ' + region.id
-      const before = region.kind + ' region · ' + region.type
+      const label = region.name + ', ' + region.id
+      const before = region.kind + ' region, ' + region.type
       const innerLoop = region.id === 9102
       const reason = region.masking ? 'Masking regions are not converted' :
         mode === 'Wall' && innerLoop && !approximation ? 'Exact wall profile cannot include this opening' : ''
-      const after = reason ? 'Skipped · ' + reason :
-        mode + ' · ' + type + ' · ' + offset + ' mm offset' +
-        (innerLoop ? mode === 'Wall' ? ' · rectangular approximation' : ' · opening retained' : '') +
-        (joined ? ' · join bordering walls' : '') +
-        (remove ? ' · remove converted source' : ' · keep source region')
+      const after = reason ? 'Skipped, ' + reason :
+        mode + ', ' + type + ', ' + offset + ' mm offset' +
+        (innerLoop ? mode === 'Wall' ? ', rectangular approximation' : ', opening retained' : '') +
+        (joined ? ', join bordering walls' : '') +
+        (remove ? ', remove converted source' : ', keep source region')
       return change(label, before, after)
     })
     const count = rows.filter(result => !result.after.startsWith('Skipped')).length
     return {
       summary: count + ' of ' + scope.length + ' selected sample regions can create ' + mode.toLowerCase() + ' geometry in ' + view + '.',
-      rows, records: scope.map(region => record(region.name + ' · ' + region.id, { 'Sample ID': String(region.id), Type: region.type })),
+      rows, records: scope.map(region => record(region.name + ', ' + region.id, { 'Sample ID': String(region.id), Type: region.type })),
     }
   }
   if (slug === 'assign-room-properties' || slug === 'copy-param-from-link') {
@@ -135,10 +135,10 @@ export function forgeResult({ slug, action, fields, records }: WorkflowInput): W
     const rows = scope.map(element => {
       const next = value(element)
       const before = currentValue(element, target)
-      return change(elementLabel(element), before, next || 'Unchanged · no containing source room')
+      return change(elementLabel(element), before, next || 'Unchanged, no containing source room')
     })
-    return { summary: source + ' · ' + property + ' → ' + target + ' · ' + (typeBinding ? 'Type' : 'Instance') +
-      ' · ' + scope.filter(element => value(element)).length + ' sample values ready.',
+    return { summary: source + ', ' + property + ' → ' + target + ', ' + (typeBinding ? 'Type' : 'Instance') +
+      ', ' + scope.filter(element => value(element)).length + ' sample values ready.',
       rows, records: scope.map(element => elementRecord(element, target)) }
   }
   if (slug === 'family-param-transfer') {
@@ -152,8 +152,8 @@ export function forgeResult({ slug, action, fields, records }: WorkflowInput): W
       const name = definition.columns.Parameter || definition.label
       const exists = target === FAMILIES[1] && name === 'Fire Rating'
       const before = exists ? 'Shared definition with matching GUID' : 'Definition absent'
-      const after = exists ? 'Unchanged · matching shared GUID' : name + ' · ' + definition.columns.Type + ' · ' + definition.columns.Binding +
-        (definition.columns.Kind === 'Shared' ? ' · source GUID retained' : ' · family definition')
+      const after = exists ? 'Unchanged, matching shared GUID' : name + ', ' + definition.columns.Type + ', ' + definition.columns.Binding +
+        (definition.columns.Kind === 'Shared' ? ', source GUID retained' : ', family definition')
       return change(definition.label, before, after)
     })
     return { summary: 'Review ' + definitions.length + ' definitions from ' + (source || 'the sample source') + ' for ' + target + '.',
@@ -173,14 +173,14 @@ export function forgeResult({ slug, action, fields, records }: WorkflowInput): W
     if (!scope.length) return 'No sample elements match the category and family/type filter.'
     const rows = scope.map(element => {
       const next = manual ? custom : source === 'Type Mark' ? element.typeMark : source === 'Mark' ? element.id : source === 'Comments' ? `Coordinate ${element.name || element.family}` : element.category === 'Doors' ? '60 min' : ''
-      return change(elementLabel(element), currentValue(element, target), next ? get('Prefix') + next + get('Suffix') : 'Unchanged · source value missing')
+      return change(elementLabel(element), currentValue(element, target), next ? get('Prefix') + next + get('Suffix') : 'Unchanged, source value missing')
     })
     return { summary: 'Review ' + rows.length + ' ' + get('Category').toLowerCase() + ' parameter mappings for ' + target + '.',
       rows, records: scope.map(element => elementRecord(element, target)) }
   }
   if (slug === 'shared-param-manager') {
-    return { summary: `${action} · prepared the sample shared-parameter definition list.`, rows: records.map(record => row(record.columns['Parameter Name'] || record.label,
-      [record.columns['Data Type'], record.columns.Group, record.columns.GUID].filter(Boolean).join(' · '))) }
+    return { summary: `${action}, prepared the sample shared-parameter definition list.`, rows: records.map(record => row(record.columns['Parameter Name'] || record.label,
+      [record.columns['Data Type'], record.columns.Group, record.columns.GUID].filter(Boolean).join(', '))) }
   }
   if (slug === 'room-height-adjust' || slug === 'room-level-assigner') {
     const height = slug === 'room-height-adjust'
@@ -190,7 +190,7 @@ export function forgeResult({ slug, action, fields, records }: WorkflowInput): W
     return { summary: `${scope.length} sample room${scope.length === 1 ? '' : 's'} in ${active ? 'the Level 01 active view' : 'the selected model scope'}.`, rows: scope.map(record => {
       const from = height ? record.columns['Height now'] : record.columns['Current Level']
       const to = height ? record.columns['New height'] : target && target !== 'Use sample row targets' ? target : record.columns['Target Level']
-      return row(record.label, from === to ? `${from} · already matches` : `${from} → ${to}${height ? ` · ${record.columns.Change}` : ' · room number retained'}`)
+      return row(record.label, from === to ? `${from}, already matches` : `${from} → ${to}${height ? `, ${record.columns.Change}` : ', room number retained'}`)
     }) }
   }
 }

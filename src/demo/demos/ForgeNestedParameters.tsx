@@ -40,7 +40,7 @@ export default function ForgeNestedParameters({ theme, onTheme, model, onApply, 
     <div className="forge-nested-dialog" onKeyDown={event => {
       if (event.key === 'Escape') { event.preventDefault(); event.stopPropagation(); close() }
     }}>
-      <RevitDialog theme={theme} onTheme={onTheme} title="Nested Parameters" caption={`Browser sample · ${NESTED_SAMPLE_FAMILY}`} onClose={close}
+      <RevitDialog theme={theme} onTheme={onTheme} title="Nested Parameters" caption={`Browser sample, ${NESTED_SAMPLE_FAMILY}`} onClose={close}
         footer={<><span className="ad-status">{checked.length} selected</span><Btn onClick={() => load(mode)}>Load</Btn>
           <Btn primary onClick={associate}>Associate</Btn><Btn onClick={close}>Close</Btn></>}>
         <div className="ad-row forge-nested-controls">

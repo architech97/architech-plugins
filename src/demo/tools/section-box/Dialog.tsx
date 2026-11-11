@@ -23,7 +23,7 @@ export default function SectionBox(ctx: DemoContext) {
   const [screen, setScreen] = useState<"source" | "pick" | "options">("source");
   const [source, setSource] = useState<"host" | "linked">("host");
   const [picks, setPicks] = useState<number[]>([]);
-  const [link, setLink] = useState("Structure · Instance 7101");
+  const [link, setLink] = useState("Structure, Instance 7101");
   const [padding, setPadding] = useState("500 mm");
   const [target, setTarget] = useState(dedicated);
   const [view, setView] = useState("ArchiTECH_3D_Sample");
@@ -82,7 +82,7 @@ export default function SectionBox(ctx: DemoContext) {
     setReceipt([
       "Sample 3D view: " +
         name +
-        " · " +
+        ", " +
         selected.length +
         " " +
         (source === "host" ? "host" : "linked") +
@@ -143,7 +143,7 @@ export default function SectionBox(ctx: DemoContext) {
         theme={ctx.theme}
         onTheme={ctx.setTheme}
         title="Select elements for the Section Box, then click Finish"
-        subtitle="Browser sample picker · Fictional project elements"
+        subtitle="Browser sample picker, Fictional project elements"
         onClose={ctx.close}
         footer={
           <>
@@ -173,14 +173,14 @@ export default function SectionBox(ctx: DemoContext) {
             <Select
               label="Sample top-level link"
               value={link}
-              options={["Structure · Instance 7101"]}
+              options={["Structure, Instance 7101"]}
               onChange={setLink}
             />
           )}
           {options.map((row) => (
             <Check
               key={row.id}
-              label={row.id + " · " + row.name}
+              label={row.id + ", " + row.name}
               checked={picks.includes(row.id)}
               onChange={(value) =>
                 setPicks(
@@ -218,7 +218,7 @@ export default function SectionBox(ctx: DemoContext) {
         }
       >
         <div className="section-options">
-          <b>PADDING</b>
+          <b>Padding</b>
           <div className="section-padding" data-demo="section-padding">
             <TextBox
               aria-label="Padding"
@@ -234,7 +234,7 @@ export default function SectionBox(ctx: DemoContext) {
               </Btn>
             ))}
           </div>
-          <b>TARGET 3D VIEW</b>
+          <b>Target 3D view</b>
           <Radio
             name="section-view"
             label={active}
@@ -257,7 +257,7 @@ export default function SectionBox(ctx: DemoContext) {
               />
             </label>
           )}
-          <b>BOX ORIENTATION</b>
+          <b>Box orientation</b>
           <Radio
             name="section-orientation"
             label="Current section box orientation"
@@ -275,7 +275,7 @@ export default function SectionBox(ctx: DemoContext) {
             />
             Parallel to selected link (one link instance only)
           </label>
-          <b>OPTIONS</b>
+          <b>Options</b>
           <Check
             label="Temporarily isolate selected elements inside section box"
             disabled={source === "linked"}

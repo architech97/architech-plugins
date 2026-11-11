@@ -135,9 +135,9 @@ export function suiteHomeSteps(suite: LauncherSuite): DemoStep[] {
 // The native WPF regression harness rendered these with fictional model data.
 const folioMedia = 'media/dialogs/folio-home/folio-home-'
 export const FOLIO_HOME_PREVIEWS: DialogShot[] = [
-  { title: 'WPF fixture · All tools', dark: folioMedia + 'dark.png', light: folioMedia + 'light.png', source: 'reconstructed', w: 1080, h: 652 },
-  { title: 'WPF fixture · Compact window', dark: folioMedia + 'dark-minimum.png', light: folioMedia + 'light-minimum.png', source: 'reconstructed', w: 846, h: 530 },
-  { title: 'WPF fixture · No active model', light: folioMedia + 'no-model.png', source: 'reconstructed', w: 1080, h: 652 },
-  { title: 'WPF fixture · Tool unavailable', dark: folioMedia + 'unavailable.png', source: 'reconstructed', w: 846, h: 530 },
-  { title: 'WPF fixture · No search results', dark: folioMedia + 'empty.png', source: 'reconstructed', w: 846, h: 530 },
+  { title: 'WPF fixture, All tools', dark: folioMedia + 'dark.png', light: folioMedia + 'light.png', source: 'reconstructed', w: 1080, h: 652 },
+  { title: 'WPF fixture, Compact window', dark: folioMedia + 'dark-minimum.png', light: folioMedia + 'light-minimum.png', source: 'reconstructed', w: 846, h: 530 },
+  { title: 'WPF fixture, No active model', light: folioMedia + 'no-model.png', source: 'reconstructed', w: 1080, h: 652 },
+  { title: 'WPF fixture, Tool unavailable', dark: folioMedia + 'unavailable.png', source: 'reconstructed', w: 846, h: 530 },
+  { title: 'WPF fixture, No search results', dark: folioMedia + 'empty.png', source: 'reconstructed', w: 846, h: 530 },
 ]

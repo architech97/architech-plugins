@@ -43,14 +43,14 @@ export default function result({ action, fields, records, windowName }: Workflow
     const skip = enabled(fields, /^skip target links/i) && target === links[1]
     return { summary: skip ? 'Kept existing overrides on the sample target link.' : 'Prepared copying link overrides within ' + template + '.',
       rows: [resultRow('Source', source), resultRow('Target', target), resultRow('Result',
-        skip ? 'Skipped · target already has overrides' : 'Link display copied where supported · Revit 2024 limits custom link overrides')] }
+        skip ? 'Skipped, target already has overrides' : 'Link display copied where supported, Revit 2024 limits custom link overrides')] }
   }
   if (windowName === 'filtertemplatewindow') {
     const source = field(fields, 'Source view or template', sourceViews[0])
     const target = field(fields, 'Destination view or template', targets[0])
     const filter = field(fields, 'Filters to copy', filters[0])
     return { summary: 'Prepared the selected filter for the sample destination picker.',
-      rows: [resultRow('Source', source), resultRow('Filter', filter), resultRow('Destination preview', target + ' · Filter order and visibility reviewed')] }
+      rows: [resultRow('Source', source), resultRow('Filter', filter), resultRow('Destination preview', target + ', Filter order and visibility reviewed')] }
   }
   if (windowName === 'transfervsoptionswindow') {
     const source = field(fields, 'Source view', sourceViews[0])

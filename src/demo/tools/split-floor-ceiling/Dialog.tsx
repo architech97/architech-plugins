@@ -28,7 +28,7 @@ function Sketch({ hosts, split, title }: { hosts: Host[]; split: boolean; title:
   return <MiniView kind="plan" variant="floor" phase={split ? 'after' : 'before'} title={title}>
     {hosts.length ? hosts.map((host, index) => (
       <g key={host.id} transform={'translate(36 ' + (15 + index * 80) + ')'}>
-        <text x="0" y="12" fill="currentColor">{host.name} · {host.id}</text>
+        <text x="0" y="12" fill="currentColor">{host.name}, {host.id}</text>
         {host.sketchLoops.map((loop, piece) => {
           const x = loop[0][0] * 32 + (split ? piece * 8 : 0)
           const cutout = host.id === 9201 && piece === 0
@@ -106,7 +106,7 @@ export default function SplitFloorCeiling(ctx: DemoContext) {
     after={<Sketch hosts={afterHosts} split title={pieces + ' separate pieces' } />} />
 
   if (stage === 'guard') return <TaskDialogShell theme={ctx.theme} onTheme={ctx.setTheme} title="Split Floor / Ceiling"
-    subtitle="Browser simulation · fictional Sample Residence"
+    subtitle="Browser simulation, fictional Sample Residence"
     instruction={'Splitting ' + risky.length + ' of the selected elements can delete up to ' + dependentCount + ' dependent elements. See details for the IDs by source.'}
     content={'Hosted families, tags, dimensions, spot elevations and edges attached to an original are not moved onto the new pieces.'}
     details={guardDetails} onClose={() => setStage('preview')}
@@ -117,25 +117,25 @@ export default function SplitFloorCeiling(ctx: DemoContext) {
     buttons={[{ label: 'Close', onClick: () => setStage('preview') }]}>{visual}</TaskDialogShell>
 
   if (stage === 'result') return <TaskDialogShell theme={ctx.theme} onTheme={ctx.setTheme} title="Split Floor / Ceiling"
-    subtitle="Browser simulation · fictional Sample Residence" instruction={resultText.split('\n')[0]} details={result.map(row => row.detail).join('\n')}
+    subtitle="Browser simulation, fictional Sample Residence" instruction={resultText.split('\n')[0]} details={result.map(row => row.detail).join('\n')}
     onClose={ctx.close} footer={<><Btn onClick={() => { setSelected(available.map(host => host.id)); invalidate() }}>Select more hosts</Btn><Btn primary onClick={ctx.close}>OK</Btn></>}>
     <Receipt entries={[
-      { label: selectedCount + ' selected · ' + splitCount + ' split · ' + skipped + ' skipped · ' + failed + ' failed' },
-      ...result.map(({ host, status, detail, pieces, deleted }) => ({ label: 'Source ' + host.id + ' · ' + status,
-        detail: status === 'Split' ? pieces + ' pieces · ' + (deleted.length ? 'deleted reviewed IDs ' + deleted.join(', ') : 'no dependent IDs deleted') : detail })),
+      { label: selectedCount + ' selected, ' + splitCount + ' split, ' + skipped + ' skipped, ' + failed + ' failed' },
+      ...result.map(({ host, status, detail, pieces, deleted }) => ({ label: 'Source ' + host.id + ', ' + status,
+        detail: status === 'Split' ? pieces + ' pieces, ' + (deleted.length ? 'deleted reviewed IDs ' + deleted.join(', ') : 'no dependent IDs deleted') : detail })),
     ]} />
     {visual}
   </TaskDialogShell>
 
   return <DialogShell theme={ctx.theme} onTheme={ctx.setTheme} title="Split Floor / Ceiling"
-    subtitle="Browser simulation · fictional Sample Residence" onClose={ctx.close}
+    subtitle="Browser simulation, fictional Sample Residence" onClose={ctx.close}
     footer={<><span className="ad-status">{selectedCount} selected</span><Btn onClick={ctx.close}>Cancel</Btn>
       <Btn demo="floor-preview" disabled={!rows.length} onClick={preview}>Preview split</Btn>
       <Btn demo="floor-finish" primary disabled={stage !== 'preview'} onClick={() => risky.length ? setStage('guard') : apply(false)}>Finish selection</Btn></>}>
     <div className="forge-split-layout">
       <div className="ad-card suite-flow-fields" data-demo="floor-picks">
         <strong>Select floors or ceilings to split</strong>
-        {available.map(host => <Check key={host.id} label={host.name + ' · ID ' + host.id}
+        {available.map(host => <Check key={host.id} label={host.name + ', ID ' + host.id}
           checked={selected.includes(host.id)} onChange={checked => {
             setSelected(checked ? [...selected, host.id] : selected.filter(id => id !== host.id))
             invalidate()
@@ -145,7 +145,7 @@ export default function SplitFloorCeiling(ctx: DemoContext) {
           value={refusal} options={Object.keys(refusalReasons)} onChange={value => { setRefusal(value as Refusal); invalidate() }} /></label>
         <Check label="Simulate an unreviewed deletion at apply" checked={unexpected} onChange={value => { setUnexpected(value); invalidate() }} />
         <p className="ad-note">Each outer sketch island becomes one piece. The ground-floor opening stays inside its enclosing region.</p>
-        {stage === 'preview' && <p role="status">{eligible.length} eligible · {risky.length} with dependents · {pieces} pieces in preview.</p>}
+        {stage === 'preview' && <p role="status">{eligible.length} eligible, {risky.length} with dependents, {pieces} pieces in preview.</p>}
       </div>
       {visual}
     </div>

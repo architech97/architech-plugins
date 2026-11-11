@@ -5,7 +5,7 @@ import dialogReconstructions from './dialogReconstructions.json'
 const revit = {
   software: ['Revit'],
   revit: ['2024'],
-  platform: 'Windows · Autodesk Revit',
+  platform: 'Windows, Autodesk Revit',
   status: 'available',
   dialogs: [],
 } satisfies Pick<Product, 'software' | 'revit' | 'platform' | 'status' | 'dialogs'>

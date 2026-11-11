@@ -3,12 +3,6 @@ import { useEffect, useRef, useState } from 'react'
 const reducedMotion = () => matchMedia('(prefers-reduced-motion: reduce)').matches
 
 type Rgb = readonly [number, number, number]
-const CONTINUITY_COLORS: Record<string, Rgb> = {
-  paper: [243, 238, 230],
-  'paper-2': [235, 228, 216],
-  stone: [217, 205, 189],
-}
-
 const rgb = (color: Rgb) => `rgb(${color[0]} ${color[1]} ${color[2]})`
 const blend = (from: Rgb, to: Rgb, progress: number): Rgb => [
   Math.round(from[0] + (to[0] - from[0]) * progress),
@@ -26,16 +20,28 @@ const blend = (from: Rgb, to: Rgb, progress: number): Rgb => [
 export function useContinuityBackground(routeKey: string) {
   useEffect(() => {
     const body = document.body
+    const tokens = getComputedStyle(document.documentElement)
+    const readColor = (name: string): Rgb | undefined => {
+      const value = tokens.getPropertyValue('--' + name).trim()
+      if (!/^#[0-9a-f]{6}$/i.test(value)) return undefined
+      return [parseInt(value.slice(1, 3), 16), parseInt(value.slice(3, 5), 16), parseInt(value.slice(5, 7), 16)]
+    }
+    const paper = readColor('paper')
+    const paper2 = readColor('paper-2')
+    const stone = readColor('stone')
+    // If the palette is unavailable, retain the CSS canvas rather than invent a color.
+    if (!paper || !paper2 || !stone) return
+    const colors: Record<string, Rgb> = { paper, 'paper-2': paper2, stone }
     const motion = matchMedia('(prefers-reduced-motion: reduce)')
     let anchors: HTMLElement[] = []
     let frame = 0
     let intersection: IntersectionObserver | undefined
 
-    const color = (anchor?: HTMLElement) => CONTINUITY_COLORS[anchor?.dataset.continuityBg ?? ''] ?? CONTINUITY_COLORS.paper
+    const color = (anchor?: HTMLElement) => colors[anchor?.dataset.continuityBg ?? ''] ?? colors.paper
     const paint = (value: Rgb) => body.style.setProperty('--bg', rgb(value))
     const render = () => {
       frame = 0
-      if (!anchors.length) { paint(CONTINUITY_COLORS.paper); return }
+      if (!anchors.length) { paint(colors.paper); return }
       if (motion.matches || anchors.length === 1) { paint(color(anchors[0])); return }
 
       const center = window.scrollY + window.innerHeight * .5

@@ -32,9 +32,9 @@ export default function result({ action, fields, records }: WorkflowInput) {
     })
     if (invalid.length) return 'The selected sample views do not share the ' + target + ' conversion. Choose compatible views.'
     const suffix = field(fields, /^add to the name/i) || ' - ' + target
-    const rows = records.map((record) => resultRow(getName(record), getName(record) + suffix + ' · ' + target +
-      (target === 'Drafting View' ? enabled(fields, /^rebuild as native/i, true) ? ' · Native lines and regions' : ' · CAD import retained' :
-        target === 'Legend' ? ' · Base legend: ' + field(fields, 'Template legend to duplicate') : ' · Same sample level and crop')))
+    const rows = records.map((record) => resultRow(getName(record), getName(record) + suffix + ', ' + target +
+      (target === 'Drafting View' ? enabled(fields, /^rebuild as native/i, true) ? ', Native lines and regions' : ', CAD import retained' :
+        target === 'Legend' ? ', Base legend: ' + field(fields, 'Template legend to duplicate') : ', Same sample level and crop')))
     return { summary: 'Prepared ' + rows.length + ' sample conversions to ' + target + '.', rows }
   }
   if (action === 'Duplicate views') {
@@ -53,11 +53,11 @@ export default function result({ action, fields, records }: WorkflowInput) {
       if (mode === 'Set parameter') {
         const parameter = field(fields, 'Writable view parameter', 'Sub-Discipline')
         const controlled = !!cell(record, 'Template') && parameter === 'Sub-Discipline'
-        return resultRow(name, controlled ? 'Skipped · sample template controls ' + parameter : parameter + ' = ' + field(fields, 'New view parameter value'))
+        return resultRow(name, controlled ? 'Skipped, sample template controls ' + parameter : parameter + ' = ' + field(fields, 'New view parameter value'))
       }
       const choice = field(fields, 'Duplication mode', copies[0])
       const unsupported = choice === copies[2] && sample(record)?.kind === 'ThreeD'
-      return resultRow(name, unsupported ? 'Skipped · this sample 3D view cannot be dependent' : name + ' - Copy · ' + choice)
+      return resultRow(name, unsupported ? 'Skipped, this sample 3D view cannot be dependent' : name + ' - Copy, ' + choice)
     })
     return { summary: 'Prepared ' + mode.toLowerCase() + ' for the selected sample views.', rows }
   }
@@ -67,8 +67,8 @@ export default function result({ action, fields, records }: WorkflowInput) {
     const graphics = enabled(fields, /^visibility\/graphics/i)
     if (!hide && !graphics) return 'Choose hidden elements or visibility/graphics to copy.'
     const mode = field(fields, 'HideAction', 'Hide what the source hides')
-    const rows = records.map((record) => resultRow(getName(record), getName(record) === source ? 'Source view · unchanged' :
-      [hide && mode, graphics && (cell(record, 'Template') ? 'Visibility/Graphics kept · controlled by template' : 'Copy category and link display settings')].filter(Boolean).join(' · ')))
+    const rows = records.map((record) => resultRow(getName(record), getName(record) === source ? 'Source view, unchanged' :
+      [hide && mode, graphics && (cell(record, 'Template') ? 'Visibility/Graphics kept, controlled by template' : 'Copy category and link display settings')].filter(Boolean).join(', ')))
     return { summary: 'Prepared hide-state transfer from ' + source + '.', rows }
   }
   return undefined

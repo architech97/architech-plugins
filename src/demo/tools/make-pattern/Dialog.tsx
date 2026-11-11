@@ -12,7 +12,7 @@ const original: Pattern[] = [
   { name: 'FN-01 Timber Boards', type: 'Model Pattern', angle: 90, spacing: 160 },
   { name: 'Drafting - Diagonal', type: 'Detail Pattern', angle: 45, spacing: 1 },
 ]
-const selections = ['No linework selected (Esc)', 'Detail lines · diagonal hatch', 'Filled region · running bond']
+const selections = ['No linework selected (Esc)', 'Detail lines, diagonal hatch', 'Filled region, running bond']
 
 export default function MakePattern(ctx: DemoContext) {
   const id = useId()
@@ -55,7 +55,7 @@ export default function MakePattern(ctx: DemoContext) {
     if (selected && !confirmed) { setOverwrite(true); return }
     setPatterns([...patterns.filter((pattern) => pattern !== selected), { name: name.trim(), type, angle, spacing }])
     setOverwrite(false); setError('')
-    setReceipt([name + ' · ' + type + ' · ' + angle + '° · Repeat ' + spacing.toFixed(3) + ' mm',
+    setReceipt([name + ', ' + type + ', ' + angle + '°, Repeat ' + spacing.toFixed(3) + ' mm',
       filledRegion ? 'Created a sample Filled Region type using the new foreground pattern.' : 'Existing Filled Region types kept.'])
     ctx.done('configure'); ctx.done('run'); ctx.done('apply'); ctx.done('review')
     ctx.notify({ kind: 'success', text: 'Created ' + name + ' in the sample pattern list.' })
@@ -72,7 +72,7 @@ export default function MakePattern(ctx: DemoContext) {
     const link = document.createElement('a')
     link.href = url; link.download = pattern.name.replace(/[<>:"/\\|?*]/g, '_') + '.pat'; link.click()
     window.setTimeout(() => URL.revokeObjectURL(url), 1000)
-    setError(''); setReceipt(['Exported ' + pattern.name + '.pat · ' + units, 'Grid: ' + pattern.angle + ', 0, 0, 0, ' + distance])
+    setError(''); setReceipt(['Exported ' + pattern.name + '.pat, ' + units, 'Grid: ' + pattern.angle + ', 0, 0, 0, ' + distance])
     ctx.done('configure'); ctx.done('run'); ctx.done('review')
   }
   return <div className="folio-runtime">
@@ -96,7 +96,7 @@ export default function MakePattern(ctx: DemoContext) {
       </fieldset>
       <div className="folio-runtime-fields"><FolioText label="Captured View Scale" value={'1/8" = 1\'-0"'} readOnly onChange={() => {}} /><FolioChoice label="Export Units" options={['INCH', 'MM']} value={units} onChange={setUnits} /></div>
       {error && <p role="alert" className="folio-runtime-error">{error}</p>}
-      {shown && <FolioPreview title="Sample pattern" rows={[{ label: shown.name || 'New pattern', value: shown.type + ' · ' + shown.angle + '° · Repeat ' + shown.spacing.toFixed(3) + ' mm' }]} />}
+      {shown && <FolioPreview title="Sample pattern" rows={[{ label: shown.name || 'New pattern', value: shown.type + ', ' + shown.angle + '°, Repeat ' + shown.spacing.toFixed(3) + ' mm' }]} />}
       {receipt.length > 0 && <Receipt entries={receipt} title="Last sample operation" />}
       <ConfirmGuard open={overwrite} theme={ctx.theme} onTheme={ctx.setTheme} title="Make Pattern" instruction={'Overwrite the existing sample pattern "' + name + '"?'}
         content={filledRegion ? 'The matching sample Filled Region type uses the replacement foreground pattern.' : 'The sample fill pattern is replaced.'} confirmLabel="Overwrite pattern" onConfirm={() => create(true)} onCancel={() => setOverwrite(false)} />

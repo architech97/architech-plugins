@@ -132,7 +132,7 @@ export default function FamilyNameSync(ctx: DemoContext) {
           pair.current +
           " → " +
           pair.proposed +
-          " · every sample instance follows its family",
+          ", every sample instance follows its family",
       ),
     );
     setPairs(
@@ -174,7 +174,7 @@ export default function FamilyNameSync(ctx: DemoContext) {
         >
           {status && <p role="status">{status}</p>}
           <p className="family-sync-note">
-            Browser simulation · Sample Residence mapping data is fictional.
+            Browser simulation, Sample Residence mapping data is fictional.
           </p>
         </TaskDialogShell>
       </div>
@@ -246,12 +246,12 @@ export default function FamilyNameSync(ctx: DemoContext) {
             <span className="ad-status family-sync-status" role="status">
               {status ||
                 pairs.length +
-                  " mapped · " +
+                  " mapped, " +
                   pairs.filter((pair) => pair.current === pair.proposed)
                     .length +
-                  " already match · " +
+                  " already match, " +
                   selected.length +
-                  " ticked to rename · showing " +
+                  " ticked to rename, showing " +
                   visible.length}
             </span>
             <Btn

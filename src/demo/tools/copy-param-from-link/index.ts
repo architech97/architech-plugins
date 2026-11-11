@@ -6,7 +6,7 @@ export default {
   title: 'Copy Param from Link',
   summary: 'Choose a room source, category and two text parameters, then review the sample values to copy.',
   basis: [
-    'The deployed dialog opens on Current Model, Doors, Name · built-in and Comments · built-in, with Copy enabled.',
+    'The deployed dialog opens on Current Model, Doors, Name, built-in and Comments, built-in, with Copy enabled.',
     'Changing the source clears the room property. Changing the category clears the target parameter.',
     'All element values and results come from the fictional sample project.',
   ],

@@ -22,12 +22,11 @@ export function WorkflowPreview({ plan, evaluate, onApply, onCancel }: {
   const readOnly = /^(scan|preview|export|find|show|check|review|run (audit|spell check)|inspect|refresh list)/i.test(input.action)
   return (
     <section className="gen-result gen-plan" aria-labelledby={titleId}>
-      <span className="gen-kicker">Sample Residence · Review changes</span>
-      <h3 id={titleId}>Preview · {input.action}</h3>
+      <h3 id={titleId}>Preview, {input.action}</h3>
       <p>{next?.summary ?? output.summary}</p>
       {typeof selection === 'string' && <p role="status" className="gen-validation">{selection}</p>}
       {!input.records.length && <dl>
-        <div><dt>Before</dt><dd>{input.fields.filter(({ value }) => value && value !== 'Off').slice(0, 3).map(({ label, value }) => `${label}: ${value}`).join(' · ') || 'Current sample model'}</dd></div>
+        <div><dt>Before</dt><dd>{input.fields.filter(({ value }) => value && value !== 'Off').slice(0, 3).map(({ label, value }) => `${label}: ${value}`).join(', ') || 'Current sample model'}</dd></div>
         <div><dt>After</dt><dd>{output.rows.length ? 'Review the proposed results below.' : output.summary}</dd></div>
       </dl>}
       {input.records.length > 0 && <>
@@ -45,7 +44,7 @@ export function WorkflowPreview({ plan, evaluate, onApply, onCancel }: {
                 }} />
                 <strong>{record.label}</strong>
               </label>
-              <dl><div><dt>Before</dt><dd>{outcome?.before ?? before ?? (fields.slice(0, 3).map(([label, value]) => `${label}: ${value}`).join(' · ') || record.label)}</dd></div>
+              <dl><div><dt>Before</dt><dd>{outcome?.before ?? before ?? (fields.slice(0, 3).map(([label, value]) => `${label}: ${value}`).join(', ') || record.label)}</dd></div>
                 <div><dt>After</dt><dd>{outcome?.after ?? after ?? outcome?.value ?? 'See the operation preview below.'}</dd></div></dl>
             </div>
           })}

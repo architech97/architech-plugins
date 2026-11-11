@@ -10,9 +10,9 @@ const SENTINEL_COLUMNS: Partial<Record<string, Columns>> = {
   'compliance-guard': {
     'element id': ['405011', '405012', '611712', '601105', '302210'],
     'category / type': ['Lines / Detail Lines', 'Lines / Sketch Lines', 'Revit Links', 'Grids', 'Walls / Basic Wall'],
-    'sop issue': ['CAD line-style candidate', 'CAD line-style candidate · sketch', 'Unpinned Revit link', 'Unpinned grid', 'Assigned to Workset1'],
-    'element / style name': ['CAD-A-WALL', 'CAD-A-FLOOR', 'Interiors.rvt', 'Grid B', 'W-101 · Core wall'],
-    'view / location': ['A-501 · Typical Details', 'Level 01 · Floor sketch', '3D – Coordination', 'Level 01', 'Level 01'],
+    'sop issue': ['CAD line-style candidate', 'CAD line-style candidate, sketch', 'Unpinned Revit link', 'Unpinned grid', 'Assigned to Workset1'],
+    'element / style name': ['CAD-A-WALL', 'CAD-A-FLOOR', 'Interiors.rvt', 'Grid B', 'W-101, Core wall'],
+    'view / location': ['A-501, Typical Details', 'Level 01, Floor sketch', '3D – Coordination', 'Level 01', 'Level 01'],
   },
   'duplicates-resolver': {
     'family : type': ['Single Flush : 900 × 2100 mm', 'Fixed Window : 1200 × 1500 mm', 'Rectangular Column : 300 × 450 mm'],
@@ -62,14 +62,14 @@ const STRUCTURAL_COLUMNS: Columns = {
   category: ['Structural Columns'],
   'family & type': ['Concrete Column : 300 × 450 mm', 'Concrete Column : 450 × 450 mm', 'Steel Column : HSS 150'],
   'qa status': ['Within tolerance', 'Review', 'Within tolerance'],
-  'measured deviation / reference': ['3 mm · Grid A/1', '12 mm · Grid B/2', '4 mm · Grid C/1'],
+  'measured deviation / reference': ['3 mm, Grid A/1', '12 mm, Grid B/2', '4 mm, Grid C/1'],
 }
 const STRUCTURAL_BEAMS: Columns = {
   'element id': ['362001', '362002', '362003'],
   category: ['Structural Framing'],
   'family & type': ['Steel Beam : UB 254', 'Concrete Beam : 250 × 450 mm', 'Steel Beam : UB 305'],
   'qa status': ['Contact', 'Review', 'Contact'],
-  'measured deviation / reference': ['Support intersects end · Grid A/1', '18 mm endpoint gap · Grid B/2', 'Support intersects end · Grid C/1'],
+  'measured deviation / reference': ['Support intersects end, Grid A/1', '18 mm endpoint gap, Grid B/2', 'Support intersects end, Grid C/1'],
 }
 
 export function sentinelCell(slug: string, key: string, row: number, variant?: string) {
@@ -105,10 +105,10 @@ export function sentinelResult({ slug, action, fields, records, windowName }: Wo
       const rows = results(({ columns }) => {
         const issue = columns['SOP Issue']
         const name = columns['Element / Style Name']
-        if (pin) return issue.startsWith('Unpinned') ? `${name} · Pinned in the sample` : `${issue} · unchanged`
-        if (remove && issue.includes('sketch')) return `${name} · Sketch line is report-only`
-        if (remove && issue.startsWith('CAD line-style candidate')) return `Line element ${columns['Element ID']} · Eligible for removal after confirmation`
-        return `${issue} · ${pin || remove ? 'unchanged' : columns['View / Location']}`
+        if (pin) return issue.startsWith('Unpinned') ? `${name}, Pinned in the sample` : `${issue}, unchanged`
+        if (remove && issue.includes('sketch')) return `${name}, Sketch line is report-only`
+        if (remove && issue.startsWith('CAD line-style candidate')) return `Line element ${columns['Element ID']}, Eligible for removal after confirmation`
+        return `${issue}, ${pin || remove ? 'unchanged' : columns['View / Location']}`
       })
       return { summary: pin || remove ? 'Reviewed the chosen fix against the selected sample findings.' : `Found ${records.length} sample compliance findings. A CAD-style name is a candidate for review.`, rows }
     }
@@ -116,7 +116,7 @@ export function sentinelResult({ slug, action, fields, records, windowName }: Wo
       const merge = action === 'Merge selected'
       return {
         summary: merge ? 'Kept the primary instances and copied eligible filled values into blank instance fields.' : 'Kept the primary instances and removed the selected sample extras.',
-        rows: results(({ columns }) => `Keep ${columns['Keep as primary']} · Remove ${columns.Extras}${merge && columns.Notes.startsWith('Extra has') ? ' · ' + columns.Notes.replace('Extra has a', 'Copied the') + ' to the blank primary field' : ''}`),
+        rows: results(({ columns }) => `Keep ${columns['Keep as primary']}, Remove ${columns.Extras}${merge && columns.Notes.startsWith('Extra has') ? ', ' + columns.Notes.replace('Extra has a', 'Copied the') + ' to the blank primary field' : ''}`),
       }
     }
     case 'off-axis-resolver': {
@@ -128,19 +128,19 @@ export function sentinelResult({ slug, action, fields, records, windowName }: Wo
         const deviation = parseFloat(columns.Deviation)
         const route = columns.Route
         const label = `${columns.Current} → ${columns.Target}`
-        if (get(new RegExp(`^${route}( \\(preview only\\))?$`, 'i')) === 'Off') return `${label} · Category excluded`
-        if (route === 'Grid Line') return `${label} · Grid line preview only`
-        if (deviation > maxSafe) return `${label} · Intentional · unchanged`
-        if (deviation > accidental && action === 'Fix all fixable') return `${label} · Ambiguous · explicit selection needed`
-        return `${label} · ${actionIsFix ? 'Correction prepared' : deviation > accidental ? 'Ambiguous · review explicitly' : 'Accidental · fixable'}`
+        if (get(new RegExp(`^${route}( \\(preview only\\))?$`, 'i')) === 'Off') return `${label}, Category excluded`
+        if (route === 'Grid Line') return `${label}, Grid line preview only`
+        if (deviation > maxSafe) return `${label}, Intentional, unchanged`
+        if (deviation > accidental && action === 'Fix all fixable') return `${label}, Ambiguous, explicit selection needed`
+        return `${label}, ${actionIsFix ? 'Correction prepared' : deviation > accidental ? 'Ambiguous, review explicitly' : 'Accidental, fixable'}`
       })
-      return { summary: `Reviewed ${records.length} sample offsets. Accidental ≤ ${accidental}° · Max safe ${maxSafe}°.`, rows }
+      return { summary: `Reviewed ${records.length} sample offsets. Accidental ≤ ${accidental}°, Max safe ${maxSafe}°.`, rows }
     }
     case 'structural-qa': {
       const beams = get(/^inspection mode$/i) === 'Beam endpoint contact'
       return {
         summary: beams ? 'Checked whether the sample beam endpoints intersect a support. This is a geometric contact check.' : 'Measured the sample columns against their nearest grid intersections.',
-        rows: results(({ columns }) => `${columns['QA Status']} · ${columns['Measured Deviation / Reference']}`),
+        rows: results(({ columns }) => `${columns['QA Status']}, ${columns['Measured Deviation / Reference']}`),
       }
     }
     case 'scope-box-synchronizer': {
@@ -149,24 +149,24 @@ export function sentinelResult({ slug, action, fields, records, windowName }: Wo
         summary: 'Prepared the selected scope-box synchronization from the sample master link.',
         rows: results(({ columns }) => {
           const status = columns.Status
-          if (status === 'Matched') return 'Host extents already match · no replacement'
-          const change = status === 'Missing in host' ? 'Create host scope box' : `Replace host box · ${columns['Drift (mm)']} mm drift`
-          return `${change}${assign ? ' · assign matching floor plans' : ''}`
+          if (status === 'Matched') return 'Host extents already match, no replacement'
+          const change = status === 'Missing in host' ? 'Create host scope box' : `Replace host box, ${columns['Drift (mm)']} mm drift`
+          return `${change}${assign ? ', assign matching floor plans' : ''}`
         }),
       }
     }
     case 'in-place-converter':
       return {
         summary: 'Reviewed geometry copies for a Generic Model RFA export. This sample displays a receipt. The native tool writes the RFA files.',
-        rows: results(({ columns }) => `${columns.Solids} solids · ${columns['Approx Volume']} · original instance retained`),
+        rows: results(({ columns }) => `${columns.Solids} solids, ${columns['Approx Volume']}, original instance retained`),
       }
     case 'mirrored-auditor':
       return {
         summary: 'Compared sample mirror warnings with valid hand or facing flips.',
-        rows: results(({ columns }) => columns['Mirror Status'] === 'MIRROR WARNING' ? 'Mirrored geometry · review eligibility before replacement' : 'Valid flip · unchanged'),
+        rows: results(({ columns }) => columns['Mirror Status'] === 'MIRROR WARNING' ? 'Mirrored geometry, review eligibility before replacement' : 'Valid flip, unchanged'),
       }
     case 'model-query-pro': {
-      if (windowName === 'modelquerywindow') return { summary: `Read ${records.length} sample query records.`, rows: results(({ columns }) => `${columns.Category} · ${columns['Matched Rule Value']}`) }
+      if (windowName === 'modelquerywindow') return { summary: `Read ${records.length} sample query records.`, rows: results(({ columns }) => `${columns.Category}, ${columns['Matched Rule Value']}`) }
       const profile = get(/^profile$/i) || 'Architecture'
       const scope = get(/^base scope$/i) || 'Project'
       const timings = records.some(({ columns }) => Boolean(columns.Check))
@@ -185,8 +185,8 @@ export function sentinelResult({ slug, action, fields, records, windowName }: Wo
           && (option === 'All options' || option === finding.option)
       })
       return {
-        summary: timings ? `${profile} profile · ${scope} · Sample check timings` : `${profile} profile · ${scope} · ${visible.length} sample findings shown`,
-        rows: visible.map(({ label, columns }) => ({ label, value: timings ? `${columns.Outcome} · ${columns.Reviewed} reviewed · ${columns.Issues} issues · ${columns['Read ms']} ms` : `${columns.Finding} · ${columns.Comparison} · IDs ${columns.Elements}` })),
+        summary: timings ? `${profile} profile, ${scope}, Sample check timings` : `${profile} profile, ${scope}, ${visible.length} sample findings shown`,
+        rows: visible.map(({ label, columns }) => ({ label, value: timings ? `${columns.Outcome}, ${columns.Reviewed} reviewed, ${columns.Issues} issues, ${columns['Read ms']} ms` : `${columns.Finding}, ${columns.Comparison}, IDs ${columns.Elements}` })),
       }
     }
   }

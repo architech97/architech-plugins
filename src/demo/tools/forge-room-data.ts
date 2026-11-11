@@ -3,8 +3,8 @@ import { ELEMENTS, ROOMS } from '../sample'
 export const ROOM_PROPERTIES = ['Room Number', 'Room Name', 'Department', 'Floor Finish', 'Ceiling Finish', 'Wall Finish']
 export const ELEMENT_PARAMETERS = ['Comments', 'Mark', 'Room Data', 'Department', 'Finish Code']
 export const roomPropertyName = (name: string) => name === 'Room Name' ? 'Name' : name === 'Room Number' ? 'Number' : name
-export const roomPropertyLabel = (name: string) => roomPropertyName(name) + ' · built-in'
-export const elementParameterLabel = (name: string) => name + (['Comments', 'Mark', 'Department'].includes(name) ? ' · built-in' : ' · project')
+export const roomPropertyLabel = (name: string) => roomPropertyName(name) + ', built-in'
+export const elementParameterLabel = (name: string) => name + (['Comments', 'Mark', 'Department'].includes(name) ? ', built-in' : ', project')
 export const ROOM_SOURCES = ['Current Model', 'Sample Residence – Architecture.rvt', 'Sample Residence – Interiors.rvt']
 export const EMPTY_CHOICE = '— Choose —'
 export interface RoomMapping { id: number; source: string; target: string; isType: boolean }
@@ -36,15 +36,15 @@ export function roomDataPlan(model: RoomDataElement[], categories: string[], map
     for (const element of scope.filter(element => element.room)) {
       const key = roomTypeKey(element)
       const value = roomProperty(element.room, mapping.source, source, roomValues)
-      if (values.has(key) && values.get(key) !== value) return element.family + ' · ' + element.type + ' spans rooms with different proposed values for ' + mapping.target + '. Use an Instance mapping or a common room value.'
+      if (values.has(key) && values.get(key) !== value) return element.family + ', ' + element.type + ' spans rooms with different proposed values for ' + mapping.target + '. Use an Instance mapping or a common room value.'
       values.set(key, value)
     }
   }
   return scope.flatMap(element => mappings.map(mapping => {
     const value = roomProperty(element.room, mapping.source, source, roomValues)
     const writable = Boolean(value)
-    return { key: element.id + ':' + mapping.id, id: element.id, room: element.room || '—', element: element.family + ' · ' + element.type, mapping,
-      before: element.values[mapping.target] ?? '', after: value, writable, status: writable ? 'Ready' : 'No containing source room · unchanged' }
+    return { key: element.id + ':' + mapping.id, id: element.id, room: element.room || '—', element: element.family + ', ' + element.type, mapping,
+      before: element.values[mapping.target] ?? '', after: value, writable, status: writable ? 'Ready' : 'No containing source room, unchanged' }
   }))
 }
 export function applyRoomData(model: RoomDataElement[], selected: RoomDataRow[]) {

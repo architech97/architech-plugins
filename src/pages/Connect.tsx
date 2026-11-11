@@ -1,6 +1,6 @@
 import { useRef, useState, type FormEvent } from 'react'
 import { useSearchParams } from 'react-router-dom'
-import { ArrowUpRight, Clipboard, Mail, Phone, Send } from 'lucide-react'
+import { Clipboard, Mail, Phone, Send } from 'lucide-react'
 import { CONTACT } from '../data/contact'
 import { productBySlug } from '../data/catalog'
 
@@ -36,7 +36,7 @@ function Form({ topic, product }: { topic: Topic; product?: string }) {
       ['Role', data.get('role')], ['Software', data.getAll('platform').join(', ')],
     ]
     const lines = fields.filter(([, value]) => value).map(([name, value]) => name + ': ' + value)
-    setDraft({ subject: '[ArchiTECH] ' + title + (product ? ' · ' + product : ''), body: [...lines, '', String(data.get('message')).trim()].join('\n') })
+    setDraft({ subject: '[ArchiTECH] ' + title + (product ? ', ' + product : ''), body: [...lines, '', String(data.get('message')).trim()].join('\n') })
     setCopyMessage('')
   }
 
@@ -56,7 +56,6 @@ function Form({ topic, product }: { topic: Topic; product?: string }) {
     <section className="section inquiry-section">
       <div className="wrap inquiry-grid">
         <div className="inquiry-intro">
-          <span className="eyebrow">Connect</span>
           <h1>Discuss a workflow or share a suggestion</h1>
           <p className="lead">Tell me about a repetitive BIM task, ask how one of these tools works, or suggest an improvement.</p>
         </div>
@@ -95,9 +94,9 @@ function Form({ topic, product }: { topic: Topic; product?: string }) {
           <p className="inquiry-reply">I reply within one working day.</p>
           <a href={'mailto:' + CONTACT.email}><Mail size={16} /> {CONTACT.email}</a>
           {CONTACT.phones.map((phone) => <a key={phone} href={'tel:' + phone.replace(/\s/g, '')}><Phone size={16} /> {phone}</a>)}
-          <a href={CONTACT.linkedin} target="_blank" rel="noreferrer"><ArrowUpRight size={16} /> LinkedIn</a>
-          {CONTACT.whatsapp && <a href={'https://wa.me/' + CONTACT.whatsapp} target="_blank" rel="noreferrer"><ArrowUpRight size={16} /> WhatsApp</a>}
-          <p className="muted">Navneet Singh · New Delhi</p>
+          <a href={CONTACT.linkedin} target="_blank" rel="noreferrer">LinkedIn</a>
+          {CONTACT.whatsapp && <a href={'https://wa.me/' + CONTACT.whatsapp} target="_blank" rel="noreferrer">WhatsApp</a>}
+          <p className="muted">Navneet Singh, New Delhi</p>
         </aside>
       </div>
     </section>

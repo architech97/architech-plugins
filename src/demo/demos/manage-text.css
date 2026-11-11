@@ -2,7 +2,7 @@
 .mt-nav { border: 1px solid var(--d-border); border-radius: 8px; align-self: start; }
 .mt-nav > .ad-label { padding: 0 10px 5px; }
 .mt-nav button { display: flex; align-items: center; gap: 7px; }
-.mt-number { display: grid; place-items: center; width: 20px; height: 20px; flex: none; border: 1px solid var(--d-border-strong); border-radius: 50%; font-size: 10px; }
+.mt-number { display: grid; place-items: center; width: 20px; height: 20px; flex: none; border: 1px solid var(--d-border-strong); border-radius: 50%; font-size: 11px; }
 .mt-work, .mt-stack, .mt-field { display: grid; gap: 8px; min-width: 0; }
 .mt-heading h3 { margin: 0; font-size: 17px; font-weight: 600; line-height: 1.25; }
 .mt-heading p { margin: 4px 0 0; }

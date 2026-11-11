@@ -1,3 +1,8 @@
+:root {
+  --replica-demo-demos-sheetexport-1: transparent;
+  --replica-demo-demos-sheetexport-2: #080d18b0;
+}
+
 .sheet-export-workspace {
   display: grid;
   grid-template-columns: minmax(130px, .23fr) minmax(0, 1fr);
@@ -21,8 +26,8 @@
   grid-template-columns: 21px minmax(0, 1fr);
   gap: 3px 7px;
   text-align: left;
-  background: transparent;
-  border: 1px solid transparent;
+  background: var(--replica-demo-demos-sheetexport-1);
+  border: 1px solid var(--replica-demo-demos-sheetexport-1);
   border-radius: 5px;
   padding: 8px 7px;
   cursor: pointer;
@@ -74,7 +79,7 @@
 }
 .sheet-export-modal:not([open]) { display: none; }
 .sheet-export-modal[open] { display: grid; gap: 12px; }
-.sheet-export-modal::backdrop { background: #080d18b0; }
+.sheet-export-modal::backdrop { background: var(--replica-demo-demos-sheetexport-2); }
 .sheet-export-modal > .ad-row:last-child { justify-content: end; flex-wrap: wrap; }
 .sheet-export-name { display: grid; grid-template-columns: minmax(130px, .34fr) minmax(0, 1fr); gap: 12px; }
 .sheet-export-name .ad-table { min-width: 540px; }

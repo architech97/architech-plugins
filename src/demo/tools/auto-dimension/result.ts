@@ -17,7 +17,7 @@ const lengthsByView: Record<number, number[]> = { 11: [3150, 4200, 6000], 12: [2
 export const settings = () => [
   option('Sample view', eligible.map(({ name }) => name)),
   { label: 'Row spacing in mm on paper', initial: '8' },
-  option('Dimension type', ['Linear · 2.5 mm', 'Linear · 3.5 mm']),
+  option('Dimension type', ['Linear, 2.5 mm', 'Linear, 3.5 mm']),
 ]
 
 export default function result({ fields }: WorkflowInput) {
@@ -31,17 +31,17 @@ export default function result({ fields }: WorkflowInput) {
   if (!activeStrings.length) return 'Choose at least one dimension string.'
   const plan = /plan/i.test(view.kind)
   const rows = activeStrings.map((item, index) => {
-    if (!plan && ['Room clear sizes', 'Openings and wall ends', 'Setting-out across walls'].includes(item)) return resultRow(item, 'Skipped · this string requires a plan')
-    if (item === 'Room clear sizes' && /pick walls|witness line/i.test(field(fields, 'scope'))) return resultRow(item, 'Skipped · this string needs rooms in scope')
+    if (!plan && ['Room clear sizes', 'Openings and wall ends', 'Setting-out across walls'].includes(item)) return resultRow(item, 'Skipped, this string requires a plan')
+    if (item === 'Room clear sizes' && /pick walls|witness line/i.test(field(fields, 'scope'))) return resultRow(item, 'Skipped, this string needs rooms in scope')
     const values = lengthsByView[view.id] ?? lengthsByView[11]
     const measured = values[index % values.length]
     const offset = (index + 1) * row
     const side = item === 'Setting-out across walls' ? field(fields, 'mode', 'To core faces') :
       item === 'Openings and wall ends' || item === 'Overall' ? field(fields, 'Facade side', 'Outside (room-aware)') : ''
-    return resultRow(item, measured + ' mm · row at ' + Number(offset.toFixed(2)) + ' mm on paper' + (side ? ' · ' + side : ''))
+    return resultRow(item, measured + ' mm, row at ' + Number(offset.toFixed(2)) + ' mm on paper' + (side ? ', ' + side : ''))
   })
   if (enabled(fields, /^radius on curved edges/i)) rows.push(resultRow('Radius on curved edges', 'Unavailable in Revit 2024. The installed option requires Revit 2025 or later.'))
   const accepted = rows.filter(({ value }) => !/^(Skipped|Unavailable)/.test(value)).length
   return { summary: 'Prepared ' + accepted + ' sample dimension strings for ' + name + '.',
-    rows: [resultRow('Dimension type', field(fields, 'Dimension type', 'Linear · 2.5 mm')), ...rows] }
+    rows: [resultRow('Dimension type', field(fields, 'Dimension type', 'Linear, 2.5 mm')), ...rows] }
 }

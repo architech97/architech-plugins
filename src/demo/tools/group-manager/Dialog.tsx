@@ -21,8 +21,8 @@ const initial: Group[] = [
     kind: "detail",
     members: 12,
     instances: [
-      { id: 352211, view: "A-501 · Typical details" },
-      { id: 352260, view: "A-502 · Kitchen details" },
+      { id: 352211, view: "A-501, Typical details" },
+      { id: 352260, view: "A-502, Kitchen details" },
     ],
   },
   {
@@ -30,7 +30,7 @@ const initial: Group[] = [
     name: "Door head detail",
     kind: "detail",
     members: 8,
-    instances: [{ id: 352412, view: "A-501 · Typical details" }],
+    instances: [{ id: 352412, view: "A-501, Typical details" }],
   },
   {
     id: 350109,
@@ -204,7 +204,7 @@ export default function GroupManager(ctx: DemoContext) {
         footer={
           <>
             <span className="ad-status" role="status">
-              {status || "Sample Residence · Browser simulation"}
+              {status || "Sample Residence, Browser simulation"}
             </span>
             {ungroup && (
               <Btn
@@ -389,7 +389,7 @@ export default function GroupManager(ctx: DemoContext) {
           </div>
           {isolated.length > 0 && (
             <p className="group-note">
-              Isolated sample IDs · {isolated.join(", ")}
+              Isolated sample IDs, {isolated.join(", ")}
             </p>
           )}
           {receipt.length > 0 && <Receipt entries={receipt} />}

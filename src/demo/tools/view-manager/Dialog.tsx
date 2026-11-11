@@ -78,12 +78,12 @@ export default function ViewManager(ctx: DemoContext) {
     section === 3 && new Set(picked.map(renamed)).size !== picked.length ? 'The proposed view names clash.' :
     section === 3 && picked.some((view) => views.some((other) => !ticked.includes(other.id) && other.name.toLowerCase() === renamed(view).toLowerCase())) ? 'A proposed name is already in use.' :
     section === 5 && !hidden && !graphics ? 'Choose hidden elements or Visibility/Graphics to copy.' : ''
-  const preview = picked.map((view) => ({ label: view.name, value: section === 0 ? conversion + (inplace ? ' · Convert in place' : ' · New copy') + (replaceOnSheet && view.sheet ? ' · Takes viewport on ' + view.sheet : '') +
-    (conversion === 'Drafting view' ? ' · ' + (modelGeometry ? 'Model + annotation' : 'Annotation only') + ' · ' + (nativeLines ? 'Native lines and regions' : 'CAD import') + (keepGraphics ? ' · Graphics kept' : '') : '') :
-    section === 1 ? duplicate === 'Duplicate as dependent' && view.type === '3D View' ? 'Skipped · dependent duplication unavailable for a 3D view' : duplicate : section === 2 ? view.template + ' → ' + template :
+  const preview = picked.map((view) => ({ label: view.name, value: section === 0 ? conversion + (inplace ? ', Convert in place' : ', New copy') + (replaceOnSheet && view.sheet ? ', Takes viewport on ' + view.sheet : '') +
+    (conversion === 'Drafting view' ? ', ' + (modelGeometry ? 'Model + annotation' : 'Annotation only') + ', ' + (nativeLines ? 'Native lines and regions' : 'CAD import') + (keepGraphics ? ', Graphics kept' : '') : '') :
+    section === 1 ? duplicate === 'Duplicate as dependent' && view.type === '3D View' ? 'Skipped, dependent duplication unavailable for a 3D view' : duplicate : section === 2 ? view.template + ' → ' + template :
       section === 3 ? renamed(view) === view.name ? 'Unchanged' : view.name + ' → ' + renamed(view) :
         section === 4 ? parameter + ' = ' + (value || '(empty)') :
-          view.name === source ? 'Source view · unchanged' : [hidden && hideMode, graphics && (view.template !== '<None>' ? 'V/G controlled by template · kept' : 'Copy category and link settings')].filter(Boolean).join(' · ') }))
+          view.name === source ? 'Source view, unchanged' : [hidden && hideMode, graphics && (view.template !== '<None>' ? 'V/G controlled by template, kept' : 'Copy category and link settings')].filter(Boolean).join(', ') }))
   const runLabel = section === 0 ? 'Convert ' + picked.length + ' views' : section === 1 ? 'Duplicate ' + picked.length + ' views' :
     section === 2 ? 'Apply template' : section === 3 ? 'Rename ' + picked.length + ' views' : section === 4 ? 'Set parameter' :
       (hideMode.startsWith('Unhide') ? 'Unhide' : hideMode === 'Match the source' ? 'Match' : 'Hide') + ' in ' + picked.length + ' views'
@@ -107,11 +107,11 @@ export default function ViewManager(ctx: DemoContext) {
         replaceOnSheet && ticked.includes(view.id) ? { ...view, sheet: '' } : view), ...next])
     } else setViews(views.map((view) => !ticked.includes(view.id) ? view : section === 2 ? { ...view, template } :
       section === 3 ? { ...view, name: renamed(view) } : section === 4 ? { ...view, parameters: { ...view.parameters, [parameter]: value } } :
-        view.name === source ? view : { ...view, hidden: [hidden && hideMode + ' · ' + source, graphics && view.template === '<None>' && 'V/G copied'].filter(Boolean).join(' · ') }))
-    setReceipt(preview.map(({ label, value }) => label + ' · ' + value))
+        view.name === source ? view : { ...view, hidden: [hidden && hideMode + ', ' + source, graphics && view.template === '<None>' && 'V/G copied'].filter(Boolean).join(', ') }))
+    setReceipt(preview.map(({ label, value }) => label + ', ' + value))
     setGuard(false)
     ctx.done('configure'); ctx.done('row'); ctx.done('run'); ctx.done('apply'); ctx.done('review')
-    ctx.notify({ kind: 'success', text: runLabel + ' · sample fixture updated.' })
+    ctx.notify({ kind: 'success', text: runLabel + ', sample fixture updated.' })
   }
 
   return <FolioFrame ctx={ctx} title="View Manager" sections={sections} section={section} onSection={setSection}

@@ -152,7 +152,7 @@ export default function SheetExport({ theme, setTheme, done, rewind, notify, clo
   const nameExample = chosen[0] ?? drawingItems[0]
 
   return (
-    <RevitDialog theme={theme} onTheme={setTheme} title="Sheet Export" caption="Selection · Format · Create" onClose={close}
+    <RevitDialog theme={theme} onTheme={setTheme} title="Sheet Export" caption="Selection, Format, Create" onClose={close}
       footer={<><span className="ad-status" role="status">{complete ? rows.length + ' sample output entries ready' : step < 2 ? 'Ready' : rows.length + ' item(s) ready to export'}</span>
         <Btn disabled={!step} onClick={() => go(step - 1)}>Back</Btn>
         <Btn demo={step === 0 ? 'continue-selection' : 'continue-format'} disabled={step === 2 || !chosen.length} onClick={() => go(step + 1)}>Next</Btn>
@@ -207,7 +207,7 @@ export default function SheetExport({ theme, setTheme, done, rewind, notify, clo
                   </tr>)}</tbody></table>
                 {!shown.length && <p className="suite-flow-note">No sheets or views match this search.</p>}
               </div>
-              <p className="ad-note" role="status">{shown.filter((item) => selectedSet.has(item.id)).length} of {shown.length} shown ticked · {chosen.length} selected</p>
+              <p className="ad-note" role="status">{shown.filter((item) => selectedSet.has(item.id)).length} of {shown.length} shown ticked, {chosen.length} selected</p>
             </div>
           </>}
 
@@ -259,7 +259,7 @@ export default function SheetExport({ theme, setTheme, done, rewind, notify, clo
               <div className="ad-row">
                 <Btn onClick={() => downloadCsv('AT-01-sheet-export-manifest.csv', ['File name', 'Format', 'Sheets', 'PDF colors', 'Folder', 'Options'],
                   rows.map((row) => [row.name, row.type, row.items, row.type === 'PDF' ? color : '', separate ? folder + '/' + row.type : folder,
-                    row.type === 'PDF' ? orientation : [choices[row.type], ...(row.type === 'DWG' ? Object.keys(dwg).filter((flag) => dwg[flag as keyof typeof dwg]) : [])].filter(Boolean).join(' · ')]))}>Download sample manifest</Btn>
+                    row.type === 'PDF' ? orientation : [choices[row.type], ...(row.type === 'DWG' ? Object.keys(dwg).filter((flag) => dwg[flag as keyof typeof dwg]) : [])].filter(Boolean).join(', ')]))}>Download sample manifest</Btn>
                 {register && <Btn onClick={() => downloadCsv('AT-01-drawing-register.csv', ['Sheet number', 'Sheet name', 'Revision'],
                   chosen.filter((item) => item.kind === 'Sheet').map((item) => [item.number, item.name, item.revision]))}>Download drawing register CSV</Btn>}
               </div>
@@ -292,7 +292,7 @@ export default function SheetExport({ theme, setTheme, done, rewind, notify, clo
           <div className="ad-row"><Btn onClick={() => setOverlay(undefined)}>Cancel</Btn><Btn primary disabled={!draftRule.length} onClick={() => { setRule(draftRule); invalidate('export'); setOverlay(undefined) }}>OK</Btn></div>
         </>}
         {overlay === 'review' && <>
-          <p>Review {rows.length} sample output entries for {folder}.</p><p className="ad-note">{filePolicy} · {separate ? 'Separate format folders' : 'Single folder'}. The browser produces a manifest of the planned outputs.</p>
+          <p>Review {rows.length} sample output entries for {folder}.</p><p className="ad-note">{filePolicy}, {separate ? 'Separate format folders' : 'Single folder'}. The browser produces a manifest of the planned outputs.</p>
           <div className="ad-row"><Btn onClick={() => setOverlay(undefined)}>Cancel</Btn><Btn primary onClick={() => {
             setComplete(true); done('export'); setOverlay(undefined); notify({ kind: 'success', text: 'Prepared ' + rows.length + ' sample output entries.' })
           }}>Run sample export</Btn></div>

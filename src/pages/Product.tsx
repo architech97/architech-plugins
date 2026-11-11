@@ -1,5 +1,5 @@
 import { Link, useParams } from 'react-router-dom'
-import { ArrowRight, CheckCircle2, ShieldCheck, PlayCircle, MessageSquare, AlertCircle, FileCheck2 } from 'lucide-react'
+import { CheckCircle2, ShieldCheck, PlayCircle, MessageSquare, AlertCircle, FileCheck2 } from 'lucide-react'
 import { DEMO_PROJECT } from '../data/demoProject'
 import { PRODUCTS, productBySlug } from '../data/catalog'
 import { suiteById } from '../data/suites'
@@ -88,8 +88,8 @@ export default function Product() {
           </nav>
           <div className="p-hero-grid">
             <div>
-              <span className="suite-tag" style={{ ['--suite' as string]: suite.color }}>{suite.name} · {p.panel}</span>
               <h1>{p.name}</h1>
+              <p className="suite-tag" style={{ ['--suite' as string]: suite.color }}>{suite.name}, {p.panel}</p>
               <p className="lead">{p.tagline}</p>
               <div className="hero-cta">
                 {format && <a className="btn btn-primary" href="#demo"><PlayCircle size={18} /> {format.action}</a>}
@@ -105,8 +105,8 @@ export default function Product() {
                   </dl>
                   {(hasChairPreview || hasRecordedPlacement) && (
                     <div className="product-scenario-links">
-                      {hasChairPreview && <a href="#desktop-chair-preview">See the desktop chair preview <ArrowRight size={14} /></a>}
-                      {hasRecordedPlacement && <a href="#recorded-placement">See the separate Revit 2024 capture <ArrowRight size={14} /></a>}
+                      {hasChairPreview && <a href="#desktop-chair-preview">See the desktop chair preview</a>}
+                      {hasRecordedPlacement && <a href="#recorded-placement">See the separate Revit 2024 capture</a>}
                     </div>
                   )}
                 </section>
@@ -128,12 +128,10 @@ export default function Product() {
         <section className="section" style={{ paddingTop: 20, paddingBottom: 40 }}>
           <div className="wrap ps-grid">
             <Reveal><div className="glass ps-card" style={{ height: '100%' }}>
-              <span className="eyebrow" style={{ color: 'var(--warn)' }}>The problem</span>
               <h3>What slows teams down</h3>
               <p>{p.problem}</p>
             </div></Reveal>
             <Reveal delay={80}><div className="glass ps-card" style={{ height: '100%', borderColor: 'var(--line-strong)' }}>
-              <span className="eyebrow">The solution</span>
               <h3>What {p.name} does</h3>
               <p>{p.tagline}{p.capabilities[0] && p.capabilities[0] !== p.tagline ? ` ${p.capabilities[0]}` : ''}</p>
             </div></Reveal>
@@ -145,8 +143,8 @@ export default function Product() {
         <section className="section" id="demo" style={{ paddingTop: 40 }}>
           <div className="wrap-wide">
             <Reveal className="section-head">
-              <div><span className="eyebrow">{format.label}</span><h2>{demo.title}</h2></div>
-              <Link className="btn btn-ghost" to={'/demos/' + demo.id}>Open full demo page <ArrowRight size={17} /></Link>
+              <div><h2>{demo.title}</h2></div>
+              <Link className="btn btn-ghost" to={'/demos/' + demo.id}>Open full demo page</Link>
             </Reveal>
             <DemoPlayer key={demo.id} demo={demo} />
             <details className="product-provenance">
@@ -161,7 +159,6 @@ export default function Product() {
       <section className="section" style={{ paddingTop: demo ? 40 : 20 }}>
         <div className="wrap grid-2" style={{ alignItems: 'start', gap: 28 }}>
           <Reveal>
-            <span className="eyebrow">Capabilities</span>
             <h2 style={{ margin: '12px 0 20px', fontSize: 'clamp(1.6rem, 2.6vw, 2.1rem)' }}>How it works</h2>
             <ul className="feature-list">
               {(p.capabilities.length ? p.capabilities : [p.description]).map((c) => <li key={c}><CheckCircle2 size={18} /><span>{c}</span></li>)}
@@ -169,7 +166,6 @@ export default function Product() {
           </Reveal>
           <Reveal delay={80}>
             {p.safeguards.length > 0 && <>
-              <span className="eyebrow">Safeguards</span>
               <h2 style={{ margin: '12px 0 20px', fontSize: 'clamp(1.6rem, 2.6vw, 2.1rem)' }}>Built to be reviewed</h2>
               <ul className="feature-list" style={{ marginBottom: 28 }}>
                 {p.safeguards.map((c) => <li key={c}><ShieldCheck size={18} /><span>{c}</span></li>)}
@@ -187,7 +183,7 @@ export default function Product() {
         <section className="section" id="dialog-reference" style={{ paddingTop: 20, scrollMarginTop: '124px' }}>
           <div className="wrap">
             <Reveal className="section-head">
-              <div><span className="eyebrow">Product reference</span><h2>{p.dialogs.length ? 'Plugin dialogs' : 'Desktop captures and illustrations'}</h2></div>
+              <div><h2>{p.dialogs.length ? 'Plugin dialogs' : 'Desktop captures and illustrations'}</h2></div>
               {p.dialogs.length > 0 && <p className="lead">{p.dialogs.length} dialog{p.dialogs.length > 1 ? 's' : ''} with sample data. Select a window or enlarge it to inspect the controls.</p>}
             </Reveal>
             {p.dialogs.length > 0 && <Reveal><DialogGallery key={p.slug} dialogs={p.dialogs} name={p.name} /></Reveal>}
@@ -246,7 +242,7 @@ export default function Product() {
       {related.length > 0 && (
         <section className="section" style={{ paddingTop: 20 }}>
           <div className="wrap">
-            <div className="section-head"><div><span className="eyebrow">Related</span><h2>More in {suite.name}</h2></div><Link className="btn btn-ghost" to={`/plugins?suite=${p.suite}`}>All {suite.short} products <ArrowRight size={17} /></Link></div>
+            <div className="section-head"><div><h2>More in {suite.name}</h2></div><Link className="btn btn-ghost" to={`/plugins?suite=${p.suite}`}>All {suite.short} products</Link></div>
             <div className="grid-3">{related.map((r) => <ProductCard key={r.slug} p={r} />)}</div>
           </div>
         </section>

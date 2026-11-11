@@ -74,7 +74,7 @@ export default function ForgeFamilyParameters({ mode, close, nestedTools, family
           {transfer ? <>
             <label><span>Select Family</span><Select label="Select source family" value={source} options={families.map(family => family.name)}
               onChange={value => { setSource(value); setSelected([]); setPrefix(''); setPrefixDraft(''); clear() }} /></label>
-            {visibleDefinitions.map(definition => <Check key={definition.name} label={`${prefix}${definition.name} · ${definition.type} · ${definition.binding}`}
+            {visibleDefinitions.map(definition => <Check key={definition.name} label={`${prefix}${definition.name}, ${definition.type}, ${definition.binding}`}
               checked={selected.includes(definition.name)} onChange={checked => { setSelected(checked ? [...selected, definition.name] : selected.filter(name => name !== definition.name)); clear() }} />)}
             {!visibleDefinitions.length && <p className="ad-note">No source parameters match the current filters.</p>}
             <label><span>Parameter name prefix</span><TextBox aria-label="Parameter name prefix" value={prefixDraft} maxLength={32} onChange={event => setPrefixDraft(event.target.value)} /></label>
@@ -92,7 +92,7 @@ export default function ForgeFamilyParameters({ mode, close, nestedTools, family
         <fieldset className="ad-card suite-flow-options forge-family-targets">
           <legend>Destination families</legend>
           {visibleTargets.map(family => <Check key={family.name}
-            label={`${family.name} · ${family.category} · ${family.definitions.length} definitions`} checked={destinations.includes(family.name)}
+            label={`${family.name}, ${family.category}, ${family.definitions.length} definitions`} checked={destinations.includes(family.name)}
             onChange={checked => {
               setTargets({ ...targets, [mode]: checked ? [...destinations, family.name] : destinations.filter(name => name !== family.name) })
               clear()
@@ -111,7 +111,7 @@ export default function ForgeFamilyParameters({ mode, close, nestedTools, family
         {!transfer && <Btn disabled={!newDefinition && !destinations.length} onClick={() => { setNewDefinition(false); setDraft(NEW); setTargets({ ...targets, Families: [] }); clear() }}>Clear</Btn>}
         <Btn primary disabled={!definitions.length || !destinations.length} onClick={() => { setConfirmedMode(mode); setReceipt(undefined) }}>Apply</Btn>
       </div>}
-      {receipt?.mode === mode && <p className="ad-result" role="status">{receipt.created} definitions added · {receipt.skipped} existing definitions kept in the sample families.</p>}
+      {receipt?.mode === mode && <p className="ad-result" role="status">{receipt.created} definitions added, {receipt.skipped} existing definitions kept in the sample families.</p>}
     </div>
   )
 }

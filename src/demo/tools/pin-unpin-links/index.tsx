@@ -40,7 +40,7 @@ export default function PinUnpinLinks(context: DemoContext) {
     setEntries(previous => [...previous, `Refreshed the current sample scan: ${links.length} placements. Pin states are preserved.`])
     context.done('preview')
   }
-  return <div className="inspector-demo"><DialogShell theme={context.theme} onTheme={context.setTheme} title="Pin / Unpin Links" subtitle="Sample Residence · Sample data, fictional" onClose={context.close}
+  return <div className="inspector-demo"><DialogShell theme={context.theme} onTheme={context.setTheme} title="Pin / Unpin Links" subtitle="Sample Residence, Sample data, fictional" onClose={context.close}
     footer={<div className="inspector-footer">{actions.map((label, index) => <Btn key={label} demo={index === 0 ? 'apply' : undefined} primary={index === 0} danger={index === 1} disabled={targetsFor(links, index).length === 0} onClick={() => chooseAction(index)}>{label}</Btn>)}<Btn onClick={refresh}>Refresh</Btn><Btn onClick={context.close}>Close</Btn></div>}>
     <p className="inspector-summary" aria-live="polite">{summary}{entries.length > 0 && <><br />{entries[entries.length - 1]}</>}</p>
     <InspectorTable rows={rows} columns={columns} selected={selected} onSelect={setSelected} actionKey={actionKey} />

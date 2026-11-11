@@ -16,7 +16,7 @@ const sections = [
 interface ElementRow { id: number; category: string; label: string; values: Record<string, string> }
 interface Schedule { id: number; name: string; kind: string; category: string }
 const initial: ElementRow[] = sampleResidence.elements.map((element) => ({ id: element.id, category: element.category,
-  label: element.family + ' · ' + element.type, values: { ...element.values } }))
+  label: element.family + ', ' + element.type, values: { ...element.values } }))
 const schedules: Schedule[] = [
   { id: 1, name: 'Door Schedule', kind: 'Schedule', category: 'Doors' },
   { id: 2, name: 'Window Schedule', kind: 'Schedule', category: 'Windows' },
@@ -61,8 +61,8 @@ export default function UpdateSchedule(ctx: DemoContext) {
     const current = element.values[change.parameter] ?? ''
     const conflict = current !== change.exported && current !== change.next
     const blank = !change.next && !clearBlank
-    return [{ ...change, current, conflict, blank, label: change.id + ' · ' + change.parameter,
-      status: blank ? 'Blank value · kept' : conflict && !overwrite ? 'Conflict · kept' : current === change.next ? 'Unchanged' : 'Ready' }]
+    return [{ ...change, current, conflict, blank, label: change.id + ', ' + change.parameter,
+      status: blank ? 'Blank value, kept' : conflict && !overwrite ? 'Conflict, kept' : current === change.next ? 'Unchanged' : 'Ready' }]
   }) : []
   const changes = review.filter(({ status }) => status === 'Ready')
   const conflicts = review.filter(({ conflict, blank }) => conflict && !blank)
@@ -101,7 +101,7 @@ export default function UpdateSchedule(ctx: DemoContext) {
       while (scheduleList.some((schedule) => schedule.name === name)) name = base + ' (' + number++ + ')'
       setScheduleList([...scheduleList, { ...schedules[0], id: Math.max(...scheduleList.map(({ id }) => id)) + 1, name }])
     }
-    setReceipt(changes.map(({ label, current, next }) => label + ' · ' + current + ' → ' + (next || '(blank)')).concat([
+    setReceipt(changes.map(({ label, current, next }) => label + ', ' + current + ' → ' + (next || '(blank)')).concat([
       conflicts.length && !overwrite ? conflicts.length + ' conflicts skipped.' : 'Reviewed conflicts included.',
       syncColumns ? 'Verified sample columns retained. Computed fields are protected.' : 'Schedule columns retained.',
     ]))
@@ -122,7 +122,7 @@ export default function UpdateSchedule(ctx: DemoContext) {
       const affected = kind === 'Type' ? source?.label === row.label && source.category === row.category : Number(id) === row.id
       return affected ? [[parameter, value]] : []
     })) } })))
-    setReceipt(gridChanges.map(([key, value]) => key.replace('|', ' · ') + ' → ' + value + (kind === 'Type' ? ' · Applied to all sample instances of this type' : '')))
+    setReceipt(gridChanges.map(([key, value]) => key.replace('|', ', ') + ' → ' + value + (kind === 'Type' ? ', Applied to all sample instances of this type' : '')))
     setGrid(grid.map((row) => ({ ...row, values: { ...row.values, ...Object.fromEntries(gridChanges.flatMap(([key, value]) => {
       const [id, parameter] = key.split('|')
       return Number(id) === row.id ? [[parameter, value]] : []
@@ -144,18 +144,18 @@ export default function UpdateSchedule(ctx: DemoContext) {
       </section>
     </>}
     {section === 1 && <>
-      <section className="ad-card folio-runtime-stack"><b className="ad-label">1 File</b><div className="ad-row"><span>{loaded ? 'AT-01 Editable Schedules - Edited.xlsx · Prepared sample' : 'No file chosen.'}</span>
+      <section className="ad-card folio-runtime-stack"><b className="ad-label">1 File</b><div className="ad-row"><span>{loaded ? 'AT-01 Editable Schedules - Edited.xlsx, Prepared sample' : 'No file chosen.'}</span>
         <Btn onClick={() => { setLoaded(true); setOverwrite(false); setReceipt([]) }}>Choose Excel...</Btn></div>
         <p className="ad-note">This browser exercise loads a prepared workbook edit for three sample door parameters.</p></section>
       <div className="ad-row"><b className="ad-label">2 Changes to review</b><Btn disabled={!loaded} onClick={() => { setLoaded(true); setOverwrite(false); setReceipt(['Rechecked the prepared sample workbook against the current fixture.']) }}>Check again</Btn></div>
-      <FolioPreview title="Workbook changes" rows={review.map(({ label, current, next, status }) => ({ label, value: current + ' → ' + (next || '(blank)') + ' · ' + status }))} />
+      <FolioPreview title="Workbook changes" rows={review.map(({ label, current, next, status }) => ({ label, value: current + ' → ' + (next || '(blank)') + ', ' + status }))} />
       <section className="ad-card folio-runtime-stack"><Check label="Also clear text values deleted in Excel" checked={clearBlank} onChange={setClearBlank} />
         <Btn sm onClick={() => setAdvanced(!advanced)} aria-expanded={advanced}>Advanced options...</Btn>
         {advanced && <><Check label="Also update schedule columns from Excel" checked={syncColumns} onChange={setSyncColumns} /><Check label="Create an additional schedule copy" checked={copies} onChange={setCopies} /></>}
         <Btn primary demo="schedule-import" disabled={!loaded || !review.some(({ status, conflict }) => status === 'Ready' || conflict)} onClick={() => setConfirm(true)}>Import</Btn>
       </section>
       <ConfirmGuard open={confirm} theme={ctx.theme} onTheme={ctx.setTheme} title="Review Schedule Import" instruction={changes.length + ' values will change. Nothing has been written yet.'}
-        content={<div className="folio-runtime-stack"><FolioPreview rows={review.map(({ label, current, next, status }) => ({ label, value: current + ' → ' + (next || '(blank)') + ' · ' + status }))} />
+        content={<div className="folio-runtime-stack"><FolioPreview rows={review.map(({ label, current, next, status }) => ({ label, value: current + ' → ' + (next || '(blank)') + ', ' + status }))} />
           {conflicts.length > 0 && <Check label={'Also overwrite the ' + conflicts.length + ' conflicts with the file value'} checked={overwrite} onChange={setOverwrite} />}</div>}
         confirmLabel={'Apply ' + changes.length + ' changes'} onConfirm={importChanges} onCancel={() => setConfirm(false)} />
     </>}
@@ -169,7 +169,7 @@ export default function UpdateSchedule(ctx: DemoContext) {
         <section className="ad-card folio-runtime-stack"><b className="ad-label">3 Parameters</b>{gridFields.map((field) => <Check key={field} label={field} checked={parameters.includes(field)}
           onChange={(yes) => { setParameters(yes ? [...parameters, field] : parameters.filter((item) => item !== field)); setGrid([]); setEdited({}) }} />)}</section>
         <div className="ad-table-wrap" role="region" aria-label="Element values" tabIndex={0}><table className="ad-table"><thead><tr><th>Element</th>{parameters.map((parameter) => <th key={parameter}>{parameter}</th>)}</tr></thead>
-          <tbody>{grid.map((row) => <tr key={row.id}><td>{row.id} · {row.label}</td>{parameters.map((parameter) => <td key={parameter}><input className="ad-input" style={{ width: 130 }}
+          <tbody>{grid.map((row) => <tr key={row.id}><td>{row.id}, {row.label}</td>{parameters.map((parameter) => <td key={parameter}><input className="ad-input" style={{ width: 130 }}
             aria-label={row.id + ' ' + parameter} value={edited[row.id + '|' + parameter] ?? row.values[parameter] ?? ''} onChange={(event) => setEdited({ ...edited, [row.id + '|' + parameter]: event.target.value })} /></td>)}</tr>)}</tbody></table>
           {!grid.length && <p className="ad-note">Pick categories and parameters, then Load Grid. Edit cells, then Write.</p>}</div></div>
       <div className="ad-row"><Btn disabled={!categories.length || !parameters.length} onClick={loadGrid}>Load Grid</Btn><span className="ad-note">A blank cell never clears a value.</span>

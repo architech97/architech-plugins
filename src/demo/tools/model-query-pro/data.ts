@@ -187,7 +187,7 @@ export const sampleInspection = (element: QueryElement) =>
   element.id +
   "\nCategory: " +
   element.category +
-  "\nView: Level 01 · Floor Plan | ID 101\n\n" +
+  "\nView: Level 01, Floor Plan | ID 101\n\n" +
   "No hiding cause was confirmed by these checks. This does not prove the element is visible.\nNot assessed: import/point-cloud global switches, crop/section box, view range, phases, design options, discipline/detail level, family visibility, occlusion and linked-document contents.\nInspection changes nothing. Select ID changes selection; Show ID asks Revit to locate the instance and may change the active view.";
 
 export function ruleMatches(element: QueryElement, rule: Rule) {

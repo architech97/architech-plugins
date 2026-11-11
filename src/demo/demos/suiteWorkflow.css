@@ -1,5 +1,9 @@
+:root {
+  --replica-demo-demos-suiteworkflow-1: transparent;
+}
+
 .suite-flow-steps { display: flex; flex-wrap: wrap; gap: 5px; border-bottom: 1px solid var(--d-border); }
-.suite-flow-steps span { padding: 6px 9px; color: var(--d-muted); border-bottom: 2px solid transparent; font-weight: 600; }
+.suite-flow-steps span { padding: 6px 9px; color: var(--d-muted); border-bottom: 2px solid var(--replica-demo-demos-suiteworkflow-1); font-weight: 600; }
 .suite-flow-steps [aria-current="step"] { color: var(--d-text); border-bottom-color: var(--d-accent); }
 .suite-flow-table { max-height: 315px; }
 .suite-flow-table td { overflow-wrap: anywhere; }

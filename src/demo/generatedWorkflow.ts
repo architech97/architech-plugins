@@ -72,10 +72,10 @@ export function simulatedResult(input: WorkflowInput): WorkflowResult | string {
       const rows = rowResults((record) => {
         const samples = Math.min(max, Math.floor(Number(value(record, 'Samples')) * Math.min(1, 30.48 / spacing)))
         const reading = parseFloat(value(record, column))
-        if (samples < 5 || !Number.isFinite(reading)) return 'Unmeasured · fewer than 5 valid sample points'
+        if (samples < 5 || !Number.isFinite(reading)) return 'Unmeasured, fewer than 5 valid sample points'
         measured++
         if (reading > tolerance) misses++
-        return `${reading} mm · ${reading > tolerance ? 'Above tolerance' : 'Within tolerance'} · ${samples} points`
+        return `${reading} mm, ${reading > tolerance ? 'Above tolerance' : 'Within tolerance'}, ${samples} points`
       })
       return { summary: `${misses} of ${measured} measured records exceed ${tolerance} mm (${metric}).`, rows }
     }
@@ -94,7 +94,7 @@ export function simulatedResult(input: WorkflowInput): WorkflowResult | string {
         const separator = get(/^separator$/i)
         const next = [prefix, number, suffix].filter(Boolean).join(separator)
         const current = value(record, 'Current Value')
-        return current === next ? `${current} · already matches` : `${current} → ${next}`
+        return current === next ? `${current}, already matches` : `${current} → ${next}`
       })
       return { summary: `Prepared numbering for ${rows.length} sample elements using ${get(/^write to$/i) || 'Mark'}.`, rows }
     }
@@ -127,7 +127,7 @@ export function simulatedResult(input: WorkflowInput): WorkflowResult | string {
         rows: rowResults((record) => {
           const start = Number.parseFloat(value(record, 'Elevation'))
           const end = start + Number.parseFloat(value(record, 'Story Height'))
-          return `${outputs.join(' and ')} · ${start + bottom}–${end + top} mm`
+          return `${outputs.join(' and ')}, ${start + bottom}–${end + top} mm`
         }),
       }
     }
@@ -141,7 +141,7 @@ export function simulatedResult(input: WorkflowInput): WorkflowResult | string {
     case 'detail-view':
       return {
         summary: action === 'Place on sheets' ? 'Prepared placements for each level’s sample detail views.' : 'Prepared a wall section and ceiling, floor, and wall detail callouts for each level.',
-        rows: rowResults((record) => action === 'Place on sheets' ? `A-${record.label === 'Roof' ? '503' : record.label.endsWith('02') ? '502' : '501'} · ${record.label} details` : 'Wall section · Ceiling junction · Floor edge · Wall head'),
+        rows: rowResults((record) => action === 'Place on sheets' ? `A-${record.label === 'Roof' ? '503' : record.label.endsWith('02') ? '502' : '501'}, ${record.label} details` : 'Wall section, Ceiling junction, Floor edge, Wall head'),
       }
     case 'spell-check': {
       const words: Record<string, string> = { 'A-101': 'CONCETE → CONCRETE', 'A-102': 'PARTITON → PARTITION', 'A-501': 'SEPERATION → SEPARATION' }
@@ -165,25 +165,25 @@ export function simulatedResult(input: WorkflowInput): WorkflowResult | string {
       }
     }
     case 'parameter-colorizer':
-      return { summary: `Prepared color overrides for ${records.length} sample value groups.`, rows: rowResults((record) => `${value(record, 'Elements')} elements · ${value(record, 'Color')}`) }
+      return { summary: `Prepared color overrides for ${records.length} sample value groups.`, rows: rowResults((record) => `${value(record, 'Elements')} elements, ${value(record, 'Color')}`) }
     case 'template-manager':
       if (action === 'Transfer Selected Templates') {
         const source = get(/pick an open model/i)
         const target = get(/^copy to$/i)
         const mode = get(/already exists|conflict/i)
         if (!source || !target || source === target) return 'Choose a destination model different from the source.'
-        return { summary: `Prepared template transfer to ${target}.`, rows: rowResults((record) => record.label === TEMPLATE_NAMES[0] ? `Already in destination · ${mode || 'Overwrite'}` : 'New in destination · copy') }
+        return { summary: `Prepared template transfer to ${target}.`, rows: rowResults((record) => record.label === TEMPLATE_NAMES[0] ? `Already in destination, ${mode || 'Overwrite'}` : 'New in destination, copy') }
       }
       break
     case 'update-schedule': {
       const overwrite = get(/also overwrite/i) === 'On'
-      return { summary: `Prepared spreadsheet edits with conflicting values ${overwrite ? 'included' : 'skipped'}.`, rows: rowResults((record, index) => index === 1 && !overwrite ? 'Conflict · kept the current Revit value' : `${value(record, 'Now in Revit')} → ${value(record, 'From the file')}`) }
+      return { summary: `Prepared spreadsheet edits with conflicting values ${overwrite ? 'included' : 'skipped'}.`, rows: rowResults((record, index) => index === 1 && !overwrite ? 'Conflict, kept the current Revit value' : `${value(record, 'Now in Revit')} → ${value(record, 'From the file')}`) }
     }
   }
   return {
     summary: fixtureResult(slug, action, records.length || undefined),
     rows: records.length
-      ? rowResults((record) => Object.entries(record.columns).filter(([, item]) => item && item !== '—').slice(2, 5).map(([name, item]) => `${name}: ${item}`).join(' · ') || 'Included in this sample operation')
+      ? rowResults((record) => Object.entries(record.columns).filter(([, item]) => item && item !== '—').slice(2, 5).map(([name, item]) => `${name}: ${item}`).join(', ') || 'Included in this sample operation')
       : fields.filter(({ value: item }) => item !== '' && item !== 'Off').slice(0, 5),
   }
 }

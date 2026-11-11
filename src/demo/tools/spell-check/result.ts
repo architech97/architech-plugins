@@ -25,7 +25,7 @@ export default function result({ fields, records }: WorkflowInput) {
   const matches = sampleTerms.filter(({ sheet, source, word }) => sheets.has(sheet) && chosenSources.includes(source) && !approved.has(word))
   return {
     summary: 'Found ' + matches.length + ' sample spelling issues across ' + sheets.size + ' sheets.',
-    rows: matches.length ? matches.map(({ sheet, source, word, suggestion, context }) => resultRow(sheet + ' · ' + source,
-      word + ' → ' + suggestion + ' · ' + context)) : [resultRow('Result', 'No unfamiliar sample terms in the chosen sheets and sources.')],
+    rows: matches.length ? matches.map(({ sheet, source, word, suggestion, context }) => resultRow(sheet + ', ' + source,
+      word + ' → ' + suggestion + ', ' + context)) : [resultRow('Result', 'No unfamiliar sample terms in the chosen sheets and sources.')],
   }
 }

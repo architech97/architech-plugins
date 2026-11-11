@@ -134,7 +134,7 @@ export default function ModelQuery(ctx: DemoContext) {
           element.id +
           "\nCategory: " +
           element.category +
-          "\nView: Level 01 · Floor Plan | ID 101\n\n" +
+          "\nView: Level 01, Floor Plan | ID 101\n\n" +
           "No hiding cause was confirmed by these checks. This does not prove the element is visible.\nNot assessed: import/point-cloud global switches, crop/section box, view range, phases, design options, discipline/detail level, family visibility, occlusion and linked-document contents.\nInspection changes nothing. Select ID changes selection; Show ID asks Revit to locate the instance and may change the active view.",
       );
       return;
@@ -144,11 +144,11 @@ export default function ModelQuery(ctx: DemoContext) {
         ? action +
             " ID " +
             element.id +
-            " · " +
+            ", " +
             element.category +
-            " · " +
+            ", " +
             element.family +
-            " · " +
+            ", " +
             element.level
         : "ID " +
             inspection.trim() +
@@ -259,7 +259,7 @@ export default function ModelQuery(ctx: DemoContext) {
         theme={ctx.theme}
         onTheme={ctx.setTheme}
         title="Model Query Pro"
-        subtitle="Fictional Sample Residence · Parameter query"
+        subtitle="Fictional Sample Residence, Parameter query"
         onClose={() => {
           setColored(false);
           ctx.close();
@@ -282,7 +282,7 @@ export default function ModelQuery(ctx: DemoContext) {
       >
         <div className="query-fields">
           <ScopeRadios
-            label="SCOPE:"
+            label="Scope:"
             value={scope}
             options={["Active View", "Entire Project"]}
             onChange={(value) => {
@@ -315,7 +315,7 @@ export default function ModelQuery(ctx: DemoContext) {
         </div>
         <div className="query-layout">
           <aside className="ad-card query-rail">
-            <b>CATEGORIES</b>
+            <b>Categories</b>
             <SearchBox
               placeholder="Search categories"
               value={categorySearch}
@@ -388,7 +388,7 @@ export default function ModelQuery(ctx: DemoContext) {
                 </div>
               </Expander>
               <div className="ad-row">
-                <b>MATCH</b>
+                <b>Match</b>
                 <Select
                   label="Match logic"
                   value={logic}
@@ -398,7 +398,7 @@ export default function ModelQuery(ctx: DemoContext) {
                     invalidate();
                   }}
                 />
-                <b>RULES</b>
+                <b>Rules</b>
                 <Btn
                   onClick={() => {
                     setRules([...rules, newRule()]);
@@ -488,7 +488,7 @@ export default function ModelQuery(ctx: DemoContext) {
               aria-label="Matching elements"
             >
               <b>
-                MATCHING ELEMENTS ·{" "}
+                Matching elements,{" "}
                 {stale ? "Run Query to refresh" : results.length}
               </b>
               <div
@@ -528,7 +528,7 @@ export default function ModelQuery(ctx: DemoContext) {
                         <td>
                           {rules
                             .map((rule) => valueOf(element, rule.parameter))
-                            .join(" · ")}
+                            .join(", ")}
                         </td>
                       </tr>
                     ))}
@@ -557,7 +557,7 @@ export default function ModelQuery(ctx: DemoContext) {
                     onClick={() =>
                       setStatus(
                         action +
-                          " · Sample IDs " +
+                          ", Sample IDs " +
                           results.map((row) => row.id).join(", "),
                       )
                     }
@@ -599,7 +599,7 @@ export default function ModelQuery(ctx: DemoContext) {
               </div>
             </section>
             <p className="query-note">
-              Browser simulation · Fictional records. Complex regular
+              Browser simulation, Fictional records. Complex regular
               expressions are exercised in the desktop tool.
             </p>
           </section>

@@ -74,7 +74,7 @@ export default function MatchOpening({ theme, setTheme, done, rewind, notify, cl
 
   return (
     <RevitDialog theme={theme} onTheme={setTheme} eyebrow="Arch Forge / Rooms" title="Match Opening"
-      caption={`Browser simulation · ${DEMO_PROJECT.code} ${DEMO_PROJECT.name}`} onClose={close}
+      caption={`Browser simulation, ${DEMO_PROJECT.code} ${DEMO_PROJECT.name}`} onClose={close}
       footer={<>
         <span className="ad-status">{rows ? `${applyRows.length} changes checked` : 'Scan before applying'}</span>
         <Btn onClick={close}>Close</Btn>
@@ -99,7 +99,7 @@ export default function MatchOpening({ theme, setTheme, done, rewind, notify, cl
             <tbody>{visible?.map(({ opening, action, width, height, reason }) => <tr key={opening.id}>
               <td>{action === 'Resize' || action === 'Create' ? <Check title={`Apply ${opening.id}`} checked={selected.includes(opening.id)} onChange={checked => {
                 setSelected(checked ? [...selected, opening.id] : selected.filter(id => id !== opening.id)); setConfirm(false); if (checked) done('select')
-              }} /> : '—'}</td><td>{opening.id} · {opening.source}<br />{opening.wall}</td>
+              }} /> : '—'}</td><td>{opening.id}, {opening.source}<br />{opening.wall}</td>
               <td>{width} × {height} mm<br />{opening.host ? `${opening.hostWidth} × ${opening.hostHeight} mm` : 'No host opening'}</td><td>{action}</td><td>{reason}</td>
             </tr>)}</tbody>
           </table>
@@ -110,7 +110,7 @@ export default function MatchOpening({ theme, setTheme, done, rewind, notify, cl
         <p>Recreated native openings receive a new ID. Protected openings with dependent elements are skipped.</p>
         <div className="ad-row"><Btn onClick={() => setConfirm(false)}>Cancel</Btn><Btn primary onClick={apply}>Replace</Btn></div>
       </div>}
-      {receipt && <p className="ad-result" role="status">{receipt.created} openings created · {receipt.resized} resized. Scan again to check the updated sample.</p>}
+      {receipt && <p className="ad-result" role="status">{receipt.created} openings created, {receipt.resized} resized. Scan again to check the updated sample.</p>}
     </RevitDialog>
   )
 }

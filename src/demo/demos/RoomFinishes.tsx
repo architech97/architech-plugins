@@ -61,7 +61,7 @@ export default function RoomFinishes(context: DemoContext) {
         rows.push({
           key: room.number + 'F', room: name, kind: 'Floor', action: legacy ? adoptLegacy ? 'Adopt' : 'Blocked' : 'Create', status: legacy && !adoptLegacy ? 'Review' : 'Ready', ok: !legacy || adoptLegacy,
           reason: legacy ? adoptLegacy ? 'Register the explicitly selected legacy floor only. Geometry is unchanged; rerun to update its finish.' : 'Unowned legacy floor requires explicit selection and reviewed adoption.'
-            : [floorType, alignTop ? 'top face aligned to room base' : 'placed from room base', notch && 'extended into door openings'].filter(Boolean).join(' · '),
+            : [floorType, alignTop ? 'top face aligned to room base' : 'placed from room base', notch && 'extended into door openings'].filter(Boolean).join(', '),
         })
       }
       if (ceiling) {
@@ -70,7 +70,7 @@ export default function RoomFinishes(context: DemoContext) {
           key: room.number + 'C', room: name, kind: 'Ceiling',
           action: existing ? (update ? 'Update' : 'Keep existing') : 'Create',
           status: existing && !update ? 'Exists' : 'Ready', ok: true,
-          reason: existing && !update ? 'A generated ceiling already exists for this room and phase' : ceilingType + (atTop ? ' · at room top' : ' · using finish offset'),
+          reason: existing && !update ? 'A generated ceiling already exists for this room and phase' : ceilingType + (atTop ? ', at room top' : ', using finish offset'),
         })
       }
       if (wall) {
@@ -80,7 +80,7 @@ export default function RoomFinishes(context: DemoContext) {
           key: room.number + 'W', room: name, kind: 'Wall lining',
           action: unsupported ? 'Skip' : edited ? 'Preserve edited' : 'Create', status: unsupported || edited ? 'Review' : 'Ready', ok: !unsupported && !edited,
           reason: unsupported ? 'Curtain wall boundary skipped' : edited ? 'Existing generated lining has manual edits'
-            : [wallType, islands && 'islands and columns included', separation && 'room separation lines included'].filter(Boolean).join(' · '),
+            : [wallType, islands && 'islands and columns included', separation && 'room separation lines included'].filter(Boolean).join(', '),
         })
       }
     })
@@ -98,7 +98,7 @@ export default function RoomFinishes(context: DemoContext) {
     const updated = selected.filter((row) => row.action === 'Update').length
     const adopted = selected.filter((row) => row.action === 'Adopt')
     const nextFields = { ...roomFields }
-    const receipts = adopted.map(row => ({ label: row.room + ' · legacy floor registered', detail: 'Ownership metadata added; original geometry and schedule fields retained.' }))
+    const receipts = adopted.map(row => ({ label: row.room + ', legacy floor registered', detail: 'Ownership metadata added; original geometry and schedule fields retained.' }))
     if (sync) selected.filter(row => row.action !== 'Adopt').forEach(row => {
       const index = row.kind === 'Floor' ? 0 : row.kind === 'Ceiling' ? 1 : 2
       const key = row.room.slice(0, 3) + ':' + SCHEDULE_FIELDS[index]
@@ -106,7 +106,7 @@ export default function RoomFinishes(context: DemoContext) {
       const proposed = scheduleText[index].trim() || [floorType, ceilingType, wallType][index]
       const preserved = Boolean(previous && previous !== proposed && !overwrite)
       if (!preserved) nextFields[key] = proposed
-      receipts.push({ label: row.room + ' · ' + SCHEDULE_FIELDS[index], detail: preserved ? 'Preserved non-empty value: ' + previous : '[' + (previous || '—') + '] → [' + proposed + ']' })
+      receipts.push({ label: row.room + ', ' + SCHEDULE_FIELDS[index], detail: preserved ? 'Preserved non-empty value: ' + previous : '[' + (previous || '—') + '] → [' + proposed + ']' })
     })
     setRoomFields(nextFields)
     setFieldReceipt(receipts)
@@ -142,7 +142,7 @@ export default function RoomFinishes(context: DemoContext) {
 
   if (screen !== 'setup') {
     return (
-      <RevitDialog theme={theme} onTheme={setTheme} eyebrow="Arch Forge / Finishes" title={readOnly ? 'Review generated finishes' : 'Review finish plan'} caption={`${PICKED.length} rooms · ${plan.length} planned rows`} onClose={close}
+      <RevitDialog theme={theme} onTheme={setTheme} eyebrow="Arch Forge / Finishes" title={readOnly ? 'Review generated finishes' : 'Review finish plan'} caption={`${PICKED.length} rooms, ${plan.length} planned rows`} onClose={close}
         footer={<>
           <span className="ad-status">{screen === 'done' ? 'Applied to the browser sample. Review the results below.' : readOnly ? 'Read-only review. The sample elements remain in the model.' : `${approved.size} of ${plan.length} rows approved`}</span>
           <Btn onClick={exportPlan}>Download plan CSV</Btn>
@@ -153,7 +153,7 @@ export default function RoomFinishes(context: DemoContext) {
         </>}>
         {screen === 'done' && <><div className="ad-result">Applied {approved.size} approved rows. Rows you left unticked retain their original values. {dataMessage}</div>
           {!!fieldReceipt.length && <Receipt title="Sample finish metadata readback" entries={fieldReceipt} />}
-          {sync && <details><summary>Read back sample Room finish fields</summary><ul>{Object.entries(roomFields).map(([key, value]) => <li key={key}>{key.replace(':', ' · ')}: {value}</li>)}</ul></details>}
+          {sync && <details><summary>Read back sample Room finish fields</summary><ul>{Object.entries(roomFields).map(([key, value]) => <li key={key}>{key.replace(':', ', ')}: {value}</li>)}</ul></details>}
         </>}
         <div className="ad-table-wrap" style={{ maxHeight: 400 }}>
           <table className="ad-table">
@@ -192,7 +192,7 @@ export default function RoomFinishes(context: DemoContext) {
           <div className="ad-row">
             <Btn sm disabled={!preset} onClick={loadPreset}>Load preset…</Btn>
             <Btn sm onClick={savePreset}>Save preset…</Btn>
-            <span className="ad-note">{preset ? 'Sample session preset available' : 'Custom configuration · not saved'}</span>
+            <span className="ad-note">{preset ? 'Sample session preset available' : 'Custom configuration, not saved'}</span>
           </div>
           {readOnly && <p className="ad-note">Read-only inventory: review missing rooms, phase changes, edited or copied generated elements. No geometry or parameters will be changed.</p>}
           <Expander header="Room finish schedule fields and reviewed legacy adoption">
@@ -200,7 +200,7 @@ export default function RoomFinishes(context: DemoContext) {
             <Check label="Allow replacing existing non-empty Room finish fields" checked={overwrite} onChange={setOverwrite} />
             {SCHEDULE_FIELDS.map((field, index) => <label key={field} className="ad-label">{field} schedule text<TextBox aria-label={field + ' schedule text'} value={scheduleText[index]} placeholder="Empty uses the chosen finish type name" onChange={event => setScheduleText(scheduleText.map((value, i) => i === index ? event.target.value : value))} /></label>)}
             <Check label="Register explicitly selected legacy floors after reviewing the plan" checked={adoptLegacy && legacySelected} disabled={!legacySelected} onChange={setAdoptLegacy} />
-            <details><summary>Sample selection context</summary><Check label="Sample context · preselected legacy floor in room 101" checked={legacySelected} onChange={value => { setLegacySelected(value); if (!value) setAdoptLegacy(false) }} /><span className="ad-note">The native tool uses the floors explicitly selected in Revit before opening the dialog. This fixture lets you explore that review without a Revit connection.</span></details>
+            <details><summary>Sample selection context</summary><Check label="Sample context, preselected legacy floor in room 101" checked={legacySelected} onChange={value => { setLegacySelected(value); if (!value) setAdoptLegacy(false) }} /><span className="ad-note">The native tool uses the floors explicitly selected in Revit before opening the dialog. This fixture lets you explore that review without a Revit connection.</span></details>
           </Expander>
           <RoomDataSetup settings={dataSettings} onChange={setDataSettings} />
           <div className="ad-h" style={{ marginTop: 4 }}>1&nbsp; Choose finishes and types</div>
@@ -235,7 +235,7 @@ export default function RoomFinishes(context: DemoContext) {
           <span className="ad-label">Selected rooms</span>
           <span className="ad-note" style={{ color: 'var(--d-text-2)' }}>{PICKED.map((r) => `${r.number} ${r.name}`).join(', ')}</span>
           <span className="ad-label">Creation plan</span>
-          <span className="ad-note" style={{ color: 'var(--d-text-2)' }}>{[floor && `${PICKED.length} floors`, ceiling && `${PICKED.length} ceilings`, wall && 'wall linings along wall, column' + (separation ? ' and separation-line' : '') + ' boundaries'].filter(Boolean).join(' · ') || 'Nothing selected'}</span>
+          <span className="ad-note" style={{ color: 'var(--d-text-2)' }}>{[floor && `${PICKED.length} floors`, ceiling && `${PICKED.length} ceilings`, wall && 'wall linings along wall, column' + (separation ? ' and separation-line' : '') + ' boundaries'].filter(Boolean).join(', ') || 'Nothing selected'}</span>
           <div className="ad-h" style={{ marginTop: 6 }}>Review before applying</div>
           <span className="ad-note">The next screen lists each room, finish kind, existing elements and intended action. Only approved rows are applied.</span>
           <span className="ad-note">Edited, pinned, copied or dependent generated elements are preserved. New linings are unjoined and do not redefine room boundaries.</span>

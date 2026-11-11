@@ -1,60 +1,103 @@
+:root {
+  --replica-demo-demos-suitehome-1: #171a20;
+  --replica-demo-demos-suitehome-2: #1d2128;
+  --replica-demo-demos-suitehome-3: #3c434e;
+  --replica-demo-demos-suitehome-4: #2d3036;
+  --replica-demo-demos-suitehome-5: #2c323d;
+  --replica-demo-demos-suitehome-6: #232932;
+  --replica-demo-demos-suitehome-7: #28364b;
+  --replica-demo-demos-suitehome-8: #546c97;
+  --replica-demo-demos-suitehome-9: #f5f5f7;
+  --replica-demo-demos-suitehome-10: #cdd1d8;
+  --replica-demo-demos-suitehome-11: #a7bcee;
+  --replica-demo-demos-suitehome-12: #7b9be6;
+  --replica-demo-demos-suitehome-13: #101522;
+  --replica-demo-demos-suitehome-14: #a2d9b6;
+  --replica-demo-demos-suitehome-15: #e5c996;
+  --replica-demo-demos-suitehome-16: #f8f8f6;
+  --replica-demo-demos-suitehome-17: #f0f0ec;
+  --replica-demo-demos-suitehome-18: #d5d7dc;
+  --replica-demo-demos-suitehome-19: #fff;
+  --replica-demo-demos-suitehome-20: #e8ebf0;
+  --replica-demo-demos-suitehome-21: #eceef1;
+  --replica-demo-demos-suitehome-22: #e6edf9;
+  --replica-demo-demos-suitehome-23: #a3b7d9;
+  --replica-demo-demos-suitehome-24: #151a21;
+  --replica-demo-demos-suitehome-25: #394555;
+  --replica-demo-demos-suitehome-26: #315694;
+  --replica-demo-demos-suitehome-27: #4868bd;
+  --replica-demo-demos-suitehome-28: #167146;
+  --replica-demo-demos-suitehome-29: #875c19;
+  --replica-demo-demos-suitehome-30: #273b39;
+  --replica-demo-demos-suitehome-31: #283e3b;
+  --replica-demo-demos-suitehome-32: #527e73;
+  --replica-demo-demos-suitehome-33: #94d9c9;
+  --replica-demo-demos-suitehome-34: #9cdaca;
+  --replica-demo-demos-suitehome-35: #162723;
+  --replica-demo-demos-suitehome-36: #e1ebe7;
+  --replica-demo-demos-suitehome-37: #e3f0eb;
+  --replica-demo-demos-suitehome-38: #91b6a8;
+  --replica-demo-demos-suitehome-39: #156659;
+  --replica-demo-demos-suitehome-40: transparent;
+}
+
 .suite-home {
-  --sh-bg: #171a20;
-  --sh-panel: #1d2128;
-  --sh-edge: #3c434e;
-  --sh-input: #2d3036;
-  --sh-glyph: #2c323d;
-  --sh-hover: #232932;
-  --sh-selected: #28364b;
-  --sh-active: #546c97;
-  --sh-text: #f5f5f7;
-  --sh-muted: #cdd1d8;
-  --sh-accent: #a7bcee;
-  --sh-primary: #7b9be6;
-  --sh-on-primary: #101522;
-  --sh-ready: #a2d9b6;
-  --sh-warn: #e5c996;
+  --sh-bg: var(--replica-demo-demos-suitehome-1);
+  --sh-panel: var(--replica-demo-demos-suitehome-2);
+  --sh-edge: var(--replica-demo-demos-suitehome-3);
+  --sh-input: var(--replica-demo-demos-suitehome-4);
+  --sh-glyph: var(--replica-demo-demos-suitehome-5);
+  --sh-hover: var(--replica-demo-demos-suitehome-6);
+  --sh-selected: var(--replica-demo-demos-suitehome-7);
+  --sh-active: var(--replica-demo-demos-suitehome-8);
+  --sh-text: var(--replica-demo-demos-suitehome-9);
+  --sh-muted: var(--replica-demo-demos-suitehome-10);
+  --sh-accent: var(--replica-demo-demos-suitehome-11);
+  --sh-primary: var(--replica-demo-demos-suitehome-12);
+  --sh-on-primary: var(--replica-demo-demos-suitehome-13);
+  --sh-ready: var(--replica-demo-demos-suitehome-14);
+  --sh-warn: var(--replica-demo-demos-suitehome-15);
   color: var(--sh-text);
   font: 13px/1.45 "Segoe UI Variable Text", "Segoe UI", sans-serif;
 }
 
 .suite-home[data-theme="light"] {
-  --sh-bg: #f8f8f6;
-  --sh-panel: #f0f0ec;
-  --sh-edge: #d5d7dc;
-  --sh-input: #fff;
-  --sh-glyph: #e8ebf0;
-  --sh-hover: #eceef1;
-  --sh-selected: #e6edf9;
-  --sh-active: #a3b7d9;
-  --sh-text: #151a21;
-  --sh-muted: #394555;
-  --sh-accent: #315694;
-  --sh-primary: #4868bd;
-  --sh-on-primary: #fff;
-  --sh-ready: #167146;
-  --sh-warn: #875c19;
+  --sh-bg: var(--replica-demo-demos-suitehome-16);
+  --sh-panel: var(--replica-demo-demos-suitehome-17);
+  --sh-edge: var(--replica-demo-demos-suitehome-18);
+  --sh-input: var(--replica-demo-demos-suitehome-19);
+  --sh-glyph: var(--replica-demo-demos-suitehome-20);
+  --sh-hover: var(--replica-demo-demos-suitehome-21);
+  --sh-selected: var(--replica-demo-demos-suitehome-22);
+  --sh-active: var(--replica-demo-demos-suitehome-23);
+  --sh-text: var(--replica-demo-demos-suitehome-24);
+  --sh-muted: var(--replica-demo-demos-suitehome-25);
+  --sh-accent: var(--replica-demo-demos-suitehome-26);
+  --sh-primary: var(--replica-demo-demos-suitehome-27);
+  --sh-on-primary: var(--replica-demo-demos-suitehome-19);
+  --sh-ready: var(--replica-demo-demos-suitehome-28);
+  --sh-warn: var(--replica-demo-demos-suitehome-29);
 }
 
 .suite-home[data-suite="sentinel"][data-theme="dark"] {
-  --sh-glyph: #273b39;
-  --sh-selected: #283e3b;
-  --sh-active: #527e73;
-  --sh-accent: #94d9c9;
-  --sh-primary: #9cdaca;
-  --sh-on-primary: #162723;
+  --sh-glyph: var(--replica-demo-demos-suitehome-30);
+  --sh-selected: var(--replica-demo-demos-suitehome-31);
+  --sh-active: var(--replica-demo-demos-suitehome-32);
+  --sh-accent: var(--replica-demo-demos-suitehome-33);
+  --sh-primary: var(--replica-demo-demos-suitehome-34);
+  --sh-on-primary: var(--replica-demo-demos-suitehome-35);
 }
 
 .suite-home[data-suite="sentinel"][data-theme="light"] {
-  --sh-glyph: #e1ebe7;
-  --sh-selected: #e3f0eb;
-  --sh-active: #91b6a8;
-  --sh-accent: #156659;
-  --sh-primary: #156659;
+  --sh-glyph: var(--replica-demo-demos-suitehome-36);
+  --sh-selected: var(--replica-demo-demos-suitehome-37);
+  --sh-active: var(--replica-demo-demos-suitehome-38);
+  --sh-accent: var(--replica-demo-demos-suitehome-39);
+  --sh-primary: var(--replica-demo-demos-suitehome-39);
 }
 
 .suite-home[data-suite="forge"][data-theme="dark"] {
-  --sh-accent: #a7bcee;
+  --sh-accent: var(--replica-demo-demos-suitehome-11);
 }
 
 .suite-home-scenario {
@@ -134,7 +177,7 @@
 .suite-home-header h3 { font-size: 1.34rem; line-height: 1.1; }
 .suite-home-header p { color: var(--sh-muted); font-size: .75rem; }
 .suite-home-header select { min-width: 5.5rem; }
-.suite-home button.suite-home-close { display: grid; place-items: center; background: transparent; border-color: transparent; }
+.suite-home button.suite-home-close { display: grid; place-items: center; background: var(--replica-demo-demos-suitehome-40); border-color: var(--replica-demo-demos-suitehome-40); }
 
 .suite-home-workspace {
   display: grid;
@@ -156,10 +199,10 @@
   display: block;
   margin-bottom: .45rem;
   color: var(--sh-muted);
-  font-size: .68rem;
+  font-size: .6875rem;
   font-weight: 600;
-  letter-spacing: .06em;
-  text-transform: uppercase;
+
+
 }
 
 .suite-home-rail .suite-home-caption { padding-inline: .45rem; }
@@ -170,8 +213,8 @@
   align-items: center;
   justify-content: space-between;
   gap: .45rem;
-  border-color: transparent;
-  background: transparent;
+  border-color: var(--replica-demo-demos-suitehome-40);
+  background: var(--replica-demo-demos-suitehome-40);
   text-align: left;
 }
 
@@ -215,7 +258,7 @@
   min-height: 2.3rem;
   border: 0;
   border-radius: 0;
-  background: transparent;
+  background: var(--replica-demo-demos-suitehome-40);
   color: var(--sh-text);
 }
 
@@ -256,10 +299,10 @@
 .suite-home-glyph svg { width: 1.12rem; height: 1.12rem; }
 .suite-home-row-label { flex: 1; min-width: 0; overflow-wrap: anywhere; }
 .suite-home-row-label strong { display: block; font-weight: 600; line-height: 1.3; }
-.suite-home-row-label small { display: block; color: var(--sh-muted); font-size: .68rem; }
+.suite-home-row-label small { display: block; color: var(--sh-muted); font-size: .6875rem; }
 
 .suite-home-status { display: flex; align-items: center; gap: .35rem; }
-.suite-home-status small { color: var(--sh-muted); font-size: .68rem; }
+.suite-home-status small { color: var(--sh-muted); font-size: .6875rem; }
 .suite-home-status i { flex: none; width: .45rem; height: .45rem; border-radius: 50%; background: var(--sh-ready); }
 .suite-home-status.is-unavailable i { background: var(--sh-warn); }
 
@@ -289,7 +332,7 @@
   align-items: center;
   justify-content: center;
   gap: .35rem;
-  border-color: transparent;
+  border-color: var(--replica-demo-demos-suitehome-40);
   background: var(--sh-primary);
   color: var(--sh-on-primary);
   font-weight: 600;

@@ -173,7 +173,7 @@ export default function ManageText({ theme, setTheme, done, rewind, notify, clos
 
   return (
     <RevitDialog theme={theme} onTheme={setTheme} title="Manage Text" caption="Find, replace, tidy and merge text notes" onClose={close}
-      footer={<><span className="ad-status">Sample Residence · Browser simulation</span><Btn onClick={close}>Close</Btn></>}>
+      footer={<><span className="ad-status">Sample Residence, Browser simulation</span><Btn onClick={close}>Close</Btn></>}>
       <div className="mt-layout">
         <nav className="ad-nav mt-nav" aria-label="Manage Text tools">
           <span className="ad-label">Tools</span>
@@ -199,7 +199,7 @@ export default function ManageText({ theme, setTheme, done, rewind, notify, clos
               <Select label="Only text type" value={typeFilter} options={['All text types', ...types.map(({ name }) => name)]} onChange={(value) => { setTypeFilter(value); configure() }} />
             </label>
             {(scope === 'Views I pick' || scope === 'Sheets I pick') && <div className="ad-row">
-              {locations.map(({ view, sheet }, index) => <Check key={sheet} label={scope === 'Views I pick' ? view : sheet + ' · ' + view} checked={pickedLocations.includes(index)} onChange={(value) => {
+              {locations.map(({ view, sheet }, index) => <Check key={sheet} label={scope === 'Views I pick' ? view : sheet + ', ' + view} checked={pickedLocations.includes(index)} onChange={(value) => {
                 setPickedLocations(value ? [...pickedLocations, index] : pickedLocations.filter((location) => location !== index))
                 configure()
               }} />)}
@@ -249,14 +249,14 @@ export default function ManageText({ theme, setTheme, done, rewind, notify, clos
                   <tbody>{shown.map((note) => <tr key={note.id}>
                     <td><Check title={'Tick ' + note.name} checked={ticked(note)} onChange={(value) => setTicks({ ...ticks, [note.id]: value })} /></td>
                     <td className="wrap">{note.text}</td><td className="wrap changed">{note.after}</td>
-                    <td className="wrap">{note.name}{note.formatted && <span className="ad-note mt-detail">Formatted · rewrites as plain text</span>}</td>
+                    <td className="wrap">{note.name}{note.formatted && <span className="ad-note mt-detail">Formatted, rewrites as plain text</span>}</td>
                     <td className="wrap">{where(note)}</td>
                   </tr>)}
                   {!shown.length && <tr><td className="wrap" colSpan={5}>{!armed ? 'Set an option above, or press Refresh to list the notes that would change.' :
                     error ? 'Enter a search term to prepare the preview.' : changes.length ? 'No changes match the preview filter.' : 'No changes in the current scope.'}</td></tr>}</tbody>
                 </table>
               </div>
-              <div className="ad-row mt-apply"><span className="ad-note">{approved.length} ticked · {shown.length} shown. Ticked rows outside the filter still apply.</span>
+              <div className="ad-row mt-apply"><span className="ad-note">{approved.length} ticked, {shown.length} shown. Ticked rows outside the filter still apply.</span>
                 <Btn primary demo="manage-text-apply" disabled={!approved.length} onClick={apply}>Apply</Btn>
               </div>
             </section>
@@ -288,7 +288,7 @@ export default function ManageText({ theme, setTheme, done, rewind, notify, clos
           {merging && <section className="ad-card mt-stack" aria-label="Merge notes settings">
             <div className="ad-row"><span>{mergeRows.length} sample {mergeRows.length === 1 ? 'note' : 'notes'} selected</span>
               <Btn aria-expanded={picking} onClick={() => setPicking(!picking)}>Pick notes in Revit…</Btn></div>
-            {picking && <fieldset className="mt-picker"><legend>Pick sample notes</legend>{notes.map((note) => <Check key={note.id} label={note.name + ' · ' + where(note)}
+            {picking && <fieldset className="mt-picker"><legend>Pick sample notes</legend>{notes.map((note) => <Check key={note.id} label={note.name + ', ' + where(note)}
               checked={selected.includes(note.id)} onChange={(value) => {
                 setSelected(value ? [...selected, note.id] : selected.filter((id) => id !== note.id))
                 setStatus('')
@@ -306,7 +306,7 @@ export default function ManageText({ theme, setTheme, done, rewind, notify, clos
             <div className="mt-merge-preview">
               <b className="ad-label">Sample preview</b>
               {mergeError ? <p className="mt-error">{mergeError}</p> : respace ?
-                <ul>{mergeRows.map((note, index) => <li key={note.id}>{note.name} · {index * rowGap} × text height</li>)}</ul> :
+                <ul>{mergeRows.map((note, index) => <li key={note.id}>{note.name}, {index * rowGap} × text height</li>)}</ul> :
                 <p>{mergeText}</p>}
             </div>
             <div className="ad-row"><Btn primary disabled={Boolean(mergeError)} onClick={merge}>Merge / Re-space</Btn></div>

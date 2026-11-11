@@ -5,10 +5,10 @@ import { downloadCsv } from './craftedTools'
 import type { DemoContext } from '../types'
 
 const refusalByItem: Partial<Record<number, string>> = {
-  901: 'Retained · still referenced by sample types',
-  905: 'Retained · still referenced by sample materials',
-  911: 'Retained · system line style',
-  915: 'Retained · default text note type',
+  901: 'Retained, still referenced by sample types',
+  905: 'Retained, still referenced by sample materials',
+  911: 'Retained, system line style',
+  915: 'Retained, default text note type',
 }
 
 // Simulation of Arch Sentinel > Clean Up > Purge and Merge. Columns, Show filters, type tags and
@@ -81,7 +81,7 @@ export default function PurgeMerge({ theme, setTheme, done, notify, close }: Dem
   }
 
   return (
-    <RevitDialog theme={theme} onTheme={setTheme} title="Purge & Merge" caption={`${items.length} entries scanned · ${items.filter((i) => !i.used).length} unused`} onClose={close}
+    <RevitDialog theme={theme} onTheme={setTheme} title="Purge & Merge" caption={`${items.length} entries scanned, ${items.filter((i) => !i.used).length} unused`} onClose={close}
       footer={<>
         <span className="ad-status">{status}</span>
         {review ? <>
@@ -107,8 +107,8 @@ export default function PurgeMerge({ theme, setTheme, done, notify, close }: Dem
       </div>}
       {review === 'purge' && <div className="ad-result" role="status">
         <strong>Deletion preview</strong>
-        <p>{deletable.length} eligible entries · {selected.length - deletable.length} retained · {hidden} selected entries hidden by filters</p>
-        {selected.map((item) => <div key={item.id}>ID {item.id + 120000} · {item.name} · {refusal(item) ?? (item.id === 907 ? 'Eligible · removes four view filter assignments' : 'Eligible')}</div>)}
+        <p>{deletable.length} eligible entries, {selected.length - deletable.length} retained, {hidden} selected entries hidden by filters</p>
+        {selected.map((item) => <div key={item.id}>ID {item.id + 120000}, {item.name}, {refusal(item) ?? (item.id === 907 ? 'Eligible, removes four view filter assignments' : 'Eligible')}</div>)}
       </div>}
       {review === 'merge' && <div className="ad-result">
         <strong>Choose the surviving concrete material</strong>
@@ -119,7 +119,7 @@ export default function PurgeMerge({ theme, setTheme, done, notify, close }: Dem
         <div style={{ position: 'relative' }}>
           <Btn sm onClick={() => setCatsOpen(!catsOpen)} aria-expanded={catsOpen}>{kinds.size ? `Categories (${kinds.size})` : 'Categories'} ▾</Btn>
           {catsOpen && (
-            <div className="ad-card" style={{ position: 'absolute', zIndex: 3, top: 32, left: 0, width: 230, display: 'grid', gap: 4, boxShadow: '0 12px 30px rgba(0,0,0,.4)' }}>
+            <div className="ad-card" style={{ position: 'absolute', zIndex: 3, top: 32, left: 0, width: 230, display: 'grid', gap: 4, boxShadow: '0 12px 30px var(--replica-dialog-popup-shadow)' }}>
               <span className="ad-label">Categories</span>
               {Object.entries(PURGE_KINDS).map(([tag, label]) => (
                 <Check key={tag} label={`${label}`} checked={kinds.has(tag)} onChange={(v) => { const k = new Set(kinds); if (v) k.add(tag); else k.delete(tag); setKinds(k) }} />
@@ -133,13 +133,13 @@ export default function PurgeMerge({ theme, setTheme, done, notify, close }: Dem
         <Check label="Used" checked={showUsed} onChange={(v) => { setShowUsed(v); done('scan') }} demo="show-used" />
         <Check label="Group dupes" checked={groupDupes} onChange={setGroupDupes} />
         <SearchBox value={q} onChange={(v) => { setQ(v); if (/import/i.test(v)) done('search') }} placeholder="Search items..." width={220} demo="search" />
-        <span className="ad-note" style={{ marginLeft: 'auto' }}>{shown.length} shown · {ticked.size} ticked</span>
+        <span className="ad-note" style={{ marginLeft: 'auto' }}>{shown.length} shown, {ticked.size} ticked</span>
       </div>
       {groupDupes && !review && <div className="ad-card">
         <p className="ad-note">{visibleDuplicates.length === 2 ? 'Pick which entry to keep per group, optionally rename it, then Merge visible. Skipped groups are left alone.' : 'No duplicate names among the entries currently shown. Widen the filters, or use Merge duplicates... to rescan the model.'}</p>
         <div className="ad-row"><Btn onClick={() => setSkipGroup(true)}>Skip all</Btn><Btn onClick={() => setSkipGroup(false)}>Unskip all</Btn><Btn disabled={visibleDuplicates.length !== 2 || skipGroup} onClick={() => setReview('merge')}>Merge visible</Btn></div>
         {visibleDuplicates.length === 2 && <div className="ad-card" style={{ marginTop: 12 }}>
-          <strong>MAT · Concrete - Cast In Situ · 2 items</strong>
+          <strong>MAT, Concrete - Cast In Situ, 2 items</strong>
           <div className="ad-row" style={{ marginTop: 10 }}>
             <Select label="Keep" value={duplicates.find((item) => String(item.id) === survivor)?.name ?? ''} options={duplicates.map((item) => item.name)} onChange={(name) => setSurvivor(String(duplicates.find((item) => item.name === name)?.id))} />
             <label className="ad-note">Rename to<input className="ad-input" aria-label="Rename to" value={renameSurvivor} onChange={(event) => setRenameSurvivor(event.target.value)} /></label>

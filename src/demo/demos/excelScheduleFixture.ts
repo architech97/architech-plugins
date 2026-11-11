@@ -1,7 +1,7 @@
 export const WORKBOOK_FILE = 'AT-01 Schedules.xlsx'
 export const WORKBOOKS = {
-  issued: { label: 'Coordination copy · P02', path: 'Coordination/P02/' + WORKBOOK_FILE },
-  incoming: { label: 'Incoming copy · P03', path: 'Incoming/P03/' + WORKBOOK_FILE },
+  issued: { label: 'Coordination copy, P02', path: 'Coordination/P02/' + WORKBOOK_FILE },
+  incoming: { label: 'Incoming copy, P03', path: 'Incoming/P03/' + WORKBOOK_FILE },
 } as const
 export type WorkbookId = keyof typeof WORKBOOKS
 export type Worksheet = {

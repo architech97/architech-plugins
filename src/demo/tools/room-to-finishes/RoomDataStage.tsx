@@ -12,7 +12,7 @@ export function RoomDataSetup({ settings, onChange }: { settings: RoomDataSettin
   const [isType, setIsType] = useState(false)
   const [selected, setSelected] = useState<number>()
   const [error, setError] = useState('')
-  return <Expander header="Optional next stage · Apply Room data to FF&E">
+  return <Expander header="Optional next stage, Apply Room data to FF&E">
     <Check label="After finishes, review Room → FF&E parameter writes" checked={settings.enabled} onChange={enabled => onChange({ ...settings, enabled })} />
     <p className="ad-note">Only rooms whose every requested finish succeeded or already existed are eligible. This stage has its own preview and Apply action.</p>
     <label>FF&E category<Select label="FF&E category" value={settings.category} options={ROOM_DATA_STAGE_CATEGORIES} onChange={category => { onChange({ ...settings, category, mappings: [] }); setTarget(EMPTY_CHOICE); setSelected(undefined); setError('') }} /></label>
@@ -34,7 +34,7 @@ export function RoomDataSetup({ settings, onChange }: { settings: RoomDataSettin
     </div>
     <div className="ad-list" role="listbox" aria-label="FF&E mappings">
       {settings.mappings.map(mapping => <button type="button" key={mapping.id} role="option" aria-selected={selected === mapping.id} className="li" onClick={() => setSelected(mapping.id)}>
-        {roomPropertyName(mapping.source)} → {mapping.target} · {mapping.isType ? 'Type' : 'Instance'}
+        {roomPropertyName(mapping.source)} → {mapping.target}, {mapping.isType ? 'Type' : 'Instance'}
       </button>)}
       {!settings.mappings.length && <span className="ad-note">Choose explicit source and target parameters, then Add mapping.</span>}
     </div>
@@ -50,7 +50,7 @@ export function RoomDataReview({ settings, eligible, roomValues, onFinish, ...co
   const rows = typeof calculated === 'string' ? [] : calculated
   const writable = rows.filter(row => row.writable)
   const summary = !eligible.length ? 'Room data was skipped: no rooms completed every requested finish successfully.' :
-    error || (writable.length ? 'Optional room data stage · ' + eligible.length + ' successfully finished room(s) · ' + writable.length + ' proposed values.' : 'No sample FF&E elements in the eligible rooms and category.')
+    error || (writable.length ? 'Optional room data stage, ' + eligible.length + ' successfully finished room(s), ' + writable.length + ' proposed values.' : 'No sample FF&E elements in the eligible rooms and category.')
   return <DialogShell theme={context.theme} onTheme={context.setTheme} title="Review finish plan" subtitle={summary}
     onClose={() => onFinish('Room data stage was cancelled after review; finishes remain committed.')}
     footer={<><span className="ad-status">{applied ? 'Room data applied to sample elements' : summary}</span>
@@ -67,7 +67,7 @@ export function RoomDataReview({ settings, eligible, roomValues, onFinish, ...co
           <td>{row.id}</td><td>[{row.before || '—'}] → [{row.after || '—'}]</td></tr>)}</tbody>
       </table>
     </div>
-    {applied && <Receipt title="FF&E readback" entries={writable.map(row => ({ label: row.id + ' · ' + row.mapping.target,
+    {applied && <Receipt title="FF&E readback" entries={writable.map(row => ({ label: row.id + ', ' + row.mapping.target,
       detail: model.find(element => element.id === row.id)?.values[row.mapping.target] ?? '—' }))} />}
   </DialogShell>
 }

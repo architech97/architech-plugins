@@ -1,5 +1,5 @@
 import { useRef, useState } from 'react'
-import { ArrowDown, ArrowLeft, ArrowRight, Maximize2, X } from 'lucide-react'
+import { ArrowLeft, ArrowRight, Maximize2, X } from 'lucide-react'
 import { asset } from './Brand'
 import './nativeEvidence.css'
 
@@ -42,12 +42,11 @@ export function NativeEvidence({ title, context, build, captures }: NativeEviden
     <section id="native-build" className="native-evidence" tabIndex={-1} aria-labelledby="native-build-title">
       <header className="native-evidence-head">
         <div>
-          <p className="demo-kicker">Native workflow evidence</p>
           <h2 id="native-build-title">{title}</h2>
           <p>{context}</p>
           {build && <p className="native-evidence-build">{build}</p>}
         </div>
-        <a className="demo-text-link" href="#browser-exercise">Try the browser exercise <ArrowDown size={16} aria-hidden="true" /></a>
+        <a className="demo-text-link" href="#browser-exercise">Try the browser exercise</a>
       </header>
 
       <div className="native-evidence-workbench">

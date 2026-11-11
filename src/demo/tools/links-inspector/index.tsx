@@ -79,7 +79,7 @@ export default function LinksInspector(context: DemoContext) {
   const instances = source ? source.instances === 0 ? '  (no placed instances)' : Array.from({ length: Math.min(15, source.instances) }, (_, i) => `  - ${source.name}${source.instances > 1 ? ` : ${i + 1}` : ''}`).join('\n') : ''
   const prompt = source && row ? `Permanently delete '${source.name}' (${row.values.Type})?\n\n${source.kind === 'CAD' ? 'This removes only this placement (the CAD type and any other placements stay):\n' : 'The link is removed with all its instances:\n'}${instances}\n\nThe action can be undone with Ctrl+Z while the model is open.` : ''
 
-  return <div className="inspector-demo"><DialogShell theme={context.theme} onTheme={context.setTheme} title="Links Inspector" subtitle="Sample Residence · Sample data, fictional" onClose={context.close}
+  return <div className="inspector-demo"><DialogShell theme={context.theme} onTheme={context.setTheme} title="Links Inspector" subtitle="Sample Residence, Sample data, fictional" onClose={context.close}
     footer={<div className="inspector-footer"><p>Select a row, then Isolate in 3D / Delete Link. Double-click for the full row detail.</p>
       <Btn demo="apply" disabled={!source} onClick={isolate}>Isolate in 3D</Btn>
       <Btn danger disabled={!source} onClick={() => setConfirm(true)}>Delete Link</Btn>
@@ -89,12 +89,12 @@ export default function LinksInspector(context: DemoContext) {
     <InspectorTable rows={rows} columns={columns} selected={selected} onSelect={select} onDetail={id => { select(id); setDetail(true) }} actionKey={actionKey} />
     <div className="inspector-workbench">
       <section className="inspector-stage" data-demo="preview"><h3>Sample scan preview</h3>
-        <p><strong>{rows.filter(item => item.values.Severity === 'CRITICAL').length} critical</strong> · {rows.filter(item => item.values.Severity === 'WARNING').length} warning · {rows.filter(item => item.values.Severity === 'OK').length} healthy</p>
+        <p><strong>{rows.filter(item => item.values.Severity === 'CRITICAL').length} critical</strong>, {rows.filter(item => item.values.Severity === 'WARNING').length} warning, {rows.filter(item => item.values.Severity === 'OK').length} healthy</p>
         <p>{source ? `${source.name}: ${row?.values.Recommendation}` : 'Select one row to inspect its placements, load state and recommendation.'}</p>
         <p>Top-level RVT types and individual CAD placements. Nested Revit links are excluded.</p>
         {row && <Btn sm onClick={() => setDetail(value => !value)}>Open row detail</Btn>}
       </section>
-      <MiniView title={isolated ? 'Isolated sample placement' : 'Sample Residence · link disciplines'} kind="3d" variant="links" phase={isolated ? 'after' : selected ? 'preview' : 'before'} actionKey={actionKey} items={links.filter(link => !isolated || link.id === isolated).map(link => ({ id: link.id, label: link.name.replace(/^Sample Residence\s*[–-]\s*/, ''), status: link.loaded ? 'Loaded' : 'Unloaded', pinned: link.pinned }))} />
+      <MiniView title={isolated ? 'Isolated sample placement' : 'Sample Residence, link disciplines'} kind="3d" variant="links" phase={isolated ? 'after' : selected ? 'preview' : 'before'} actionKey={actionKey} items={links.filter(link => !isolated || link.id === isolated).map(link => ({ id: link.id, label: link.name.replace(/^Sample Residence\s*[–-]\s*/, ''), status: link.loaded ? 'Loaded' : 'Unloaded', pinned: link.pinned }))} />
     </div>
     {detail && row && <RowDetail row={row} columns={columns} title="Links Inspector" onClose={() => setDetail(false)} />}
     {entries.length > 0 && <Receipt entries={entries} download={{ fictional: true, tool: 'links-inspector', rows, events: entries }} filename="links-inspector-receipt.json" />}

@@ -44,7 +44,7 @@ export default function AutoDimension(ctx: DemoContext) {
   const [measure, setMeasure] = useState('The elements themselves')
   const [lineStyle, setLineStyle] = useState('Thin Lines')
   const [chain, setChain] = useState('One chain, with an overall')
-  const [dimensionType, setDimensionType] = useState('Linear · 2.5 mm')
+  const [dimensionType, setDimensionType] = useState('Linear, 2.5 mm')
   const [replace, setReplace] = useState(true)
   const [skipExisting, setSkipExisting] = useState(true)
   const [showCore, setShowCore] = useState(false)
@@ -63,7 +63,7 @@ export default function AutoDimension(ctx: DemoContext) {
   ] }))
   const issue = outputs.find((output) => typeof output === 'string')
   const preview = outputs.flatMap((output, index) => typeof output === 'string' ? [] : output.rows.map((row) => ({
-    label: targetViews[index].name + ' · ' + row.label, value: row.value,
+    label: targetViews[index].name + ', ' + row.label, value: row.value,
   })))
   const problem = !targetViews.length ? 'Tick the views to dimension.' : !strings.length ? 'Choose at least one dimension string.' :
     !Number.isFinite(Number(smallGap)) || Number(smallGap) < 0 ? 'Smallest gap must be a nonnegative number in paper millimetres.' :
@@ -83,7 +83,7 @@ export default function AutoDimension(ctx: DemoContext) {
       let key = label, copy = 2
       while (!replace && next[key]) key = label + ' (copy ' + copy++ + ')'
       next[key] = [value, measure, measure === 'Detail lines' && lineStyle, across + ' / ' + down, chain,
-        'Minimum gap ' + smallGap + ' mm on paper', mep && 'Equipment included', facadeGrids && 'Grids and columns included', showCore && 'Core reference lines shown'].filter(Boolean).join(' · ')
+        'Minimum gap ' + smallGap + ' mm on paper', mep && 'Equipment included', facadeGrids && 'Grids and columns included', showCore && 'Core reference lines shown'].filter(Boolean).join(', ')
     }
     setPrevious(before)
     setPlaced(next)
@@ -126,7 +126,7 @@ export default function AutoDimension(ctx: DemoContext) {
       <FolioChoice label="Strings as" options={['One chain, with an overall', 'Separate dimensions, with an overall']} value={chain} onChange={(value) => { change(); setChain(value) }} />
       <FolioText label="Smallest gap in mm on paper" value={smallGap} onChange={(value) => { change(); setSmallGap(value) }} />
       <FolioText label="Row spacing in mm on paper" value={rowSpace} onChange={(value) => { change(); setRowSpace(value) }} />
-      <FolioChoice label="Dimension type" options={['Linear · 2.5 mm', 'Linear · 3.5 mm']} value={dimensionType} onChange={(value) => { change(); setDimensionType(value) }} /></div>
+      <FolioChoice label="Dimension type" options={['Linear, 2.5 mm', 'Linear, 3.5 mm']} value={dimensionType} onChange={(value) => { change(); setDimensionType(value) }} /></div>
       <Check label="Replace earlier Auto Dimension strings of the kinds ticked; strings you moved or retexted are kept" checked={replace} onChange={(value) => { change(); setReplace(value) }} />
       <Check label="Leave what is already dimensioned alone" checked={skipExisting} onChange={(value) => { change(); setSkipExisting(value) }} />
       <Check label="Show core reference lines" checked={showCore} onChange={(value) => { change(); setShowCore(value) }} />
@@ -134,7 +134,7 @@ export default function AutoDimension(ctx: DemoContext) {
     {!pending && <FolioPreview rows={preview} />}
     {error && <p role="alert" className="folio-runtime-error">{error}</p>}
     {pending && <section className="ad-result folio-runtime-stack" data-demo="autodim-review" aria-label="Keep or undo sample dimensions"><p role="status">{pending.summary}</p><FolioPreview rows={pending.rows} />
-      <div className="ad-row"><Btn primary onClick={() => { setReceipt(pending.rows.map(({ label, value }) => label + ' · ' + value)); setPending(undefined); setPrevious(undefined); ctx.done('apply'); ctx.done('review') }}>Keep</Btn>
+      <div className="ad-row"><Btn primary onClick={() => { setReceipt(pending.rows.map(({ label, value }) => label + ', ' + value)); setPending(undefined); setPrevious(undefined); ctx.done('apply'); ctx.done('review') }}>Keep</Btn>
         <Btn onClick={() => { setPlaced(previous ?? {}); setPending(undefined); setPrevious(undefined); setReceipt(['Undid the last sample dimension run.']) }}>Undo</Btn></div></section>}
     {receipt.length > 0 && <Receipt entries={receipt} title="Last sample run" />}
   </FolioFrame>

@@ -29,7 +29,7 @@ export default function PointCloudVisibility({ theme, setTheme, done, notify, cl
     const previous = hidden[view.name]
     setHistory([...history, { name: view.name, hidden: previous }])
     setHidden({ ...hidden, [view.name]: !previous })
-    setResult({ message: `${view.name} · ${visibility(previous)} → ${visibility(!previous)}` })
+    setResult({ message: `${view.name}, ${visibility(previous)} → ${visibility(!previous)}` })
     done('toggle')
   }
 
@@ -38,13 +38,13 @@ export default function PointCloudVisibility({ theme, setTheme, done, notify, cl
     if (!last) return
     setHidden({ ...hidden, [last.name]: last.hidden })
     setHistory(history.slice(0, -1))
-    setResult({ message: `${last.name} · restored to ${visibility(last.hidden).toLowerCase()}` })
+    setResult({ message: `${last.name}, restored to ${visibility(last.hidden).toLowerCase()}` })
     done('undo')
   }
 
   return (
     <RevitDialog theme={theme} onTheme={setTheme} eyebrow="Arch Forge / Scan to BIM" title="Point Cloud On/Off"
-      caption={`Browser simulation · ${DEMO_PROJECT.code} ${DEMO_PROJECT.name}`} onClose={close}
+      caption={`Browser simulation, ${DEMO_PROJECT.code} ${DEMO_PROJECT.name}`} onClose={close}
       footer={<>
         <span className="ad-status">Active view only</span>
         <Btn onClick={close}>Close</Btn>

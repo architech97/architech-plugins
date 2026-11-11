@@ -12,16 +12,16 @@ const CHECKSETS = ['All available checksets', 'ArchiTECH Health (built-in)']
 const SECTIONS: { id: string; label: string; rows: Row[] }[] = [
   { id: 'core', label: 'Core model summary', rows: [['Model', MODEL], ['Rooms', ROOMS.length], ['Sheets', SHEETS.length]] },
   { id: 'project', label: 'Project information', rows: [['Project number', DEMO_PROJECT.code], ['Project stage', DEMO_PROJECT.stage], ['Issue', DEMO_PROJECT.revision]] },
-  { id: 'links', label: 'Revit links', rows: [['Structure.rvt', 'Loaded · Attachment'], ['Interiors.rvt', 'Loaded · Overlay'], ['MEP.rvt', 'Unloaded · Overlay']] },
-  { id: 'cad', label: 'CAD links and imports', rows: [['Site-survey.dwg', 'Linked · Level 01'], ['Old-layout.dwg', 'Embedded · Lobby plan']] },
-  { id: 'references', label: 'Images, keynotes and other references', rows: [['Entrance precedent.png', 'Image · Drafting view'], ['Material keynotes.txt', 'Keynote table']] },
+  { id: 'links', label: 'Revit links', rows: [['Structure.rvt', 'Loaded, Attachment'], ['Interiors.rvt', 'Loaded, Overlay'], ['MEP.rvt', 'Unloaded, Overlay']] },
+  { id: 'cad', label: 'CAD links and imports', rows: [['Site-survey.dwg', 'Linked, Level 01'], ['Old-layout.dwg', 'Embedded, Lobby plan']] },
+  { id: 'references', label: 'Images, keynotes and other references', rows: [['Entrance precedent.png', 'Image, Drafting view'], ['Material keynotes.txt', 'Keynote table']] },
   { id: 'warnings', label: 'Warnings', rows: WARNINGS.map(({ description, count }) => [description, count]) },
   { id: 'worksets', label: 'Worksets and categories', rows: [['Architecture', 'User workset'], ['Shared Levels and Grids', 'User workset']] },
-  { id: 'sheets_views', label: 'Sheets and views', rows: SHEETS.map(({ number, name, views }) => [number + ' · ' + name, views]) },
+  { id: 'sheets_views', label: 'Sheets and views', rows: SHEETS.map(({ number, name, views }) => [number + ', ' + name, views]) },
   { id: 'schedules', label: 'Schedules', rows: [['Room Schedule', ROOMS.length], ['Door Schedule', 5], ['Window Schedule', 2]] },
   { id: 'phasing_design', label: 'Phasing and design options', rows: [['Existing', 'Phase'], ['New Construction', 'Phase'], ['Main Model', 'Design option scope']] },
   { id: 'groups', label: 'Groups', rows: [['Typical bathroom layout', 2], ['Kitchen island detail', 0]] },
-  { id: 'families', label: 'Families and model performance', rows: [['Reception Millwork', 'In-place · 18 instances'], ['Test Plinth', 'Unused']] },
+  { id: 'families', label: 'Families and model performance', rows: [['Reception Millwork', 'In-place, 18 instances'], ['Test Plinth', 'Unused']] },
   { id: 'datum', label: 'Levels, grids and scope boxes', rows: [['Level 01', '0 mm'], ['Level 02', '3,100 mm'], ['Building extent', 'Scope box']] },
   { id: 'best_practices', label: 'Model best-practice checks', rows: [['Critical-Class Warnings', WARNINGS.filter(({ severity }) => severity === 'Critical').reduce((sum, { count }) => sum + count, 0)], ['Unplaced Rooms', 0]] },
   { id: 'extended_api', label: 'Standards, metadata and IFC API tabs', rows: [['Units', DEMO_PROJECT.units], ['IFC export configuration', 'Default sample settings']] },
@@ -66,7 +66,7 @@ export default function ModelHealthExport({ theme, setTheme, close, done, rewind
   const isPartial = cancelling
   const measured = familySizes && exported.some(({ id }) => id === 'families')
   let rows = section?.rows ?? []
-  if (section?.id === 'families' && measured) rows = [...rows, ['Reception Millwork · sample serialized size', '2.4 MB']]
+  if (section?.id === 'families' && measured) rows = [...rows, ['Reception Millwork, sample serialized size', '2.4 MB']]
   if (compact && section && section.id !== 'core' && section.id !== 'project') rows = [['Inventory rows in full report', rows.length]]
   const visibleRows = rows.filter(([item, value]) =>
     (item + ' ' + value).toLowerCase().includes(query.trim().toLowerCase())
@@ -157,11 +157,11 @@ export default function ModelHealthExport({ theme, setTheme, close, done, rewind
 
   const title = {
     settings: 'Model Health',
-    running: 'Model Health · Running checks',
+    running: 'Model Health, Running checks',
     review: 'Model Check Reviews',
     override: 'Model Check Override',
-    complete: isPartial ? 'Model Health · Cancelled' : 'Model Health · Complete',
-    dashboard: 'Model Health · Dashboard',
+    complete: isPartial ? 'Model Health, Cancelled' : 'Model Health, Complete',
+    dashboard: 'Model Health, Dashboard',
   }[phase]
   const actions = {
     settings: <><span className="ad-status" role="alert">{error || 'Sample export settings'}</span><Btn onClick={close}>Cancel</Btn><Btn primary demo="health-run" onClick={run}>Run check</Btn></>,
@@ -173,7 +173,7 @@ export default function ModelHealthExport({ theme, setTheme, close, done, rewind
   }[phase]
 
   return (
-    <RevitDialog theme={theme} onTheme={setTheme} title={title} caption={DEMO_PROJECT.code + ' · ' + MODEL + ' · Browser simulation'} onClose={phase === 'running' ? () => setCancelling(true) : close} footer={actions}>
+    <RevitDialog theme={theme} onTheme={setTheme} title={title} caption={DEMO_PROJECT.code + ', ' + MODEL + ', Browser simulation'} onClose={phase === 'running' ? () => setCancelling(true) : close} footer={actions}>
       <div className="health-panel" ref={panel} tabIndex={-1} data-health-phase={phase} aria-label={title}>
         {phase === 'settings' && <>
           <p>Choose inventory sections and a rule checkset. Rule checks apply to the host model.</p>
@@ -226,7 +226,7 @@ export default function ModelHealthExport({ theme, setTheme, close, done, rewind
           <label>Reason<textarea className="ad-input" aria-label="Override reason" rows={3} value={draft.reason} onChange={(event) => setDraft({ ...draft, reason: event.target.value })} /></label>
         </div>}
         {phase === 'complete' && <div className="health-progress">
-          <h3>{isPartial ? 'Cancelled · Partial inventory' : 'Sample audit execution complete'}</h3>
+          <h3>{isPartial ? 'Cancelled, Partial inventory' : 'Sample audit execution complete'}</h3>
           <p>{isPartial ? 'Only inventory completed before cancellation is available.' : 'Open the dashboard to see what the checks found.'}</p>
           <dl className="crafted-result">
             <div><dt>Output folder</dt><dd>{folder}</dd></div><div><dt>Inventory categories</dt><dd>{exported.length} of {jobs.length} finished</dd></div>
@@ -244,7 +244,7 @@ export default function ModelHealthExport({ theme, setTheme, close, done, rewind
             <div><span>Run status</span><strong>{isPartial ? 'Partial' : 'Complete'}</strong></div>
           </div>
           {!isPartial && Object.keys(reviews).length > 0 && <details><summary>Review notes</summary><dl className="crafted-result">
-            {Object.entries(reviews).map(([key, note]) => <div key={key}><dt>{FINDINGS[Number(key)].label}</dt><dd>{note.result}{note.reason && ' · ' + note.reason}</dd></div>)}
+            {Object.entries(reviews).map(([key, note]) => <div key={key}><dt>{FINDINGS[Number(key)].label}</dt><dd>{note.result}{note.reason && ', ' + note.reason}</dd></div>)}
           </dl></details>}
           <div className="health-dashboard-controls">
             <label>Inventory section

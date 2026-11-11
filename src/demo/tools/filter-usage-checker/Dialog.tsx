@@ -117,7 +117,7 @@ export default function FilterUsageChecker(ctx: DemoContext) {
               {status ||
                 (changes
                   ? added.length +
-                    " add(s) · " +
+                    " add(s), " +
                     removed.length +
                     " removal(s) pending"
                   : "No pending changes.")}
@@ -170,7 +170,7 @@ export default function FilterUsageChecker(ctx: DemoContext) {
       >
         <div className="filter-layout">
           <aside className="ad-card filter-rail">
-            <b className="ad-label">VIEW TYPES</b>
+            <b className="ad-label">View types</b>
             <Check
               label="Select all view types"
               checked={types.length === viewTypes.length}
@@ -192,7 +192,7 @@ export default function FilterUsageChecker(ctx: DemoContext) {
             ))}
           </aside>
           <aside className="ad-card filter-rail">
-            <b className="ad-label">FILTERS</b>
+            <b className="ad-label">Filters</b>
             <SearchBox
               placeholder="Filter names..."
               value={query}
@@ -273,7 +273,7 @@ export default function FilterUsageChecker(ctx: DemoContext) {
             >
               <section className="ad-card">
                 <b>
-                  {selected ? selected.toUpperCase() : "NO FILTER SELECTED"}
+                  {selected ? selected : "No filter selected"}
                 </b>
                 <p className="ad-note">
                   Click a filter in the grid to see every view and template it

@@ -1,6 +1,10 @@
+:root {
+  --replica-demo-tools-links-inspector-inspector-1: #9ab9ff;
+}
+
 .inspector-demo { min-width: 0; width: 100%; }
 .inspector-demo .ad-body { gap: 16px; }
-.inspector-demo button:focus-visible, .inspector-demo [tabindex]:focus-visible, .inspector-demo summary:focus-visible { outline: 3px solid var(--d-accent, #9ab9ff); outline-offset: 3px; }
+.inspector-demo button:focus-visible, .inspector-demo [tabindex]:focus-visible, .inspector-demo summary:focus-visible { outline: 3px solid var(--d-accent, var(--replica-demo-tools-links-inspector-inspector-1)); outline-offset: 3px; }
 .inspector-summary { margin: 0; color: var(--d-muted); line-height: 1.6; font-size: 12px; }
 .inspector-grid { border: 1px solid var(--d-border); border-radius: 5px; overflow: auto; max-width: 100%; background: var(--d-input); }
 .inspector-table { min-width: 780px; table-layout: auto; }
@@ -10,8 +14,8 @@
 .inspector-table td.wrap { min-width: 155px; max-width: 245px; overflow-wrap: anywhere; }
 .inspector-table tr:focus-visible { outline-offset: -3px; }
 .inspector-name { font-weight: 600; }
-.inspector-severity { display: inline-flex; gap: 5px; align-items: center; font-size: 10px; font-weight: 700; letter-spacing: .035em; }
-.inspector-severity::before { content: ''; display: block; width: 6px; height: 6px; background: currentColor; border-radius: 50%; }
+.inspector-severity { display: inline-flex; gap: 5px; align-items: center; font-size: 11px; font-weight: 700;  }
+
 .inspector-severity.critical { color: var(--d-error); }
 .inspector-severity.warning { color: var(--d-warning); }
 .inspector-severity.info { color: var(--d-info); }

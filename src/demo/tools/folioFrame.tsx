@@ -18,7 +18,7 @@ export function FolioFrame({ ctx, title, sections, section, onSection, children,
       onSection(index)
     }
   }}>
-    <RevitDialog title={title} theme={ctx.theme} onTheme={ctx.setTheme} onClose={ctx.close} caption="Sample Residence · Browser simulation" footer={footer}>
+    <RevitDialog title={title} theme={ctx.theme} onTheme={ctx.setTheme} onClose={ctx.close} caption="Sample Residence, Browser simulation" footer={footer}>
       <div className="folio-runtime-layout">
         <nav className="ad-nav" aria-label={title + ' tools'}><span className="ad-label">Tools</span>
           {sections.map(({ title, summary }, index) => <button type="button" key={title} className={section === index ? 'on' : ''} aria-pressed={section === index} aria-label={title}

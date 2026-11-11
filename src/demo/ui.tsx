@@ -24,9 +24,9 @@ export function RevitDialog(props: {
           <img className="ad-logo" src={asset(theme === 'dark' ? 'media/brand/architech-logo-dark-ui.webp' : 'media/brand/architech-logo-light-ui.webp')} alt="ArchiTECH" />
           <span className="ad-divider" />
           <span style={{ minWidth: 0, display: 'flex', flexDirection: 'column', gap: 2 }}>
-            {eyebrow && <span className="ad-eyebrow">{eyebrow}</span>}
             <span className="ad-title">{title}</span>
             {caption && <span className="ad-caption">{caption}</span>}
+            {eyebrow && <span className="ad-eyebrow">{eyebrow}</span>}
           </span>
         </div>
         <select className="ad-select" style={{ width: 92 }} aria-label="Dialog theme" value={theme} onChange={(e) => onTheme(e.target.value as DialogTheme)}>

@@ -89,7 +89,7 @@ export function DemoPlayer({ demo, compact = false }: { demo: DemoDefinition; co
     <div className={`player${compact ? ' compact' : ''}${expanded ? ' is-expanded' : ''}`}>
       <div className="player-top">
         <div className="player-title">
-          <span className="badge-sim" title={DEMO_PROJECT.code + ' · ' + DEMO_PROJECT.name}><Info size={14} /> Browser simulation · sample data</span>
+          <span className="badge-sim" title={DEMO_PROJECT.code + ', ' + DEMO_PROJECT.name}><Info size={14} /> Browser simulation, sample data</span>
           {demo.frame !== 'app' && <p className="small-screen-hint">Use the guide to jump to the next control.</p>}
         </div>
         <div className="player-actions">
@@ -118,8 +118,8 @@ export function DemoPlayer({ demo, compact = false }: { demo: DemoDefinition; co
       <div className="player-main">
         <div className={demo.frame === 'app' ? 'revit app-frame' : 'revit'} aria-label={demo.frame === 'app' ? demo.ribbon.button + ' simulation' : 'Simulated Revit window'}>
           <div className="revit-bar">
-            <span className="revit-dots"><i /><i /><i /></span>
-            <span className="revit-file">{demo.frame === 'app' ? <>{demo.ribbon.button} <em>(simulated)</em></> : <>Autodesk Revit 2024 · {DEMO_PROJECT.name}.rvt <em>(sample data)</em></>}</span>
+
+            <span className="revit-file">{demo.frame === 'app' ? <>{demo.ribbon.button} <em>(simulated)</em></> : <>Autodesk Revit 2024, {DEMO_PROJECT.name}.rvt <em>(sample data)</em></>}</span>
           </div>
           {demo.frame !== 'app' && <>
             <div className="revit-ribbon">
@@ -182,7 +182,7 @@ export function DemoPlayer({ demo, compact = false }: { demo: DemoDefinition; co
           </ol>
           {!current && <div className="steps-complete">Workflow complete. Reset to run it again, or switch to Explore and try other options.</div>}
           <div className="log">
-            <span className="eyebrow" style={{ fontSize: 10.5 }}>What happened (simulated)</span>
+            <span className="eyebrow" style={{ fontSize: 11 }}>What happened (simulated)</span>
             {log.length === 0 && <p className="muted" style={{ fontSize: 13, marginTop: 8 }}>Actions you take in the simulation appear here.</p>}
             <ul>
               {log.map((l) => <li key={l.id} className={l.kind}><span className="mono">{l.at}</span>{l.text}</li>)}

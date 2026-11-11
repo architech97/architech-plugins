@@ -65,7 +65,7 @@ export default function ReplaceMaterials({ theme, setTheme, done, rewind, notify
       const blocked = config.mode === MODES[1] && outside > 0
       return {
         item, outside, blocked,
-        status: blocked ? 'Blocked · shared type reaches outside scope' : instance ? 'Writable instance material' : config.mode === MODES[0] ? 'Duplicate system type in scope' : 'Edit reviewed shared type',
+        status: blocked ? 'Blocked, shared type reaches outside scope' : instance ? 'Writable instance material' : config.mode === MODES[0] ? 'Duplicate system type in scope' : 'Edit reviewed shared type',
       }
     })
     setReceipt(undefined)
@@ -82,7 +82,7 @@ export default function ReplaceMaterials({ theme, setTheme, done, rewind, notify
     setModel(model.map(item => ids.has(item.id) ? {
       ...item,
       material: config.replacement,
-      type: config.mode === MODES[0] && item.reference !== 'Instance material' ? `${item.type} · ${config.replacement}` : item.type,
+      type: config.mode === MODES[0] && item.reference !== 'Instance material' ? `${item.type}, ${config.replacement}` : item.type,
     } : item))
     setReceipt(scan.map(row => ({ ...row, status: `${row.item.material} → ${config.replacement}` })))
     setScan(undefined)
@@ -93,7 +93,7 @@ export default function ReplaceMaterials({ theme, setTheme, done, rewind, notify
 
   return (
     <RevitDialog theme={theme} onTheme={setTheme} eyebrow="Arch Forge / Finishes" title="Replace Materials"
-      caption={`Browser simulation · ${DEMO_PROJECT.code} ${DEMO_PROJECT.name}`} onClose={close}
+      caption={`Browser simulation, ${DEMO_PROJECT.code} ${DEMO_PROJECT.name}`} onClose={close}
       footer={<>
         <span className="ad-status">{receipt ? 'Replacement applied to sample references' : scan ? 'Read-only impact scan' : 'A fresh impact scan is required'}</span>
         <Btn onClick={close}>Close</Btn>
@@ -107,7 +107,7 @@ export default function ReplaceMaterials({ theme, setTheme, done, rewind, notify
           <label className="suite-flow-control"><span>Type changes</span><Select label="Type changes" value={config.mode} options={MODES} onChange={mode => configure({ mode })} /></label>
         </div>
         <fieldset className="ad-card suite-flow-options">
-          <legend>1 · Choose categories ({config.categories.length} selected)</legend>
+          <legend>1, Choose categories ({config.categories.length} selected)</legend>
           <div className="ad-row suite-flow-options-row">
             <SearchBox placeholder="Search categories…" value={query} onChange={setQuery} />
             <Btn sm onClick={() => configure({ categories: INTERIORS })}>Interiors</Btn>
@@ -120,7 +120,7 @@ export default function ReplaceMaterials({ theme, setTheme, done, rewind, notify
           {!shown.length && <p className="ad-note">No categories match this search.</p>}
         </fieldset>
         <fieldset className="ad-card suite-flow-options">
-          <legend>2 · Choose materials</legend>
+          <legend>2, Choose materials</legend>
           <label className="suite-flow-control"><span>Find material</span><Select label="Find material" value={config.find} options={MATERIALS} onChange={find => configure({ find })} /></label>
           <label className="suite-flow-control"><span>Replace with</span><Select label="Replace with" value={config.replacement} options={MATERIALS} onChange={replacement => configure({ replacement })} /></label>
           <div className="ad-row suite-flow-options-row">
@@ -131,14 +131,14 @@ export default function ReplaceMaterials({ theme, setTheme, done, rewind, notify
         </fieldset>
       </div>
       <section className="ad-card suite-flow-fields" aria-label="Material impact review">
-        <strong>3 · Review impact</strong>
+        <strong>3, Review impact</strong>
         <p role="status">{receipt ? `${receipt.length} references updated. Scan again to review the changed sample model.`
           : scan ? scan.some(row => row.blocked) ? 'The impact scan found out-of-scope references. Use a different type policy or scan Whole model.'
             : scan.length ? `${scan.length} matching references. Review the scope before replacing.` : 'No matching references in the chosen categories and scope.'
             : 'Choose different materials and at least one category, then scan.'}</p>
         <div className="ad-row">
-          <Btn sm disabled={!selectedRows.length} onClick={() => setNavigation('Sample selection · ' + selectedRows.join(', '))}>Select in Revit</Btn>
-          <Btn sm disabled={!selectedRows.length} onClick={() => setNavigation('Sample view focus · ' + selectedRows.join(', '))}>Show in Revit</Btn>
+          <Btn sm disabled={!selectedRows.length} onClick={() => setNavigation('Sample selection, ' + selectedRows.join(', '))}>Select in Revit</Btn>
+          <Btn sm disabled={!selectedRows.length} onClick={() => setNavigation('Sample view focus, ' + selectedRows.join(', '))}>Show in Revit</Btn>
         </div>
         <p className="ad-note">These controls select and focus the listed sample references in this browser exercise.</p>
         {navigation && <p role="status">{navigation}</p>}
@@ -148,7 +148,7 @@ export default function ReplaceMaterials({ theme, setTheme, done, rewind, notify
               <tbody>{results.map(({ item, outside, status }) => <tr key={item.id} className={selectedRows.includes(item.id) ? 'sel' : undefined}>
                 <td><button type="button" className="ad-btn sm" aria-label={'Select impact row ' + item.id} aria-pressed={selectedRows.includes(item.id)}
                   onClick={() => { setSelectedRows(selectedRows.includes(item.id) ? selectedRows.filter(id => id !== item.id) : [...selectedRows, item.id]); setNavigation('') }}>{item.id}</button></td>
-                <td>{item.category} · {item.type}</td><td>{item.reference}</td><td>{outside}</td><td>{status}</td>
+                <td>{item.category}, {item.type}</td><td>{item.reference}</td><td>{outside}</td><td>{status}</td>
               </tr>)}</tbody>
             </table>
           </div>

@@ -36,9 +36,9 @@ export default function result({ action, fields, records }: WorkflowInput) {
     const number = (value < 0 ? '-' : '') + String(Math.abs(value)).padStart(digits, '0')
     const next = [prefix, number, suffix].filter(Boolean).join(separator)
     const before = cell(record, 'Current Value') || 'Blank'
-    return resultRow(record.label, before === next ? before + ' · unchanged' : before + ' → ' + next)
+    return resultRow(record.label, before === next ? before + ', unchanged' : before + ' → ' + next)
   })
   const changed = rows.filter(({ value }) => !value.endsWith('unchanged')).length
   return { summary: 'Prepared ' + changed + ' changes to ' + parameter + ' across ' + records.length + ' sample elements.',
-    rows: [resultRow('Numbering order', order + (order === 'Random' ? ' · Seed ' + seed : '')), ...rows] }
+    rows: [resultRow('Numbering order', order + (order === 'Random' ? ', Seed ' + seed : '')), ...rows] }
 }

@@ -1,6 +1,5 @@
 import { useEffect, type ReactNode } from 'react'
 import { Link, NavLink, Outlet, useLocation } from 'react-router-dom'
-import { ArrowRight } from 'lucide-react'
 import { Mark } from './Brand'
 import { AUTOMATION_PATH, CONTACT, SITE_ORIGIN } from '../data/contact'
 import { useContinuityBackground, useImageFade, useScrollProgress, useSiteMotion } from './motion'
@@ -25,7 +24,7 @@ export function Layout() {
   useEffect(() => {
     window.scrollTo({ top: 0, behavior: 'instant' })
     const heading = document.querySelector('main h1')?.textContent?.replace(/\s+/g, ' ').trim()
-    document.title = heading ? heading + ' · ArchiTECH Automation' : 'ArchiTECH Automation'
+    document.title = heading ? heading + ' | ArchiTECH Automation' : 'ArchiTECH Automation'
   }, [pathname])
   useEffect(() => {
     if (hash) document.getElementById(hash.slice(1))?.scrollIntoView()
@@ -47,7 +46,7 @@ export function Layout() {
       <nav className="ax-subnav" ref={subnav} aria-label="Automation">
         <div className="ax-subnav-inner">
           {SUBNAV.map((n) => <NavLink key={n.to} to={n.to}>{n.label}</NavLink>)}
-          <Link className="ax-subnav-cta" to="/demos#sample-project">Try a walkthrough <ArrowRight size={14} aria-hidden="true" /></Link>
+          <Link className="ax-subnav-cta" to="/demos#sample-project">Try a demo</Link>
         </div>
       </nav>
       <main id="main" tabIndex={-1}><div key={pathname}><Outlet /></div></main>
@@ -70,15 +69,14 @@ function Footer() {
           <p className="ax-foot-h">Contact</p>
           <a href={`mailto:${CONTACT.email}`}>{CONTACT.email}</a>
           {CONTACT.phones.map((phone) => <a key={phone} href={'tel:' + phone.replace(/\s/g, '')}>{phone}</a>)}
-          {CONTACT.whatsapp && <a href={'https://wa.me/' + CONTACT.whatsapp} rel="noreferrer">WhatsApp ↗</a>}
-          <a href={CONTACT.linkedin} rel="noreferrer">LinkedIn ↗</a>
+          <a href={CONTACT.linkedin} rel="noreferrer">LinkedIn</a>
         </div>
         <div className="ax-foot-col">
           <p className="ax-foot-h">Work</p>
-          <a href={designUrl}>Design portfolio →</a>
-          <Link to="/">Automation →</Link>
-          <Link to="/demos">Browser demos →</Link>
-          <Link to="/connect">Discuss a workflow →</Link>
+          <a href={designUrl}>Design portfolio</a>
+          <Link to="/">Automation</Link>
+          <Link to="/demos">Browser demos</Link>
+          <Link to="/connect">Discuss a workflow</Link>
         </div>
         <div className="ax-foot-col">
           <p className="ax-foot-h">Products</p>

@@ -11,14 +11,14 @@ const sections = [
 ]
 interface Dimension { id: number; name: string; view: string; type: string; witnesses: number[]; row: number; override: string; locked: boolean; detached: boolean; userLines: boolean }
 const dimensions: Dimension[] = [
-  { id: 481, name: 'D-481 · External wall chain', view: 'Level 01 – Floor Plan', type: 'Linear · 2.5 mm', witnesses: [0, 115, 3300], row: 10, override: '3400', locked: false, detached: false, userLines: false },
-  { id: 482, name: 'D-482 · Adjacent wall chain', view: 'Level 01 – Floor Plan', type: 'Linear · 2.5 mm', witnesses: [3300, 4750], row: 10, override: '', locked: false, detached: false, userLines: false },
-  { id: 503, name: 'D-503 · Level heights', view: 'North Elevation', type: 'Linear · 3.5 mm', witnesses: [0, 3300, 6600], row: 20, override: '', locked: true, detached: false, userLines: false },
-  { id: 508, name: 'D-508 · Wall thickness', view: 'Section A–A', type: 'Linear · 2.5 mm', witnesses: [0, 450], row: 20, override: '', locked: false, detached: true, userLines: true },
+  { id: 481, name: 'D-481, External wall chain', view: 'Level 01 – Floor Plan', type: 'Linear, 2.5 mm', witnesses: [0, 115, 3300], row: 10, override: '3400', locked: false, detached: false, userLines: false },
+  { id: 482, name: 'D-482, Adjacent wall chain', view: 'Level 01 – Floor Plan', type: 'Linear, 2.5 mm', witnesses: [3300, 4750], row: 10, override: '', locked: false, detached: false, userLines: false },
+  { id: 503, name: 'D-503, Level heights', view: 'North Elevation', type: 'Linear, 3.5 mm', witnesses: [0, 3300, 6600], row: 20, override: '', locked: true, detached: false, userLines: false },
+  { id: 508, name: 'D-508, Wall thickness', view: 'Section A–A', type: 'Linear, 2.5 mm', witnesses: [0, 450], row: 20, override: '', locked: false, detached: true, userLines: true },
 ]
 const edits = ['Merge strings into one', 'Rebuild on detail lines', 'Change dimension type']
 const scopes = ['Dimensions I pick or select', 'All dimensions in this view', 'All dimensions in views I pick…', 'All dimensions in every view and sheet']
-const types = ['Linear · 2.5 mm', 'Linear · 3.5 mm', 'Linear · Architectural tick']
+const types = ['Linear, 2.5 mm', 'Linear, 3.5 mm', 'Linear, Architectural tick']
 
 export default function ManageDimension(ctx: DemoContext) {
   const [section, setSection] = useState(0)
@@ -47,20 +47,20 @@ export default function ManageDimension(ctx: DemoContext) {
   const action = section === 0 ? what === 'The elements I select' ? 'Click where to place' : 'Start' : section === 2 ? 'Run audit' :
     edit === edits[0] ? effectiveScope === scopes[0] ? 'Merge' : 'Find strings to merge' : edit === edits[1] ? effectiveScope === scopes[0] ? 'Rebuild' : 'Preview rebuild' : 'Change type'
   const preview = section === 0 ? [
-    { label: what, value: '4 sample witness positions · ' + (what === 'The elements a line cuts through' ? cut : 'Wall and joinery edges') },
-    { label: 'Placement', value: position + ' · ' + type },
-    { label: 'Measurement', value: faces + ' · 115 + 3185 + 1450 mm' + (overall ? ' · Overall 4750 mm' : '') },
-  ] : scoped.map((row) => ({ label: row.name, value: row.locked ? 'Skipped · Locked' : section === 2 ?
+    { label: what, value: '4 sample witness positions, ' + (what === 'The elements a line cuts through' ? cut : 'Wall and joinery edges') },
+    { label: 'Placement', value: position + ', ' + type },
+    { label: 'Measurement', value: faces + ', 115 + 3185 + 1450 mm' + (overall ? ', Overall 4750 mm' : '') },
+  ] : scoped.map((row) => ({ label: row.name, value: row.locked ? 'Skipped, Locked' : section === 2 ?
     row.override ? 'Typed-over value ' + row.override + ' over ' + (row.witnesses.at(-1)! - row.witnesses[0]) + ' mm' : row.detached ? 'On detail lines' : 'No audit finding' :
-      edit === edits[0] ? 'Merge all witness positions onto the first string' : edit === edits[1] ? row.userLines ? 'Keep user-drawn reference lines' : 'Rebuild on ' + lineStyle + ' · Measurement retained' :
+      edit === edits[0] ? 'Merge all witness positions onto the first string' : edit === edits[1] ? row.userLines ? 'Keep user-drawn reference lines' : 'Rebuild on ' + lineStyle + ', Measurement retained' :
         row.type + ' → ' + type }))
 
   function run() {
     if (issue) return
-    if (section === 2) { setAudit(true); setReceipt(preview.filter(({ value }) => value !== 'No audit finding').map(({ label, value }) => label + ' · ' + value)); return }
+    if (section === 2) { setAudit(true); setReceipt(preview.filter(({ value }) => value !== 'No audit finding').map(({ label, value }) => label + ', ' + value)); return }
     if (section === 0) {
       const id = Math.max(...rows.map(({ id }) => id)) + 1
-      setRows([...rows, { id, name: 'D-' + id + ' · Sample cut dimension', view: 'Level 01 – Floor Plan', type,
+      setRows([...rows, { id, name: 'D-' + id + ', Sample cut dimension', view: 'Level 01 – Floor Plan', type,
         witnesses: [0, 115, 3300, 4750], row: 30, override: '', locked: false, detached: true, userLines: false }])
       setReceipt(['Created D-' + id + ' from sample element edges.', 'Witness lines use ' + lineStyle + '.'])
     } else if (edit === edits[0]) {
@@ -71,14 +71,14 @@ export default function ManageDimension(ctx: DemoContext) {
       setReceipt(['Merged ' + editable.length + ' strings into ' + first.name + '.', 'Witness positions: ' + witnesses.join(', ') + ' mm.'])
     } else {
       setRows(rows.map((row) => !editable.some(({ id }) => id === row.id) ? row : edit === edits[1] ? { ...row, detached: true } : { ...row, type }))
-      setReceipt(preview.map(({ label, value }) => label + ' · ' + value))
+      setReceipt(preview.map(({ label, value }) => label + ', ' + value))
     }
     ctx.done('configure'); ctx.done('run'); ctx.done('apply'); ctx.done('review')
-    ctx.notify({ kind: 'success', text: action + ' · Sample dimensions updated.' })
+    ctx.notify({ kind: 'success', text: action + ', Sample dimensions updated.' })
   }
 
   return <FolioFrame ctx={ctx} title="Manage Dimension" sections={sections} section={section} onSection={(index) => { setSection(index); setAudit(false) }}
-    footer={<><span className="ad-status">{issue || 'Sample Residence · Preview uses fictional dimensions.'}</span><Btn onClick={ctx.close}>Close</Btn><Btn primary demo="managedim-run" disabled={!!issue} onClick={run}>{action}</Btn></>}>
+    footer={<><span className="ad-status">{issue || 'Sample Residence, Preview uses fictional dimensions.'}</span><Btn onClick={ctx.close}>Close</Btn><Btn primary demo="managedim-run" disabled={!!issue} onClick={run}>{action}</Btn></>}>
     {section === 0 ? <section className="ad-card folio-runtime-stack">
       <ScopeRadios label="What to dimension" options={['The elements a line cuts through', 'The elements I select']} value={what} onChange={setWhat} />
       {what === 'The elements a line cuts through' && <ScopeRadios label="Cut line" options={['Click two points', 'Pick a line I drew']} value={cut} onChange={setCut} />}

@@ -59,7 +59,7 @@ const FINDINGS: Finding[] = [
     profiles: ["Interiors", "Pre-handover"],
     level: "Level 02",
     phase: "New Construction",
-    option: "Option 01 · Courtyard",
+    option: "Option 01, Courtyard",
     ids: [410022],
     evidence:
       "A sample room is missing Floor Finish. The affected set is limited by the captured profile and scope.",
@@ -240,7 +240,7 @@ export default function ReviewCenter({
         theme={ctx.theme}
         onTheme={ctx.setTheme}
         title="ARCH SENTINEL / REVIEW CENTER"
-        subtitle="Find, inspect and verify · Fictional Sample Residence"
+        subtitle="Find, inspect and verify, Fictional Sample Residence"
         onClose={() => {
           clearTimeout(timer.current);
           onBack();
@@ -329,7 +329,7 @@ export default function ReviewCenter({
                 options={[
                   "All options",
                   "Main model only",
-                  "Option 01 · Courtyard",
+                  "Option 01, Courtyard",
                 ]}
                 onChange={(value) => {
                   setOption(value);
@@ -507,7 +507,7 @@ export default function ReviewCenter({
             className="ad-card query-main"
             aria-label="Review selected finding"
           >
-            <b>REVIEW SELECTED FINDING</b>
+            <b>Review selected finding</b>
             <h3>{current?.title}</h3>
             <p>
               {current?.evidence ??
@@ -541,7 +541,7 @@ export default function ReviewCenter({
                   disabled={!actionable}
                   onClick={() =>
                     setStatus(
-                      action + " · Sample IDs " + current?.ids.join(", "),
+                      action + ", Sample IDs " + current?.ids.join(", "),
                     )
                   }
                 >

@@ -84,6 +84,6 @@ export function folioTextResult(fields: WorkflowField[], records: WorkflowRecord
   const changed = notes.filter(({ before, after }) => before !== after).length
   return {
     summary: changed ? `Prepared text changes for ${changed} of ${notes.length} sample notes.` : 'The selected operation leaves the sample notes unchanged.',
-    rows: notes.map(({ label, before, after }) => ({ label, value: before === after ? before + ' · unchanged' : before + ' → ' + after })),
+    rows: notes.map(({ label, before, after }) => ({ label, value: before === after ? before + ', unchanged' : before + ' → ' + after })),
   }
 }
