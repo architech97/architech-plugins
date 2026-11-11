@@ -1,0 +1,29 @@
+/* Continuity with Home and /design/: the Automation sub-navigation, dialog type scoping and the demo desk. */
+
+/* Second header row, only inside /automation/. Sticky, with scroll progress along its foot. */
+.ax-subnav { position: sticky; top: 0; z-index: 30; background: var(--bg); border-block: .75px solid var(--line); }
+.ax-subnav::after { content: ''; position: absolute; left: 0; right: 0; bottom: -.75px; height: 1px; background: var(--blueprint); transform-origin: left; transform: scaleX(var(--scroll, 0)); pointer-events: none; }
+.ax-subnav-inner { display: flex; align-items: center; gap: 0 clamp(16px, 2.4vw, 32px); min-height: 44px; padding-inline: var(--gut); overflow-x: auto; scrollbar-width: none; }
+.ax-subnav a { display: inline-flex; align-items: center; gap: 6px; min-height: 44px; color: var(--text-2); font: 400 .9rem/1 var(--sans); white-space: nowrap; }
+.ax-subnav a:hover { color: var(--text); }
+.ax-subnav a.active { color: var(--text); box-shadow: inset 0 -2px var(--blueprint); }
+.ax-subnav-cta { margin-left: auto; padding-left: var(--s-2); color: var(--text) !important; font-weight: 500 !important; }
+.ax-subnav-cta svg { transition: translate var(--t-reveal) var(--ease); }
+.ax-subnav-cta:hover svg { translate: 4px 0; }
+.ax-header .ax-nav a, .ax-header .ax-brand { color: var(--ink); }
+
+/* Revit dialog replicas use their own Windows metrics and never inherit the site serif or tracking. */
+.revit-dialog, .ad { font: 400 12px/1.35 "Segoe UI", Selawik, system-ui, sans-serif; }
+:is(.revit-dialog, .ad) :is(h1, h2, h3, h4, h5, h6) { font-family: inherit; letter-spacing: normal; text-wrap: wrap; }
+
+/* The dark demo stage sits on a taupe-d to night desk that feathers into the paper, not in a hard black box. */
+.hero-stage, .project-workspace .revit { border-color: var(--clear); border-radius: 4px; box-shadow: 0 0 48px 16px var(--night), 0 0 140px 40px var(--continuity-shadow); }
+.demo-detail .revit { border-color: var(--clear); border-radius: 4px; box-shadow: none; }
+.try .split-head { margin-bottom: var(--s-6); }
+
+/* No blue buttons on paper: primary actions are ink and darken to taupe-d. */
+.btn-primary, .demo-button { border-color: var(--ink); background: var(--ink); color: var(--paper); }
+.btn-primary:hover, .demo-button:hover { border-color: var(--taupe-d); background: var(--taupe-d); color: var(--paper); }
+
+/* "Do this first" hint beside a primary dialog button that starts disabled. */
+.ad-hint { color: var(--d-muted); font-size: 11.5px; line-height: 1.3; max-width: 26ch; text-align: right; }

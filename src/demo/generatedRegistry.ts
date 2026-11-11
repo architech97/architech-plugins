@@ -6,23 +6,24 @@ export const LAYOUTS = layouts as Record<string, LayoutMeta[]>
 
 const ACTIONS: Readonly<Record<string, readonly string[]>> = {
   'assign-room-properties': ['Assign'],
-  'compliance-guard': ['Run audit'],
+  'compliance-guard': ['Run audit', 'Pin selected', 'Delete reviewed candidates'],
   'copy-param-from-link': ['Copy'],
   'detail-view': ['Create detail views', 'Place on sheets'],
   'duplicates-resolver': ['Merge selected', 'Delete selected'],
-  'excel-to-schedule': ['Create'],
+  'excel-to-schedule': ['Create', 'Refresh', 'Refresh all linked'],
   'family-name-editor': ['Apply Changes'],
   'filter-usage-checker': ['Apply Changes'],
   'group-manager': ['Export'],
+  'make-pattern': ['Create Pattern', 'Export PAT File'],
   'manage-text': ['Apply', 'Merge / Re-space', 'Change type'],
   'match-opening': ['Match Openings'],
   'mirrored-auditor': ['Resolve selected'],
+  'off-axis-resolver': ['Scan model', 'Preview fix', 'Fix selected', 'Fix all fixable'],
   'parameter-mapping': ['Apply Mapping'],
-  'replace-materials': ['Replace materials'],
+  'replace-materials': ['Scan impact', 'Replace materials'],
   'sheet-export': ['Review and export'],
   'spell-check': ['Run Spell Check'],
   'structural-qa': ['Run audit'],
-  'template-manager': ['Transfer Selected Templates', 'Copy Overrides Between Links'],
   'text-tag-align': ['Align Horizontally', 'Align Vertically'],
 }
 
@@ -32,24 +33,27 @@ export const DYNAMIC_ACTIONS: Readonly<Record<string, readonly string[]>> = {
   'vp-manager': ['Align viewports', 'Copy crop', 'Renumber viewports', 'Pin viewports', 'Place on sheets'],
 }
 
-export const getActions = (slug: string, meta: LayoutMeta) => ACTIONS[slug] ?? (meta.primary ? [meta.primary] : [])
+const VARIANT_ACTIONS: Record<string, string[]> = {
+  templatetransferwindow: ['Transfer Selected Templates', 'Copy Overrides Between Links'],
+  filtertemplatewindow: ['Pick destinations'],
+  transfervsoptionswindow: ['Continue'],
+}
+
+export const getActions = (slug: string, meta: LayoutMeta) => VARIANT_ACTIONS[meta.win]
+  ?? (meta === LAYOUTS[slug]?.[0] ? ACTIONS[slug] : undefined)
+  ?? (meta.primary ? [meta.primary] : [])
 
 export function generatedSteps(slug: string): DemoStep[] {
   const main = LAYOUTS[slug]?.[0]
   if (!main) return []
-  const actions = getActions(slug, main)
-  const dynamicActions = DYNAMIC_ACTIONS[slug]
   const steps: DemoStep[] = []
-  if (main.options > 0) steps.push({ id: 'option', title: 'Change an option', hint: 'Tick a box, choose a radio option or change a list in the dialog.', target: 'gen-option' })
-  if (main.grids > 0) steps.push({ id: 'row', title: 'Select a sample row', hint: 'Select a row in the table to define the sample scope.', target: 'gen-grid' })
-  steps.push({ id: 'theme', title: 'Switch the dialog theme', hint: 'Change the dialog theme between Dark and Light.', target: 'gen-theme' })
-  if (main.tabs.length > 1) steps.push({ id: 'tab', title: 'Open another section', hint: 'Choose another section to see its controls and options.', target: 'gen-tab' })
-  if (slug === 'template-manager') steps.push({ id: 'window', title: 'Open Transfer templates', hint: 'Choose Transfer templates above the dialog.', target: 'gen-window' })
-  if (actions.length || dynamicActions) {
-    const label = actions.length === 1 ? actions[0] : undefined
-    steps.push({ id: 'run', title: label ? `Choose ${label}` : 'Run a sample action', hint: 'Use the highlighted action to see a simulated result on sample data.', target: 'gen-run' })
-  } else {
-    steps.push({ id: 'explore', title: 'Explore the dialog', hint: 'Try a control in the browser preview.' })
-  }
+  const transfer = slug === 'template-manager'
+  if (transfer) steps.push({ id: 'window', title: 'Open Transfer templates', hint: 'Choose Transfer templates above the workspace.', target: 'gen-window' })
+  if (main.options > 0 || transfer) steps.push({ id: 'configure', title: 'Check the inputs', hint: 'Change a sample setting or confirm the defaults.', target: 'gen-configure' })
+  if ((main.grids > 0 && slug !== 'update-schedule') || transfer || slug === 'detail-view' || slug === 'spell-check') steps.push({ id: 'row', title: 'Set the sample scope', hint: 'Choose records to include, or use the shown records.', target: 'gen-grid' })
+  const [action] = getActions(slug, transfer ? LAYOUTS[slug][1] : main)
+  steps.push({ id: 'run', title: action ? `Choose ${action}` : 'Choose a sample action', hint: 'Open the preview for the highlighted command.', target: 'gen-run' })
+  steps.push({ id: 'apply', title: 'Confirm the preview', hint: 'Compare Before with After, tick the records to include, and confirm.', target: 'gen-apply' })
+  steps.push({ id: 'review', title: 'Review the receipt', hint: 'Check the simulated outcome and confirm your review.', target: 'gen-review' })
   return steps
 }

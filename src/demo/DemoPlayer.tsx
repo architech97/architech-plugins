@@ -30,7 +30,7 @@ export function DemoPlayer({ demo, compact = false }: { demo: DemoDefinition; co
   useEffect(() => clearToastTimers, [clearToastTimers])
 
   const current = demo.steps.find((s) => !doneIds.includes(s.id))
-  const progress = Math.round((doneIds.length / demo.steps.length) * 100)
+  const progress = demo.steps.length ? Math.round((doneIds.length / demo.steps.length) * 100) : 0
 
   const done = useCallback((id: string) => {
     if (activeRun.current === run && demo.steps.some((step) => step.id === id)) setDoneIds((d) => (d.includes(id) ? d : [...d, id]))
@@ -79,11 +79,17 @@ export function DemoPlayer({ demo, compact = false }: { demo: DemoDefinition; co
     return () => { observer.disconnect(); root.querySelectorAll('.demo-focus').forEach((x) => x.classList.remove('demo-focus')) }
   }, [current?.target, guided, closed, run])
 
+  // Back reopens the previous step; Next moves on without performing the action.
+  const stepNav = <>
+    <button className="btn btn-ghost btn-sm" type="button" disabled={doneIds.length === 0} onClick={() => rewind(demo.steps[Math.max(0, (current ? demo.steps.indexOf(current) : demo.steps.length) - 1)].id)}>Back</button>
+    <button className="btn btn-ghost btn-sm" type="button" disabled={!current} onClick={() => current && done(current.id)}>Next</button>
+  </>
+
   return (
     <div className={`player${compact ? ' compact' : ''}${expanded ? ' is-expanded' : ''}`}>
       <div className="player-top">
         <div className="player-title">
-          <span className="badge-sim" title={DEMO_PROJECT.code + ' · ' + DEMO_PROJECT.name}><Info size={14} /> Browser simulation · sample data</span>
+          <span className="badge-sim" title={DEMO_PROJECT.code + ', ' + DEMO_PROJECT.name}><Info size={14} /> Browser simulation, sample data</span>
           {demo.frame !== 'app' && <p className="small-screen-hint">Use the guide to jump to the next control.</p>}
         </div>
         <div className="player-actions">
@@ -100,17 +106,20 @@ export function DemoPlayer({ demo, compact = false }: { demo: DemoDefinition; co
 
       {guided && <div className="player-quick-guide">
         <div aria-live="polite">
-          <span className="eyebrow">{current ? 'Step ' + (demo.steps.indexOf(current) + 1) + ' of ' + demo.steps.length : 'Guide complete'}</span>
+          <span className="eyebrow">{current ? 'Step ' + (demo.steps.indexOf(current) + 1) + ' of ' + demo.steps.length : demo.steps.length ? 'Guide complete' : 'Loading guide'}</span>
           {current && <><strong>{current.title}</strong><p>{current.hint}</p></>}
         </div>
-        {current?.target && !closed && <button className="btn btn-ghost btn-sm" type="button" disabled={!targetReady} onClick={jumpToControl}><LocateFixed size={15} /> Find control</button>}
+        <div className="player-step-nav">
+          {stepNav}
+          {current?.target && !closed && <button className="btn btn-ghost btn-sm" type="button" disabled={!targetReady} onClick={jumpToControl}><LocateFixed size={15} /> Find control</button>}
+        </div>
       </div>}
 
       <div className="player-main">
         <div className={demo.frame === 'app' ? 'revit app-frame' : 'revit'} aria-label={demo.frame === 'app' ? demo.ribbon.button + ' simulation' : 'Simulated Revit window'}>
           <div className="revit-bar">
-            <span className="revit-dots"><i /><i /><i /></span>
-            <span className="revit-file">{demo.frame === 'app' ? <>{demo.ribbon.button} <em>(simulated)</em></> : <>Autodesk Revit 2024 · {DEMO_PROJECT.name}.rvt <em>(sample data)</em></>}</span>
+
+            <span className="revit-file">{demo.frame === 'app' ? <>{demo.ribbon.button} <em>(simulated)</em></> : <>Autodesk Revit 2024, {DEMO_PROJECT.name}.rvt <em>(sample data)</em></>}</span>
           </div>
           {demo.frame !== 'app' && <>
             <div className="revit-ribbon">
@@ -155,6 +164,7 @@ export function DemoPlayer({ demo, compact = false }: { demo: DemoDefinition; co
             <span className="mono muted" style={{ fontSize: 12 }}>{doneIds.length}/{demo.steps.length}</span>
           </div>
           <div className="steps-progress" role="progressbar" aria-label="Guided workflow progress" aria-valuenow={progress}><i style={{ width: `${progress}%` }} /></div>
+          {guided && demo.steps.length > 0 && <div className="player-step-nav">{stepNav}</div>}
           <ol className="step-list">
             {demo.steps.map((s, i) => {
               const isDone = doneIds.includes(s.id)
@@ -172,7 +182,7 @@ export function DemoPlayer({ demo, compact = false }: { demo: DemoDefinition; co
           </ol>
           {!current && <div className="steps-complete">Workflow complete. Reset to run it again, or switch to Explore and try other options.</div>}
           <div className="log">
-            <span className="eyebrow" style={{ fontSize: 10.5 }}>What happened (simulated)</span>
+            <span className="eyebrow" style={{ fontSize: 11 }}>What happened (simulated)</span>
             {log.length === 0 && <p className="muted" style={{ fontSize: 13, marginTop: 8 }}>Actions you take in the simulation appear here.</p>}
             <ul>
               {log.map((l) => <li key={l.id} className={l.kind}><span className="mono">{l.at}</span>{l.text}</li>)}

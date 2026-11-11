@@ -1,0 +1,292 @@
+{
+ "compliance-guard": {
+  "confirm": 0,
+  "message": 0,
+  "empty": 0
+ },
+ "duplicates-resolver": {
+  "confirm": 3,
+  "message": 0,
+  "empty": 0
+ },
+ "group-manager": {
+  "confirm": 0,
+  "message": 0,
+  "empty": 0
+ },
+ "off-axis-resolver": {
+  "confirm": 0,
+  "message": 0,
+  "empty": 1
+ },
+ "purge-and-merge": {
+  "confirm": 6,
+  "message": 0,
+  "empty": 0
+ },
+ "coord-plan": {
+  "confirm": 0,
+  "message": 0,
+  "empty": 0
+ },
+ "navis-view": {
+  "confirm": 0,
+  "message": 0,
+  "empty": 0
+ },
+ "scope-box-synchronizer": {
+  "confirm": 1,
+  "message": 1,
+  "empty": 0
+ },
+ "section-box": {
+  "confirm": 0,
+  "message": 1,
+  "empty": 0
+ },
+ "links-inspector": {
+  "confirm": 0,
+  "message": 0,
+  "empty": 0
+ },
+ "pin-unpin-links": {
+  "confirm": 1,
+  "message": 0,
+  "empty": 0
+ },
+ "in-place-converter": {
+  "confirm": 0,
+  "message": 0,
+  "empty": 0
+ },
+ "in-place-inspector": {
+  "confirm": 0,
+  "message": 0,
+  "empty": 0
+ },
+ "mirrored-auditor": {
+  "confirm": 1,
+  "message": 1,
+  "empty": 0
+ },
+ "model-health": {
+  "confirm": 0,
+  "message": 0,
+  "empty": 0
+ },
+ "structural-qa": {
+  "confirm": 0,
+  "message": 0,
+  "empty": 0
+ },
+ "warnings-inspector": {
+  "confirm": 0,
+  "message": 0,
+  "empty": 0
+ },
+ "family-name-editor": {
+  "confirm": 0,
+  "message": 0,
+  "empty": 0
+ },
+ "family-name-synchronizer": {
+  "confirm": 0,
+  "message": 0,
+  "empty": 0
+ },
+ "filter-usage-checker": {
+  "confirm": 0,
+  "message": 0,
+  "empty": 0
+ },
+ "model-query-pro": {
+  "confirm": 0,
+  "message": 0,
+  "empty": 0
+ },
+ "parameter-colorizer": {
+  "confirm": 0,
+  "message": 0,
+  "empty": 0
+ },
+ "workset-manager": {
+  "confirm": 3,
+  "message": 0,
+  "empty": 0
+ },
+ "fr-to-finishes": {
+  "confirm": 0,
+  "message": 0,
+  "empty": 0
+ },
+ "replace-materials": {
+  "confirm": 0,
+  "message": 0,
+  "empty": 0
+ },
+ "room-to-finishes": {
+  "confirm": 0,
+  "message": 0,
+  "empty": 0
+ },
+ "split-floor-ceiling": {
+  "confirm": 2,
+  "message": 0,
+  "empty": 0
+ },
+ "assign-room-properties": {
+  "confirm": 0,
+  "message": 0,
+  "empty": 0
+ },
+ "copy-param-from-link": {
+  "confirm": 0,
+  "message": 0,
+  "empty": 0
+ },
+ "family-param-transfer": {
+  "confirm": 0,
+  "message": 0,
+  "empty": 0
+ },
+ "one-parameter": {
+  "confirm": 0,
+  "message": 3,
+  "empty": 0
+ },
+ "parameter-manager": {
+  "confirm": 3,
+  "message": 4,
+  "empty": 0
+ },
+ "parameter-mapping": {
+  "confirm": 0,
+  "message": 0,
+  "empty": 0
+ },
+ "shared-param-manager": {
+  "confirm": 5,
+  "message": 1,
+  "empty": 1
+ },
+ "match-opening": {
+  "confirm": 0,
+  "message": 0,
+  "empty": 1
+ },
+ "room-height-adjust": {
+  "confirm": 0,
+  "message": 0,
+  "empty": 0
+ },
+ "room-level-assigner": {
+  "confirm": 0,
+  "message": 0,
+  "empty": 0
+ },
+ "deviation-inspector": {
+  "confirm": 1,
+  "message": 1,
+  "empty": 0
+ },
+ "point-cloud-slicer": {
+  "confirm": 0,
+  "message": 1,
+  "empty": 0
+ },
+ "manage-text": {
+  "confirm": 0,
+  "message": 0,
+  "empty": 1
+ },
+ "reorder-pro": {
+  "confirm": 0,
+  "message": 0,
+  "empty": 0
+ },
+ "spell-check": {
+  "confirm": 0,
+  "message": 0,
+  "empty": 1
+ },
+ "spot-elevation-line": {
+  "confirm": 2,
+  "message": 0,
+  "empty": 0
+ },
+ "text-tag-align": {
+  "confirm": 0,
+  "message": 0,
+  "empty": 0
+ },
+ "auto-dimension": {
+  "confirm": 0,
+  "message": 0,
+  "empty": 0
+ },
+ "manage-dimension": {
+  "confirm": 0,
+  "message": 0,
+  "empty": 0
+ },
+ "make-pattern": {
+  "confirm": 0,
+  "message": 0,
+  "empty": 0
+ },
+ "split-region-with-line": {
+  "confirm": 2,
+  "message": 0,
+  "empty": 0
+ },
+ "sheet-export": {
+  "confirm": 1,
+  "message": 2,
+  "empty": 0
+ },
+ "excel-to-schedule": {
+  "confirm": 0,
+  "message": 0,
+  "empty": 0
+ },
+ "update-schedule": {
+  "confirm": 0,
+  "message": 0,
+  "empty": 1
+ },
+ "sheet-manager": {
+  "confirm": 0,
+  "message": 0,
+  "empty": 0
+ },
+ "vp-manager": {
+  "confirm": 0,
+  "message": 0,
+  "empty": 0
+ },
+ "template-manager": {
+  "confirm": 1,
+  "message": 1,
+  "empty": 1
+ },
+ "graphic-overviews": {
+  "confirm": 0,
+  "message": 0,
+  "empty": 0
+ },
+ "detail-view": {
+  "confirm": 0,
+  "message": 0,
+  "empty": 1
+ },
+ "room-to-view": {
+  "confirm": 0,
+  "message": 0,
+  "empty": 1
+ },
+ "view-manager": {
+  "confirm": 0,
+  "message": 0,
+  "empty": 0
+ }
+}

@@ -8,18 +8,30 @@ import type { DemoContext } from '../types'
 // options and the review panel follow the shipping dialog. Warning texts are Revit's own messages;
 // the counts and element IDs are sample values.
 const RANK: Record<Severity, number> = { Critical: 0, Warning: 1, Info: 2 }
+const FAILURE_DEFINITIONS: Partial<Record<number, string>> = {
+  1: 'OverlapFailures.DuplicateInstances',
+  2: 'OverlapFailures.WallsOverlap',
+  3: 'RoomFailures.RoomNotEnclosed',
+  6: 'OverlapFailures.RoomSeparationLinesOverlap',
+  7: 'InaccurateFailures.InaccurateLine',
+  8: 'InaccurateFailures.InaccurateWall',
+}
+const classification = (id: number) => FAILURE_DEFINITIONS[id]
+  ? 'Native failure definition (sample mapping)'
+  : id === 9 ? 'Description fallback, review required' : 'Unmapped native warning, review required'
 
 export default function WarningsInspector({ theme, setTheme, done, notify, close }: DemoContext) {
   const [query, setQuery] = useState('')
-  const [severity, setSeverity] = useState('All severities')
+  const [severity, setSeverity] = useState('All')
   const [sort, setSort] = useState('Priority first')
   const [selected, setSelected] = useState<number | null>(null)
   const [isolated, setIsolated] = useState<number[]>([])
+  const [stale, setStale] = useState(false)
   const [status, setStatus] = useState('Modeless review - keep working in Revit')
 
   const rows = useMemo(() => {
     const q = query.trim().toLowerCase()
-    let r = WARNINGS.filter((w) => (severity === 'All severities' || w.severity === severity)
+    let r = WARNINGS.filter((w) => (severity === 'All' || w.severity.toUpperCase() === severity)
       && (!q || (/^\d+$/.test(q) ? w.elements.some((id) => String(id) === q) : w.description.toLowerCase().includes(q))))
     r = [...r].sort((a, b) => sort === 'Most frequent' ? b.count - a.count || RANK[a.severity] - RANK[b.severity]
       : sort === 'Description' ? a.description.localeCompare(b.description)
@@ -30,7 +42,7 @@ export default function WarningsInspector({ theme, setTheme, done, notify, close
   const total = WARNINGS.reduce((n, w) => n + w.count, 0)
   const critical = WARNINGS.filter((w) => w.severity === 'Critical').reduce((n, w) => n + w.count, 0)
   const unique = new Set(WARNINGS.flatMap((w) => w.elements)).size
-  const sel = rows.find((w) => w.id === selected)
+  const sel = rows.find((w) => w.id === selected) ?? rows[0]
   const sevClass = (s: Severity) => (s === 'Critical' ? 'err' : s === 'Warning' ? 'warn' : 'info')
 
   return (
@@ -38,9 +50,9 @@ export default function WarningsInspector({ theme, setTheme, done, notify, close
       footer={<>
         <span className="ad-status">{status}</span>
         <Btn disabled={!isolated.length} onClick={() => { setIsolated([]); setStatus('Temporary isolation cleared in the sample view.') }}>Reset isolation</Btn>
-        <Btn demo="export" onClick={() => {
-          downloadCsv('warnings-inspector-sample.csv', ['Severity', 'Description', 'Warning count', 'Affected element IDs'],
-            WARNINGS.map((group) => [group.severity, group.description, group.count, group.elements.join(' ')]))
+        <Btn demo="export" disabled={stale} onClick={() => {
+          downloadCsv('warnings-inspector-sample.csv', ['Severity', 'Description', 'Warning count', 'Affected element IDs', 'Sample failure definition', 'Classification source'],
+            WARNINGS.map((group) => [group.severity, group.description, group.count, group.elements.join(' '), FAILURE_DEFINITIONS[group.id] ?? '', classification(group.id)]))
           notify({ kind: 'success', text: 'Downloaded all ' + WARNINGS.length + ' sample warning groups, including groups hidden by filters.' })
           done('export')
         }}>Download all sample warnings (CSV)</Btn>
@@ -57,22 +69,22 @@ export default function WarningsInspector({ theme, setTheme, done, notify, close
           <SearchBox value={query} onChange={(v) => { setQuery(v); if (/^\d{5,}$/.test(v.trim()) && WARNINGS.some((w) => w.elements.some((id) => String(id) === v.trim()))) done('search') }} placeholder="Description or element ID" demo="search" />
         </label>
         <label style={{ display: 'grid', gap: 4 }}><span className="ad-note">Severity class</span>
-          <Select label="Severity class" value={severity} onChange={(v) => { setSeverity(v); setSelected(null); if (v === 'Critical') done('filter') }} options={['All severities', 'Critical', 'Warning', 'Info']} width={150} demo="severity" />
+          <Select label="Severity class" value={severity} onChange={(v) => { setSeverity(v); if (v === 'CRITICAL') done('filter') }} options={['All', 'CRITICAL', 'WARNING', 'INFO']} width={150} demo="severity" />
         </label>
         <label style={{ display: 'grid', gap: 4 }}><span className="ad-note">Sort by</span>
           <Select label="Sort by" value={sort} onChange={setSort} options={['Priority first', 'Most frequent', 'Description']} width={140} />
         </label>
-        <Btn onClick={() => { setQuery(''); setSeverity('All severities'); setSelected(null) }}>Clear filters</Btn>
-        <Btn onClick={() => { setSelected(null); setStatus('Refreshed ' + WARNINGS.length + ' warning groups in the sample model.'); notify({ kind: 'info', text: 'Sample scan refreshed. Filters are retained.' }) }}>Refresh scan</Btn>
+        <Btn onClick={() => { setQuery(''); setSeverity('All') }}>Clear filters</Btn>
+        <Btn onClick={() => { setStale(false); setSelected(null); setStatus('Refreshed ' + WARNINGS.length + ' warning groups in the sample model.'); notify({ kind: 'info', text: 'Sample scan refreshed. Filters are retained.' }) }}>Refresh scan</Btn>
       </div>
-      <span className="ad-note">{rows.length} of {WARNINGS.length} warning groups shown</span>
+      <span className="ad-note">{rows.length} of {WARNINGS.length} warning types, {rows.reduce((count, row) => count + row.count, 0)} occurrences in this view</span>
       <div className="ad-grid2 crafted-layout" style={{ gridTemplateColumns: 'minmax(0, 1.7fr) minmax(0, 1fr)', alignItems: 'stretch' }}>
         <div className="ad-table-wrap" style={{ maxHeight: 290 }} data-demo="grid">
           <table className="ad-table">
             <thead><tr><th>Severity</th><th>Warning description</th><th>Warnings</th><th>Elements</th></tr></thead>
             <tbody>
               {rows.map((w) => (
-                <tr key={w.id} className={selected === w.id ? 'sel' : ''} onClick={() => { setSelected(w.id); done('pick') }}>
+                <tr key={w.id} className={sel?.id === w.id ? 'sel' : ''} onClick={() => { setSelected(w.id); done('pick') }}>
                   <td><span className={`ad-pill ${sevClass(w.severity)}`}>{w.severity}</span></td>
                   <td className="wrap" style={{ minWidth: 220 }}><button className="crafted-row-action" type="button" onClick={() => { setSelected(w.id); done('pick') }}>{w.description}</button></td>
                   <td className="num">{w.count}</td><td className="num">{w.elements.length}</td>
@@ -87,14 +99,23 @@ export default function WarningsInspector({ theme, setTheme, done, notify, close
           {sel ? <>
             <span className={`ad-pill ${sevClass(sel.severity)}`} style={{ alignSelf: 'flex-start' }}>{sel.severity}</span>
             <span style={{ color: 'var(--d-text)' }}>{sel.description}</span>
-            <span className="ad-note">{sel.count} warnings · {sel.elements.length} elements</span>
+            <span className="ad-note">{sel.count} warnings, {sel.elements.length} unique elements</span>
+            <span className="ad-note">{classification(sel.id)}{FAILURE_DEFINITIONS[sel.id] ? ', ' + FAILURE_DEFINITIONS[sel.id] : ''}</span>
             <span className="ad-label">Affected element IDs</span>
             <textarea readOnly className="ad-input" style={{ height: 64, padding: 8, resize: 'none' }} value={sel.elements.join(', ')} aria-label="Affected element IDs" />
             <span className="ad-note">Review the geometry and design intent before making a correction. Known warnings use native failure IDs. Fallback classifications are marked for review.</span>
-            <Btn demo="isolate" onClick={() => { setIsolated(sel.elements); setStatus(`${sel.elements.length} elements isolated in the active view (temporary).`); notify({ kind: 'success', text: `Isolated ${sel.elements.length} affected elements in the active view (temporary hide/isolate).` }); done('isolate') }}>Isolate affected elements</Btn>
-            <Btn onClick={() => notify({ kind: 'info', text: `Selected ${sel.elements.length} elements in the sample view.` })}>Select in Revit</Btn>
+            <Btn demo="isolate" disabled={stale} onClick={() => { setIsolated(sel.elements); setStatus(`${sel.elements.length} elements isolated in the active view (temporary).`); notify({ kind: 'success', text: `Isolated ${sel.elements.length} affected elements in the active view (temporary hide/isolate).` }); done('isolate') }}>Isolate affected elements</Btn>
+            <Btn disabled={stale} onClick={() => notify({ kind: 'info', text: `Selected ${sel.elements.length} elements in the sample view.` })}>Select in Revit</Btn>
           </> : <span className="ad-note">Pick a warning group to read its full description and affected elements.</span>}
         </div>
+      </div>
+      <div className="ad-row">
+        <span className="ad-note">Browser exercise, the native report exports an XLSX workbook</span>
+        <Btn sm disabled={stale} onClick={() => {
+          setStale(true)
+          setStatus('Model changed after this sample scan. Refresh before selecting, isolating or exporting results.')
+          notify({ kind: 'warning', text: 'Sample scan marked stale. Refresh scan to restore the result actions.' })
+        }}>Simulate a model edit</Btn>
       </div>
     </RevitDialog>
   )

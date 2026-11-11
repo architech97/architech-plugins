@@ -1,6 +1,6 @@
 import { useId } from 'react'
 import { Link } from 'react-router-dom'
-import { ArrowUpRight, Play } from 'lucide-react'
+import { Play } from 'lucide-react'
 import type { Product } from '../data/types'
 import { suiteById } from '../data/suites'
 import { asset } from './Brand'
@@ -144,6 +144,19 @@ function SpecimenDrawing({ specimen }: { specimen: Specimen }) {
   )
 }
 
+/** A product's picture for galleries: its dialog (Dark, crossfading to Light on hover), a capture, or a drawing. */
+export function ProductThumb({ p }: { p: Product }) {
+  const dialog = p.dialogs.find((item) => item.dark || item.light)
+  const shot = dialog?.dark ?? dialog?.light ?? p.media?.find((item) => item.kind === 'image')?.src
+  const specimen = SPECIMENS[p.slug]
+  return (
+    <div className={'product-thumb' + (shot ? '' : ' is-specimen')}>
+      {shot ? <img src={asset(shot)} alt="" loading="lazy" decoding="async" /> : specimen && <SpecimenDrawing specimen={specimen} />}
+      {dialog?.dark && dialog.light && <img className="product-thumb-light" src={asset(dialog.light)} alt="" loading="lazy" decoding="async" />}
+    </div>
+  )
+}
+
 export function ProductCard({ p }: { p: Product }) {
   const titleId = useId()
   const suite = suiteById(p.suite)
@@ -177,7 +190,7 @@ export function ProductCard({ p }: { p: Product }) {
       </div>
       <div className="product-card-actions">
         {p.demo && <Link to={'/demos/' + p.demo} aria-label={'Try ' + p.name + ' demo'}><Play size={14} aria-hidden="true" /> Try demo</Link>}
-        <Link to={productPath} aria-label={p.name + ' product details'}>Details <ArrowUpRight size={14} aria-hidden="true" /></Link>
+        <Link to={productPath} aria-label={p.name + ' product details'}>Details</Link>
       </div>
     </article>
   )

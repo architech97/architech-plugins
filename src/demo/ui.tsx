@@ -1,3 +1,4 @@
+import './kit/accessibility.css'
 import type { ReactNode, InputHTMLAttributes } from 'react'
 import { Search, X, ChevronDown } from 'lucide-react'
 import { asset } from '../components/Brand'
@@ -23,9 +24,9 @@ export function RevitDialog(props: {
           <img className="ad-logo" src={asset(theme === 'dark' ? 'media/brand/architech-logo-dark-ui.webp' : 'media/brand/architech-logo-light-ui.webp')} alt="ArchiTECH" />
           <span className="ad-divider" />
           <span style={{ minWidth: 0, display: 'flex', flexDirection: 'column', gap: 2 }}>
-            {eyebrow && <span className="ad-eyebrow">{eyebrow}</span>}
             <span className="ad-title">{title}</span>
             {caption && <span className="ad-caption">{caption}</span>}
+            {eyebrow && <span className="ad-eyebrow">{eyebrow}</span>}
           </span>
         </div>
         <select className="ad-select" style={{ width: 92 }} aria-label="Dialog theme" value={theme} onChange={(e) => onTheme(e.target.value as DialogTheme)}>
@@ -44,10 +45,10 @@ export function Btn({ primary, danger, sm, children, demo, ...rest }: { primary?
   return <button className={`ad-btn ${primary ? 'primary' : ''} ${danger ? 'danger' : ''} ${sm ? 'sm' : ''}`} data-demo={demo} {...rest}>{children}</button>
 }
 
-export function Check({ label, checked, onChange, demo, title }: { label?: ReactNode; checked: boolean; onChange: (v: boolean) => void; demo?: string; title?: string }) {
+export function Check({ label, checked, onChange, demo, title, disabled }: { label?: ReactNode; checked: boolean; onChange: (v: boolean) => void; demo?: string; title?: string; disabled?: boolean }) {
   return (
     <label className="ad-check" data-demo={demo} title={title}>
-      <input type="checkbox" checked={checked} onChange={(e) => onChange(e.target.checked)} aria-label={typeof label === 'string' ? label : title} />
+      <input type="checkbox" checked={checked} disabled={disabled} onChange={(e) => onChange(e.target.checked)} aria-label={typeof label === 'string' ? label : title} />
       <span className="ad-box" />
       {label && <span>{label}</span>}
     </label>

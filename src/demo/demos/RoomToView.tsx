@@ -1,7 +1,7 @@
 import { useMemo, useState } from 'react'
 import { RevitDialog, Btn, Check, Radio, Select, TextBox, SearchBox } from '../ui'
 import './crafted.css'
-import { ROOMS, SCALES, TEMPLATES } from '../sample'
+import { ROOMS, SCALES, TEMPLATES as SAMPLE_TEMPLATES } from '../sample'
 import type { DemoContext } from '../types'
 
 // Simulation of Arch Folio > Views > Room to View. Step names and options follow the shipping
@@ -16,13 +16,15 @@ const STEPS = [
   ['Place on Sheet', 'Put the new views on sheets in a layout.'],
 ] as const
 type Step = (typeof STEPS)[number][0]
+const TEMPLATES = SAMPLE_TEMPLATES.map((name) => name === '<None>' ? '(None)' : name)
 
 export default function RoomToView({ theme, setTheme, done, notify, close }: DemoContext) {
   const [step, setStep] = useState<Step>('Rooms')
   const [ticked, setTicked] = useState<Set<number>>(new Set())
   const [q, setQ] = useState('')
   const [level, setLevel] = useState('All levels')
-  const [opt, setOpt] = useState({ ceilingCrop: true, boxPadding: '300', floor: true, floorCrop: true, floorOffset: '100', floorScale: '1:50', floorTemplate: '<None>', ceiling: true, ceilingTemplate: '<None>', threeD: false, elev: true, layout: 'four', n: true, e: true, s: true, w: true, elevScale: '1:25', elevTemplate: '<None>', mask: false })
+  const [scope, setScope] = useState('Whole model')
+  const [opt, setOpt] = useState({ ceilingCrop: true, boxPadding: '300', floor: false, floorCrop: true, floorOffset: '100', floorScale: '1:50', floorTemplate: '(None)', ceiling: false, ceilingTemplate: '(None)', threeD: false, elev: false, layout: 'all', n: true, e: true, s: true, w: true, elevScale: '1:25', elevTemplate: '(None)', mask: false })
   const [created, setCreated] = useState<Record<string, string>>({})
   const [placed, setPlaced] = useState<Record<string, string>>({})
   const [perRoom, setPerRoom] = useState(true)
@@ -31,7 +33,8 @@ export default function RoomToView({ theme, setTheme, done, notify, close }: Dem
 
   const [status, setStatus] = useState('Tick Include on each step you want made.')
 
-  const rooms = useMemo(() => ROOMS.filter((r) => (level === 'All levels' || r.level === level) && (!q || `${r.number} ${r.name} ${r.level}`.toLowerCase().includes(q.toLowerCase()))), [q, level])
+  const rooms = useMemo(() => ROOMS.filter((r) => (scope === 'Whole model' || r.level === 'Level 01') &&
+    (level === 'All levels' || r.level === level) && (!q || `${r.number} ${r.name} ${r.level}`.toLowerCase().includes(q.toLowerCase()))), [q, level, scope])
   const set = <K extends keyof typeof opt>(k: K, v: typeof opt[K]) => setOpt((o) => ({ ...o, [k]: v }))
   const tick = (id: number, v: boolean) => { const t = new Set(ticked); if (v) t.add(id); else t.delete(id); setTicked(t); if (t.size >= 1) done('rooms') }
 
@@ -64,10 +67,10 @@ export default function RoomToView({ theme, setTheme, done, notify, close }: Dem
   const create = () => {
     const settingsFor = (view: string) => {
       const kind = viewKind(view)
-      if (kind === 'Floor Plan') return [opt.floorScale, opt.floorTemplate, opt.floorCrop ? 'Crop: ' + opt.floorOffset + ' mm' : 'No room crop'].join(' · ')
-      if (kind === 'Ceiling Plan') return [opt.ceilingTemplate, opt.ceilingCrop ? 'Room crop' : 'No room crop'].join(' · ')
+      if (kind === 'Floor Plan') return [opt.floorScale, opt.floorTemplate, opt.floorCrop ? 'Crop: ' + opt.floorOffset + ' mm' : 'No room crop'].join(', ')
+      if (kind === 'Ceiling Plan') return [opt.ceilingTemplate, opt.ceilingCrop ? 'Room crop' : 'No room crop'].join(', ')
       if (kind === '3D') return 'Section box padding: ' + opt.boxPadding + ' mm'
-      return [opt.elevScale, opt.elevTemplate, opt.mask ? 'Room interior masked' : 'No interior mask'].join(' · ')
+      return [opt.elevScale, opt.elevTemplate, opt.mask ? 'Room interior masked' : 'No interior mask'].join(', ')
     }
     setCreated({ ...created, ...Object.fromEntries(newViews.map((view) => [view, settingsFor(view)])) })
     setPlaceTicked(new Set(newViews))
@@ -123,12 +126,14 @@ export default function RoomToView({ theme, setTheme, done, notify, close }: Dem
 
           {step === 'Rooms' && <>
             <div className="ad-row">
+              <Select label="Scope" value={scope} onChange={setScope} options={['Whole model', 'View when opened']} width="min(180px, 100%)" />
               <SearchBox value={q} onChange={setQ} placeholder="Search room number, name or level..." width="min(260px, 100%)" />
               <Select label="Level" value={level} onChange={setLevel} options={['All levels', 'Level 01', 'Level 02']} width={120} />
               <Btn sm disabled={!ticked.size} onClick={preflight}>Preflight</Btn>
               <Btn sm onClick={() => { const t = new Set(ticked); rooms.forEach((r) => t.add(r.id)); setTicked(t); if (t.size) done('rooms') }}>Tick shown</Btn>
               <Btn sm onClick={() => setTicked(new Set())}>Clear ticks</Btn>
             </div>
+            {scope === 'View when opened' && <p className="ad-note">The sample view is the Level 01 floor plan. Ticks survive scope changes.</p>}
             <div className="ad-table-wrap" style={{ maxHeight: 300 }} data-demo="rooms">
               <table className="ad-table">
                 <thead><tr><th /><th>Number</th><th>Name</th><th>Level</th><th>Area</th><th>Preflight</th><th>Review notes</th></tr></thead>
@@ -140,7 +145,7 @@ export default function RoomToView({ theme, setTheme, done, notify, close }: Dem
                   </tr>))}</tbody>
               </table>
             </div>
-            <span className="ad-note">{ticked.size} rooms ticked · {planned.length} views planned</span>
+            <span className="ad-note">{ticked.size} rooms ticked, {planned.length} views planned</span>
           </>}
 
           {step === 'Floor Plan' && <div className="ad-card" style={{ display: 'grid', gap: 9, maxWidth: 520 }}>

@@ -1,0 +1,35 @@
+.section-options {
+  display: grid;
+  gap: 12px;
+  min-width: 0;
+}
+.section-padding {
+  display: flex;
+  gap: 6px;
+  flex-wrap: wrap;
+}
+.section-padding > .ad-input {
+  flex: 1;
+  min-width: 100px;
+}
+.section-view-name {
+  display: grid;
+  grid-template-columns: auto minmax(0, 1fr);
+  gap: 10px;
+  align-items: center;
+}
+.section-status {
+  white-space: pre-line;
+  flex: 1;
+  min-width: 120px;
+}
+.section-options .ad-check {
+  font: inherit;
+  color: inherit;
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+.section-options .ad-check input {
+  accent-color: var(--d-accent);
+}

@@ -1,16 +1,8 @@
-const LEVELS = ['Level 01', 'Level 02', 'Roof']
-const CATEGORIES = ['Walls', 'Doors', 'Windows', 'Floors', 'Structural Columns', 'Structural Framing']
-const VIEWS = ['Level 01 – Floor Plan', 'Level 02 – Floor Plan', 'North Elevation', 'Section A–A', 'Level 01 – Ceiling Plan', '3D – Coordination']
-const ROOMS = ['Living Room', 'Kitchen', 'Dining Room', 'Primary Bedroom', 'Bedroom 02', 'Bathroom']
-const TEMPLATES = ['Architectural Plan – 1:50', 'Interior RCP – 1:50', 'Building Elevation – 1:100']
-const PARAMETERS = ['Comments', 'Mark', 'Fire Rating', 'Type Mark', 'Finish', 'Department']
-const LINKS = ['Sample Residence – Architecture.rvt', 'Sample Residence – Structure.rvt', 'Sample Residence – MEP.rvt']
-const MATERIALS = ['Paint – Warm White', 'Concrete – Exposed', 'Oak – Natural', 'Porcelain – Matt Grey']
-const FAMILIES = ['Basic Wall', 'Single Flush', 'Fixed Window', 'Concrete Slab', 'Rectangular Column', 'Concrete Beam']
-const TYPES = ['Interior 115 mm', '900 × 2100 mm', '1200 × 1500 mm', 'Concrete 150 mm', '300 × 450 mm', '250 × 450 mm']
-const ROOM_PROPERTIES = ['Room Number', 'Room Name', 'Department', 'Level']
-const WORKSETS = ['Architecture', 'Interiors', 'Structure', 'Shared Levels and Grids']
-const TEXT_TYPES = ['Arial 2.5 mm', 'Arial 3.5 mm', 'Arial Narrow 2.5 mm']
+import { sentinelCell, sentinelChoices } from './sentinelFixtures'
+import { forgeCell, forgeChoices } from './forgeFixtures'
+
+import { GENERATED_SAMPLE } from './fixtures/sampleResidence'
+const { LEVELS, CATEGORIES, VIEWS, ROOMS, TEMPLATES, PARAMETERS, LINKS, MATERIALS, FAMILIES, TYPES, ROOM_PROPERTIES, WORKSETS, TEXT_TYPES } = GENERATED_SAMPLE
 
 const CHOICES: [RegExp, string[]][] = [
   [/a preset ticks the strings/, ['Outside of building: openings, overall and grids', 'Room sizes: clear width and length', 'Doors and windows: positions in each room', 'Across walls: setting-out', 'Grids: grid to grid', 'Custom']],
@@ -42,7 +34,7 @@ const CHOICES: [RegExp, string[]][] = [
   [/rooms from/, ['This model', ...LINKS]],
   [/pick an open model|model the templates|copy to|source revit link|master link|copy from link/, LINKS],
   [/annotation crop|crop region visible/, ['Leave unchanged', 'Show', 'Hide']],
-  [/^reference/, ['A-101 · Level 01 – Floor Plan', 'A-102 · Level 02 – Floor Plan', 'A-201 · North Elevation']],
+  [/^reference/, ['A-101, Level 01 – Floor Plan', 'A-102, Level 02 – Floor Plan', 'A-201, North Elevation']],
   [/convert to/, ['Drafting View', 'Legend', 'Detail View']],
   [/view template|template legend/, TEMPLATES],
   [/room (text )?property/, ROOM_PROPERTIES],
@@ -79,12 +71,16 @@ const MODEL_CHOICES: Record<string, readonly string[][]> = {
   'parameter-manager': [['All disciplines', 'Common', 'Structural', 'Mechanical'], ['Instance', 'Type']],
   'model-query-pro': [CATEGORIES, PARAMETERS],
   'view-manager': [['All types', 'Floor Plan', 'Ceiling Plan', 'Elevation', 'Section'], TEMPLATES],
-  'vp-manager': [['All sheets', 'A-101 · Ground Floor Plan', 'A-102 · First Floor Plan']],
+  'vp-manager': [['All sheets', 'A-101, Ground Floor Plan', 'A-102, First Floor Plan']],
   'sheet-export': [['Issue – PDF and DWG', 'Review – PDF', 'Coordination – IFC']],
   'template-manager': [LINKS],
 }
 
-export function fixtureChoices(slug: string, label: string, captured: string, tip: string, ordinal: number): string[] {
+export function fixtureChoices(slug: string, label: string, captured: string, tip: string, ordinal: number, windowName?: string): string[] {
+  const forge = forgeChoices(slug, label)
+  if (forge) return forge
+  const sentinel = sentinelChoices(slug, windowName, ordinal)
+  if (sentinel) return sentinel
   const context = [captured, label, tip].filter(Boolean).join(' ').toLowerCase()
   const match = CHOICES.find(([pattern]) => pattern.test(context))?.[1]
   const fallback = MODEL_CHOICES[slug]?.[ordinal] ?? MODEL_CHOICES[slug]?.[0]
@@ -154,38 +150,42 @@ const COMMON_COLUMNS: Record<string, string[]> = {
 
 const TOOL_COLUMNS: Record<string, Record<string, string[]>> = {
   'excel-to-schedule': { name: ['Door Schedule', 'Room Finish Schedule', 'Window Schedule'], label: ['Door Mark', 'Finish Code', 'Type Mark'], value: ['D-101', 'FN-02', 'W-103'], isselected: ['Yes', 'No', 'Yes'], use: ['Create', 'Refresh', 'Create'], ischecked: ['Yes', 'No', 'Yes'] },
-  'manage-text': { before: ['EXISTING WALL TO REMAIN', 'NEW PARTITION', 'SEE DETAIL A-501'], after: ['Existing wall to remain', 'New partition', 'See detail A-501'], note: ['Entry wall note', 'Kitchen partition note', 'Section reference'] },
-  'reorder-pro': { order: ['1', '2', '3', '4', '5', '6'], 'current value': ['D-04', 'D-02', 'D-06', 'D-01'], numbering: ['D-01', 'D-02', 'D-03', 'D-04'], name: ['Entry door', 'Kitchen door', 'Terrace door'], notes: ['Writable Mark', 'Already matches', 'Writable Mark'] },
-  'update-schedule': { 'rows matched': ['12', '6', '10'], 'rows not found': ['0', '1', '0'], 'values changing': ['3', '1', '2'], 'columns not writable': ['0', '1', '0'], 'element / type': ['D-101 · Single Flush', '101 · Living Room', 'W-103 · Fixed Window'], 'now in revit': ['Internal', 'Paint – White', 'W-03'], 'from the file': ['Internal door', 'Paint – Warm White', 'W-103'], 'applies to': ['Instance', 'Instance', 'Type'] },
+  'manage-text': { before: ['EXISTING WALL TO REMAIN', 'NEW  PARTITION', 'SEE “DETAIL A-501”'], after: ['Existing wall to remain', 'New partition', 'See “detail A-501”'], note: ['Entry wall note', 'Kitchen partition note', 'Section reference'] },
+  'reorder-pro': { order: ['1', '2', '3', '4', '5', '6'], category: ['Doors', 'Doors', 'Doors'], 'current value': ['D-04', 'D-02', 'D-06', 'D-01'], numbering: ['D-01', 'D-02', 'D-03', 'D-04'], name: ['Entry door', 'Kitchen door', 'Terrace door'], notes: ['Writable Comments', 'Already matches', 'Writable Comments'] },
+  'update-schedule': { 'rows matched': ['12', '6', '10'], 'rows not found': ['0', '1', '0'], 'values changing': ['3', '1', '2'], 'columns not writable': ['0', '1', '0'], 'element / type': ['D-101, Single Flush', '101, Living Room', 'W-103, Fixed Window'], 'now in revit': ['Internal', 'Paint – White', 'W-03'], 'from the file': ['Internal door', 'Paint – Warm White', 'W-103'], 'applies to': ['Instance', 'Instance', 'Type'] },
   'sheet-export': { 'sample value': ['A-101', 'Ground Floor Plan', 'P02', 'Sample Residence'], prefix: ['ARCH-', ''], suffix: ['', '-P02'], separator: ['_', '-', ' '] },
   'deviation-inspector': { result: ['Within tolerance', 'Above tolerance', 'Unmeasured'], samples: ['88', '74', '0'], 'avg deviation': ['3.4 mm', '18.2 mm', '—'], median: ['3.1 mm', '16.5 mm', '—'], p95: ['8.1 mm', '26.1 mm', '—'], maximum: ['11.2 mm', '38.0 mm', '—'], 'projection yield': ['94%', '81%', '0%'], sampling: ['Measured', 'Measured', 'No valid projected points'] },
-  'match-opening': { 'source id': ['729614', '729721', '729866'], source: ['M-101 · Supply riser', 'M-106 · Return duct', 'M-112 · Exhaust duct'], 'host wall': ['W-101 · Core wall', 'W-108 · Service wall', 'W-120 · Wet wall'], 'host opening': ['O-101', 'O-108', 'Missing'], 'cut / host width': ['450 / 450 mm', '600 / 550 mm', '300 / — mm'], 'cut / host height': ['300 / 300 mm', '500 / 450 mm', '300 / — mm'], action: ['Keep', 'Resize', 'Create'], result: ['Matched', 'Review clearance', 'Missing opening'] },
+  'match-opening': { 'source id': ['729614', '729721', '729866'], source: ['M-101, Supply riser', 'M-106, Return duct', 'M-112, Exhaust duct'], 'host wall': ['W-101, Core wall', 'W-108, Service wall', 'W-120, Wet wall'], 'host opening': ['O-101', 'O-108', 'Missing'], 'cut / host width': ['450 / 450 mm', '600 / 550 mm', '300 / — mm'], 'cut / host height': ['300 / 300 mm', '500 / 450 mm', '300 / — mm'], action: ['Keep', 'Resize', 'Create'], result: ['Matched', 'Review clearance', 'Missing opening'] },
   'point-cloud-slicer': { slice: ['Yes', 'Yes', 'No'], 'level name': LEVELS, elevation: ['0 mm', '3150 mm', '6300 mm'], 'story height': ['3150 mm', '3150 mm', '2900 mm'] },
   'room-height-adjust': { 'height now': ['3150 mm', '3150 mm', '3150 mm'], 'new height': ['2750 mm', '2600 mm', '2800 mm'], change: ['−400 mm', '−550 mm', '−350 mm'] },
   'shared-param-manager': { description: ['Fire rating in minutes', 'Finish schedule code', 'Room department'], guid: ['1f729a56-5e2c-45c2-b2f4-9c7e36d9cbf8', '588325fe-1edc-4323-921b-091697aa3671', '1b793e25-f46f-4f02-a785-b2c4f2218111'] },
-  'compliance-guard': { 'category / type': ['Lines / Detail Lines', 'Revit Links / Coordination', 'Walls / Basic Wall'], 'sop issue': ['Imported CAD line style', 'Unpinned coordination link', 'Assigned to Workset1'], 'element / style name': ['CAD-A-WALL', 'Sample Residence – Structure.rvt', 'W-101 · Core wall'], 'view / location': ['A-501 · Typical Details', '3D – Coordination', 'Level 01'] },
+  'compliance-guard': { 'category / type': ['Lines / Detail Lines', 'Revit Links / Coordination', 'Walls / Basic Wall'], 'sop issue': ['Imported CAD line style', 'Unpinned coordination link', 'Assigned to Workset1'], 'element / style name': ['CAD-A-WALL', 'Sample Residence – Structure.rvt', 'W-101, Core wall'], 'view / location': ['A-501, Typical Details', '3D – Coordination', 'Level 01'] },
   'duplicates-resolver': { 'family : type': FAMILIES.map((family, index) => `${family} : ${TYPES[index]}`), 'keep as primary': ['348211', '348390', '351002'], extras: ['348212', '348391, 348392', '351003'], 'location (ft)': ['(12.04, 8.13, 0.00)', '(19.85, 3.28, 0.00)', '(23.95, 11.81, 10.33)'], notes: ['Same family and type', 'Matching transform', 'Review hosted instance'], inspect: ['Plan', '3D', 'Plan'] },
   'family-name-editor': { 'expected name': ['AR-WAL-Interior 115', 'AR-DOR-Single Flush', 'AR-WIN-Fixed Window'], types: ['3', '4', '2'], prefix: ['AR-WAL-', 'AR-DOR-', 'AR-WIN-'], suffix: ['-INT', '-EXT', '—'] },
   'family-name-synchronizer': { match: ['Mapped', 'Mapped', 'Needs review'], 'match?': ['Yes', 'Yes', 'Review'], 'matched by': ['Type Mark', 'Type Mark', 'No Type Mark'], 'current name': ['Door_Single', 'Window_Fixed', 'Rectangular_Column'], 'container name': ['AR-DOR-Single Flush', 'AR-WIN-Fixed', 'ST-COL-Rectangular'] },
   'filter-usage-checker': { filter: ['QA – Fire Rated Doors', 'MEP – Linked Coordination', 'ARCH – Unclassified Walls'], 'views + templates': ['7', '3', '0'], views: ['5', '2', '0'], templates: ['2', '1', '0'] },
   'group-manager': { 'group type name': ['Unit 01 – Furniture', 'Typical Toilet Layout', 'Kitchen Base Cabinets'], members: ['12', '8', '17'], 'type id': ['350004', '350051', '350109'], 'instance ids': ['352211, 352260', '352412, 352413', '352516'], actions: ['Inspect', 'Review members', 'Inspect'] },
-  'in-place-converter': { 'in-place family name': ['Entry canopy', 'Cast-in-place stair plinth', 'Reception niche'], 'level / host': ['Level 01 · Exterior', 'Level 01 · Stair', 'Level 02 · Lobby'], solids: ['2', '1', '3'], 'approx volume': ['0.38 m³', '1.24 m³', '0.16 m³'] },
+  'in-place-converter': { 'in-place family name': ['Entry canopy', 'Cast-in-place stair plinth', 'Reception niche'], 'level / host': ['Level 01, Exterior', 'Level 01, Stair', 'Level 02, Lobby'], solids: ['2', '1', '3'], 'approx volume': ['0.38 m³', '1.24 m³', '0.16 m³'] },
   'mirrored-auditor': { 'mirror status': ['Mirrored', 'Not mirrored', 'Mirrored'], 'hand flipped': ['Yes', 'No', 'No'], 'facing flipped': ['No', 'No', 'Yes'] },
   'model-query-pro': { 'review class': ['Room coordination', 'Warning', 'FF&E'], finding: ['Room boundary not enclosed', 'Overlapping walls', 'Missing Type Mark'], comparison: ['Expected enclosed', 'Unique geometry', 'Type Mark required'], state: ['Review', 'Review', 'Open'], check: ['Room enclosure', 'Duplicate walls', 'FF&E metadata'], outcome: ['Complete', 'Complete', 'Complete'], reviewed: ['18', '22', '13'], issues: ['2', '1', '3'], errors: ['0', '0', '0'], 'read ms': ['18', '12', '24'], 'matched rule value': ['Door', 'Window', 'Wall'] },
   'off-axis-resolver': { route: ['Adjust line', 'Rotate instance', 'Review only'], current: ['89.4°', '0.8°', '179.1°'], target: ['90.0°', '0.0°', '180.0°'], deviation: ['0.6°', '0.8°', '0.9°'], class: ['Wall', 'Family instance', 'Grid'], reason: ['Within 1° correction range', 'Within 1° correction range', 'Hosted element requires review'] },
   'parameter-colorizer': { value: ['30 min', '60 min', '90 min', '120 min', 'Unspecified'], color: ['#8AB8E6', '#79C7B0', '#E4BC72', '#D48682', '#9A9DA1'] },
   'scope-box-synchronizer': { 'scope box name': ['Core – Level 01', 'Building Overall', 'East Wing'], status: ['Drift detected', 'Matched', 'Missing in host'], 'host match': ['Core – Level 01', 'Building Overall', '—'], 'drift (mm)': ['45', '0', '—'], 'source link extents': ['14.5 × 9.2 × 6.3 m', '23.0 × 14.5 × 9.4 m', '7.2 × 8.6 × 6.3 m'] },
-  'structural-qa': { 'measured deviation / reference': ['3 mm · Grid A/1', '12 mm · Grid B/2', '4 mm · Grid C/1'] },
+  'structural-qa': { 'measured deviation / reference': ['3 mm, Grid A/1', '12 mm, Grid B/2', '4 mm, Grid C/1'] },
   'workset-manager': { 'family prefix': ['AR-DOR-', 'AR-WIN-', 'ST-COL-', 'ST-BEA-'] },
 }
 
 const SELECT_HEADERS = new Set(['[]', 'apply', 'fix', 'select', 'rename?', 'sync', 'ungroup'])
 const THREE_RECORD_TOOLS = new Set(['compliance-guard', 'deviation-inspector', 'duplicates-resolver', 'family-name-editor', 'family-name-synchronizer', 'filter-usage-checker', 'group-manager', 'in-place-converter', 'match-opening', 'mirrored-auditor', 'model-query-pro', 'off-axis-resolver', 'point-cloud-slicer', 'room-height-adjust', 'scope-box-synchronizer', 'shared-param-manager', 'structural-qa', 'update-schedule'])
-export const fixtureRowLimit = (slug: string) => THREE_RECORD_TOOLS.has(slug) ? 3 : slug === 'parameter-colorizer' ? 5 : 6
+export const fixtureRowLimit = (slug: string) => slug === 'compliance-guard' || slug === 'parameter-colorizer' ? 5 : slug === 'off-axis-resolver' ? 4 : slug === 'family-param-transfer' || THREE_RECORD_TOOLS.has(slug) ? 3 : 6
 export const isSelectionColumn = (header: string, width: number, index: number) => SELECT_HEADERS.has(header.toLowerCase()) || (!header && width < 70 && index === 0)
-export function fixtureCell(slug: string, header: string, row: number): string {
+export function fixtureCell(slug: string, header: string, row: number, variant?: string): string {
   const key = header.toLowerCase().trim()
   if (!key) return ''
+  const sentinel = sentinelCell(slug, key, row, variant)
+  if (sentinel !== undefined) return sentinel
+  const forge = forgeCell(slug, key, row)
+  if (forge !== undefined) return forge
   const aliases: Record<string, string> = {
     'family & type': 'family and type', 'category / type': 'category', 'id': 'element id',
     'assign categories': 'category', categories: 'category', 'level name': 'level', 'sheet name': 'view',
@@ -247,5 +247,5 @@ export function fixtureResult(slug: string, action: string, count?: number, sett
   const [unit, detail, defaultCount] = outcome
   const scope = count ?? defaultCount
   const unitLabel = scope === 1 ? (unit.endsWith('ies') ? unit.slice(0, -3) + 'y' : unit.replace(/s$/, '')) : unit
-  return `${action} · ${scope} ${unitLabel} in scope. ${detail}${setting ? ` Setting: ${setting}.` : ''}`
+  return `${action}, ${scope} ${unitLabel} in scope. ${detail}${setting ? ` Setting: ${setting}.` : ''}`
 }

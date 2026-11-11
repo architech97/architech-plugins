@@ -1,7 +1,7 @@
 # ArchiTECH Automation · Plugins website
 
-The commercial marketplace for ArchiTECH's BIM productivity software: 65 products (58 Revit tools in the
-Arch Folio, Arch Forge and Arch Sentinel suites, plus ArchiTECH-I3D and the AI & MCP connectors), with an interactive browser demo for each product.
+The public catalogue for ArchiTECH's BIM productivity software: 58 Revit tools in the Arch Folio,
+Arch Forge and Arch Sentinel suites, plus ArchiTECH I3D, ArchiTECH Assistant and ArchiTECH MCP Connector workflows for Revit, Rhino, SketchUp, AutoCAD and Blender. Browser walkthroughs use sample data.
 
 The primary site is [architechdesign.in/automation/](https://architechdesign.in/automation/).
 The [GitHub Pages preview](https://architech97.github.io/architech-plugins/) remains available for existing links and is marked `noindex`.

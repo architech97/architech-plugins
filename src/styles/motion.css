@@ -1,0 +1,65 @@
+/* Site-wide motion. Everything here is decoration on top of a page that works without it:
+   content is visible by default, and every effect is switched off under prefers-reduced-motion. */
+
+/* Route change: the new page settles in. Ends at transform: none, so fixed children are unaffected. */
+.route-in { animation: route-in var(--t-reveal) var(--ease) both; }
+@keyframes route-in { from { opacity: 0; } to { opacity: 1; transform: none; } }
+
+
+/* A soft light follows the pointer across the drafting grid. */
+.bg-grid::before { content: ''; position: absolute; inset: 0; opacity: var(--glow, 0); transition: opacity var(--t-reveal) var(--ease);
+  background: radial-gradient(520px circle at var(--gx, 50%) var(--gy, 30%), var(--motion-grid-glow), var(--clear) 70%); }
+
+/* Cards light up under the pointer. */
+[data-spot] { background-image: radial-gradient(380px circle at var(--mx, 50%) var(--my, 50%), var(--motion-card-glow), var(--clear) 62%); background-repeat: no-repeat; }
+[data-spot]:not(:hover) { background-image: none; }
+
+/* Thumbnails drift a little with the pointer. */
+a:hover > .product-thumb img, .pcard:hover .product-preview-art img { translate: calc(var(--px, 0) * -7px) calc(var(--py, 0) * -7px); }
+.product-preview-art img { transition: translate var(--t-reveal) var(--ease), transform var(--t-scene) var(--ease), opacity var(--t-reveal) var(--ease); }
+
+
+/* Primary buttons: a sheen crosses on hover. */
+.btn-primary, .demo-button { position: relative; overflow: hidden; }
+.btn-primary::after, .demo-button::after { content: ''; position: absolute; inset: 0; pointer-events: none; transform: translateX(-120%) skewX(-18deg); background: linear-gradient(90deg, var(--clear), var(--motion-sheen), var(--clear)); }
+.btn-primary:hover::after, .demo-button:hover::after { transform: translateX(120%) skewX(-18deg); transition: transform var(--t-reveal) var(--ease); }
+
+
+/* Wall of real dialogs. */
+.dialog-wall { padding: clamp(40px, 6vw, 80px) 0 0; }
+.dialog-wall .marquee { border-top: 0; padding: 0; gap: 14px; }
+.dialog-wall .marquee-row a { width: clamp(220px, 24vw, 330px); filter: none; transition: border-color var(--t-ui) var(--ease), transform var(--t-reveal) var(--ease); }
+.dialog-wall .marquee-row a:hover { transform: translateY(-4px); }
+.dialog-wall .marquee-row span { background: var(--motion-wall-surface); color: var(--motion-wall-text); }
+.dialog-wall-head { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: end; gap: 8px 24px; margin-bottom: 22px; }
+.dialog-wall-head p { color: var(--text-2); max-width: 44ch; }
+
+/* Images settle as they scroll through the viewport (browsers with scroll-driven animations only). */
+@supports (animation-timeline: view()) {
+  .native-image img, .native-capture img { animation: settle linear both; animation-timeline: view(); animation-range: entry 0% cover 45%; }
+  @keyframes settle { from { transform: scale(1.09); } to { transform: scale(1); } }
+  .home-band h2, .automation-contact h2 { animation: slide-x linear both; animation-timeline: view(); animation-range: entry 0% cover 40%; }
+  @keyframes slide-x { from { transform: translateX(-4vw); opacity: .35; } to { transform: none; opacity: 1; } }
+}
+
+/* Walkthrough player feedback. */
+.step-list li.done svg { animation: pop var(--t-reveal) var(--ease); }
+@keyframes pop { 0% { transform: scale(.4); } 60% { transform: scale(1.25); } 100% { transform: scale(1); } }
+.toast { animation: toast-in var(--t-ui) var(--ease) both; }
+@keyframes toast-in { from { opacity: 0; transform: translateY(-10px) scale(.97); } to { opacity: 1; transform: none; } }
+.demo-focus { animation: focus-ring var(--t-scene) var(--ease) 2; }
+@keyframes focus-ring { 0%, 100% { box-shadow: 0 0 0 2px var(--motion-focus-solid), 0 0 0 6px var(--motion-focus-clear); } 50% { box-shadow: 0 0 0 2px var(--motion-focus-solid), 0 0 0 9px var(--motion-focus-soft); } }
+.inquiry-draft { animation: route-in var(--t-reveal) var(--ease) both; }
+.shot img, .shot-modal img { animation: route-in var(--t-reveal) var(--ease) both; }
+.coverage-table tbody tr { transition: background var(--t-ui) var(--ease); }
+.coverage-table tbody tr:hover { background: var(--motion-row-hover); }
+.field input, .field select, .field textarea { transition: border-color var(--t-ui) var(--ease), box-shadow var(--t-ui) var(--ease); }
+.field input:focus, .field select:focus, .field textarea:focus { box-shadow: 0 0 0 4px var(--motion-field-focus); }
+
+@media (prefers-reduced-motion: reduce) {
+  .route-in, .step-list li.done svg, .toast, .demo-focus, .inquiry-draft, .shot img, .shot-modal img { animation: none; }
+  .bg-grid::before, .btn-primary::after, .demo-button::after { display: none; }
+  .product-preview-art img { transition: none; }
+  a:hover > .product-thumb img, .pcard:hover .product-preview-art img { translate: none; }
+  .native-image img, .native-capture img, .home-band h2, .automation-contact h2 { animation: none; }
+}

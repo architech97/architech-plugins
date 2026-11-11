@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { Link, useSearchParams } from 'react-router-dom'
-import { ArrowUpRight, ListFilter, Search, X } from 'lucide-react'
+import { ListFilter, Search, X } from 'lucide-react'
 import { PRODUCTS, searchText } from '../data/catalog'
 import { SUITES, suiteById } from '../data/suites'
 import { ProductCard } from '../components/ProductCard'
@@ -85,7 +85,6 @@ export default function Catalog() {
       <div className="wrap">
         <header className="catalog-heading">
           <div>
-            <span className="eyebrow">ArchiTECH Automation / Plugin catalogue</span>
             <h1 id="catalog-title">Find the right tool for the task.</h1>
           </div>
           <p className="lead">Browse {PRODUCTS.length} design and BIM tools by what you need to do. Every tool has a browser demo you can try with sample data.</p>
@@ -139,7 +138,7 @@ export default function Catalog() {
                 <h2 id="catalog-result-title">{selectedTask?.label ?? 'Plugin library'}</h2>
                 <p className="muted" role="status">{results.length} of {PRODUCTS.length} tools</p>
               </div>
-              <Link to="/demos#sample-project">Try the sample project <ArrowUpRight size={15} aria-hidden="true" /></Link>
+              <Link to="/demos#sample-project">Try the sample project</Link>
             </div>
             {results.length === 0 ? (
               <div className="glass empty-state">

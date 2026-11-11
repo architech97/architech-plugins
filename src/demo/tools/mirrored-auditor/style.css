@@ -1,0 +1,23 @@
+.mirror-body {
+  display: grid;
+  gap: 12px;
+  min-width: 0;
+}
+.mirror-body .mirror-grid {
+  max-height: 390px;
+}
+.mirror-body .mirror-grid td {
+  min-width: 85px;
+  white-space: normal;
+}
+.mirror-body .mirror-grid td:first-child {
+  min-width: 38px;
+}
+.mirror-body .mirror-status {
+  white-space: pre-line;
+}
+.mirror-body .mirror-note {
+  font-size: 11px;
+  color: var(--d-muted);
+  margin: 0;
+}

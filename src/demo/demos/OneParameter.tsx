@@ -4,37 +4,55 @@ import './crafted.css'
 import { ELEMENTS, PARAMS, PARAM_CATEGORIES } from '../sample'
 import type { DemoContext } from '../types'
 
+const CATEGORIES = [...PARAM_CATEGORIES].sort((a, b) => a.localeCompare(b))
+const parametersFor = (category: string, search = '') => [...(PARAMS[category] ?? [])]
+  .filter(parameter => parameter.name.toLowerCase().includes(search.trim().toLowerCase()))
+  .sort((a, b) => a.name.localeCompare(b.name))
+const INITIAL_CATEGORY = CATEGORIES[0] ?? ''
+const INITIAL_PARAMETER = parametersFor(INITIAL_CATEGORY)[0]?.name ?? ''
+const INITIAL_ROWS = ELEMENTS.filter(element => element.category === INITIAL_CATEGORY)
+
 // Simulation of Arch Forge > Parameters > One Parameter. Replace in preview edits proposed values
 // only; Apply Changes writes the ticked rows in one transaction. A type parameter is written once per type.
 export default function OneParameter({ theme, setTheme, done, notify, close }: DemoContext) {
   const [scope, setScope] = useState<'model' | 'view'>('model')
-  const [category, setCategory] = useState('')
-  const [param, setParam] = useState('')
+  const [category, setCategory] = useState(INITIAL_CATEGORY)
+  const [param, setParam] = useState(INITIAL_PARAMETER)
   const [psearch, setPsearch] = useState('')
   const [find, setFind] = useState(''), [replace, setReplace] = useState(''), [prefix, setPrefix] = useState(''), [suffix, setSuffix] = useState('')
   const [proposed, setProposed] = useState<Record<number, string>>({})
   const [ticked, setTicked] = useState<Set<number>>(new Set())
   const [values, setValues] = useState(() => Object.fromEntries(ELEMENTS.map((e) => [e.id, { ...e.values }])) as Record<number, Record<string, string>>)
-  const [status, setStatus] = useState('Pick a category and a parameter to begin.')
+  const [status, setStatus] = useState(INITIAL_ROWS.length + " element(s) loaded with parameter '" + INITIAL_PARAMETER + "'.")
 
   const rows = useMemo(() => ELEMENTS.filter((e) => e.category === category && (scope === 'model' || e.activeView === true)), [category, scope])
   const pdef = (PARAMS[category] ?? []).find((p) => p.name === param)
-  const visibleParams = (PARAMS[category] ?? []).filter((p) => p.name.toLowerCase().includes(psearch.toLowerCase()))
+  const visibleParams = parametersFor(category, psearch)
   const current = (id: number) => values[id]?.[param] ?? ''
   const prop = (id: number) => proposed[id] ?? current(id)
 
   const typeKey = (element: typeof ELEMENTS[number]) => JSON.stringify([element.category, element.family, element.type])
-  const pickCategory = (c: string) => { setCategory(c); setParam(''); setPsearch(''); setProposed({}); setTicked(new Set()); setStatus(c ? 'Pick a parameter.' : 'Pick a category and a parameter to begin.'); if (c) done('category') }
+  const pickCategory = (next: string) => {
+    const firstParameter = parametersFor(next)[0]?.name ?? ''
+    const nextRows = ELEMENTS.filter(element => element.category === next && (scope === 'model' || element.activeView === true))
+    setCategory(next)
+    setParam(firstParameter)
+    setPsearch('')
+    setProposed({})
+    setTicked(new Set())
+    setStatus(nextRows.length + " element(s) loaded with parameter '" + firstParameter + "'.")
+    done('category')
+  }
   const pickParam = (p: string) => {
-    setParam(p); setProposed({}); setTicked(new Set(rows.map((r) => r.id)))
-    setStatus(`${rows.length} elements · ${PARAMS[category].find((x) => x.name === p)?.isType ? 'type parameter: written once per type' : 'instance parameter'}`)
+    setParam(p); setProposed({}); setTicked(new Set())
+    setStatus(`${rows.length} elements, ${PARAMS[category].find((x) => x.name === p)?.isType ? 'type parameter: written once per type' : 'instance parameter'}`)
     done('param')
   }
   const replaceInPreview = () => {
     if (!find) return
     const next = { ...proposed }
     let count = 0
-    for (const row of rows) {
+    for (const row of rows.filter(row => ticked.has(row.id))) {
       const before = prop(row.id)
       const after = before.replaceAll(find, () => replace)
       if (after !== before) { next[row.id] = after; count++ }
@@ -46,16 +64,18 @@ export default function OneParameter({ theme, setTheme, done, notify, close }: D
   const addAffix = (which: 'prefix' | 'suffix') => {
     const affix = which === 'prefix' ? prefix : suffix
     if (!affix) return
-    setProposed(Object.fromEntries(rows.map((row) => {
+    const selectedRows = rows.filter(row => ticked.has(row.id))
+    setProposed({ ...proposed, ...Object.fromEntries(selectedRows.map((row) => {
       const before = prop(row.id)
       return [row.id, which === 'prefix' ? affix + before : before + affix]
-    })))
-    if (rows.length) done('replace')
+    })) })
+    if (selectedRows.length) done('replace')
   }
   const changeScope = (next: 'model' | 'view') => {
     setScope(next)
+    setParam(parametersFor(category, psearch)[0]?.name ?? '')
     setProposed({})
-    setTicked(new Set(ELEMENTS.filter((element) => element.category === category && (next === 'model' || element.activeView === true)).map((element) => element.id)))
+    setTicked(new Set())
     setStatus(next === 'model' ? 'Whole model sample scope.' : 'Active view scope: sample Ground Floor Plan.')
   }
   const changed = rows.filter((row) => ticked.has(row.id) && prop(row.id) !== current(row.id))
@@ -92,6 +112,7 @@ export default function OneParameter({ theme, setTheme, done, notify, close }: D
       footer={<>
         <span className="ad-status">{status}</span>
         <Btn onClick={close}>Close</Btn>
+        {changed.length === 0 && <span className="ad-hint">Tick an element and type a proposed value first.</span>}
         <Btn primary demo="apply" disabled={changed.length === 0} onClick={apply}>Apply Changes</Btn>
       </>}>
       <div className="ad-grid2 crafted-layout" style={{ gridTemplateColumns: '220px minmax(0,1fr)', alignItems: 'stretch' }}>
@@ -99,9 +120,16 @@ export default function OneParameter({ theme, setTheme, done, notify, close }: D
           <span className="ad-label">Scope</span>
           <div className="ad-row"><Radio name="scope" label="Whole model" checked={scope === 'model'} onChange={() => changeScope('model')} /><Radio name="scope" label="Active view" checked={scope === 'view'} onChange={() => changeScope('view')} /></div>
           <span className="ad-label">Category</span>
-          <Select label="Category" value={category || '—'} onChange={(v) => pickCategory(v === '—' ? '' : v)} options={['—', ...PARAM_CATEGORIES]} width="100%" demo="category" />
+          <Select label="Category" value={category} onChange={pickCategory} options={CATEGORIES} width="100%" demo="category" />
           <span className="ad-label">Parameter</span>
-          <SearchBox value={psearch} onChange={setPsearch} placeholder="Search parameters…" />
+          <SearchBox value={psearch} onChange={value => {
+            setPsearch(value)
+            const firstParameter = parametersFor(category, value)[0]?.name ?? ''
+            setParam(firstParameter)
+            setProposed({})
+            setTicked(new Set())
+            setStatus(firstParameter ? rows.length + " element(s) loaded with parameter '" + firstParameter + "'." : 'Select a parameter to view matching elements.')
+          }} placeholder="Search parameters…" />
           <div className="ad-list" style={{ minHeight: 170 }} data-demo="params" role="listbox" aria-label="Parameters">
             {!category && <span className="li">Pick a category first.</span>}
             {visibleParams.map((p) => (

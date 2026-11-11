@@ -1,0 +1,84 @@
+/* ArchiTECH shared chrome: tokens, header and footer for Home and Automation.
+   Source of truth for the values is /design/ (style.css :root). Keep this file byte-identical in
+   architech-design/chrome.css and architech-plugins/src/styles/chrome.css. */
+:root {
+  /* Tonal ramp, paper to night. */
+  --paper: #f3eee6; --paper-2: #ebe4d8; --stone: #d9cdbd; --taupe: #6f5f57;
+  --taupe-d: #3b322d; --umber: #241e1a; --night: #171311;
+  --ink: #2a2420; --ink-2: #5b514a; --on-dark: #f3eee6; --on-dark-2: #cfc5b8;
+  /* Accents are markers only: Design brass, Automation blueprint. */
+  --brass: #b98d5c; --brass-ink: #795333; --blueprint: #7b9be6; --blue-ink: #315694;
+  --focus: var(--blue-ink); --focus-dark: #c3d2f7;
+  --clear: transparent;
+  --chrome-footer-rule: #f3eee62e;
+  --serif: "Cormorant Garamond", Georgia, serif;
+  --sans: Jost, system-ui, sans-serif;
+  --mono: "IBM Plex Mono", ui-monospace, monospace;
+  /* One easing, three durations. */
+  --ease: cubic-bezier(.2, .7, .1, 1);
+  --t-ui: 240ms; --t-reveal: 600ms; --t-scene: 1200ms;
+  /* Spacing scale. */
+  --s-1: 8px; --s-2: 16px; --s-3: 24px; --s-4: 40px; --s-5: 64px; --s-6: 104px; --s-7: 168px;
+  --gut: clamp(16px, 3.6vw, 64px);
+  --plan-line: .75px solid currentColor;
+}
+@media (max-width: 700px) { :root { --s-6: 64px; } }
+
+/* Pages share an animated cross-document transition between Home and Automation. */
+@media (prefers-reduced-motion: no-preference) {
+  @view-transition { navigation: auto; }
+  ::view-transition-group(*) { animation-duration: var(--t-reveal); animation-timing-function: var(--ease); }
+}
+
+/* Header: one row everywhere; Automation adds its own second row. */
+.ax-header { position: relative; z-index: 40; font-family: var(--sans); color: var(--ink); }
+.ax-bar { display: flex; align-items: center; justify-content: space-between; gap: var(--s-2); min-height: 64px; padding-inline: var(--gut); }
+.ax-brand { display: inline-flex; align-items: center; gap: 9px; min-height: 44px; color: inherit; text-decoration: none; font: 300 1.45rem/1 var(--sans); letter-spacing: -.035em; view-transition-name: ax-brand; }
+.ax-brand strong { font-weight: 500; }
+.ax-brand svg { flex: none; }
+.ax-blade { fill: var(--brass); transform-origin: 46% 48%; transform-box: fill-box; transition: transform var(--t-reveal) var(--ease); }
+.ax-brand:hover .ax-blade { transform: rotate(-9deg); }
+.ax-nav { display: flex; gap: clamp(12px, 2.4vw, 34px); }
+.ax-nav a { position: relative; display: inline-flex; align-items: center; min-height: 44px; color: inherit; text-decoration: none; font: 400 .95rem/1 var(--sans); }
+.ax-nav a::after { content: ''; position: absolute; left: 0; right: 0; bottom: 11px; height: 1px; background: currentColor; transform: scaleX(0); transform-origin: left; transition: transform var(--t-reveal) var(--ease); }
+.ax-nav a:hover::after, .ax-nav a:focus-visible::after, .ax-nav a[aria-current]::after { transform: scaleX(1); }
+.ax-nav a[aria-current]::after { background: var(--blueprint); height: 2px; }
+.ax-nav a[data-division="design"][aria-current]::after { background: var(--brass); }
+@media (max-width: 520px) {
+  .ax-brand span { display: none; }
+  .ax-nav { gap: 14px; }
+  .ax-nav a { font-size: .88rem; }
+}
+@media (max-width: 340px) { .ax-nav { gap: 10px; } .ax-nav a { font-size: .82rem; } }
+
+/* Footer: the night bar /design/ ends on. */
+.ax-footer { background: var(--night); color: var(--on-dark-2); font: 300 .95rem/1.6 var(--sans); padding: var(--s-6) var(--gut) var(--s-3); scroll-margin-top: 80px; }
+/* On pages that end on paper, the footer begins with a 30vh ramp so the night bar is never a hard cut. */
+.ax-footer.feather { --feather: max(160px, 30vh); padding-top: calc(var(--feather) + var(--s-5)); background: linear-gradient(var(--paper), var(--stone) calc(var(--feather) * .35), var(--taupe-d) calc(var(--feather) * .75), var(--night) var(--feather)); }
+.ax-footer :focus-visible { outline-color: var(--focus-dark); }
+.ax-footer a { color: var(--on-dark); text-decoration: none; }
+.ax-footer a:hover { text-decoration: underline; text-underline-offset: .25em; text-decoration-thickness: 1px; }
+.ax-foot-grid { display: grid; grid-template-columns: repeat(12, minmax(0, 1fr)); gap: var(--s-4) var(--s-3); max-width: 1520px; margin-inline: auto; }
+.ax-foot-lead { grid-column: 1 / span 5; }
+.ax-foot-line { margin: 0; color: var(--on-dark); font: 500 clamp(2rem, 3.6vw, 3.5rem)/1 var(--serif); letter-spacing: -.03em; max-width: 14ch; text-wrap: balance; }
+.ax-foot-reply { margin: var(--s-3) 0 0; }
+.ax-foot-col { grid-column: span 2; display: flex; flex-direction: column; gap: 2px; min-width: 0; }
+.ax-foot-lead + .ax-foot-col { grid-column: 7 / span 2; }
+.ax-foot-h { margin: 0 0 var(--s-1); color: var(--on-dark-2); font: 400 .8125rem/1.4 var(--sans); }
+.ax-foot-col a { display: inline-flex; align-items: center; min-height: 32px; overflow-wrap: anywhere; }
+.ax-foot-base { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: var(--s-2) var(--s-4); max-width: 1520px; margin: var(--s-6) auto 0; padding-top: var(--s-3); border-top: .75px solid var(--chrome-footer-rule); font: 400 .8125rem/1.5 var(--sans); }
+.ax-foot-base p { margin: 0; max-width: 90ch; }
+.ax-foot-mark { display: inline-flex; align-items: center; gap: 10px; color: var(--on-dark); font: 300 1.2rem/1 var(--sans); letter-spacing: -.03em; }
+.ax-foot-mark strong { font-weight: 500; }
+.ax-foot-mark svg path:first-child { fill: var(--on-dark); }
+@media (max-width: 1000px) {
+  .ax-foot-lead { grid-column: 1 / -1; }
+  .ax-foot-col, .ax-foot-lead + .ax-foot-col { grid-column: span 4; }
+}
+@media (max-width: 640px) {
+  .ax-foot-col, .ax-foot-lead + .ax-foot-col { grid-column: span 6; }
+  .ax-foot-lead + .ax-foot-col { grid-column: 1 / -1; }
+  .ax-footer { padding-top: var(--s-5); }
+}
+@media (max-width: 380px) { .ax-foot-col, .ax-foot-lead + .ax-foot-col { grid-column: 1 / -1; } }
+@media (prefers-reduced-motion: reduce) { .ax-blade, .ax-nav a::after { transition: none; } }
