@@ -414,7 +414,14 @@ p { margin: 0; text-wrap: pretty; }
   --automation-heading: #315694;
   --design-brass: #dfb882;
 }
-main h1 { color: var(--automation-heading); }
+/* Heading rule: headings are ink. Blue is for links, actions and one accent line in a hero. */
+
+/* Images fade in once loaded instead of popping into a flat block. */
+.img-fade main img { transition: opacity .5s ease; }
+.img-fade main img:not([data-loaded]) { opacity: 0; }
+/* Scroll progress along the bottom of the masthead. */
+.site-header::after { content: ''; position: absolute; left: 0; right: 0; bottom: -1px; height: 2px; background: var(--automation-cyan); transform-origin: left; transform: scaleX(var(--scroll, 0)); pointer-events: none; }
+@media (prefers-reduced-motion: reduce) { .img-fade main img { transition: none; } }
 .division-bar, .site-header {
   --bg: var(--automation-navy);
   --panel: #1b1c1f;
