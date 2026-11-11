@@ -1,7 +1,7 @@
 import { useMemo, useState } from 'react'
 import { Link } from 'react-router-dom'
 import { Download, Search } from 'lucide-react'
-import { PRODUCTS } from '../data/catalog'
+import { PRODUCTS, STATS } from '../data/catalog'
 import { SUITES, suiteById } from '../data/suites'
 import { demoForProduct } from '../demo/registry'
 import { LAYOUTS } from '../demo/generatedRegistry'
@@ -105,7 +105,7 @@ export default function Coverage() {
           <p className="lead">Every tool, every dialog the site can show, what it is based on and how far the browser walkthrough goes. Gaps are listed, not hidden.</p>
         </header>
         <dl className="coverage-summary">
-          <div><dt>Tools</dt><dd><CountUp to={PRODUCTS.length} /></dd></div>
+          <div><dt>Entries: {STATS.revitTools} Revit tools, plus suite launchers and desktop apps</dt><dd><CountUp to={PRODUCTS.length} /></dd></div>
           <div><dt>Dialogs and states listed</dt><dd><CountUp to={ALL.length} /></dd></div>
           <div><dt>Tools with a guided walkthrough</dt><dd><CountUp to={guided} /></dd></div>
           <div><dt>Listed but not simulated</dt><dd><CountUp to={referenceOnly} /></dd></div>
@@ -114,7 +114,7 @@ export default function Coverage() {
           <h2>What is not covered yet</h2>
           <ul>
             <li>Confirmations, message dialogs and empty states are counted per tool from its own project. Messages raised from shared code are not attributed to a tool, so a count is a minimum. They are not simulated one by one; a walkthrough shows the states its sample task passes through.</li>
-            <li>ArchiTECH-I3D, the Assistant and the Revit MCP Connector are inventoried from their layout sources. Panels marked “Inventoried, not simulated” exist in the application but not in the browser walkthrough. The Rhino, SketchUp, AutoCAD and Blender connectors have not been inspected for a window of their own.</li>
+            <li>ArchiTECH I3D, ArchiTECH Assistant and the ArchiTECH MCP Connector for Revit are inventoried from their layout sources. Panels marked “Inventoried, not simulated” exist in the application but not in the browser walkthrough. The Rhino, SketchUp, AutoCAD and Blender connectors have not been inspected for a window of their own.</li>
             <li>Commands without a dialog work through Revit prompts and messages. Those are described from the tool’s own text, not captured.</li>
             {hiddenEntries.length > 0 && <li>Hidden ribbon entries without a page of their own: {hiddenEntries.join('; ')}.</li>}
             {uncatalogued.length > 0 && <li>Installed ribbon buttons without a page here: {uncatalogued.map((b) => `${b.name} (${b.tab} › ${b.panel})`).join(', ')}.</li>}

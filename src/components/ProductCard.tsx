@@ -1,6 +1,6 @@
 import { useId } from 'react'
 import { Link } from 'react-router-dom'
-import { ArrowUpRight, Play } from 'lucide-react'
+import { ArrowRight, Play } from 'lucide-react'
 import type { Product } from '../data/types'
 import { suiteById } from '../data/suites'
 import { asset } from './Brand'
@@ -190,7 +190,7 @@ export function ProductCard({ p }: { p: Product }) {
       </div>
       <div className="product-card-actions">
         {p.demo && <Link to={'/demos/' + p.demo} aria-label={'Try ' + p.name + ' demo'}><Play size={14} aria-hidden="true" /> Try demo</Link>}
-        <Link to={productPath} aria-label={p.name + ' product details'}>Details <ArrowUpRight size={14} aria-hidden="true" /></Link>
+        <Link to={productPath} aria-label={p.name + ' product details'}>Details <ArrowRight size={14} aria-hidden="true" /></Link>
       </div>
     </article>
   )

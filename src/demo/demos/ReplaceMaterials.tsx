@@ -98,6 +98,7 @@ export default function ReplaceMaterials({ theme, setTheme, done, rewind, notify
         <span className="ad-status">{receipt ? 'Replacement applied to sample references' : scan ? 'Read-only impact scan' : 'A fresh impact scan is required'}</span>
         <Btn onClick={close}>Close</Btn>
         <Btn demo="replace-scan" disabled={!canScan} onClick={scanImpact}>Scan impact</Btn>
+        {!canApply && !receipt && <span className="ad-hint">{scan?.length ? 'Resolve the blocked rows first.' : 'Run Scan impact first.'}</span>}
         <Btn primary demo="replace-apply" disabled={!canApply} onClick={apply}>Replace materials</Btn>
       </>}>
       <div className="ad-card suite-flow-fields" data-demo="replace-configure">

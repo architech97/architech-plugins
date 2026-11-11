@@ -1,18 +1,17 @@
 import { useEffect, useRef, useState, type RefObject } from 'react'
 import { Link, useLocation, useNavigate, useParams, useSearchParams } from 'react-router-dom'
-import { ArrowDown, ArrowLeft, ArrowRight, ArrowUpRight, Play, Search, X } from 'lucide-react'
+import { ArrowDown, ArrowLeft, ArrowRight, Play, Search, X } from 'lucide-react'
 import { demoById, demoForProduct } from '../demo/registry'
 import { DemoPlayer } from '../demo/DemoPlayer'
 import type { DemoDefinition } from '../demo/types'
-import { PRODUCTS, productBySlug, searchText } from '../data/catalog'
+import { PRODUCTS, STATS, productBySlug, searchText } from '../data/catalog'
+import type { Product } from '../data/types'
 import { FEATURED_TOOLS } from '../data/featured'
-import { SUITES, suiteById } from '../data/suites'
+import { suiteById } from '../data/suites'
 import { DEMO_PROJECT, PROJECT_WORKFLOW } from '../data/demoProject'
 import { ROOMS, SHEETS, WARNINGS } from '../demo/sample'
 import { asset } from '../components/Brand'
 import { NativeEvidence, type NativeEvidenceConfig } from '../components/NativeEvidence'
-import { ProductThumb } from '../components/ProductCard'
-import { Reveal } from '../components/Layout'
 import NotFound from './NotFound'
 import './demos.css'
 
@@ -30,7 +29,7 @@ const NATIVE_EVIDENCE: Partial<Record<'architech-i3d' | 'architech-assistant' | 
   'architech-i3d': {
     title: 'Installed desktop build',
     context: 'Both captures come from one chair-mesh session in the installed Windows app.',
-    build: 'ArchiTECH-I3D Desktop 0.6.38',
+    build: 'ArchiTECH I3D Desktop 0.6.38',
     captures: [
       {
         title: 'Material workspace',
@@ -86,6 +85,26 @@ const NATIVE_EVIDENCE: Partial<Record<'architech-i3d' | 'architech-assistant' | 
   },
 }
 const indexNumber = (i: number) => String(i + 1).padStart(2, '0')
+
+/** The demo index is grouped by the job a tool does. Panels are the tools' own ribbon panels. */
+const JOBS: { id: string; title: string; match: (p: Product) => boolean }[] = [
+  { id: 'publish', title: 'Publish a set', match: (p) => p.suite === 'folio' && ['Sheets', 'Publish', 'Schedules', 'Views', 'View Templates'].includes(p.panel) },
+  { id: 'annotate', title: 'Annotate and dimension', match: (p) => p.suite === 'folio' && ['Annotation', 'Detailing'].includes(p.panel) },
+  { id: 'rooms', title: 'Finish rooms', match: (p) => p.suite === 'forge' && ['Rooms', 'Finishes'].includes(p.panel) },
+  { id: 'data', title: 'Manage parameters', match: (p) => p.suite === 'forge' && p.panel === 'Parameters' },
+  { id: 'scan', title: 'Model from a scan', match: (p) => p.suite === 'forge' && p.panel === 'Scan to BIM' },
+  { id: 'fix', title: 'Fix the model', match: (p) => p.suite === 'sentinel' && ['Model Health', 'Clean Up', 'Standards'].includes(p.panel) },
+  { id: 'coordinate', title: 'Coordinate with consultants', match: (p) => p.suite === 'sentinel' && ['Coordination', 'Links'].includes(p.panel) },
+  { id: 'beyond', title: 'Beyond the ribbon', match: (p) => p.suite === 'i3d' || p.suite === 'ai' },
+  { id: 'start', title: 'Browse a suite', match: (p) => p.panel === 'Start' },
+  { id: 'other', title: 'Other tools', match: () => true },
+]
+const jobOf = (p: Product) => JOBS.find((job) => job.match(p))!.id
+// The one place the walkthrough count is explained.
+const launchers = entries.filter(({ product }) => product.panel === 'Start').length
+const outside = entries.filter(({ product }) => product.suite === 'i3d' || product.suite === 'ai').length
+const toggles = entries.length - STATS.revitTools - launchers - outside
+const INDEX_NOTE = `${entries.length} walkthroughs: the ${STATS.revitTools} Revit tools, ${launchers} suite launchers${toggles > 0 ? `, ${toggles} ribbon ${toggles === 1 ? 'toggle' : 'toggles'}` : ''} and ${outside} desktop apps and connectors.`
 
 const viewNames = ['Plan', 'Assembly', 'Review'] as const
 type View = typeof viewNames[number]
@@ -161,7 +180,7 @@ function DrawingStage() {
       </div>
       <div className="drawing-note">
         <span aria-live="polite">{drawingTasks[view].note}</span>
-        <Link to={'/demos/' + drawingTasks[view].id}>{drawingTasks[view].label} <ArrowUpRight size={14} /></Link>
+        <Link to={'/demos/' + drawingTasks[view].id}>{drawingTasks[view].label} <ArrowRight size={14} /></Link>
       </div>
     </figure>
   )
@@ -227,7 +246,7 @@ function ProjectBoard() {
         <section className="project-workspace" id="project-workspace" ref={workspace} tabIndex={-1} aria-label={demo.title}>
           <header>
             <div><p className="demo-kicker">{DEMO_PROJECT.code} / {indexNumber(selected)} of {indexNumber(PROJECT_WORKFLOW.length - 1)} / {step.phase}</p><h3>{demo.title}</h3></div>
-            <Link to={'/demos/' + demo.id} className="demo-text-link">Open dedicated page <ArrowUpRight size={15} /></Link>
+            <Link to={'/demos/' + demo.id} className="demo-text-link">Open dedicated page <ArrowRight size={15} /></Link>
           </header>
           <DemoPlayer key={demo.id} demo={demo} />
           <nav className="project-progression" aria-label="Sample project tasks">
@@ -274,9 +293,9 @@ export function DemoHub() {
     return words.every((word) => text.includes(word))
   })
   const matching = relevant.filter(({ demo }) => !format || demo.kind === format)
-  const groups = SUITES.filter((item) => !suite || item.id === suite).map((item) => ({
-    ...item,
-    demos: matching.filter(({ product }) => product.suite === item.id),
+  const groups = JOBS.map((job) => ({
+    ...job,
+    demos: matching.filter(({ product }) => (!suite || product.suite === suite) && jobOf(product) === job.id),
   }))
   const count = groups.reduce((total, group) => total + group.demos.length, 0)
   const quickMatches = term ? matching.filter(({ product }) => !suite || product.suite === suite).sort((a, b) => {
@@ -335,55 +354,50 @@ export function DemoHub() {
 
       <ProjectBoard />
 
-      <section className="wrap demo-index demo-featured" aria-labelledby="featured-demos-title">
-        <div className="demo-section-title"><div><p className="demo-kicker">Featured workflows</p><h2 id="featured-demos-title">One tool from each Revit suite</h2></div></div>
-        <ul className="demo-rows">
-          {FEATURED_TOOLS.map(tool => <li key={tool.slug}><Link to={'/demos/' + tool.slug}>
-            <span><strong>{tool.title}</strong><br /><small>{tool.task}</small></span>
-            <span className="demo-kicker">{tool.suite}</span><ArrowUpRight size={17} aria-hidden="true" />
-          </Link></li>)}
+      <section className="wrap demo-featured-large" aria-labelledby="featured-demos-title">
+        <div className="demo-section-title"><div><p className="demo-kicker">Featured</p><h2 id="featured-demos-title">One tool from each Revit suite</h2></div></div>
+        <ul className="demo-feature-grid">
+          {FEATURED_TOOLS.map((tool) => {
+            const product = productBySlug(tool.slug)
+            const shot = product?.dialogs.find((d) => d.light)?.light
+            return <li key={tool.slug}><Link to={'/demos/' + tool.slug} state={libraryState}>
+              <span className="demo-feature-shot">{shot && <img src={asset(shot)} alt="" loading="lazy" decoding="async" />}</span>
+              <span className="demo-kicker">{tool.suite}</span>
+              <strong>{tool.title}</strong>
+              <span className="demo-feature-task">{tool.task}. {tool.description}</span>
+              <span className="demo-card-go">Open the walkthrough <ArrowRight size={15} aria-hidden="true" /></span>
+            </Link></li>
+          })}
         </ul>
       </section>
 
       <section ref={index} className="wrap demo-index" id="demo-index" aria-labelledby="demo-index-title">
         <div className="demo-section-title">
-          <div><p className="demo-kicker">02 / Full index</p><h2 id="demo-index-title">Find a plugin</h2></div>
+          <div><p className="demo-kicker">02 / Index by job</p><h2 id="demo-index-title">Find a walkthrough</h2></div>
           <DemoSearch input={indexSearch} label="Search demos" value={query} onChange={(value) => filter('q', value)} />
         </div>
-        <div className="demo-filter" role="group" aria-label="Filter demos by suite">
-          {[{ id: '', short: 'All demos' }, ...SUITES.map((item) => ({ ...item, short: item.id === 'ai' ? 'AI & MCP' : item.short }))].map((item) => (
-            <button type="button" key={item.id} aria-pressed={item.id === suite} onClick={() => filter('suite', item.id)}>
-              {item.short}<small>{item.id ? matching.filter(({ product }) => product.suite === item.id).length : matching.length}</small>
-            </button>
-          ))}
-        </div>
+        <p className="demo-index-note">{INDEX_NOTE}</p>
         <div className="demo-index-tools">
-          <p className="demo-match" role="status">{count} {count === 1 ? 'demo' : 'demos'}{query.trim() && ` for “${query.trim()}”`}</p>
+          <p className="demo-match" role="status">{count} {count === 1 ? 'walkthrough' : 'walkthroughs'}{query.trim() && ` for “${query.trim()}”`}</p>
           <div className="demo-format-tabs" role="group" aria-label="Demo format">
             {([['', 'All formats'], ...(Object.keys(demoFormats) as DemoDefinition['kind'][]).map((kind) => [kind, demoFormats[kind].label])] as [string, string][]).map(([kind, label]) => (
               <button type="button" key={kind} aria-pressed={format === kind} title={kind ? demoFormats[kind as DemoDefinition['kind']].detail : undefined} onClick={() => filter('format', kind)}>{label}</button>
             ))}
           </div>
         </div>
-        <details className="demo-format-help">
-          <summary>Compare demo formats</summary>
-          <dl>{Object.values(demoFormats).map((item) => <div key={item.label}><dt>{item.label}</dt><dd>{item.detail}</dd></div>)}</dl>
-        </details>
-        {count === 0 && <div className="demo-empty"><h3>No matching demos</h3><p>Try a plugin name, host application or task.</p><button type="button" className="demo-button" onClick={() => replaceFilters(new URLSearchParams())}>Clear filters</button></div>}
+        {count === 0 && <div className="demo-empty"><h3>No matching walkthroughs</h3><p>Try a plugin name, host application or task.</p><button type="button" className="demo-button" onClick={() => replaceFilters(new URLSearchParams())}>Clear filters</button></div>}
         {groups.filter((group) => group.demos.length).map((group) => (
           <div key={group.id} className="demo-group">
-            <div className="demo-group-label"><h3>{group.name}</h3><p>{group.focus}</p></div>
-            <ul className="demo-cards">
-              {group.demos.map(({ product, demo }, i) => (
-                <Reveal as="li" key={demo.id} delay={(i % 3) * 60}>
+            <div className="demo-group-label"><h3>{group.title}</h3><p>{group.demos.length} {group.demos.length === 1 ? 'tool' : 'tools'}</p></div>
+            <ul className="demo-rows demo-job-rows">
+              {group.demos.map(({ product, demo }) => (
+                <li key={demo.id}>
                   <Link to={`/demos/${demo.id}`} state={libraryState}>
-                    <ProductThumb p={product} />
-                    <span className="demo-card-format" data-format={demo.kind}>{labelFor(demo)}</span>
-                    <strong>{product.name}</strong>
-                    <span className="demo-card-summary">{demo.summary}</span>
-                    <span className="demo-card-go">Open demo <ArrowRight size={15} aria-hidden="true" /></span>
+                    <span><strong>{product.name}</strong><small>{demo.summary}</small></span>
+                    <span className="demo-kicker">{suiteById(product.suite).short} · {labelFor(demo)}</span>
+                    <ArrowRight size={16} aria-hidden="true" />
                   </Link>
-                </Reveal>
+                </li>
               ))}
             </ul>
           </div>
@@ -419,8 +433,8 @@ export function DemoPage() {
               </>}
             </div>
             {product && <div className="demo-detail-links">
-              <Link className="demo-text-link" to={`/plugins/${product.slug}`}>Product details <ArrowUpRight size={16} /></Link>
-              {(product.dialogs.length > 0 || product.media?.length) && <Link className="demo-text-link" to={`/plugins/${product.slug}#dialog-reference`}>View {product.dialogs.length ? 'dialog layouts' : 'desktop visuals'} <ArrowUpRight size={16} /></Link>}
+              <Link className="demo-text-link" to={`/plugins/${product.slug}`}>Product details <ArrowRight size={16} /></Link>
+              {(product.dialogs.length > 0 || product.media?.length) && <Link className="demo-text-link" to={`/plugins/${product.slug}#dialog-reference`}>View {product.dialogs.length ? 'dialog layouts' : 'desktop visuals'} <ArrowRight size={16} /></Link>}
             </div>}
           </div>
         </div>
@@ -435,7 +449,7 @@ export function DemoPage() {
                 <h2 id="browser-exercise-title">{demo.title}</h2>
                 <p>{demo.summary}</p>
               </div>
-              <a className="demo-text-link" href="#native-build">Back to native captures <ArrowUpRight size={16} aria-hidden="true" /></a>
+              <a className="demo-text-link" href="#native-build">Back to native captures <ArrowRight size={16} aria-hidden="true" /></a>
             </header>
             {player}
           </section>

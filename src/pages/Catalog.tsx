@@ -1,6 +1,6 @@
 import { useState } from 'react'
 import { Link, useSearchParams } from 'react-router-dom'
-import { ArrowUpRight, ListFilter, Search, X } from 'lucide-react'
+import { ArrowRight, ListFilter, Search, X } from 'lucide-react'
 import { PRODUCTS, searchText } from '../data/catalog'
 import { SUITES, suiteById } from '../data/suites'
 import { ProductCard } from '../components/ProductCard'
@@ -139,7 +139,7 @@ export default function Catalog() {
                 <h2 id="catalog-result-title">{selectedTask?.label ?? 'Plugin library'}</h2>
                 <p className="muted" role="status">{results.length} of {PRODUCTS.length} tools</p>
               </div>
-              <Link to="/demos#sample-project">Try the sample project <ArrowUpRight size={15} aria-hidden="true" /></Link>
+              <Link to="/demos#sample-project">Try the sample project <ArrowRight size={15} aria-hidden="true" /></Link>
             </div>
             {results.length === 0 ? (
               <div className="glass empty-state">

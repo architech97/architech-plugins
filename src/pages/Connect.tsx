@@ -91,9 +91,12 @@ function Form({ topic, product }: { topic: Topic; product?: string }) {
         </form>
         <aside className="inquiry-next">
           <h2>Reach me directly</h2>
+          {/* TODO(Navneet): confirm the reply-time wording. */}
+          <p className="inquiry-reply">I reply within one working day.</p>
           <a href={'mailto:' + CONTACT.email}><Mail size={16} /> {CONTACT.email}</a>
           {CONTACT.phones.map((phone) => <a key={phone} href={'tel:' + phone.replace(/\s/g, '')}><Phone size={16} /> {phone}</a>)}
           <a href={CONTACT.linkedin} target="_blank" rel="noreferrer"><ArrowUpRight size={16} /> LinkedIn</a>
+          {CONTACT.whatsapp && <a href={'https://wa.me/' + CONTACT.whatsapp} target="_blank" rel="noreferrer"><ArrowUpRight size={16} /> WhatsApp</a>}
           <p className="muted">Navneet Singh · New Delhi</p>
         </aside>
       </div>

@@ -4,10 +4,10 @@ import type { Product } from './types'
 // repository description; requirements are as published by the product.
 export const EXTRAS: Product[] = [
   {
-    slug: 'architech-i3d', key: 'I3D', name: 'ArchiTECH-I3D', suite: 'i3d', panel: 'Desktop app',
+    slug: 'architech-i3d', key: 'I3D', name: 'ArchiTECH I3D', suite: 'i3d', panel: 'Desktop app',
     software: ['Revit', 'Windows desktop'], revit: ['2024'], status: 'available', platform: 'Windows 10/11 x64',
     tagline: 'Photo → textured 3D model → Revit family. Fully local, on one NVIDIA GPU.',
-    description: 'ArchiTECH-I3D turns a single product photo, or an existing mesh, into a dimensioned, textured 3D asset and places it in Revit as a native family. Shape generation, photo texturing, mesh finishing and export all run on the local machine; nothing is uploaded unless you choose the optional Meshy cloud engine.',
+    description: 'ArchiTECH I3D turns a single product photo, or an existing mesh, into a dimensioned, textured 3D asset and places it in Revit as a native family. Shape generation, photo texturing, mesh finishing and export all run on the local machine; nothing is uploaded unless you choose the optional Meshy cloud engine.',
     problem: 'Turning a manufacturer\'s product photo into a usable, correctly sized Revit family normally means modelling it from scratch.',
     capabilities: [
       'Choose a source: a single product photo or an existing mesh.',
@@ -29,13 +29,13 @@ export const EXTRAS: Product[] = [
     ],
     dialogs: [],
     media: [
-      { src: 'media/i3d/material-workspace.png', alt: 'Native I3D Material workspace showing a textured chair mesh before export', kind: 'image' },
+      { src: 'media/i3d/material-workspace.webp', alt: 'Native I3D Material workspace showing a textured chair mesh before export', kind: 'image' },
       { src: 'media/i3d/workflow.gif', alt: 'I3D workflow animation: source, geometry preparation, Revit family', kind: 'animation' },
       { src: 'media/i3d/revit-placement-0.6.36.webp', alt: 'An I3D asset placed in Revit as a native family', kind: 'image' },
     ],
   },
   {
-    slug: 'revit-mcp', key: 'RevitMCP', name: 'ArchiTECH Revit MCP', suite: 'ai', panel: 'MCP connectors',
+    slug: 'revit-mcp', key: 'RevitMCP', name: 'ArchiTECH MCP Connector · Revit', suite: 'ai', panel: 'MCP connectors',
     software: ['Revit'], revit: ['2024', '2025'], status: 'enterprise',
     tagline: 'Native execution, typed tools, reviewed C# fallback and verified readback for Revit.',
     description: 'Local Revit 2024/2025 automation for AI assistants through the Model Context Protocol: a C# connector and command set inside Revit, a Node MCP server, typed tools, a guarded and reviewed C# fallback, and evidence-based readback of what actually changed in the model.',
@@ -49,7 +49,7 @@ export const EXTRAS: Product[] = [
     dialogs: [],
   },
   {
-    slug: 'rhino-mcp', key: 'RhinoMCP', name: 'ArchiTECH Rhino MCP', suite: 'ai', panel: 'MCP connectors',
+    slug: 'rhino-mcp', key: 'RhinoMCP', name: 'ArchiTECH MCP Connector · Rhino', suite: 'ai', panel: 'MCP connectors',
     software: ['Rhino'], revit: [], status: 'enterprise',
     tagline: 'Rhino 8 MCP connector with native RhinoCommon execution.',
     description: 'Rhino 8 MCP connector with native RhinoCommon execution, guarded writes, active-object counts and independent readback.',
@@ -59,7 +59,7 @@ export const EXTRAS: Product[] = [
     dialogs: [],
   },
   {
-    slug: 'sketchup-mcp', key: 'SketchUpMCP', name: 'ArchiTECH SketchUp MCP', suite: 'ai', panel: 'MCP connectors',
+    slug: 'sketchup-mcp', key: 'SketchUpMCP', name: 'ArchiTECH MCP Connector · SketchUp', suite: 'ai', panel: 'MCP connectors',
     software: ['SketchUp'], revit: [], status: 'enterprise',
     tagline: 'SketchUp MCP connector with a Ruby native bridge.',
     description: 'SketchUp MCP connector with a Ruby native bridge, signed geometry tools, guarded writes and verified world-space bounds.',
@@ -69,7 +69,7 @@ export const EXTRAS: Product[] = [
     dialogs: [],
   },
   {
-    slug: 'autocad-mcp', key: 'AutoCADMCP', name: 'ArchiTECH AutoCAD MCP', suite: 'ai', panel: 'MCP connectors',
+    slug: 'autocad-mcp', key: 'AutoCADMCP', name: 'ArchiTECH MCP Connector · AutoCAD', suite: 'ai', panel: 'MCP connectors',
     software: ['AutoCAD'], revit: [], status: 'enterprise',
     tagline: 'AutoCAD MCP connector for native COM drafting.',
     description: 'AutoCAD MCP connector for native COM drafting, layers, blocks, AutoLISP and DXF workflows with guarded writes.',
@@ -79,7 +79,7 @@ export const EXTRAS: Product[] = [
     dialogs: [],
   },
   {
-    slug: 'blender-mcp', key: 'BlenderMCP', name: 'ArchiTECH Blender MCP', suite: 'ai', panel: 'MCP connectors',
+    slug: 'blender-mcp', key: 'BlenderMCP', name: 'ArchiTECH MCP Connector · Blender', suite: 'ai', panel: 'MCP connectors',
     software: ['Blender'], revit: [], status: 'enterprise',
     tagline: 'Run native Blender scene, modelling and rendering workflows from an MCP client.',
     description: 'Blender MCP connector with a native bpy add-on, discoverable tools, guarded scene operations and explicit recovery semantics.',

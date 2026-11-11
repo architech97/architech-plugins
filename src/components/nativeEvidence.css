@@ -5,7 +5,7 @@
 .native-evidence {
   --native-ink: #f1efea;
   --native-note: #c9cbd4;
-  --native-plate: #121315;
+  --native-plate: #171311;
   --native-rule: #3f4550;
   margin-bottom: clamp(32px, 5vw, 68px);
 }
@@ -102,7 +102,7 @@
   gap: 6px;
   justify-self: end;
   padding: 6px 9px;
-  background: #121315;
+  background: #171311;
   border: 1px solid #626b7a;
   border-radius: 2px;
   font-size: .76rem;

@@ -17,12 +17,12 @@ export const SUITES: Suite[] = [
     summary: 'Review warnings, enforce BEP standards, clean up content and coordinate linked models.',
   },
   {
-    id: 'i3d', name: 'ArchiTECH-I3D', short: 'I3D', color: 'var(--suite-i3d)',
+    id: 'i3d', name: 'ArchiTECH I3D', short: 'I3D', color: 'var(--suite-i3d)',
     focus: 'Photo & mesh to Revit family',
     summary: 'Turn a product photo or an existing mesh into a dimensioned, textured 3D asset and place it in Revit.',
   },
   {
-    id: 'ai', name: 'AI & MCP Automation', short: 'AI', color: 'var(--suite-ai)',
+    id: 'ai', name: 'ArchiTECH MCP Connector & Assistant', short: 'MCP', color: 'var(--suite-ai)',
     focus: 'AI connectors across design tools',
     summary: 'Model Context Protocol connectors and an assistant that bring guarded, verifiable AI automation to Revit, Rhino, SketchUp, AutoCAD and Blender.',
   },

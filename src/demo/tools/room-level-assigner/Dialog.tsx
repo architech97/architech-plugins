@@ -50,7 +50,7 @@ export default function RoomLevelAssigner({ theme, setTheme, done, rewind, notif
     onClose={close} footer={<><span className="ad-status">{shown.length} room(s) · {jobs.length} pending level change(s)</span>
       <Btn disabled={!result.length} onClick={() => downloadCsv('AT-01-room-reassignment.csv', ['Number', 'Room', 'Source ID', 'Current level', 'Target level', 'New ID', 'Status'],
         result.map(({ job, newId, status }) => [job.room.number, job.room.name, String(job.room.id), job.room.level, job.target, newId ? String(newId) : '', status]))}>Export CSV</Btn>
-      <Btn onClick={close}>Close</Btn><Btn primary demo="relevel-apply" disabled={!jobs.length} onClick={() => setPending(jobs)}>Reassign Levels</Btn></>}>
+      <Btn onClick={close}>Close</Btn>{!jobs.length && <span className="ad-hint">Tick a room and choose its target level first.</span>}<Btn primary demo="relevel-apply" disabled={!jobs.length} onClick={() => setPending(jobs)}>Reassign Levels</Btn></>}>
     <div className="ad-card suite-flow-fields" data-demo="relevel-scope">
       <ScopeRadios options={['Active view', 'Entire model']} value={scope} onChange={value => {
         setScope(value)

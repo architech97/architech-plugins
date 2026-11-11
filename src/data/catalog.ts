@@ -42,9 +42,14 @@ export const PRODUCTS: Product[] = [...tools, ...RIBBON_PRODUCTS, ...EXTRAS.map(
 export const productBySlug = (slug: string) => PRODUCTS.find((p) => p.slug === slug)
 export const productByDemo = (demo: string) => PRODUCTS.find((p) => p.demo === demo)
 
+/** The Revit add-ins themselves, from the registry. Suite launchers, the point-cloud toggle and desktop apps are not counted. */
+export const REVIT_TOOLS = tools
+
+/** One number story: 58 tools with 117 dialogs between them. Suite counts sum to `revitTools`. */
 export const STATS = {
   products: PRODUCTS.length,
   revitTools: tools.length,
+  suiteTools: (suite: string) => tools.filter((t) => t.suite === suite).length,
   dialogs: tools.reduce((n, t) => n + t.dialogs.length, 0),
   demos: PRODUCTS.filter((product) => product.demo).length,
   crafted: Object.keys(DEMO_BY_KEY).length,

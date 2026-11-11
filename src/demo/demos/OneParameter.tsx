@@ -112,6 +112,7 @@ export default function OneParameter({ theme, setTheme, done, notify, close }: D
       footer={<>
         <span className="ad-status">{status}</span>
         <Btn onClick={close}>Close</Btn>
+        {changed.length === 0 && <span className="ad-hint">Tick an element and type a proposed value first.</span>}
         <Btn primary demo="apply" disabled={changed.length === 0} onClick={apply}>Apply Changes</Btn>
       </>}>
       <div className="ad-grid2 crafted-layout" style={{ gridTemplateColumns: '220px minmax(0,1fr)', alignItems: 'stretch' }}>

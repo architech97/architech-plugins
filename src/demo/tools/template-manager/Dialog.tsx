@@ -152,6 +152,7 @@ export default function TemplateManager(ctx: DemoContext) {
   }
   return <FolioFrame ctx={ctx} title="Template Manager" sections={sections} section={section} onSection={setSection}
     footer={<><span className="ad-status">Working on Sample Residence · Choices stay while you switch.</span><Btn onClick={startOver}>Start over</Btn><Btn onClick={ctx.close}>Close</Btn>
+      {!enabled && <span className="ad-hint">{section === 0 ? (transferTab === 'Transfer View Templates' ? 'Browse for a source model, then tick a template.' : 'Tick a host link and a target first.') : section === 1 ? 'Pick a filter source and tick a filter first.' : section === 2 ? 'Tick at least one option first.' : 'Tick an import first.'}</span>}
       <Btn primary demo="template-run" disabled={!enabled} onClick={run}>{footerAction}</Btn></>}>
     {section === 0 && <>
       <div className="ad-row" role="group" aria-label="Template transfer sections">{['Transfer View Templates', 'Link Settings Copier'].map((name) => <Btn key={name} aria-pressed={transferTab === name} onClick={() => setTransferTab(name)}>{name}</Btn>)}</div>

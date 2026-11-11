@@ -16,7 +16,7 @@ export const FEATURED_TOOLS = [
     alt: 'Parameter Manager browser demo with Asset Tag bound to Doors and Windows',
   },
   {
-    suite: 'Arch Sentinel', title: 'Model Export', slug: 'model-health',
+    suite: 'Arch Sentinel', title: 'Model Health', slug: 'model-health',
     task: 'Export a Model Health report',
     description: 'Choose inventory categories and export a report of the sample model’s health.',
     preview: 'media/dialogs/model-health/report-selection-dark.webp',
