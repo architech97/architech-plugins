@@ -144,6 +144,19 @@ function SpecimenDrawing({ specimen }: { specimen: Specimen }) {
   )
 }
 
+/** A product's picture for galleries: its dialog (Dark, crossfading to Light on hover), a capture, or a drawing. */
+export function ProductThumb({ p }: { p: Product }) {
+  const dialog = p.dialogs.find((item) => item.dark || item.light)
+  const shot = dialog?.dark ?? dialog?.light ?? p.media?.find((item) => item.kind === 'image')?.src
+  const specimen = SPECIMENS[p.slug]
+  return (
+    <div className={'product-thumb' + (shot ? '' : ' is-specimen')}>
+      {shot ? <img src={asset(shot)} alt="" loading="lazy" decoding="async" /> : specimen && <SpecimenDrawing specimen={specimen} />}
+      {dialog?.dark && dialog.light && <img className="product-thumb-light" src={asset(dialog.light)} alt="" loading="lazy" decoding="async" />}
+    </div>
+  )
+}
+
 export function ProductCard({ p }: { p: Product }) {
   const titleId = useId()
   const suite = suiteById(p.suite)

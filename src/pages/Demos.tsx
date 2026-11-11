@@ -11,6 +11,8 @@ import { DEMO_PROJECT, PROJECT_WORKFLOW } from '../data/demoProject'
 import { ROOMS, SHEETS, WARNINGS } from '../demo/sample'
 import { asset } from '../components/Brand'
 import { NativeEvidence, type NativeEvidenceConfig } from '../components/NativeEvidence'
+import { ProductThumb } from '../components/ProductCard'
+import { Reveal } from '../components/Layout'
 import NotFound from './NotFound'
 import './demos.css'
 
@@ -357,12 +359,11 @@ export function DemoHub() {
         </div>
         <div className="demo-index-tools">
           <p className="demo-match" role="status">{count} {count === 1 ? 'demo' : 'demos'}{query.trim() && ` for “${query.trim()}”`}</p>
-          <label className="demo-format-select">Demo format
-            <select aria-label="Demo format" value={format} onChange={(event) => filter('format', event.target.value)}>
-              <option value="">All formats</option>
-              {(Object.keys(demoFormats) as DemoDefinition['kind'][]).map((kind) => <option key={kind} value={kind}>{demoFormats[kind].label}</option>)}
-            </select>
-          </label>
+          <div className="demo-format-tabs" role="group" aria-label="Demo format">
+            {([['', 'All formats'], ...(Object.keys(demoFormats) as DemoDefinition['kind'][]).map((kind) => [kind, demoFormats[kind].label])] as [string, string][]).map(([kind, label]) => (
+              <button type="button" key={kind} aria-pressed={format === kind} title={kind ? demoFormats[kind as DemoDefinition['kind']].detail : undefined} onClick={() => filter('format', kind)}>{label}</button>
+            ))}
+          </div>
         </div>
         <details className="demo-format-help">
           <summary>Compare demo formats</summary>
@@ -372,15 +373,17 @@ export function DemoHub() {
         {groups.filter((group) => group.demos.length).map((group) => (
           <div key={group.id} className="demo-group">
             <div className="demo-group-label"><h3>{group.name}</h3><p>{group.focus}</p></div>
-            <ul className="demo-rows">
-              {group.demos.map(({ product, demo }) => (
-                <li key={demo.id}>
+            <ul className="demo-cards">
+              {group.demos.map(({ product, demo }, i) => (
+                <Reveal as="li" key={demo.id} delay={(i % 3) * 60}>
                   <Link to={`/demos/${demo.id}`} state={libraryState}>
-                    <div className="demo-row-main"><strong>{product.name}</strong><span>{demo.summary}</span></div>
-                    <span className="demo-row-format" data-format={demo.kind}>{labelFor(demo)}</span>
-                    <ArrowRight size={19} aria-hidden="true" />
+                    <ProductThumb p={product} />
+                    <span className="demo-card-format" data-format={demo.kind}>{labelFor(demo)}</span>
+                    <strong>{product.name}</strong>
+                    <span className="demo-card-summary">{demo.summary}</span>
+                    <span className="demo-card-go">Open demo <ArrowRight size={15} aria-hidden="true" /></span>
                   </Link>
-                </li>
+                </Reveal>
               ))}
             </ul>
           </div>

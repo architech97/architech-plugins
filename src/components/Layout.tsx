@@ -3,6 +3,7 @@ import { Link, NavLink, Outlet, useLocation } from 'react-router-dom'
 import { ArrowUpRight, Menu, X } from 'lucide-react'
 import { Logo } from './Brand'
 import { AUTOMATION_PATH, CONTACT, SITE_ORIGIN } from '../data/contact'
+import { useImageFade, useScrollProgress } from './motion'
 
 const unified = import.meta.env.BASE_URL === AUTOMATION_PATH
 const homeUrl = unified ? '/' : SITE_ORIGIN + '/'
@@ -20,6 +21,8 @@ export function Layout() {
   const nav = useRef<HTMLElement>(null)
   const menu = useRef<HTMLButtonElement>(null)
   const { pathname, search, hash } = useLocation()
+  const header = useScrollProgress<HTMLElement>()
+  useImageFade()
   const primaryUrl = SITE_ORIGIN + AUTOMATION_PATH + pathname.slice(1) + search + hash
   useEffect(() => {
     setOpen(false)
@@ -45,7 +48,7 @@ export function Layout() {
     <>
       <div className="bg-grid" aria-hidden="true" />
       <a className="skip-link" href="#main">Skip to content</a>
-      <header className="site-header">
+      <header className="site-header" ref={header}>
         <div className="division-bar">
           <div className="wrap division-bar-inner">
             <nav className="division-nav" aria-label="ArchiTECH divisions">
