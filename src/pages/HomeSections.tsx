@@ -1,4 +1,5 @@
 import { lazy, Suspense, useEffect, useState } from 'react'
+import type { KeyboardEvent } from 'react'
 import { Play } from 'lucide-react'
 import { Link, useLocation } from 'react-router-dom'
 import { PRODUCTS, REVIT_TOOLS, STATS } from '../data/catalog'
@@ -61,12 +62,31 @@ function LiveStage() {
   )
 }
 
-/** "Three suites, one ribbon" as a ribbon: three tabs, their real panels, and the tools in each. */
+/** Group the real ribbon panels without changing the catalog or tool names. */
+const RIBBON_GROUPS = {
+  folio: [
+    { name: 'Publish', panels: ['Publish'] },
+    { name: 'Views & sheets', panels: ['Views', 'View Templates', 'Sheets', 'Schedules'] },
+    { name: 'Annotation', panels: ['Annotation', 'Detailing'] },
+  ],
+  forge: [
+    { name: 'Rooms & finishes', panels: ['Rooms', 'Finishes'] },
+    { name: 'Parameters', panels: ['Parameters'] },
+    { name: 'Scan to BIM', panels: ['Scan to BIM'] },
+  ],
+  sentinel: [
+    { name: 'Model health', panels: ['Model Health'] },
+    { name: 'Standards', panels: ['Standards'] },
+    { name: 'Clean up', panels: ['Clean Up'] },
+    { name: 'Coordination', panels: ['Coordination', 'Links'] },
+  ],
+}
 const RIBBON = (['folio', 'forge', 'sentinel'] as const).map((id) => {
   const suite = SUITES.find((s) => s.id === id)!
   const tools = REVIT_TOOLS.filter((t) => t.suite === id)
   const panels = [...new Set(tools.map((t) => t.panel))].map((panel) => ({ panel, tools: tools.filter((t) => t.panel === panel) }))
-  return { suite, panels, count: STATS.suiteTools(id) }
+  const groups = RIBBON_GROUPS[id].map((group) => ({ ...group, panels: group.panels.map((name) => panels.find((p) => p.panel === name)!) }))
+  return { suite, groups, count: STATS.suiteTools(id) }
 })
 const SUITE_SHOTS: Record<string, { shot: string; tool: string }> = {
   folio: { shot: 'media/dialogs/sheet-manager/sheetmanagerwindow-light.webp', tool: 'Sheet Manager' },
@@ -81,39 +101,75 @@ const SUITE_TASKS: Record<string, string> = {
 
 function Ribbon() {
   const [tab, setTab] = useState(0)
+  const [group, setGroup] = useState(0)
   const [hover, setHover] = useState<Product>()
-  const { suite, panels } = RIBBON[tab]
-  const shot = SUITE_SHOTS[suite.id]
+  const selectSuite = (index: number) => { setTab(index); setGroup(0); setHover(undefined) }
+  const selectGroup = (index: number) => { setGroup(index); setHover(undefined) }
+  const navigate = (event: KeyboardEvent<HTMLButtonElement>, index: number, count: number, select: (index: number) => void) => {
+    const next = event.key === 'ArrowRight' ? (index + 1) % count
+      : event.key === 'ArrowLeft' ? (index + count - 1) % count
+      : event.key === 'Home' ? 0 : event.key === 'End' ? count - 1 : undefined
+    if (next === undefined) return
+    event.preventDefault()
+    select(next)
+    event.currentTarget.parentElement?.querySelectorAll<HTMLButtonElement>('[role="tab"]')[next]?.focus({ preventScroll: true })
+  }
   return (
     <div className="ribbon">
-      <div className="ribbon-tabs" role="group" aria-label="Revit ribbon tabs">
+      <div className="ribbon-tabs" role="tablist" aria-label="Revit suites">
         {RIBBON.map((r, i) => (
-          <button type="button" key={r.suite.id} aria-pressed={tab === i} onClick={() => { setTab(i); setHover(undefined) }}>
+          <button type="button" role="tab" key={r.suite.id} id={'ribbon-tab-' + r.suite.id}
+            aria-selected={tab === i} aria-controls={'ribbon-suite-' + r.suite.id} tabIndex={tab === i ? 0 : -1}
+            onClick={() => selectSuite(i)} onKeyDown={(event) => navigate(event, i, RIBBON.length, selectSuite)}>
             {r.suite.name}<small>{r.count} tools</small>
           </button>
         ))}
       </div>
-      <div className="ribbon-bar" key={suite.id}>
-        {panels.map(({ panel, tools }) => (
-          <div className="ribbon-panel" key={panel}>
-            <ul>
-              {tools.map((t) => (
-                <li key={t.slug}><Link to={'/demos/' + t.demo} onMouseEnter={() => setHover(t)} onFocus={() => setHover(t)}>{t.name}</Link></li>
-              ))}
-            </ul>
-            <p>{panel}</p>
-          </div>
-        ))}
+      <div className="ribbon-suites">
+        {RIBBON.map(({ suite, groups }, suiteIndex) => {
+          const shot = SUITE_SHOTS[suite.id]
+          return (
+            <div className="ribbon-suite" key={suite.id} role="tabpanel" id={'ribbon-suite-' + suite.id}
+              aria-labelledby={'ribbon-tab-' + suite.id} hidden={tab !== suiteIndex} aria-hidden={tab !== suiteIndex} inert={tab !== suiteIndex}>
+              <div className="ribbon-group-tabs" role="tablist" aria-label={suite.name + ' tool groups'}>
+                {groups.map((item, index) => (
+                  <button type="button" role="tab" key={item.name} id={'ribbon-tab-' + suite.id + '-' + index}
+                    aria-selected={group === index} aria-controls={'ribbon-group-' + suite.id + '-' + index} tabIndex={group === index ? 0 : -1}
+                    onClick={() => selectGroup(index)} onKeyDown={(event) => navigate(event, index, groups.length, selectGroup)}>{item.name}</button>
+                ))}
+              </div>
+              <div className="ribbon-groups">
+                {groups.map((item, index) => (
+                  <div className="ribbon-bar" key={item.name} role="tabpanel" id={'ribbon-group-' + suite.id + '-' + index}
+                    aria-labelledby={'ribbon-tab-' + suite.id + '-' + index} hidden={group !== index} aria-hidden={group !== index} inert={group !== index}>
+                    <ul className="ribbon-tools">
+                      {item.panels.flatMap(({ panel, tools }) => tools.map((t) => (
+                        <li key={t.slug}><Link to={'/demos/' + t.demo} aria-description={'Ribbon panel: ' + panel}
+                          onMouseEnter={() => setHover(t)} onFocus={() => setHover(t)}>{t.name}</Link></li>
+                      )))}
+                    </ul>
+                  </div>
+                ))}
+              </div>
+              <details className="ribbon-details">
+                <summary>Suite details</summary>
+                <p className="ribbon-panel-note">Ribbon panels: {(groups[group] ?? groups[0]).panels.map((item) => item.panel).join(', ')}.</p>
+                <div className="ribbon-tip" aria-live="polite">
+                  <b>{hover?.name ?? suite.focus}</b>
+                  <span>{hover?.tagline ?? SUITE_TASKS[suite.id]}</span>
+                  <Link to={'/plugins?suite=' + suite.id}>All {suite.short} tools</Link>
+                </div>
+              </details>
+              <figure className="ribbon-shot">
+                <div className="ribbon-shot-preview">
+                  {tab === suiteIndex && <img src={asset(shot.shot)} alt={shot.tool + ' window, light theme'} loading="lazy" decoding="async" />}
+                </div>
+                <figcaption>{shot.tool}, {suite.name}</figcaption>
+              </figure>
+            </div>
+          )
+        })}
       </div>
-      <div className="ribbon-tip" aria-live="polite">
-        <b>{hover?.name ?? suite.focus}</b>
-        <span>{hover?.tagline ?? SUITE_TASKS[suite.id]}</span>
-        <Link to={'/plugins?suite=' + suite.id}>All {suite.short} tools</Link>
-      </div>
-      <figure className="ribbon-shot">
-        <img src={asset(shot.shot)} alt={shot.tool + ' window, light theme'} loading="lazy" decoding="async" />
-        <figcaption>{shot.tool}, {suite.name}</figcaption>
-      </figure>
     </div>
   )
 }
@@ -185,7 +241,6 @@ export default function HomeSections() {
         <div className="wrap">
           <div className="split-head">
             <h2 id="suites-title">Three suites, one ribbon</h2>
-            <p>Choose a tab, then a tool.</p>
           </div>
           <Ribbon />
         </div>
