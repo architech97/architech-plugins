@@ -1,16 +1,8 @@
-const LEVELS = ['Level 01', 'Level 02', 'Roof']
-const CATEGORIES = ['Walls', 'Doors', 'Windows', 'Floors', 'Structural Columns', 'Structural Framing']
-const VIEWS = ['Level 01 – Floor Plan', 'Level 02 – Floor Plan', 'North Elevation', 'Section A–A', 'Level 01 – Ceiling Plan', '3D – Coordination']
-const ROOMS = ['Living Room', 'Kitchen', 'Dining Room', 'Primary Bedroom', 'Bedroom 02', 'Bathroom']
-const TEMPLATES = ['Architectural Plan – 1:50', 'Interior RCP – 1:50', 'Building Elevation – 1:100']
-const PARAMETERS = ['Comments', 'Mark', 'Fire Rating', 'Type Mark', 'Finish', 'Department']
-const LINKS = ['Sample Residence – Architecture.rvt', 'Sample Residence – Structure.rvt', 'Sample Residence – MEP.rvt']
-const MATERIALS = ['Paint – Warm White', 'Concrete – Exposed', 'Oak – Natural', 'Porcelain – Matt Grey']
-const FAMILIES = ['Basic Wall', 'Single Flush', 'Fixed Window', 'Concrete Slab', 'Rectangular Column', 'Concrete Beam']
-const TYPES = ['Interior 115 mm', '900 × 2100 mm', '1200 × 1500 mm', 'Concrete 150 mm', '300 × 450 mm', '250 × 450 mm']
-const ROOM_PROPERTIES = ['Room Number', 'Room Name', 'Department', 'Level']
-const WORKSETS = ['Architecture', 'Interiors', 'Structure', 'Shared Levels and Grids']
-const TEXT_TYPES = ['Arial 2.5 mm', 'Arial 3.5 mm', 'Arial Narrow 2.5 mm']
+import { sentinelCell, sentinelChoices } from './sentinelFixtures'
+import { forgeCell, forgeChoices } from './forgeFixtures'
+
+import { GENERATED_SAMPLE } from './fixtures/sampleResidence'
+const { LEVELS, CATEGORIES, VIEWS, ROOMS, TEMPLATES, PARAMETERS, LINKS, MATERIALS, FAMILIES, TYPES, ROOM_PROPERTIES, WORKSETS, TEXT_TYPES } = GENERATED_SAMPLE
 
 const CHOICES: [RegExp, string[]][] = [
   [/a preset ticks the strings/, ['Outside of building: openings, overall and grids', 'Room sizes: clear width and length', 'Doors and windows: positions in each room', 'Across walls: setting-out', 'Grids: grid to grid', 'Custom']],
@@ -84,7 +76,11 @@ const MODEL_CHOICES: Record<string, readonly string[][]> = {
   'template-manager': [LINKS],
 }
 
-export function fixtureChoices(slug: string, label: string, captured: string, tip: string, ordinal: number): string[] {
+export function fixtureChoices(slug: string, label: string, captured: string, tip: string, ordinal: number, windowName?: string): string[] {
+  const forge = forgeChoices(slug, label)
+  if (forge) return forge
+  const sentinel = sentinelChoices(slug, windowName, ordinal)
+  if (sentinel) return sentinel
   const context = [captured, label, tip].filter(Boolean).join(' ').toLowerCase()
   const match = CHOICES.find(([pattern]) => pattern.test(context))?.[1]
   const fallback = MODEL_CHOICES[slug]?.[ordinal] ?? MODEL_CHOICES[slug]?.[0]
@@ -154,8 +150,8 @@ const COMMON_COLUMNS: Record<string, string[]> = {
 
 const TOOL_COLUMNS: Record<string, Record<string, string[]>> = {
   'excel-to-schedule': { name: ['Door Schedule', 'Room Finish Schedule', 'Window Schedule'], label: ['Door Mark', 'Finish Code', 'Type Mark'], value: ['D-101', 'FN-02', 'W-103'], isselected: ['Yes', 'No', 'Yes'], use: ['Create', 'Refresh', 'Create'], ischecked: ['Yes', 'No', 'Yes'] },
-  'manage-text': { before: ['EXISTING WALL TO REMAIN', 'NEW PARTITION', 'SEE DETAIL A-501'], after: ['Existing wall to remain', 'New partition', 'See detail A-501'], note: ['Entry wall note', 'Kitchen partition note', 'Section reference'] },
-  'reorder-pro': { order: ['1', '2', '3', '4', '5', '6'], 'current value': ['D-04', 'D-02', 'D-06', 'D-01'], numbering: ['D-01', 'D-02', 'D-03', 'D-04'], name: ['Entry door', 'Kitchen door', 'Terrace door'], notes: ['Writable Mark', 'Already matches', 'Writable Mark'] },
+  'manage-text': { before: ['EXISTING WALL TO REMAIN', 'NEW  PARTITION', 'SEE “DETAIL A-501”'], after: ['Existing wall to remain', 'New partition', 'See “detail A-501”'], note: ['Entry wall note', 'Kitchen partition note', 'Section reference'] },
+  'reorder-pro': { order: ['1', '2', '3', '4', '5', '6'], category: ['Doors', 'Doors', 'Doors'], 'current value': ['D-04', 'D-02', 'D-06', 'D-01'], numbering: ['D-01', 'D-02', 'D-03', 'D-04'], name: ['Entry door', 'Kitchen door', 'Terrace door'], notes: ['Writable Comments', 'Already matches', 'Writable Comments'] },
   'update-schedule': { 'rows matched': ['12', '6', '10'], 'rows not found': ['0', '1', '0'], 'values changing': ['3', '1', '2'], 'columns not writable': ['0', '1', '0'], 'element / type': ['D-101 · Single Flush', '101 · Living Room', 'W-103 · Fixed Window'], 'now in revit': ['Internal', 'Paint – White', 'W-03'], 'from the file': ['Internal door', 'Paint – Warm White', 'W-103'], 'applies to': ['Instance', 'Instance', 'Type'] },
   'sheet-export': { 'sample value': ['A-101', 'Ground Floor Plan', 'P02', 'Sample Residence'], prefix: ['ARCH-', ''], suffix: ['', '-P02'], separator: ['_', '-', ' '] },
   'deviation-inspector': { result: ['Within tolerance', 'Above tolerance', 'Unmeasured'], samples: ['88', '74', '0'], 'avg deviation': ['3.4 mm', '18.2 mm', '—'], median: ['3.1 mm', '16.5 mm', '—'], p95: ['8.1 mm', '26.1 mm', '—'], maximum: ['11.2 mm', '38.0 mm', '—'], 'projection yield': ['94%', '81%', '0%'], sampling: ['Measured', 'Measured', 'No valid projected points'] },
@@ -181,11 +177,15 @@ const TOOL_COLUMNS: Record<string, Record<string, string[]>> = {
 
 const SELECT_HEADERS = new Set(['[]', 'apply', 'fix', 'select', 'rename?', 'sync', 'ungroup'])
 const THREE_RECORD_TOOLS = new Set(['compliance-guard', 'deviation-inspector', 'duplicates-resolver', 'family-name-editor', 'family-name-synchronizer', 'filter-usage-checker', 'group-manager', 'in-place-converter', 'match-opening', 'mirrored-auditor', 'model-query-pro', 'off-axis-resolver', 'point-cloud-slicer', 'room-height-adjust', 'scope-box-synchronizer', 'shared-param-manager', 'structural-qa', 'update-schedule'])
-export const fixtureRowLimit = (slug: string) => THREE_RECORD_TOOLS.has(slug) ? 3 : slug === 'parameter-colorizer' ? 5 : 6
+export const fixtureRowLimit = (slug: string) => slug === 'compliance-guard' || slug === 'parameter-colorizer' ? 5 : slug === 'off-axis-resolver' ? 4 : slug === 'family-param-transfer' || THREE_RECORD_TOOLS.has(slug) ? 3 : 6
 export const isSelectionColumn = (header: string, width: number, index: number) => SELECT_HEADERS.has(header.toLowerCase()) || (!header && width < 70 && index === 0)
-export function fixtureCell(slug: string, header: string, row: number): string {
+export function fixtureCell(slug: string, header: string, row: number, variant?: string): string {
   const key = header.toLowerCase().trim()
   if (!key) return ''
+  const sentinel = sentinelCell(slug, key, row, variant)
+  if (sentinel !== undefined) return sentinel
+  const forge = forgeCell(slug, key, row)
+  if (forge !== undefined) return forge
   const aliases: Record<string, string> = {
     'family & type': 'family and type', 'category / type': 'category', 'id': 'element id',
     'assign categories': 'category', categories: 'category', 'level name': 'level', 'sheet name': 'view',

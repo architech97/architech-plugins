@@ -1,0 +1,24 @@
+.family-sync-body {
+  display: grid;
+  gap: 12px;
+  min-width: 0;
+}
+.family-sync-body .family-sync-source {
+  display: grid;
+  gap: 8px;
+}
+.family-sync-body .ad-table td {
+  white-space: normal;
+  min-width: 76px;
+}
+.family-sync-body .ad-table .family-sync-name {
+  min-width: 145px;
+}
+.family-sync-body .family-sync-note {
+  font-size: 11px;
+  color: var(--d-muted);
+  margin: 0;
+}
+.family-sync-body .family-sync-status {
+  white-space: normal;
+}

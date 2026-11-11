@@ -52,7 +52,7 @@ export default function SheetManager({ theme, setTheme, done, rewind, notify, cl
   const [result, setResult] = useState('')
   const [receipt, setReceipt] = useState<RenumberReceipt[]>([])
   // Create / Duplicate / Parameter / Revisions state
-  const [createRows, setCreateRows] = useState([{ number: 'A-104', name: 'Site Plan' }, { number: 'A-502', name: 'Bathroom Interior Elevations' }])
+  const [createRows, setCreateRows] = useState([{ number: '', name: '' }])
   const [createReal, setCreateReal] = useState(true)
   const [dupMode, setDupMode] = useState('Sheet only')
   const [copies, setCopies] = useState('1')

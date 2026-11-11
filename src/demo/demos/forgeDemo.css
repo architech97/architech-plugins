@@ -1,0 +1,23 @@
+.ad .suite-flow-options-row { flex-basis: 100%; }
+.ad .suite-flow-control { display: grid; gap: 4px; min-width: 0; }
+.ad .suite-flow-control select { max-width: 100%; }
+.forge-family-demo { display: grid; gap: 10px; }
+.forge-family-demo .forge-family-targets { flex-direction: column; }
+.forge-family-demo .ad-result { overflow-wrap: anywhere; }
+.forge-parameter-menu { position: relative; min-width: max-content; }
+.forge-parameter-menu summary { min-height: 34px; padding: 5px 9px; border: 1px solid var(--d-control-border); border-radius: 4px; cursor: pointer; }
+.forge-parameter-menu[open] { flex-basis: 100%; }
+.forge-parameter-menu > :not(summary) { margin-top: 6px; }
+.forge-nested-entry { display: grid; gap: 7px; }
+.forge-document-choice { display: inline-flex; flex-wrap: wrap; align-items: center; gap: 6px 8px; min-width: 0; }
+.forge-document-choice select, .forge-nested-controls select { max-width: 100%; }
+.forge-nested-dialog { width: min(100%, 860px); margin-inline: auto; }
+.forge-nested-dialog .ad-head { grid-template-columns: minmax(0,1fr) auto; min-height: 44px; gap: 6px; padding: 4px 9px 4px 12px; }
+.forge-nested-dialog .ad-head > .ad-select, .forge-nested-dialog .ad-divider { display: none; }
+.forge-nested-dialog .ad-logo { height: 26px; }
+.forge-nested-controls { justify-content: space-between; }
+.forge-nested-table { max-height: 320px; }
+.forge-nested-table table { min-width: 615px; }
+.forge-nested-table td:first-child { width: 34px; }
+.forge-nested-table:focus-visible { outline: 2px solid var(--d-accent); outline-offset: 2px; }
+.forge-nested-result ul { margin: 6px 0 0; padding-inline-start: 20px; }

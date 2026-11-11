@@ -1,0 +1,6 @@
+.copy-room-fields { display: grid; gap: 12px; }
+.copy-room-fields > label { display: grid; grid-template-columns: 120px minmax(0, 1fr); align-items: center; gap: 10px; }
+.copy-room-fields select { width: 100%; }
+@media (max-width: 560px) {
+  .copy-room-fields > label { grid-template-columns: minmax(0, 1fr); gap: 4px; }
+}

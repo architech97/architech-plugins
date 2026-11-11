@@ -139,3 +139,16 @@
   .ad-head { padding-left: 14px; }
   .ad-caption { display: none; }
 }
+@media (max-width: 600px) {
+  .ad:not(:has(.mt-layout)) .ad-head { padding-inline: 10px; gap: 6px; }
+  .ad:not(:has(.mt-layout)) .ad-brand { gap: 7px; }
+  .ad:not(:has(.mt-layout)) .ad-title { white-space: normal; overflow-wrap: anywhere; }
+  .ad:not(:has(.mt-layout)) .ad-caption { white-space: normal; }
+  .ad:not(:has(.mt-layout)) .ad-head > .ad-select { width: 72px !important; }
+}
+@media (max-width: 420px) {
+  .ad:not(:has(.mt-layout)) .ad-head :is(.ad-logo, .ad-divider) { display: none; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .ad .ad-progress > i { transition: none; }
+}

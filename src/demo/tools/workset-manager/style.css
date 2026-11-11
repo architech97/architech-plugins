@@ -1,0 +1,61 @@
+.workset-body {
+  display: grid;
+  gap: 12px;
+  min-width: 0;
+}
+.workset-body .workset-layout {
+  display: grid;
+  grid-template-columns: 230px minmax(0, 1fr);
+  gap: 12px;
+  align-items: start;
+}
+.workset-body .workset-layout > .workset-rail:first-child {
+  grid-column: 1;
+  grid-row: 1;
+}
+.workset-body .workset-layout > .workset-rail:nth-child(2) {
+  grid-column: 1;
+  grid-row: 2;
+}
+.workset-body .workset-main {
+  grid-column: 2;
+  grid-row: 1 / span 2;
+  min-width: 0;
+}
+.workset-body .workset-rail {
+  display: grid;
+  gap: 6px;
+}
+.workset-body .ad-table td {
+  min-width: 90px;
+  white-space: normal;
+}
+.workset-body .workset-status {
+  white-space: pre-line;
+}
+.workset-body .workset-field {
+  display: grid;
+  gap: 5px;
+}
+@media (max-width: 760px) {
+  .workset-body .workset-layout {
+    grid-template-columns: 1fr 1fr;
+  }
+  .workset-body .workset-main {
+    grid-column: 1/-1;
+    grid-row: auto;
+  }
+  .workset-body .workset-layout > .workset-rail:first-child,
+  .workset-body .workset-layout > .workset-rail:nth-child(2) {
+    grid-column: auto;
+    grid-row: auto;
+  }
+}
+@media (max-width: 420px) {
+  .workset-body .workset-layout {
+    grid-template-columns: 1fr;
+  }
+  .workset-body .workset-main {
+    grid-column: auto;
+  }
+}

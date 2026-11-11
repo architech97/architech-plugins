@@ -30,7 +30,7 @@ export function DemoPlayer({ demo, compact = false }: { demo: DemoDefinition; co
   useEffect(() => clearToastTimers, [clearToastTimers])
 
   const current = demo.steps.find((s) => !doneIds.includes(s.id))
-  const progress = Math.round((doneIds.length / demo.steps.length) * 100)
+  const progress = demo.steps.length ? Math.round((doneIds.length / demo.steps.length) * 100) : 0
 
   const done = useCallback((id: string) => {
     if (activeRun.current === run && demo.steps.some((step) => step.id === id)) setDoneIds((d) => (d.includes(id) ? d : [...d, id]))
@@ -100,7 +100,7 @@ export function DemoPlayer({ demo, compact = false }: { demo: DemoDefinition; co
 
       {guided && <div className="player-quick-guide">
         <div aria-live="polite">
-          <span className="eyebrow">{current ? 'Step ' + (demo.steps.indexOf(current) + 1) + ' of ' + demo.steps.length : 'Guide complete'}</span>
+          <span className="eyebrow">{current ? 'Step ' + (demo.steps.indexOf(current) + 1) + ' of ' + demo.steps.length : demo.steps.length ? 'Guide complete' : 'Loading guide'}</span>
           {current && <><strong>{current.title}</strong><p>{current.hint}</p></>}
         </div>
         {current?.target && !closed && <button className="btn btn-ghost btn-sm" type="button" disabled={!targetReady} onClick={jumpToControl}><LocateFixed size={15} /> Find control</button>}
