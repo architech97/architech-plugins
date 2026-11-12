@@ -11,7 +11,6 @@ const designUrl = unified ? '/design/' : CONTACT.designSite
 const SUBNAV = [
   { to: '/plugins', label: 'Plugins' },
   { to: '/demos', label: 'Dialogs' },
-  { to: '/coverage', label: 'Coverage' },
   { to: '/connect', label: 'Connect' },
 ]
 
@@ -24,7 +23,7 @@ export function Layout() {
   useEffect(() => {
     window.scrollTo({ top: 0, behavior: 'instant' })
     const heading = document.querySelector('main h1')?.textContent?.replace(/\s+/g, ' ').trim()
-    document.title = heading ? heading + ' | ArchiTECH Automation' : 'ArchiTECH Automation'
+    document.title = heading ? heading + ' | Navneet Singh · ArchiTECH' : 'Navneet Singh · ArchiTECH Automation'
   }, [pathname])
   useEffect(() => {
     if (hash) document.getElementById(hash.slice(1))?.scrollIntoView()
@@ -76,10 +75,11 @@ function Footer() {
           <a href={designUrl}>Design portfolio</a>
           <Link to="/">Automation</Link>
           <Link to="/demos">Tool dialogs</Link>
-          <Link to="/connect">Discuss a workflow</Link>
+          <Link to="/connect">Get in touch</Link>
+          <Link to="/coverage">How the pictures were made</Link>
         </div>
         <div className="ax-foot-col">
-          <p className="ax-foot-h">Products</p>
+          <p className="ax-foot-h">Tools I built</p>
           <Link to="/plugins?suite=folio">Arch Folio</Link>
           <Link to="/plugins?suite=forge">Arch Forge</Link>
           <Link to="/plugins?suite=sentinel">Arch Sentinel</Link>

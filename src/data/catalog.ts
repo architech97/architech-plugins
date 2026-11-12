@@ -18,6 +18,10 @@ export const DEMO_BY_KEY: Record<string, string> = {
 
 // Where a ribbon tooltip is older than the dialog, the dialog's own subtitle is used.
 const TAGLINES: Record<string, string> = {
+  FamilyNameEditor: 'Audit and rename loadable family names against the naming convention in the BIM execution plan (BEP).',
+  WorksetManager: 'Bulk-assign elements to worksets using the prefix and category rules in the BIM execution plan.',
+  TemplateManager: 'Transfer view templates, view filters, Visibility/Graphics and hidden elements, and turn imported CAD off, from one window.',
+  ModelQueryPro: 'Query model data, or open Review Center for a scoped review of warnings, rooms and furniture (FF&E).',
   RoomViews: 'Plans, a 3D view and elevations for every ticked room, then place them on sheets.',
 }
 
@@ -31,7 +35,23 @@ const withDialogs = <T extends Omit<Product, 'dialogs' | 'demo'>>(p: T, demo: st
   return { ...p, dialogs, demo: dialogs.length ? demo : undefined }
 }
 
-const tools: Product[] = (generated as Omit<Product, 'status' | 'dialogs'>[]).map((t) => withDialogs({
+/** House style for the tools' own text: UK spelling, en dashes, no shouted labels, no unexplained abbreviations. */
+const SENTENCE_LABEL = /(^|: )([A-Z][A-Z/&]*(?: [A-Z/&]+){0,4}):(?= )/g
+export function copyEdit(text: string) {
+  return text
+    .replace(SENTENCE_LABEL, (_, lead: string, label: string) => lead + label.charAt(0) + label.slice(1).toLowerCase().replace(/^\/g\b/, '/G') + ':')
+    .replace(/ - /g, ' – ')
+    .replace(/\bincl\. /g, 'including ')
+    .replace(/\bcustomizable\b/g, 'adjustable')
+    .replace(/\bColorize model elements\b/g, 'Colour model elements')
+    .replace(/\bKEEPS\b/g, 'keeps')
+    .replace(/(?<!Keep )\bcolors\b/g, 'colours')
+}
+const tidy = (line: string) => { const s = copyEdit(line.trim()); return /[.!?)]$/.test(s) ? s : s + '.' }
+const edited = <T extends { tagline: string; description: string; capabilities: string[]; safeguards: string[] }>(p: T): T =>
+  ({ ...p, tagline: tidy(p.tagline), description: copyEdit(p.description), capabilities: p.capabilities.map(copyEdit), safeguards: p.safeguards.map(copyEdit) })
+
+const tools: Product[] = (generated as Omit<Product, 'status' | 'dialogs'>[]).map(edited).map((t) => withDialogs({
   ...t,
   tagline: TAGLINES[t.key] ?? t.tagline,
   status: 'available' as const,

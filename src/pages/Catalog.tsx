@@ -85,7 +85,7 @@ export default function Catalog() {
       <div className="wrap">
         <header className="catalog-heading">
           <div>
-            <h1 id="catalog-title">Find the right tool for the task.</h1>
+            <h1 id="catalog-title">Every tool I have built, by task</h1>
           </div>
           <p className="lead">Browse {PRODUCTS.length} design and BIM tools by what you need to do. Every Revit tool is shown through its real dialogs.</p>
         </header>

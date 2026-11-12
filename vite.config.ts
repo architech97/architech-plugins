@@ -21,12 +21,12 @@ const staticRoutes: Plugin = {
       }>('/src/data/catalog.ts', { root: this.environment.config.root })
 
       // Each route gets its own title and description, so crawlers and link previews see the page, not the shell.
-      const suffix = ' · ArchiTECH Automation'
+      const suffix = ' | Navneet Singh · ArchiTECH'
       const meta = new Map<string, { title: string; description: string }>([
         ['demos', { title: 'Dialog library' + suffix, description: `${STATS.dialogs} dialogs of ${STATS.revitTools} Revit tools by Navneet Singh and the ArchiTECH desktop apps, as built, grouped by job.` }],
         ['plugins', { title: 'Plugins' + suffix, description: `The ${STATS.revitTools} Revit tools in Arch Folio, Arch Forge and Arch Sentinel, with ArchiTECH I3D, ArchiTECH Assistant and the ArchiTECH MCP Connector.` }],
-        ['connect', { title: 'Discuss a workflow' + suffix, description: 'Tell me about a repetitive BIM task, ask how one of these tools works, or suggest an improvement.' }],
-        ['coverage', { title: 'Dialog coverage' + suffix, description: `Every one of the ${STATS.dialogs} dialogs pictured on this site, what each picture is, and what is not shown.` }],
+        ['connect', { title: 'Get in touch' + suffix, description: 'Tell me about a repetitive BIM task, ask how one of these tools works, or suggest an improvement.' }],
+        ['coverage', { title: 'How the pictures were made' + suffix, description: `Every one of the ${STATS.dialogs} dialogs pictured on this site, what each picture is, and what is not shown.` }],
         ['pricing', { title: 'Discuss a tool' + suffix, description: 'Pricing depends on the tool, host application and deployment scope. This legacy route continues to the workflow contact page.' }],
         ['custom-development', { title: 'Discuss a custom workflow' + suffix, description: 'Describe a repetitive BIM task or integration requirement. This legacy route continues to the workflow contact page.' }],
       ])

@@ -13,13 +13,12 @@ import './product.css'
 const CHAIR_PREVIEW = 'media/i3d/chair-mesh.png'
 const DRAGON_PLACEMENT = 'media/i3d/revit-placement-0.6.36.webp'
 
-/** A sentence that opens with a tab or mode name ("RENUMBER / RENAME: ...") shows that name as a label. */
+/** A sentence that opens with a short tab or mode name ("Renumber / rename: ...") shows that name as a label. */
 function Point({ text }: { text: string }) {
-  const label = /^([A-Z][A-Z /&-]{2,28}):\s+(.+)$/.exec(text)
+  const label = /^([A-Z][A-Za-z/&]*(?: [A-Za-z/&]+){0,4}):\s+(.+)$/.exec(text)
   if (!label) return <>{text}</>
-  const name = label[1].charAt(0) + label[1].slice(1).toLowerCase()
   const rest = label[2].charAt(0).toUpperCase() + label[2].slice(1)
-  return <><strong>{name}</strong>{rest}</>
+  return <><strong>{label[1]}</strong>{rest}</>
 }
 
 export default function Product() {
