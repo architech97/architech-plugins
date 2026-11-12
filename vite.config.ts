@@ -14,18 +14,19 @@ const staticRoutes: Plugin = {
       const shell = bundle['index.html']
       if (shell?.type !== 'asset') this.error('The built page shell is missing.')
 
-      const { module: { PRODUCTS, STATS } } = await runnerImport<{
-        PRODUCTS: { slug: string; demo?: string; name: string; tagline: string }[]
+      const { module: { PRODUCTS, STATS, HERO_SIZES } } = await runnerImport<{
+        HERO_SIZES: string
+        PRODUCTS: { slug: string; demo?: string; name: string; tagline: string; dialogs: { dark: [string, number, number, number] }[] }[]
         STATS: { revitTools: number; dialogs: number }
       }>('/src/data/catalog.ts', { root: this.environment.config.root })
 
       // Each route gets its own title and description, so crawlers and link previews see the page, not the shell.
       const suffix = ' · ArchiTECH Automation'
       const meta = new Map<string, { title: string; description: string }>([
-        ['demos', { title: 'Demo library' + suffix, description: `Browser walkthroughs of ${STATS.revitTools} Revit tools by Navneet Singh, grouped by job. Sample data; nothing is sent or saved.` }],
+        ['demos', { title: 'Dialog library' + suffix, description: `${STATS.dialogs} dialogs of ${STATS.revitTools} Revit tools by Navneet Singh and the ArchiTECH desktop apps, as built, grouped by job.` }],
         ['plugins', { title: 'Plugins' + suffix, description: `The ${STATS.revitTools} Revit tools in Arch Folio, Arch Forge and Arch Sentinel, with ArchiTECH I3D, ArchiTECH Assistant and the ArchiTECH MCP Connector.` }],
         ['connect', { title: 'Discuss a workflow' + suffix, description: 'Tell me about a repetitive BIM task, ask how one of these tools works, or suggest an improvement.' }],
-        ['coverage', { title: 'Dialog coverage' + suffix, description: `What each walkthrough covers across ${STATS.dialogs} dialogs, what it is based on, and what is not simulated yet.` }],
+        ['coverage', { title: 'Dialog coverage' + suffix, description: `Every one of the ${STATS.dialogs} dialogs pictured on this site, what each picture is, and what is not shown.` }],
         ['pricing', { title: 'Discuss a tool' + suffix, description: 'Pricing depends on the tool, host application and deployment scope. This legacy route continues to the workflow contact page.' }],
         ['custom-development', { title: 'Discuss a custom workflow' + suffix, description: 'Describe a repetitive BIM task or integration requirement. This legacy route continues to the workflow contact page.' }],
       ])
@@ -35,7 +36,7 @@ const staticRoutes: Plugin = {
       ])
       for (const product of PRODUCTS) {
         meta.set(`plugins/${product.slug}`, { title: product.name + suffix, description: product.tagline })
-        if (product.demo) meta.set(`demos/${product.demo}`, { title: product.name + ' walkthrough' + suffix, description: `Try ${product.name} in your browser on sample data. ${product.tagline}` })
+        if (product.demo) meta.set(`demos/${product.demo}`, { title: product.name + ' dialogs' + suffix, description: `The dialogs of ${product.name}, as built. ${product.tagline}` })
       }
       const escape = (text: string) => text.replace(/&/g, '&amp;').replace(/"/g, '&quot;').replace(/</g, '&lt;')
 
@@ -46,6 +47,9 @@ const staticRoutes: Plugin = {
       }
 
       const template = String(shell.source)
+      // The home page's largest picture is drawn by script; preloading it lets it arrive with the script, not after it.
+      const [heroSrc, heroWidth] = PRODUCTS.find((product) => product.slug === 'sheet-export')!.dialogs[0].dark
+      const heroPreload = `  <link rel="preload" as="image" fetchpriority="high" href="${base + heroSrc}" imagesrcset="${base + heroSrc.replace('.webp', '-720.webp')} 720w, ${base + heroSrc} ${heroWidth}w" imagesizes="${HERO_SIZES}" />\n`
       const page = (route = '') => {
         const canonicalRoute = legacyRedirects.get(route) ?? route
         const canonical = SITE_ORIGIN + AUTOMATION_PATH + (canonicalRoute ? canonicalRoute + '/' : '')
@@ -62,7 +66,7 @@ const staticRoutes: Plugin = {
           : titled
         return indexed
           .replace(/(<meta property="og:url" content=")[^"]*"/, (_, tag) => tag + canonical + '"')
-          .replace('</head>', `  <link rel="canonical" href="${canonical}" />\n  </head>`)
+          .replace('</head>', `  <link rel="canonical" href="${canonical}" />\n${route ? '' : heroPreload}  </head>`)
       }
 
       // GitHub Pages serves these directory indexes with a successful response on direct visits.

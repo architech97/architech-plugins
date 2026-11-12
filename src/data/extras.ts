@@ -2,7 +2,7 @@ import type { Product } from './types'
 
 // Products outside the Revit C# suite. Text is taken from each product's own README or
 // repository description; requirements are as published by the product.
-export const EXTRAS: Product[] = [
+export const EXTRAS: Omit<Product, 'dialogs'>[] = [
   {
     slug: 'architech-i3d', key: 'I3D', name: 'ArchiTECH I3D', suite: 'i3d', panel: 'Desktop app',
     software: ['Revit', 'Windows desktop'], revit: ['2024'], status: 'available', platform: 'Windows 10/11 x64',
@@ -27,7 +27,6 @@ export const EXTRAS: Product[] = [
       '32 GB RAM recommended, 30 GB free disk',
       'Full Revit 2024 for RFA export (Revit LT is not supported)',
     ],
-    dialogs: [],
     media: [
       { src: 'media/i3d/material-workspace.webp', alt: 'Native I3D Material workspace showing a textured chair mesh before export', kind: 'image' },
       { src: 'media/i3d/workflow.gif', alt: 'I3D workflow animation: source, geometry preparation, Revit family', kind: 'animation' },
@@ -46,7 +45,6 @@ export const EXTRAS: Product[] = [
       'Evidence-based readback: results are verified against the model, not assumed.',
     ],
     safeguards: ['Guarded execution: model writes go through typed tools or a reviewed fallback, with an approval option for every write.'],
-    dialogs: [],
   },
   {
     slug: 'rhino-mcp', key: 'RhinoMCP', name: 'ArchiTECH MCP Connector (Rhino)', suite: 'ai', panel: 'MCP connectors',
@@ -56,7 +54,6 @@ export const EXTRAS: Product[] = [
     problem: 'AI-driven modelling in Rhino needs native execution and a way to confirm what was really created.',
     capabilities: ['Native RhinoCommon execution.', 'Active-object counts reported with each operation.'],
     safeguards: ['Guarded writes.', 'Independent readback of results.'],
-    dialogs: [],
   },
   {
     slug: 'sketchup-mcp', key: 'SketchUpMCP', name: 'ArchiTECH MCP Connector (SketchUp)', suite: 'ai', panel: 'MCP connectors',
@@ -66,7 +63,6 @@ export const EXTRAS: Product[] = [
     problem: 'AI-assisted massing and modelling in SketchUp needs geometry tools whose results can be trusted.',
     capabilities: ['Ruby native bridge into SketchUp.', 'Signed geometry tools.'],
     safeguards: ['Guarded writes.', 'Verified world-space bounds.'],
-    dialogs: [],
   },
   {
     slug: 'autocad-mcp', key: 'AutoCADMCP', name: 'ArchiTECH MCP Connector (AutoCAD)', suite: 'ai', panel: 'MCP connectors',
@@ -76,7 +72,6 @@ export const EXTRAS: Product[] = [
     problem: 'Drafting automation in AutoCAD spans layers, blocks, AutoLISP and DXF, and AI access to it has to be controlled.',
     capabilities: ['Native COM drafting.', 'Layers, blocks, AutoLISP and DXF workflows.'],
     safeguards: ['Guarded writes.'],
-    dialogs: [],
   },
   {
     slug: 'blender-mcp', key: 'BlenderMCP', name: 'ArchiTECH MCP Connector (Blender)', suite: 'ai', panel: 'MCP connectors',
@@ -86,7 +81,6 @@ export const EXTRAS: Product[] = [
     problem: 'Visualisation and scene preparation in Blender involve many repetitive scene operations that are risky to automate blindly.',
     capabilities: ['Native bpy add-on.', 'Discoverable tools for scene authoring, inspection and rendering.'],
     safeguards: ['Guarded scene operations.', 'Explicit recovery semantics.'],
-    dialogs: [],
   },
   {
     slug: 'architech-assistant', key: 'Assistant', name: 'ArchiTECH Assistant', suite: 'ai', panel: 'Assistant',
@@ -96,7 +90,6 @@ export const EXTRAS: Product[] = [
     problem: 'Questions, tool discovery and planning are spread across separate tools and chat windows.',
     capabilities: ['Ask, Search and Build modes.', 'Local or server models.', 'One planning loop.'],
     safeguards: [],
-    dialogs: [],
     media: [
       { src: 'media/assistant/active-view-exchange.png', alt: 'Native Assistant readback of the active Revit view, Cover', kind: 'image' },
       { src: 'media/assistant/composer-modes.png', alt: 'Native Assistant composer with Ask, Search and Build controls', kind: 'image' },

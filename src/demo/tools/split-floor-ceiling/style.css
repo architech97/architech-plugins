@@ -1,6 +1,0 @@
-.forge-split-layout { display: grid; grid-template-columns: minmax(0, 1fr) minmax(0, 1.5fr); gap: 14px; align-items: start; }
-.forge-split-layout .ad-select { max-width: 100%; }
-.forge-split-layout .dk-before-after { grid-template-columns: 1fr; }
-@media (max-width: 660px) {
-  .forge-split-layout { grid-template-columns: 1fr; }
-}

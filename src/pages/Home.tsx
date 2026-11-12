@@ -1,38 +1,39 @@
 import { lazy, Suspense } from 'react'
-import { Play } from 'lucide-react'
 import { Link } from 'react-router-dom'
 import { asset } from '../components/Brand'
+import { dialogAlt, imageProps } from '../components/dialogImage'
+import { FEATURED_TOOLS, HERO_SIZES } from '../data/featured'
+import hero from '../data/hero.generated.json'
+import type { DialogShot } from '../data/types'
 import './home.css'
 
 const HomeSections = lazy(() => import('./HomeSections'))
 
 const SHEETS = [
-  { no: 'A-101', name: 'Ground floor plan', file: 'plan-drawing.jpg', paper: true },
-  { no: 'A-102', name: 'Rendered plan', file: 'plan-render.jpg' },
-  { no: 'A-201', name: 'Front view, day', file: 'front-day.jpg' },
-  { no: 'A-202', name: 'Front view, dusk', file: 'front-dusk.jpg' },
+  { no: 'A-101', name: 'Ground floor plan', file: 'plan-drawing-480.webp', paper: true },
+  { no: 'A-102', name: 'Rendered plan', file: 'plan-render-480.webp' },
+  { no: 'A-201', name: 'Front view, day', file: 'front-day-480.webp' },
+  { no: 'A-202', name: 'Front view, dusk', file: 'front-dusk-480.webp' },
 ]
 
-/** The result first: a register is ticked, Export is pressed and the set comes out. Decorative loop. */
+// The hero reads one generated record, not the catalogue, so the first script stays small.
+const HERO = hero as unknown as DialogShot
+const HERO_TOOL = { name: FEATURED_TOOLS[0].title, software: ['Revit'], suite: 'folio' as const }
+
+/** The result first: the real Sheet Export window, and the set that comes out of it. */
 function ResultLoop() {
   return (
     <figure className="loop">
-      <div className="loop-stage" aria-hidden="true">
+      <div className="loop-stage">
         <div className="loop-sheets">
           {SHEETS.map((sheet, i) => (
-            <div className={'loop-sheet s' + i} key={sheet.no}>
+            <div className={'loop-sheet s' + i} key={sheet.no} aria-hidden="true">
               <div className={'loop-sheet-art' + (sheet.paper ? ' paper' : '')}><img src={asset('media/house/' + sheet.file)} alt="" decoding="async" /></div>
               <p><b>{sheet.no}</b>{sheet.name}<i>PDF</i></p>
             </div>
           ))}
         </div>
-        <div className="loop-panel">
-          <p className="loop-panel-title">Sheet Export<span>Sheets to export</span></p>
-          <ul>
-            {SHEETS.map((sheet, i) => <li key={sheet.no} className={'r' + i}><i /><b>{sheet.no}</b><span>{sheet.name}</span></li>)}
-          </ul>
-          <p className="loop-panel-foot"><span className="loop-count">4 sheets ticked</span><span className="loop-button">Export</span></p>
-        </div>
+        <img className="loop-panel" {...imageProps(HERO.dark, 420)} sizes={HERO_SIZES} alt={dialogAlt(HERO_TOOL, HERO)} decoding="async" fetchPriority="high" />
       </div>
       <figcaption>Sheet Export, using my Vasant Kunj drawings and visualisations.</figcaption>
     </figure>
@@ -46,10 +47,10 @@ export default function Home() {
         <div className="wrap-wide ah-grid">
           <div className="ah-copy">
             <h1><span>Tools that finish</span> <span>the drawing set</span></h1>
-            <p className="lead">Try my Revit tools for sheets, parameters and model checks on sample project data.</p>
+            <p className="lead">See my Revit tools for sheets, parameters and model checks, window by window.</p>
             <div className="hero-cta">
-              <Link className="btn btn-primary" to="/demos/sheet-export"><Play size={15} aria-hidden="true" /> Run Sheet Export</Link>
-              <Link className="home-secondary" to="/demos#demo-index">Browse the demo library</Link>
+              <Link className="btn btn-primary" to="/demos/sheet-export">Open Sheet Export</Link>
+              <Link className="home-secondary" to="/demos#demo-index">Browse every dialog</Link>
             </div>
           </div>
           <ResultLoop />

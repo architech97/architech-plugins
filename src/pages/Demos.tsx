@@ -1,89 +1,19 @@
 import { useEffect, useRef, useState, type RefObject } from 'react'
-import { Link, useLocation, useNavigate, useParams, useSearchParams } from 'react-router-dom'
-import { Play, Search, X } from 'lucide-react'
-import { demoById, demoForProduct } from '../demo/registry'
-import { DemoPlayer } from '../demo/DemoPlayer'
-import type { DemoDefinition } from '../demo/types'
-import { PRODUCTS, STATS, productBySlug, searchText } from '../data/catalog'
+import { Link, Navigate, useLocation, useNavigate, useParams, useSearchParams } from 'react-router-dom'
+import { ArrowRight, Search, X } from 'lucide-react'
+import { PRODUCTS, STATS, productByDemo, productBySlug, searchText } from '../data/catalog'
 import type { Product } from '../data/types'
 import { FEATURED_TOOLS } from '../data/featured'
 import { suiteById } from '../data/suites'
-import { DEMO_PROJECT, PROJECT_WORKFLOW } from '../data/demoProject'
-import { ROOMS, SHEETS, WARNINGS } from '../demo/sample'
-import { asset } from '../components/Brand'
-import { NativeEvidence, type NativeEvidenceConfig } from '../components/NativeEvidence'
+import { PROJECT_WORKFLOW } from '../data/demoProject'
+import { DialogGallery } from '../components/DialogGallery'
+import { thumbProps } from '../components/dialogImage'
 import NotFound from './NotFound'
 import './demos.css'
 
-const entries = PRODUCTS.flatMap((product) => {
-  const demo = demoForProduct(product.slug)
-  return demo ? [{ product, demo }] : []
-})
-const demoFormats = {
-  crafted: { label: 'Guided walkthrough', detail: 'Complete a specific BIM task with step-by-step checks.' },
-  replica: { label: 'Dialog explorer', detail: 'Explore a reconstruction of the Revit dialog with sample records.' },
-  workflow: { label: 'Workflow simulation', detail: 'Try a representative command, desktop workflow or connector interaction on sample data.' },
-} satisfies Record<DemoDefinition['kind'], { label: string; detail: string }>
-const labelFor = (demo: DemoDefinition) => demoFormats[demo.kind].label
-const NATIVE_EVIDENCE: Partial<Record<'architech-i3d' | 'architech-assistant' | 'revit-mcp', NativeEvidenceConfig>> = {
-  'architech-i3d': {
-    title: 'Installed desktop build',
-    context: 'Both captures come from one chair-mesh session in the installed Windows app.',
-    build: 'ArchiTECH I3D Desktop 0.6.38',
-    captures: [
-      {
-        title: 'Material workspace',
-        src: 'media/native/i3d-material.webp',
-        alt: 'I3D Material stage showing a textured chair and mesh-budget settings',
-        note: 'The Material workspace shows the chair with its texture and the mesh-budget settings used to prepare the asset.',
-      },
-      {
-        title: 'Revit export setup',
-        src: 'media/native/i3d-result.webp',
-        alt: 'I3D Result stage showing Revit family RFA selected as the export format',
-        note: 'The Result stage shows the chair ready to export with Revit family (.rfa) selected.',
-      },
-    ],
-  },
-  'architech-assistant': {
-    title: 'Installed desktop build',
-    context: 'The installed Windows app is shown with a saved read-only exchange and its composer modes.',
-    build: 'Assistant 1.0.5',
-    captures: [
-      {
-        title: 'Active view readback',
-        src: 'media/native/assistant-result.webp',
-        alt: 'Assistant conversation with a saved question about the active view and the response that it is Cover',
-        note: 'In the saved exchange, Assistant answers “What is the active view?” with “The active view is Cover.”',
-      },
-      {
-        title: 'Composer modes',
-        src: 'media/native/assistant-modes.webp',
-        alt: 'Assistant desktop composer showing its Ask, Search and Build modes',
-        note: 'The composer offers Ask, Search and Build modes.',
-      },
-    ],
-  },
-  'revit-mcp': {
-    title: 'Installed Revit connector',
-    context: 'The installed connector was used in Revit 2024 to read the active sheet in Autodesk’s Snowdon Towers sample.',
-    build: 'Revit MCP Connector 2.2.3',
-    captures: [
-      {
-        title: 'Connector ready',
-        src: 'media/native/revit-mcp-connector.webp',
-        alt: 'ArchiTECH Revit MCP Connector showing Revit 2024 with the bridge running and a model open',
-        note: 'The connector reports that it is ready for MCP clients. The activity panel is empty in this capture.',
-      },
-      {
-        title: 'Cover sheet readback',
-        src: 'media/native/revit-mcp-cover.webp',
-        alt: 'Revit 2024 displaying sheet G000 Cover of the Autodesk Snowdon Towers sample project',
-        note: 'The read-only get_current_view_info call returned Name=Cover, ViewType=DrawingSheet, SheetNumber=G000, SheetName=Cover and IsSheet=true.',
-      },
-    ],
-  },
-}
+const entries = PRODUCTS.filter((product) => product.demo)
+const dialogCount = (p: Product) => new Set(p.dialogs.map((d) => d.id)).size
+const countLabel = (p: Product) => { const n = dialogCount(p); return n + (n === 1 ? ' dialog' : ' dialogs') }
 const indexNumber = (i: number) => String(i + 1).padStart(2, '0')
 
 /** The demo index is grouped by the job a tool does. Panels are the tools' own ribbon panels. */
@@ -100,18 +30,15 @@ const JOBS: { id: string; title: string; match: (p: Product) => boolean }[] = [
   { id: 'other', title: 'Other tools', match: () => true },
 ]
 const jobOf = (p: Product) => JOBS.find((job) => job.match(p))!.id
-// The one place the walkthrough count is explained.
-const launchers = entries.filter(({ product }) => product.panel === 'Start').length
-const outside = entries.filter(({ product }) => product.suite === 'i3d' || product.suite === 'ai').length
-const toggles = entries.length - STATS.revitTools - launchers - outside
-const INDEX_NOTE = `${entries.length} walkthroughs: the ${STATS.revitTools} Revit tools, ${launchers} suite launchers${toggles > 0 ? `, ${toggles} ribbon ${toggles === 1 ? 'toggle' : 'toggles'}` : ''} and ${outside} desktop apps and connectors.`
+// The one place the dialog count is explained.
+const INDEX_NOTE = `${STATS.dialogs} dialogs in ${STATS.views} pictures across ${entries.length} products: the ${STATS.revitTools} Revit tools, the Folio ribbon home, the point-cloud toggle, ArchiTECH I3D, ArchiTECH Assistant and the ArchiTECH MCP Connector for Revit. ${STATS.screenshots} are Revit or desktop screenshots; the rest are rendered from each product’s own window with sample data.`
 
 const viewNames = ['Plan', 'Assembly', 'Review'] as const
 type View = typeof viewNames[number]
 const drawingTasks: Record<View, { note: string; id: string; label: string }> = {
-  Plan: { note: '01 / Room layout', id: 'room-to-view', label: 'Generate room views' },
-  Assembly: { note: '02 / Floors, ceilings and linings', id: 'room-to-finishes', label: 'Review room finishes' },
-  Review: { note: '03 / Model checks', id: 'warnings-inspector', label: 'Inspect warnings' },
+  Plan: { note: '01 / Room layout', id: 'room-to-view', label: 'Room to View dialogs' },
+  Assembly: { note: '02 / Floors, ceilings and linings', id: 'room-to-finishes', label: 'Room to Finishes dialogs' },
+  Review: { note: '03 / Model checks', id: 'warnings-inspector', label: 'Warnings Inspector dialogs' },
 }
 
 function DrawingStage() {
@@ -129,7 +56,7 @@ function DrawingStage() {
       <div className="drawing-plate">
         <svg viewBox="0 0 620 380" role="img" aria-labelledby="drawing-title drawing-desc">
           <title id="drawing-title">{view} drawing</title>
-          <desc id="drawing-desc">A concept pavilion shown as a floor plan, exploded assembly, or marked-up model. The demos use a separate fictional Sample Residence fixture.</desc>
+          <desc id="drawing-desc">A concept pavilion shown as a floor plan, exploded assembly, or marked-up model. The dialog pictures use separate sample data.</desc>
           <defs>
             <pattern id="plate-grid" width="22" height="22" patternUnits="userSpaceOnUse"><path d="M22 0H0v22" fill="none" stroke="var(--illustration-grid)" strokeOpacity=".24" /></pattern>
             <pattern id="plate-hatch" width="6" height="6" patternUnits="userSpaceOnUse" patternTransform="rotate(34)"><path d="M0 0v6" stroke="var(--illustration-hatch)" strokeOpacity=".5" /></pattern>
@@ -188,42 +115,16 @@ function DrawingStage() {
 
 function ProjectBoard() {
   const [selected, setSelected] = useState(0)
-  const [running, setRunning] = useState(false)
-  const workspace = useRef<HTMLElement>(null)
-  const previewAction = useRef<HTMLButtonElement>(null)
   const step = PROJECT_WORKFLOW[selected]
-  const previous = PROJECT_WORKFLOW[selected - 1]
-  const next = PROJECT_WORKFLOW[selected + 1]
-  const demo = demoById(step.id)!
-  const product = productBySlug(demo.productSlug)!
-  const preview = product.dialogs[0]?.dark
-  useEffect(() => {
-    if (running) {
-      workspace.current?.focus({ preventScroll: true })
-      workspace.current?.scrollIntoView({ block: 'start' })
-    }
-  }, [running, selected])
-  const closeWorkspace = () => {
-    setRunning(false)
-    previewAction.current?.focus()
-  }
-
+  const product = productByDemo(step.id)!
   return (
     <section className="wrap project-board" data-continuity-bg="paper-2" id="sample-project" tabIndex={-1} aria-labelledby="sample-project-title">
       <div className="demo-section-title">
-        <div><h2 id="sample-project-title">{DEMO_PROJECT.name}</h2></div>
-        <p>Work through four guided BIM tasks using fictional project records. Each task starts from its own fixture, so edits are local to that demo.</p>
+        <div><h2 id="sample-project-title">One drawing set, four tools</h2></div>
+        <p>From rooms to a reviewed set. Pick a step to see the windows that tool opens.</p>
       </div>
-      <dl className="project-metadata">
-        <div><dt>Project</dt><dd>{DEMO_PROJECT.code}</dd></div>
-        <div><dt>Issue</dt><dd>{DEMO_PROJECT.revision}, {DEMO_PROJECT.stage}</dd></div>
-        <div><dt>Rooms</dt><dd>{ROOMS.length}</dd></div>
-        <div><dt>Drawing sheets</dt><dd>{SHEETS.length}</dd></div>
-        <div><dt>Warning groups</dt><dd>{WARNINGS.length}</dd></div>
-        <div><dt>Units</dt><dd>{DEMO_PROJECT.units}</dd></div>
-      </dl>
       <div className="project-workbench">
-        <div className="project-stops" role="group" aria-label="Sample project workflow">
+        <div className="project-stops" role="group" aria-label="Drawing set workflow">
           {PROJECT_WORKFLOW.map((item, i) => (
             <button type="button" key={item.id} aria-pressed={i === selected} onClick={() => setSelected(i)}>
               <span className="project-stop-index">{indexNumber(i)}</span>
@@ -232,28 +133,13 @@ function ProjectBoard() {
           ))}
         </div>
         <div className="project-preview">
-          <div className="project-preview-visual" key={step.id}>
-            {preview && <><img src={asset(preview)} alt="" loading="lazy" decoding="async" /><span>Revit dialog reference</span></>}
-          </div>
           <div className="project-preview-copy">
-            <div><h3>{step.title}</h3><p className="demo-context">Task {indexNumber(selected)} of {indexNumber(PROJECT_WORKFLOW.length - 1)}, {product.name}</p><p>{step.detail}</p></div>
-            <button ref={previewAction} className="demo-button" type="button" onClick={() => running ? closeWorkspace() : setRunning(true)} aria-expanded={running} aria-controls={running ? 'project-workspace' : undefined}>{running ? <X size={15} /> : <Play size={15} />} {running ? 'Close walkthrough' : 'Start walkthrough'}</button>
+            <div><h3>{product.name}</h3><p>{step.detail}</p></div>
+            <Link className="demo-text-link" to={'/demos/' + step.id}>All {countLabel(product)} <ArrowRight size={15} aria-hidden="true" /></Link>
           </div>
+          <div className="project-preview-gallery"><DialogGallery key={step.id} product={product} ratio={1.5} /></div>
         </div>
       </div>
-      {running && (
-        <section className="project-workspace" id="project-workspace" ref={workspace} tabIndex={-1} aria-label={demo.title}>
-          <header>
-            <div><h3>{demo.title}</h3><p className="demo-context">{DEMO_PROJECT.code}, task {indexNumber(selected)} of {indexNumber(PROJECT_WORKFLOW.length - 1)}, {step.phase}</p></div>
-            <Link to={'/demos/' + demo.id} className="demo-text-link">Open dedicated page</Link>
-          </header>
-          <DemoPlayer key={demo.id} demo={demo} />
-          <nav className="project-progression" aria-label="Sample project tasks">
-            {previous ? <button className="demo-text-link" type="button" onClick={() => setSelected(selected - 1)}>Previous: {previous.title}</button> : <span>{DEMO_PROJECT.name}, {DEMO_PROJECT.code}</span>}
-            {next ? <button className="demo-button" type="button" onClick={() => setSelected(selected + 1)}>Next: {next.title}</button> : <button className="demo-button" type="button" onClick={closeWorkspace}>Back to project board</button>}
-          </nav>
-        </section>
-      )}
     </section>
   )
 }
@@ -282,24 +168,18 @@ export function DemoHub() {
   const indexSearch = useRef<HTMLInputElement>(null)
   const index = useRef<HTMLElement>(null)
   const suite = params.get('suite') ?? ''
-  const format = params.get('format') ?? ''
   const query = params.get('q') ?? ''
   const term = query.trim().toLowerCase()
   const words = term.split(/\s+/).filter(Boolean)
-  const relevant = entries.filter(({ product, demo }) => {
-    const featuredName = FEATURED_TOOLS.find(tool => tool.slug === product.slug)?.title
-    const text = [searchText(product), suiteById(product.suite).name, demo.title, demo.summary, featuredName].join(' ').toLowerCase()
-    return words.every((word) => text.includes(word))
+  const matching = entries.filter((product) => {
+    const text = [searchText(product), suiteById(product.suite).name, ...product.dialogs.map((d) => d.title + ' ' + d.state)].join(' ').toLowerCase()
+    return (!suite || product.suite === suite) && words.every((word) => text.includes(word))
   })
-  const matching = relevant.filter(({ demo }) => !format || demo.kind === format)
-  const groups = JOBS.map((job) => ({
-    ...job,
-    demos: matching.filter(({ product }) => (!suite || product.suite === suite) && jobOf(product) === job.id),
-  }))
+  const groups = JOBS.map((job) => ({ ...job, demos: matching.filter((product) => jobOf(product) === job.id) }))
   const count = groups.reduce((total, group) => total + group.demos.length, 0)
-  const quickMatches = term ? matching.filter(({ product }) => !suite || product.suite === suite).sort((a, b) => {
+  const quickMatches = term ? [...matching].sort((a, b) => {
     const score = (name: string) => name.toLowerCase() === term ? 0 : name.toLowerCase().startsWith(term) ? 1 : name.toLowerCase().includes(term) ? 2 : 3
-    return score(a.product.name) - score(b.product.name)
+    return score(a.name) - score(b.name)
   }).slice(0, 3) : []
   const replaceFilters = (next: URLSearchParams) => navigate({ pathname: location.pathname, search: next.toString(), hash: location.hash }, { replace: true, preventScrollReset: true })
   const filter = (key: string, value: string) => {
@@ -330,22 +210,22 @@ export function DemoHub() {
         <div className="wrap demo-opening-grid">
           <div className="demo-opening-copy">
 
-            <h1 id="demo-library-title">Plugin demo <span>library</span></h1>
-            <p className="demo-intro">Try a BIM task, explore a Revit dialog or run a sample CAD workflow in your browser.</p>
-            <form className="demo-quick-search" role="search" aria-label="Quick demo lookup" onSubmit={(event) => { event.preventDefault(); navigate(indexLocation); focusIndex() }}>
-              <DemoSearch input={quickSearch} label="Quick demo search" value={query} onChange={(value) => filter('q', value)} shortcut />
+            <h1 id="demo-library-title">Every dialog, <span>as built</span></h1>
+            <p className="demo-intro">Main windows, confirmations, progress and results for each tool, as they open in Revit.</p>
+            <form className="demo-quick-search" role="search" aria-label="Quick tool lookup" onSubmit={(event) => { event.preventDefault(); navigate(indexLocation); focusIndex() }}>
+              <DemoSearch input={quickSearch} label="Quick tool search" value={query} onChange={(value) => filter('q', value)} shortcut />
             </form>
             {term && (
               <div className="demo-quick-results">
-                <p>{count ? `${count} matching ${count === 1 ? 'demo' : 'demos'}` : 'No matches with the current filters.'}</p>
-                {quickMatches.length > 0 && <ul>{quickMatches.map(({ product, demo }) => <li key={demo.id}><Link to={`/demos/${demo.id}`} state={libraryState}><strong>{product.name}</strong><span>{labelFor(demo)}</span></Link></li>)}</ul>}
+                <p>{count ? `${count} matching ${count === 1 ? 'tool' : 'tools'}` : 'No matches with the current filters.'}</p>
+                {quickMatches.length > 0 && <ul>{quickMatches.map((product) => <li key={product.slug}><Link to={`/demos/${product.demo}`} state={libraryState}><strong>{product.name}</strong><span>{countLabel(product)}</span></Link></li>)}</ul>}
               </div>
             )}
             <div className="demo-opening-actions">
-              <Link to={indexLocation} className="demo-button" onClick={(event) => { if (!event.metaKey && !event.ctrlKey && !event.altKey && !event.shiftKey) focusIndex() }}>{term ? 'View search results' : `Browse ${entries.length} demos`}</Link>
-              <a href="#sample-project" className="demo-text-link"><Play size={15} /> Start the sample project</a>
+              <Link to={indexLocation} className="demo-button" onClick={(event) => { if (!event.metaKey && !event.ctrlKey && !event.altKey && !event.shiftKey) focusIndex() }}>{term ? 'View search results' : `Browse ${STATS.dialogs} dialogs`}</Link>
+              <a href="#sample-project" className="demo-text-link">Follow one drawing set</a>
             </div>
-            <p className="demo-footnote">Sample data, no installation required</p>
+            <p className="demo-footnote">Screenshots and renders with sample data</p>
           </div>
           <div className="demo-stage-feather"><DrawingStage /></div>
         </div>
@@ -358,13 +238,13 @@ export function DemoHub() {
         <ul className="demo-feature-grid">
           {FEATURED_TOOLS.map((tool) => {
             const product = productBySlug(tool.slug)
-            const shot = product?.dialogs.find((d) => d.light)?.light
+            const shot = product?.dialogs[0]
             return <li key={tool.slug}><Link to={'/demos/' + tool.slug} state={libraryState}>
-              <span className="demo-feature-shot">{shot && <img src={asset(shot)} alt="" loading="lazy" decoding="async" />}</span>
+              <span className="demo-feature-shot">{shot && <img {...thumbProps(shot.dark)} alt="" loading="lazy" decoding="async" />}</span>
               <strong>{tool.title}</strong>
               <span className="demo-card-meta">{tool.suite}</span>
               <span className="demo-feature-task">{tool.task}. {tool.description}</span>
-              <span className="demo-card-go">Open the walkthrough</span>
+              <span className="demo-card-go">See its {product ? countLabel(product) : 'dialogs'}</span>
             </Link></li>
           })}
         </ul>
@@ -372,28 +252,23 @@ export function DemoHub() {
 
       <section ref={index} className="wrap demo-index" data-continuity-bg="paper" id="demo-index" aria-labelledby="demo-index-title">
         <div className="demo-section-title">
-          <div><h2 id="demo-index-title">Find a walkthrough</h2></div>
-          <DemoSearch input={indexSearch} label="Search demos" value={query} onChange={(value) => filter('q', value)} />
+          <div><h2 id="demo-index-title">Find a tool</h2></div>
+          <DemoSearch input={indexSearch} label="Search tools and dialogs" value={query} onChange={(value) => filter('q', value)} />
         </div>
         <p className="demo-index-note">{INDEX_NOTE}</p>
         <div className="demo-index-tools">
-          <p className="demo-match" role="status">{count} {count === 1 ? 'walkthrough' : 'walkthroughs'}{query.trim() && ` for “${query.trim()}”`}</p>
-          <div className="demo-format-tabs" role="group" aria-label="Demo format">
-            {([['', 'All formats'], ...(Object.keys(demoFormats) as DemoDefinition['kind'][]).map((kind) => [kind, demoFormats[kind].label])] as [string, string][]).map(([kind, label]) => (
-              <button type="button" key={kind} aria-pressed={format === kind} title={kind ? demoFormats[kind as DemoDefinition['kind']].detail : undefined} onClick={() => filter('format', kind)}>{label}</button>
-            ))}
-          </div>
+          <p className="demo-match" role="status">{count} {count === 1 ? 'tool' : 'tools'}{query.trim() && ` for “${query.trim()}”`}</p>
         </div>
-        {count === 0 && <div className="demo-empty"><h3>No matching walkthroughs</h3><p>Try a plugin name, host application or task.</p><button type="button" className="demo-button" onClick={() => replaceFilters(new URLSearchParams())}>Clear filters</button></div>}
+        {count === 0 && <div className="demo-empty"><h3>No matching tools</h3><p>Try a plugin name, host application or task.</p><button type="button" className="demo-button" onClick={() => replaceFilters(new URLSearchParams())}>Clear filters</button></div>}
         {groups.filter((group) => group.demos.length).map((group) => (
           <div key={group.id} className="demo-group">
             <div className="demo-group-label"><h3>{group.title}</h3><p>{group.demos.length} {group.demos.length === 1 ? 'tool' : 'tools'}</p></div>
             <ul className="demo-rows demo-job-rows">
-              {group.demos.map(({ product, demo }) => (
-                <li key={demo.id}>
-                  <Link to={`/demos/${demo.id}`} state={libraryState}>
-                    <span><strong>{product.name}</strong><small>{demo.summary}</small></span>
-                    <span className="demo-row-format">{suiteById(product.suite).short}, {labelFor(demo)}</span>
+              {group.demos.map((product) => (
+                <li key={product.slug}>
+                  <Link to={`/demos/${product.demo}`} state={libraryState}>
+                    <span><strong>{product.name}</strong><small>{product.tagline}</small></span>
+                    <span className="demo-row-format">{suiteById(product.suite).short}, {countLabel(product)}</span>
                   </Link>
                 </li>
               ))}
@@ -409,60 +284,51 @@ export function DemoPage() {
   const { id = '' } = useParams()
   const { state } = useLocation()
   const librarySearch = typeof state?.librarySearch === 'string' ? state.librarySearch : ''
-  const demo = demoById(id)
-  if (!demo) return <NotFound />
-  const product = productBySlug(demo.productSlug)
-  const evidence = demo.id === 'architech-i3d' || demo.id === 'architech-assistant' || demo.id === 'revit-mcp' ? NATIVE_EVIDENCE[demo.id] : undefined
-  const sequence = PROJECT_WORKFLOW.findIndex((step) => step.id === demo.id)
+  const product = productByDemo(id)
+  if (!product) {
+    // A product without dialog pictures keeps its details page.
+    const plain = productBySlug(id)
+    return plain ? <Navigate to={'/plugins/' + plain.slug} replace /> : <NotFound />
+  }
+  const suite = suiteById(product.suite)
+  const sequence = PROJECT_WORKFLOW.findIndex((step) => step.id === id)
   const next = sequence >= 0 ? PROJECT_WORKFLOW[sequence + 1] : undefined
-  const player = <DemoPlayer key={demo.id} demo={demo} />
+  const screenshots = product.dialogs.filter((d) => d.real).length
+  const renders = product.dialogs.length - screenshots
   return (
     <div className="demo-detail">
       <header className="demo-detail-header" data-continuity-bg="paper">
         <div className="wrap-wide">
-          <Link to={{ pathname: '/demos', search: librarySearch, hash: '#demo-index' }} className="demo-text-link">Demo library</Link>
+          <Link to={{ pathname: '/demos', search: librarySearch, hash: '#demo-index' }} className="demo-text-link">All dialogs</Link>
           <div className="demo-detail-title">
             <div>
-              <h1>{evidence ? (product?.name ?? demo.ribbon.tab) : demo.title}</h1>
-              <p className="demo-detail-context">{demo.ribbon.tab}, {evidence ? 'Native captures and browser exercise' : labelFor(demo)}</p>
-              {evidence ? <p>View captures from the installed build, then try a separate browser exercise on sample data.</p> : <>
-                <p>{demo.summary}</p>
-                <p className="demo-detail-format">{demoFormats[demo.kind].detail}</p>
-              </>}
+              <h1>{product.name}</h1>
+              <p className="demo-detail-context">{suite.name}, {product.panel}, {countLabel(product)}</p>
+              <p>{product.tagline}</p>
             </div>
-            {product && <div className="demo-detail-links">
+            <div className="demo-detail-links">
               <Link className="demo-text-link" to={`/plugins/${product.slug}`}>Product details</Link>
-              {(product.dialogs.length > 0 || product.media?.length) && <Link className="demo-text-link" to={`/plugins/${product.slug}#dialog-reference`}>View {product.dialogs.length ? 'dialog layouts' : 'desktop visuals'}</Link>}
-            </div>}
+            </div>
           </div>
         </div>
       </header>
       <div className="wrap-wide demo-detail-body" data-continuity-bg="paper">
-        {evidence ? <>
-          <NativeEvidence key={demo.id} {...evidence} />
-          <section id="browser-exercise" className="native-browser-exercise" tabIndex={-1} aria-labelledby="browser-exercise-title">
-            <header>
-              <div>
-                <h2 id="browser-exercise-title">{demo.title}</h2>
-                <p className="demo-context">Browser exercise using sample data</p>
-                <p>{demo.summary}</p>
-              </div>
-              <a className="demo-text-link" href="#native-build">Back to native captures</a>
-            </header>
-            <div className="demo-stage-feather demo-player-feather">{player}</div>
-          </section>
-        </> : <div className="demo-stage-feather demo-player-feather">{player}</div>}
+        <DialogGallery key={product.slug} product={product} eager />
         {sequence >= 0 && (
           <div className="demo-project-next">
-            <div><strong>{DEMO_PROJECT.name}</strong><p className="demo-context">{DEMO_PROJECT.code}, {PROJECT_WORKFLOW[sequence].phase}, task {indexNumber(sequence)} of {PROJECT_WORKFLOW.length}</p></div>
+            <div><strong>One drawing set, four tools</strong><p className="demo-context">{PROJECT_WORKFLOW[sequence].phase}, step {sequence + 1} of {PROJECT_WORKFLOW.length}</p></div>
             {next
               ? <Link to={'/demos/' + next.id}>Next: {next.title}</Link>
-              : <Link to="/demos#sample-project">Back to the project board</Link>}
+              : <Link to="/demos#sample-project">Back to the four steps</Link>}
           </div>
         )}
         <details className="demo-basis">
-          <summary>About this simulation</summary>
-          <p>{demo.basis.join(' ')}</p>
+          <summary>About these pictures</summary>
+          <p>
+            {screenshots > 0 && `${screenshots} ${screenshots === 1 ? 'picture is a screenshot' : 'pictures are screenshots'} of the installed build. `}
+            {renders > 0 && `${renders} ${renders === 1 ? 'is' : 'are'} rendered from the product’s own window and message code with sample data. `}
+            Project names and file paths are sample values. Operating-system file pickers and prompts on the Revit canvas are not dialogs of the tool and are not shown.
+          </p>
         </details>
       </div>
     </div>

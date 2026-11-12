@@ -1,16 +1,14 @@
-import { lazy, Suspense, useEffect, useState } from 'react'
+import { useEffect, useState } from 'react'
 import type { KeyboardEvent } from 'react'
-import { Play } from 'lucide-react'
+import { ArrowRight } from 'lucide-react'
 import { Link, useLocation } from 'react-router-dom'
-import { PRODUCTS, REVIT_TOOLS, STATS } from '../data/catalog'
+import { PRODUCTS, REVIT_TOOLS, STATS, productBySlug } from '../data/catalog'
 import { SUITES } from '../data/suites'
 import type { Product } from '../data/types'
-import { asset } from '../components/Brand'
-import { useMediaQuery } from '../components/motion'
-import { DEMO_PROJECT, PROJECT_WORKFLOW } from '../data/demoProject'
+import { DialogGallery } from '../components/DialogGallery'
+import { dialogAlt, imageProps, thumbProps } from '../components/dialogImage'
+import { PROJECT_WORKFLOW } from '../data/demoProject'
 import { FEATURED_TOOLS } from '../data/featured'
-
-const LiveDialog = lazy(() => import('../components/LiveDialog').then((module) => ({ default: module.LiveDialog })))
 
 /** A floor plan that draws itself behind the live dialog. Decorative. */
 function BlueprintLines() {
@@ -27,15 +25,13 @@ function BlueprintLines() {
   )
 }
 
+/** One tool from each suite, stepped through its real windows. The stage shape is shared, so switching tools moves nothing. */
+const STAGE_RATIO = 1400 / 900
+
 function LiveStage() {
   const [selected, setSelected] = useState(0)
-  const wide = useMediaQuery('(min-width: 860px)')
   const tool = FEATURED_TOOLS[selected]
-  const preview = (
-    <Link to={'/demos/' + tool.slug} className="hero-stage-still" aria-label={'Open the ' + tool.title + ' demo'}>
-      <img src={asset(tool.preview)} alt={tool.alt} decoding="async" />
-    </Link>
-  )
+  const product = productBySlug(tool.slug)!
   return (
     <div className="hero-stage">
       <BlueprintLines />
@@ -47,16 +43,14 @@ function LiveStage() {
             </button>
           ))}
         </div>
-        <p className="hero-stage-status">{wide ? 'Working in your browser' : 'Dialog preview'}</p>
+        <p className="hero-stage-status">{product.dialogs.length} windows</p>
       </div>
       <div className="hero-stage-body" key={tool.slug}>
-        {wide
-          ? <Suspense fallback={preview}><LiveDialog id={tool.slug} /></Suspense>
-          : preview}
+        <DialogGallery product={product} ratio={STAGE_RATIO} dark />
       </div>
       <div className="hero-stage-foot">
         <div aria-live="polite"><strong>{tool.task}</strong></div>
-        <Link to={'/demos/' + tool.slug} className="stage-link"><Play size={14} aria-hidden="true" /> Open the guided demo</Link>
+        <Link to={'/demos/' + tool.slug} className="stage-link">Open {tool.title} <ArrowRight size={14} aria-hidden="true" /></Link>
       </div>
     </div>
   )
@@ -89,10 +83,11 @@ const RIBBON = (['folio', 'forge', 'sentinel'] as const).map((id) => {
   const groups = RIBBON_GROUPS[id].map((group) => ({ ...group, panels: group.panels.map((name) => panels.find((p) => p.panel === name)!) }))
   return { suite, groups, count: STATS.suiteTools(id) }
 })
-const SUITE_SHOTS: Record<string, { shot: string; tool: string }> = {
-  folio: { shot: 'media/dialogs/sheet-manager/sheetmanagerwindow-light.webp', tool: 'Sheet Manager' },
-  forge: { shot: 'media/dialogs/parameter-manager/parametermanagerwindow-light.webp', tool: 'Parameter Manager' },
-  sentinel: { shot: 'media/dialogs/warnings-inspector/warningswindow-light.webp', tool: 'Warnings Inspector' },
+/** Each suite is pictured by the main window of one of its tools. */
+const SUITE_SHOTS: Record<string, Product> = {
+  folio: productBySlug('sheet-manager')!,
+  forge: productBySlug('parameter-manager')!,
+  sentinel: productBySlug('warnings-inspector')!,
 }
 const SUITE_TASKS: Record<string, string> = {
   folio: 'Views, sheets, annotation and publishing.',
@@ -164,9 +159,9 @@ function Ribbon() {
               </details>
               <figure className="ribbon-shot">
                 <div className="ribbon-shot-preview">
-                  {tab === suiteIndex && <img src={asset(shot.shot)} alt={shot.tool + ' window, light theme'} loading="lazy" decoding="async" />}
+                  {tab === suiteIndex && <img {...imageProps(shot.dialogs[0].dark, 880)} alt={dialogAlt(shot, shot.dialogs[0])} loading="lazy" decoding="async" />}
                 </div>
-                <figcaption>{shot.tool}, {suite.name}</figcaption>
+                <figcaption>{shot.name}, {suite.name}</figcaption>
               </figure>
             </div>
           )
@@ -176,8 +171,8 @@ function Ribbon() {
   )
 }
 
-// Two rows of real dialog renders, light theme, drifting in opposite directions; each opens its walkthrough.
-const wall = PRODUCTS.filter((p) => p.demo && p.dialogs[0]?.light && !p.dialogs[0].source).map((p) => ({ slug: p.demo!, name: p.name, src: p.dialogs[0].light! }))
+// Two rows of real main windows drifting in opposite directions; each opens that tool's dialogs.
+const wall = PRODUCTS.filter((p) => p.demo && p.dialogs[0].dark[1] >= 900).map((p) => ({ slug: p.demo!, name: p.name, image: p.dialogs[0].dark }))
 const wallRows = [wall.filter((_, i) => i % 2 === 0).slice(0, 12), wall.filter((_, i) => i % 2 === 1).slice(0, 12)]
 
 function DialogWall() {
@@ -187,8 +182,8 @@ function DialogWall() {
         {wallRows.map((row, r) => (
           <div className={'marquee-row' + (r ? ' rev' : '')} key={r}>
             {[...row, ...row].map((item, i) => (
-              <Link key={item.slug + i} to={'/demos/' + item.slug} aria-hidden={i >= row.length} tabIndex={i >= row.length ? -1 : undefined} aria-label={i < row.length ? item.name + ' walkthrough' : undefined}>
-                <img src={asset(item.src)} alt="" loading="lazy" decoding="async" /><span>{item.name}</span>
+              <Link key={item.slug + i} to={'/demos/' + item.slug} aria-hidden={i >= row.length} tabIndex={i >= row.length ? -1 : undefined} aria-label={i < row.length ? item.name + ' dialogs' : undefined}>
+                <img {...thumbProps(item.image)} alt="" loading="lazy" decoding="async" /><span>{item.name}</span>
               </Link>
             ))}
           </div>
@@ -196,29 +191,22 @@ function DialogWall() {
       </div>
       <div className="wrap dialog-wall-head">
         <h2 id="dialog-wall-title">{STATS.dialogs} dialogs, as built</h2>
-        <p>Many of the {STATS.revitTools} tools open more than one window. Each picture is rendered from the tool’s own layout file; pick one to open its walkthrough.</p>
+        <p>Most of the {STATS.revitTools} tools open more than one window. Each picture is a Revit screenshot or the tool’s own window with sample data; pick one to see the rest.</p>
       </div>
     </section>
   )
 }
 
 const DESKTOP = [
-  {
-    name: 'ArchiTECH I3D', kind: 'Desktop app', task: 'Turn a photo or mesh into a Revit family', to: '/demos/architech-i3d', label: 'Try the I3D workflow',
-    media: <img src={asset('media/i3d/material-workspace.webp')} alt="I3D Material workspace showing the original textured chair mesh" width={1063} height={778} loading="lazy" decoding="async" />,
-  },
-  {
-    name: 'ArchiTECH Assistant', kind: 'Desktop app', task: 'Ask about the active Revit view', to: '/demos/architech-assistant', label: 'Try the Assistant workflow',
-    media: <div className="home-assistant-capture">
-      <img src={asset('media/assistant/active-view-exchange.png')} alt="Assistant replies Cover to a question about the active Revit view" loading="lazy" decoding="async" />
-      <img src={asset('media/assistant/composer-modes.png')} alt="Assistant composer with Ask, Search and Build modes" loading="lazy" decoding="async" />
-    </div>,
-  },
-  {
-    name: 'ArchiTECH MCP Connector', kind: 'Revit, Rhino, SketchUp, AutoCAD, Blender', task: 'Let an AI assistant work in the model, with every write checked', to: '/demos/revit-mcp', label: 'Try the MCP Connector',
-    media: <img src={asset('media/native/revit-mcp-connector.webp')} alt="ArchiTECH MCP Connector for Revit 2024, ready for MCP clients" width={1032} height={434} loading="lazy" decoding="async" />,
-  },
-]
+  { slug: 'architech-i3d', kind: 'Desktop app', task: 'Turn a photo or mesh into a Revit family' },
+  { slug: 'architech-assistant', kind: 'Desktop app', task: 'Ask about the active Revit view' },
+  { slug: 'revit-mcp', name: 'ArchiTECH MCP Connector', kind: 'Revit, Rhino, SketchUp, AutoCAD, Blender', task: 'Let an AI assistant work in the model, with every write checked' },
+].map((item) => {
+  const product = productBySlug(item.slug)!
+  // The first full window, not a cropped capture strip.
+  const shot = product.dialogs.find((d) => d.dark[2] > 300) ?? product.dialogs[0]
+  return { ...item, name: item.name ?? product.name, product, shot, count: new Set(product.dialogs.map((d) => d.id)).size }
+})
 
 export default function HomeSections() {
   const { hash } = useLocation()
@@ -232,8 +220,8 @@ export default function HomeSections() {
       <section className="try" data-continuity-bg="paper-2" aria-labelledby="try-title">
         <div className="wrap-wide">
           <div className="split-head">
-            <h2 id="try-title">Try one, right here</h2>
-            <p>Try these windows on sample data. Nothing is sent or saved.</p>
+            <h2 id="try-title">Open one, right here</h2>
+            <p>Step through the real windows of one tool from each suite.</p>
           </div>
           <LiveStage />
         </div>
@@ -253,8 +241,8 @@ export default function HomeSections() {
       <section className="path" data-continuity-bg="paper-2" id="live-demo" aria-labelledby="home-project-title">
         <div className="wrap">
           <div className="split-head">
-            <h2 id="home-project-title">Follow one sample project</h2>
-            <p>{DEMO_PROJECT.name} ({DEMO_PROJECT.code}) is a made-up project used by every walkthrough. These four take it from rooms to a reviewed drawing set.</p>
+            <h2 id="home-project-title">Follow one drawing set</h2>
+            <p>These four tools take one project from rooms to a reviewed drawing set.</p>
           </div>
           <ol className="path-steps">
             {PROJECT_WORKFLOW.map((step, i) => (
@@ -274,10 +262,10 @@ export default function HomeSections() {
           </div>
           <div className="home-desktop-grid">
             {DESKTOP.map((d) => (
-              <article key={d.name}>
-                {d.media}
+              <article key={d.slug}>
+                <img {...thumbProps(d.shot.dark)} alt={dialogAlt(d.product, d.shot)} loading="lazy" decoding="async" />
                 <div><h3>{d.name}</h3><p className="product-kind">{d.kind}</p><p className="home-desktop-task">{d.task}</p>
-                  <Link to={d.to}>{d.label}</Link></div>
+                  <Link to={'/demos/' + d.slug}>See its {d.count} dialogs</Link></div>
               </article>
             ))}
           </div>

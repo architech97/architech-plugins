@@ -17,7 +17,7 @@
 :is(.revit-dialog, .ad) :is(h1, h2, h3, h4, h5, h6) { font-family: inherit; letter-spacing: normal; text-wrap: wrap; }
 
 /* The dark demo stage sits on a taupe-d to night desk that feathers into the paper, not in a hard black box. */
-.hero-stage, .project-workspace .revit { border-color: var(--clear); border-radius: 4px; box-shadow: 0 0 48px 16px var(--night), 0 0 140px 40px var(--continuity-shadow); }
+.hero-stage { border-color: var(--clear); border-radius: 4px; box-shadow: 0 0 48px 16px var(--night), 0 0 140px 40px var(--continuity-shadow); }
 .demo-detail .revit { border-color: var(--clear); border-radius: 4px; box-shadow: none; }
 .try .split-head { margin-bottom: var(--s-6); }
 

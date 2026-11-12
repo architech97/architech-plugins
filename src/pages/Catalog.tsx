@@ -87,7 +87,7 @@ export default function Catalog() {
           <div>
             <h1 id="catalog-title">Find the right tool for the task.</h1>
           </div>
-          <p className="lead">Browse {PRODUCTS.length} design and BIM tools by what you need to do. Every tool has a browser demo you can try with sample data.</p>
+          <p className="lead">Browse {PRODUCTS.length} design and BIM tools by what you need to do. Every Revit tool is shown through its real dialogs.</p>
         </header>
 
         <div className="catalog-tasks" role="group" aria-label="Browse by task">
@@ -138,7 +138,7 @@ export default function Catalog() {
                 <h2 id="catalog-result-title">{selectedTask?.label ?? 'Plugin library'}</h2>
                 <p className="muted" role="status">{results.length} of {PRODUCTS.length} tools</p>
               </div>
-              <Link to="/demos#sample-project">Try the sample project</Link>
+              <Link to="/demos#sample-project">Follow one drawing set</Link>
             </div>
             {results.length === 0 ? (
               <div className="glass empty-state">

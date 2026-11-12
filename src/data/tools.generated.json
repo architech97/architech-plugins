@@ -20,15 +20,6 @@
   "safeguards": [
    "Model, detail and sketch lines are inspected; sketch lines are reported but never deleted because they belong to a host element.",
    "Deletion requires reviewed selections and confirmation."
-  ],
-  "dialogs": [
-   {
-    "title": "Compliance Guard",
-    "dark": "media/dialogs/compliance-guard/complianceguardwindow-dark.webp",
-    "w": 966,
-    "h": 626,
-    "light": "media/dialogs/compliance-guard/complianceguardwindow-light.webp"
-   }
   ]
  },
  {
@@ -50,16 +41,7 @@
    "Pick which copy survives per cluster, then Merge (carry the extras' filled-in instance parameters into the primary where it is blank) or Delete.",
    "FamilyInstances only: walls, floors and other non-instance duplicates are not covered."
   ],
-  "safeguards": [],
-  "dialogs": [
-   {
-    "title": "Duplicates Resolver",
-    "dark": "media/dialogs/duplicates-resolver/duplicateswindow-dark.webp",
-    "w": 1226,
-    "h": 726,
-    "light": "media/dialogs/duplicates-resolver/duplicateswindow-light.webp"
-   }
-  ]
+  "safeguards": []
  },
  {
   "slug": "group-manager",
@@ -82,15 +64,6 @@
   "safeguards": [
    "Tick any mix of group types and every instance of them is dissolved in one undoable step.",
    "Only placed types are listed, since an unplaced one has nothing to dissolve."
-  ],
-  "dialogs": [
-   {
-    "title": "Group Browser",
-    "dark": "media/dialogs/group-manager/groupbrowserwindow-dark.webp",
-    "w": 1086,
-    "h": 606,
-    "light": "media/dialogs/group-manager/groupbrowserwindow-light.webp"
-   }
   ]
  },
  {
@@ -111,15 +84,6 @@
   "safeguards": [
    "Scan the model for elements whose XY angle drifted off orthogonal, review each one with its proposed correction, then fix the safe ones in a single undoable step.",
    "Grid lines are preview-only; a sketch line is fixed only when its loop still closes."
-  ],
-  "dialogs": [
-   {
-    "title": "Off Axis Resolver",
-    "dark": "media/dialogs/off-axis-resolver/offaxisresolverwindow-dark.webp",
-    "w": 1306,
-    "h": 706,
-    "light": "media/dialogs/off-axis-resolver/offaxisresolverwindow-light.webp"
-   }
   ]
  },
  {
@@ -143,22 +107,6 @@
   "safeguards": [
    "Filter by category, by usage or by name, tick any mix across categories and purge them in one undoable step.",
    "Exports the full list to Documents\\\\Model Health Reports."
-  ],
-  "dialogs": [
-   {
-    "title": "Merge duplicates",
-    "dark": "media/dialogs/purge-and-merge/mergeduplicateswindow-dark.webp",
-    "w": 1166,
-    "h": 726,
-    "light": "media/dialogs/purge-and-merge/mergeduplicateswindow-light.webp"
-   },
-   {
-    "title": "Purge",
-    "dark": "media/dialogs/purge-and-merge/purgewindow-dark.webp",
-    "w": 1266,
-    "h": 766,
-    "light": "media/dialogs/purge-and-merge/purgewindow-light.webp"
-   }
   ]
  },
  {
@@ -180,8 +128,7 @@
   ],
   "safeguards": [
    "An existing Coordination Plan can be rebuilt or kept."
-  ],
-  "dialogs": []
+  ]
  },
  {
   "slug": "navis-view",
@@ -203,8 +150,7 @@
   ],
   "safeguards": [
    "Ctrl-click selects worksets or model categories for a batch: preview names, skip existing views, keep links hidden, and create in one Undo step."
-  ],
-  "dialogs": []
+  ]
  },
  {
   "slug": "scope-box-synchronizer",
@@ -224,16 +170,7 @@
    "Compares host scope boxes against master link models.",
    "Automatically detects boundary drift, recreates coordinated extents, copies missing scope boxes, and reassigns all dependent views."
   ],
-  "safeguards": [],
-  "dialogs": [
-   {
-    "title": "Scope Box Sync",
-    "dark": "media/dialogs/scope-box-synchronizer/scopeboxsyncwindow-dark.webp",
-    "w": 906,
-    "h": 606,
-    "light": "media/dialogs/scope-box-synchronizer/scopeboxsyncwindow-light.webp"
-   }
-  ]
+  "safeguards": []
  },
  {
   "slug": "section-box",
@@ -254,16 +191,7 @@
    "If no elements are selected, prompts to pick.",
    "Choose padding in project units or explicit units and configure the target view."
   ],
-  "safeguards": [],
-  "dialogs": [
-   {
-    "title": "Section Box",
-    "dark": "media/dialogs/section-box/sectionboxwindow-dark.webp",
-    "w": 480,
-    "h": 412,
-    "light": "media/dialogs/section-box/sectionboxwindow-light.webp"
-   }
-  ]
+  "safeguards": []
  },
  {
   "slug": "links-inspector",
@@ -283,8 +211,7 @@
    "Lists top-level Revit link types (nested links excluded, as Manage Links does) with load status, attachment type, path, instance count and how many instances are pinned; and every CAD import with its owning view, flagging embedded CAD as the sync cost it is.",
    "Isolate a link's instances in 3D, or delete it."
   ],
-  "safeguards": [],
-  "dialogs": []
+  "safeguards": []
  },
  {
   "slug": "pin-unpin-links",
@@ -306,8 +233,7 @@
   ],
   "safeguards": [
    "One undoable step per action."
-  ],
-  "dialogs": []
+  ]
  },
  {
   "slug": "in-place-converter",
@@ -329,15 +255,6 @@
   ],
   "safeguards": [
    "Originals are retained."
-  ],
-  "dialogs": [
-   {
-    "title": "In Place Converter",
-    "dark": "media/dialogs/in-place-converter/inplaceconverterwindow-dark.webp",
-    "w": 966,
-    "h": 626,
-    "light": "media/dialogs/in-place-converter/inplaceconverterwindow-light.webp"
-   }
   ]
  },
  {
@@ -360,8 +277,7 @@
   ],
   "safeguards": [
    "Isolate a family's instances in a dedicated 3D view, or delete the family and its instances in one undoable step."
-  ],
-  "dialogs": []
+  ]
  },
  {
   "slug": "mirrored-auditor",
@@ -382,15 +298,6 @@
   ],
   "safeguards": [
    "Provides auto-resolution, temporary isolation, 3D isolation, and CSV/XLSX reports."
-  ],
-  "dialogs": [
-   {
-    "title": "Mirrored Auditor",
-    "dark": "media/dialogs/mirrored-auditor/mirroredauditorwindow-dark.webp",
-    "w": 1066,
-    "h": 626,
-    "light": "media/dialogs/mirrored-auditor/mirroredauditorwindow-light.webp"
-   }
   ]
  },
  {
@@ -410,8 +317,7 @@
   "capabilities": [],
   "safeguards": [
    "Choose the rule checks, export options and output folder, then review the results in the ArchiTECH Model Health dashboard: sortable, searchable tables with per-column filters, row limits and CSV export for every section."
-  ],
-  "dialogs": []
+  ]
  },
  {
   "slug": "structural-qa",
@@ -431,16 +337,7 @@
    "Screens column/grid offsets and beam endpoint contact with modeled columns and framing.",
    "Contact is geometric evidence only; this does not verify structural bearing or capacity."
   ],
-  "safeguards": [],
-  "dialogs": [
-   {
-    "title": "Structural QA",
-    "dark": "media/dialogs/structural-qa/structuralqawindow-dark.webp",
-    "w": 966,
-    "h": 626,
-    "light": "media/dialogs/structural-qa/structuralqawindow-light.webp"
-   }
-  ]
+  "safeguards": []
  },
  {
   "slug": "warnings-inspector",
@@ -463,15 +360,6 @@
    "Review critical-class warnings first, then frequency.",
    "Known warnings use native failure identities; fallback classifications are labelled for review.",
    "Export all groups and classification evidence to a two-sheet .xlsx report without requiring Excel."
-  ],
-  "dialogs": [
-   {
-    "title": "Warnings Inspector",
-    "dark": "media/dialogs/warnings-inspector/warningswindow-dark.webp",
-    "w": 1186,
-    "h": 746,
-    "light": "media/dialogs/warnings-inspector/warningswindow-light.webp"
-   }
   ]
  },
  {
@@ -496,29 +384,6 @@
   ],
   "safeguards": [
    "Every rename that Revit refuses is reported by name and reason rather than counted."
-  ],
-  "dialogs": [
-   {
-    "title": "Family Name Editor",
-    "dark": "media/dialogs/family-name-editor/familynameeditorwindow-dark.webp",
-    "w": 1166,
-    "h": 806,
-    "light": "media/dialogs/family-name-editor/familynameeditorwindow-light.webp"
-   },
-   {
-    "title": "BEP naming convention",
-    "dark": "media/dialogs/family-name-editor/bepconfigwindow-dark.webp",
-    "w": 746,
-    "h": 626,
-    "light": "media/dialogs/family-name-editor/bepconfigwindow-light.webp"
-   },
-   {
-    "title": "Find and replace",
-    "dark": "media/dialogs/family-name-editor/findreplacewindow-dark.webp",
-    "w": 480,
-    "h": 330,
-    "light": "media/dialogs/family-name-editor/findreplacewindow-light.webp"
-   }
   ]
  },
  {
@@ -540,15 +405,6 @@
   ],
   "safeguards": [
    "Families with no match are listed so the gaps are visible."
-  ],
-  "dialogs": [
-   {
-    "title": "Family Name Sync",
-    "dark": "media/dialogs/family-name-synchronizer/familynamesyncwindow-dark.webp",
-    "w": 946,
-    "h": 646,
-    "light": "media/dialogs/family-name-synchronizer/familynamesyncwindow-light.webp"
-   }
   ]
  },
  {
@@ -572,15 +428,6 @@
   ],
   "safeguards": [
    "Click a filter to see every view and template it can go on, with a tick box each: tick to add, untick to remove, and Apply commits the lot in one transaction."
-  ],
-  "dialogs": [
-   {
-    "title": "Filter Usage",
-    "dark": "media/dialogs/filter-usage-checker/filterusagewindow-dark.webp",
-    "w": 1226,
-    "h": 746,
-    "light": "media/dialogs/filter-usage-checker/filterusagewindow-light.webp"
-   }
   ]
  },
  {
@@ -604,22 +451,6 @@
    "Open Review Center from the dialog for Architecture, Interiors, Coordination and Pre-handover profiles, selectable checks, scoped scans, accepted exceptions and comparison scans.",
    "Inspect, select or isolate affected elements; review failed checks and timings.",
    "Review decisions are stored locally without changing model metadata."
-  ],
-  "dialogs": [
-   {
-    "title": "Model Query",
-    "dark": "media/dialogs/model-query-pro/modelquerywindow-dark.webp",
-    "w": 1066,
-    "h": 726,
-    "light": "media/dialogs/model-query-pro/modelquerywindow-light.webp"
-   },
-   {
-    "title": "Review Center",
-    "dark": "media/dialogs/model-query-pro/reviewcenterwindow-dark.webp",
-    "w": 1266,
-    "h": 806,
-    "light": "media/dialogs/model-query-pro/reviewcenterwindow-light.webp"
-   }
   ]
  },
  {
@@ -642,15 +473,6 @@
   "safeguards": [
    "Preview instance or type parameter values and apply distinct colors.",
    "Original graphics are restored on close unless Keep colors is selected."
-  ],
-  "dialogs": [
-   {
-    "title": "Parameter Colorizer",
-    "dark": "media/dialogs/parameter-colorizer/colorizerwindow-dark.webp",
-    "w": 746,
-    "h": 586,
-    "light": "media/dialogs/parameter-colorizer/colorizerwindow-light.webp"
-   }
   ]
  },
  {
@@ -675,29 +497,6 @@
   ],
   "safeguards": [
    "Writes a compliance report to xlsx or csv, and renames loadable families with find-and-replace."
-  ],
-  "dialogs": [
-   {
-    "title": "Workset Manager",
-    "dark": "media/dialogs/workset-manager/worksetmanagerwindow-dark.webp",
-    "w": 1166,
-    "h": 726,
-    "light": "media/dialogs/workset-manager/worksetmanagerwindow-light.webp"
-   },
-   {
-    "title": "BEP workset rules",
-    "dark": "media/dialogs/workset-manager/worksetconfigwindow-dark.webp",
-    "w": 746,
-    "h": 606,
-    "light": "media/dialogs/workset-manager/worksetconfigwindow-light.webp"
-   },
-   {
-    "title": "Find and replace",
-    "dark": "media/dialogs/workset-manager/findreplacewindow-dark.webp",
-    "w": 480,
-    "h": 330,
-    "light": "media/dialogs/workset-manager/findreplacewindow-light.webp"
-   }
   ]
  },
  {
@@ -722,15 +521,6 @@
    "Supported single-loop vertical line/arc wall profiles are preserved exactly; unsupported outlines are skipped.",
    "Rectangular bounding-box walls require an explicit reviewed option.",
    "Slab curves retain their shape; native geometry/offset rejection preserves the source."
-  ],
-  "dialogs": [
-   {
-    "title": "FR to Finishes",
-    "dark": "media/dialogs/fr-to-finishes/frtofinisheswindow-dark.webp",
-    "w": 700,
-    "h": 655,
-    "light": "media/dialogs/fr-to-finishes/frtofinisheswindow-light.webp"
-   }
   ]
  },
  {
@@ -753,15 +543,6 @@
   "safeguards": [
    "Reports how many layers and parameters changed, and which could not.",
    "One undoable step."
-  ],
-  "dialogs": [
-   {
-    "title": "Replace Materials",
-    "dark": "media/dialogs/replace-materials/replacematerialswindow-dark.webp",
-    "w": 746,
-    "h": 686,
-    "light": "media/dialogs/replace-materials/replacematerialswindow-light.webp"
-   }
   ]
  },
  {
@@ -784,22 +565,6 @@
   ],
   "safeguards": [
    "One undoable step per element kind."
-  ],
-  "dialogs": [
-   {
-    "title": "Room to Finishes",
-    "dark": "media/dialogs/room-to-finishes/finishingwindow-dark.webp",
-    "w": 886,
-    "h": 706,
-    "light": "media/dialogs/room-to-finishes/finishingwindow-light.webp"
-   },
-   {
-    "title": "Review finish plan",
-    "dark": "media/dialogs/room-to-finishes/finishreviewwindow-dark.webp",
-    "w": 1080,
-    "h": 660,
-    "light": "media/dialogs/room-to-finishes/finishreviewwindow-light.webp"
-   }
   ]
  },
  {
@@ -822,8 +587,7 @@
    "Single-region elements, sloped or shape-edited slabs, and grouped or borrowed elements are left alone.",
    "You are asked first if tags, dimensions or hosted families would be deleted with an original."
   ],
-  "safeguards": [],
-  "dialogs": []
+  "safeguards": []
  },
  {
   "slug": "assign-room-properties",
@@ -843,16 +607,7 @@
    "Finds the room each element occupies - in this model or a linked one - then applies any number of room-parameter to element-parameter mappings, on the instance or its type.",
    "Nested family components are reached too."
   ],
-  "safeguards": [],
-  "dialogs": [
-   {
-    "title": "Room mappings",
-    "dark": "media/dialogs/assign-room-properties/roommappingwindow-dark.webp",
-    "w": 806,
-    "h": 686,
-    "light": "media/dialogs/assign-room-properties/roommappingwindow-light.webp"
-   }
-  ]
+  "safeguards": []
  },
  {
   "slug": "copy-param-from-link",
@@ -871,16 +626,7 @@
   "capabilities": [
    "The simple form: one room text parameter onto one element text parameter, for every element of a chosen category, using the room each element opens into or sits in."
   ],
-  "safeguards": [],
-  "dialogs": [
-   {
-    "title": "Copy Param from Link",
-    "dark": "media/dialogs/copy-param-from-link/roomtextcopywindow-dark.webp",
-    "w": 546,
-    "h": 316,
-    "light": "media/dialogs/copy-param-from-link/roomtextcopywindow-light.webp"
-   }
-  ]
+  "safeguards": []
  },
  {
   "slug": "family-param-transfer",
@@ -901,15 +647,6 @@
   ],
   "safeguards": [
    "Copy shared or family parameter definitions - preserving the shared-parameter GUID - from a source family into a target family."
-  ],
-  "dialogs": [
-   {
-    "title": "Family Param Transfer",
-    "dark": "media/dialogs/family-param-transfer/familyparamtransferwindow-dark.webp",
-    "w": 746,
-    "h": 746,
-    "light": "media/dialogs/family-param-transfer/familyparamtransferwindow-light.webp"
-   }
   ]
  },
  {
@@ -931,15 +668,6 @@
   ],
   "safeguards": [
    "Pick a category and one of its parameters, preview every element's current value, edit the proposed values with find/replace, prefix or suffix, then write the ticked rows in one transaction."
-  ],
-  "dialogs": [
-   {
-    "title": "One Parameter",
-    "dark": "media/dialogs/one-parameter/oneparameterwindow-dark.webp",
-    "w": 1120,
-    "h": 680,
-    "light": "media/dialogs/one-parameter/oneparameterwindow-light.webp"
-   }
   ]
  },
  {
@@ -961,16 +689,7 @@
    "Import and export through Excel or CSV.",
    "Shared-parameter .txt files and binding their definitions are done in Shared Param Manager."
   ],
-  "safeguards": [],
-  "dialogs": [
-   {
-    "title": "Parameter Manager",
-    "dark": "media/dialogs/parameter-manager/parametermanagerwindow-dark.webp",
-    "w": 1240,
-    "h": 660,
-    "light": "media/dialogs/parameter-manager/parametermanagerwindow-light.webp"
-   }
-  ]
+  "safeguards": []
  },
  {
   "slug": "parameter-mapping",
@@ -990,16 +709,7 @@
    "Pick categories, narrow to families and types, then map one or more source parameters onto targets - one source broadcast to many, or the same number of each paired in order.",
    "Values move in internal units, with optional prefix and suffix on text targets, or a typed manual value."
   ],
-  "safeguards": [],
-  "dialogs": [
-   {
-    "title": "Parameter Mapping",
-    "dark": "media/dialogs/parameter-mapping/parametercopywindow-dark.webp",
-    "w": 966,
-    "h": 806,
-    "light": "media/dialogs/parameter-mapping/parametercopywindow-light.webp"
-   }
-  ]
+  "safeguards": []
  },
  {
   "slug": "shared-param-manager",
@@ -1021,16 +731,7 @@
    "Definitions can be exported to and imported from Excel.",
    "Project and family parameters (rename, duplicate, delete, formulas, profiles, Excel/CSV) are managed in Parameter Manager, the next button on this panel."
   ],
-  "safeguards": [],
-  "dialogs": [
-   {
-    "title": "Shared Param",
-    "dark": "media/dialogs/shared-param-manager/sharedparamwindow-dark.webp",
-    "w": 986,
-    "h": 626,
-    "light": "media/dialogs/shared-param-manager/sharedparamwindow-light.webp"
-   }
-  ]
+  "safeguards": []
  },
  {
   "slug": "match-opening",
@@ -1049,15 +750,6 @@
   "capabilities": [],
   "safeguards": [
    "Auto-detects rectangular wall openings in a selected source Revit link, previews matches on this model's walls, and creates or resizes confirmed openings."
-  ],
-  "dialogs": [
-   {
-    "title": "Match Opening",
-    "dark": "media/dialogs/match-opening/matchopeningwindow-dark.webp",
-    "w": 1206,
-    "h": 706,
-    "light": "media/dialogs/match-opening/matchopeningwindow-light.webp"
-   }
   ]
  },
  {
@@ -1078,16 +770,7 @@
    "Samples points inside each room to find the ceilings genuinely above its footprint, then lowers the room's Limit Offset so its top lands on the lowest ceiling underside.",
    "Room height becomes floor level to ceiling underside."
   ],
-  "safeguards": [],
-  "dialogs": [
-   {
-    "title": "Room Height Adjust",
-    "dark": "media/dialogs/room-height-adjust/roomheightadjustwindow-dark.webp",
-    "w": 946,
-    "h": 586,
-    "light": "media/dialogs/room-height-adjust/roomheightadjustwindow-light.webp"
-   }
-  ]
+  "safeguards": []
  },
  {
   "slug": "room-level-assigner",
@@ -1108,15 +791,6 @@
   ],
   "safeguards": [
    "Revit cannot re-level a placed room, so each room is recreated in place, with its number, name, parameters and XY location preserved."
-  ],
-  "dialogs": [
-   {
-    "title": "Room Level Assigner",
-    "dark": "media/dialogs/room-level-assigner/roomlevelassignerwindow-dark.webp",
-    "w": 986,
-    "h": 686,
-    "light": "media/dialogs/room-level-assigner/roomlevelassignerwindow-light.webp"
-   }
   ]
  },
  {
@@ -1141,15 +815,6 @@
   "safeguards": [
    "Reports sampled point-to-surface mean, median, 95th percentile and maximum for walls and structural columns in the active view.",
    "The heatmap overrides are restored on Clear or on close."
-  ],
-  "dialogs": [
-   {
-    "title": "Deviation Inspector",
-    "dark": "media/dialogs/deviation-inspector/deviationinspectorwindow-dark.webp",
-    "w": 1000,
-    "h": 640,
-    "light": "media/dialogs/deviation-inspector/deviationinspectorwindow-light.webp"
-   }
   ]
  },
  {
@@ -1173,15 +838,6 @@
   "safeguards": [
    "The point cloud itself is not modified or processed.",
    "A companion Point Cloud On/Off action toggles point clouds in the active view; Undo restores the previous setting."
-  ],
-  "dialogs": [
-   {
-    "title": "Point Cloud Slicer",
-    "dark": "media/dialogs/point-cloud-slicer/pointcloudslicerwindow-dark.webp",
-    "w": 806,
-    "h": 586,
-    "light": "media/dialogs/point-cloud-slicer/pointcloudslicerwindow-light.webp"
-   }
   ]
  },
  {
@@ -1202,15 +858,6 @@
   "safeguards": [
    "One tool for text: change case, clean up, find and replace (with regular expressions and a preview); merge notes into one or re-space and align them; find text across sheets and views, export it to CSV for Excel and import the edits back; move notes between text types and edit a type's font and size.",
    "Each run is one undoable step."
-  ],
-  "dialogs": [
-   {
-    "title": "Manage Text",
-    "dark": "media/dialogs/manage-text/managetextwindow-dark.webp",
-    "w": 1106,
-    "h": 846,
-    "light": "media/dialogs/manage-text/managetextwindow-light.webp"
-   }
   ]
  },
  {
@@ -1233,15 +880,6 @@
   "safeguards": [
    "Every proposed value is shown in a preview before any of them is written.",
    "Also exports and re-imports the plan as CSV or XLSX, saves and loads profiles, and colours or isolates the order for review."
-  ],
-  "dialogs": [
-   {
-    "title": "Reorder Pro",
-    "dark": "media/dialogs/reorder-pro/reorderprowindow-dark.webp",
-    "w": 1166,
-    "h": 746,
-    "light": "media/dialogs/reorder-pro/reorderprowindow-light.webp"
-   }
   ]
  },
  {
@@ -1261,15 +899,6 @@
   "capabilities": [],
   "safeguards": [
    "Hybrid Hunspell + SymSpell spell checking with an interactive HTML report."
-  ],
-  "dialogs": [
-   {
-    "title": "Spell Check",
-    "dark": "media/dialogs/spell-check/spellcheckerwindow-dark.webp",
-    "w": 1026,
-    "h": 986,
-    "light": "media/dialogs/spell-check/spellcheckerwindow-light.webp"
-   }
   ]
  },
  {
@@ -1291,8 +920,7 @@
   ],
   "safeguards": [
    "One undoable step, and clearable with Revit's Remove Overrides."
-  ],
-  "dialogs": []
+  ]
  },
  {
   "slug": "text-tag-align",
@@ -1311,16 +939,7 @@
   "capabilities": [
    "Pick or preselect text notes and tags, then align them as a vertical column or horizontal row using the current view axes."
   ],
-  "safeguards": [],
-  "dialogs": [
-   {
-    "title": "Text Tag Align",
-    "dark": "media/dialogs/text-tag-align/texttagalignwindow-dark.webp",
-    "w": 560,
-    "h": 379,
-    "light": "media/dialogs/text-tag-align/texttagalignwindow-light.webp"
-   }
-  ]
+  "safeguards": []
  },
  {
   "slug": "auto-dimension",
@@ -1348,15 +967,6 @@
   "safeguards": [
    "After a run you choose Keep or Undo.",
    "Skipped walls and rooms are listed with the reason."
-  ],
-  "dialogs": [
-   {
-    "title": "Auto Dimension",
-    "dark": "media/dialogs/auto-dimension/autodimensionwindow-dark.webp",
-    "w": 1106,
-    "h": 746,
-    "light": "media/dialogs/auto-dimension/autodimensionwindow-light.webp"
-   }
   ]
  },
  {
@@ -1385,22 +995,6 @@
   "safeguards": [
    "ACROSS VIEWS AND SHEETS: this view, views you pick, views on sheets you pick, views using templates you pick, or the whole project: Audit (typed-over values, zero segments, added text, locked/EQ, views hiding dimensions; clear typed values from the report), Merge in-line strings, Rebuild all on detail lines, Change dimension type.",
    "Borrowed elements are skipped and named."
-  ],
-  "dialogs": [
-   {
-    "title": "Manage Dimension",
-    "dark": "media/dialogs/manage-dimension/managedimensionwindow-dark.webp",
-    "w": 966,
-    "h": 746,
-    "light": "media/dialogs/manage-dimension/managedimensionwindow-light.webp"
-   },
-   {
-    "title": "Tick list",
-    "dark": "media/dialogs/manage-dimension/ticklistwindow-dark.webp",
-    "w": 626,
-    "h": 606,
-    "light": "media/dialogs/manage-dimension/ticklistwindow-light.webp"
-   }
   ]
  },
  {
@@ -1421,16 +1015,7 @@
    "Turns picked detail or model linework - or the fill grids of a picked Filled Region - into a Revit fill pattern, resolving each line onto the nearest grid angle the AutoCAD .pat format can repeat.",
    "Also exports any pattern to a .pat file."
   ],
-  "safeguards": [],
-  "dialogs": [
-   {
-    "title": "Make Pattern",
-    "dark": "media/dialogs/make-pattern/makepatternwindow-dark.webp",
-    "w": 546,
-    "h": 686,
-    "light": "media/dialogs/make-pattern/makepatternwindow-light.webp"
-   }
-  ]
+  "safeguards": []
  },
  {
   "slug": "split-region-with-line",
@@ -1451,8 +1036,7 @@
    "The line defines a plane perpendicular to the view that cuts each region in two - in plans, sections, elevations and drafting views.",
    "Both halves keep the fill type, boundary line style and parameters; the original is deleted only when both halves are created."
   ],
-  "safeguards": [],
-  "dialogs": []
+  "safeguards": []
  },
  {
   "slug": "sheet-export",
@@ -1471,51 +1055,7 @@
   "capabilities": [
    "Select sheets or views, choose one or more formats, configure export options, and run the export pipeline - including automatic XRef binding, optional OLE image embedding for DWG (needs the ArchiTECH AutoCAD helper), audit and purge, optional single-file consolidation, and an optional Drawing Register (.xlsx) of the exported sheets and their revisions."
   ],
-  "safeguards": [],
-  "dialogs": [
-   {
-    "title": "Sheet Export",
-    "dark": "media/dialogs/sheet-export/archsheetexportwindow-dark.webp",
-    "w": 1400,
-    "h": 900,
-    "light": "media/dialogs/sheet-export/archsheetexportwindow-light.webp"
-   },
-   {
-    "title": "Custom file name",
-    "dark": "media/dialogs/sheet-export/customfilenamedialog-dark.webp",
-    "w": 940,
-    "h": 660,
-    "light": "media/dialogs/sheet-export/customfilenamedialog-light.webp"
-   },
-   {
-    "title": "Export progress",
-    "dark": "media/dialogs/sheet-export/exportprogresswindow-dark.webp",
-    "w": 480,
-    "h": 256,
-    "light": "media/dialogs/sheet-export/exportprogresswindow-light.webp"
-   },
-   {
-    "title": "Prompt",
-    "dark": "media/dialogs/sheet-export/promptdialog-dark.webp",
-    "w": 480,
-    "h": 222,
-    "light": "media/dialogs/sheet-export/promptdialog-light.webp"
-   },
-   {
-    "title": "Publish sets",
-    "dark": "media/dialogs/sheet-export/publishsetsdialog-dark.webp",
-    "w": 780,
-    "h": 580,
-    "light": "media/dialogs/sheet-export/publishsetsdialog-light.webp"
-   },
-   {
-    "title": "Reorder",
-    "dark": "media/dialogs/sheet-export/reorderdialog-dark.webp",
-    "w": 600,
-    "h": 560,
-    "light": "media/dialogs/sheet-export/reorderdialog-light.webp"
-   }
-  ]
+  "safeguards": []
  },
  {
   "slug": "excel-to-schedule",
@@ -1537,15 +1077,6 @@
   ],
   "safeguards": [
    "Refresh rebuilds the SAME schedule element in place, so its sheet placement is kept."
-  ],
-  "dialogs": [
-   {
-    "title": "Excel To Schedule",
-    "dark": "media/dialogs/excel-to-schedule/exceltoschedulewindow-dark.webp",
-    "w": 1026,
-    "h": 666,
-    "light": "media/dialogs/excel-to-schedule/exceltoschedulewindow-light.webp"
-   }
   ]
  },
  {
@@ -1570,22 +1101,6 @@
   ],
   "safeguards": [
    "The two import buttons read a .xlsx or .csv back and write the values onto the matched elements, in one undoable step; a blank cell is skipped, never used to clear a parameter."
-  ],
-  "dialogs": [
-   {
-    "title": "Update Schedule",
-    "dark": "media/dialogs/update-schedule/updateschedulewindow-dark.webp",
-    "w": 1146,
-    "h": 766,
-    "light": "media/dialogs/update-schedule/updateschedulewindow-light.webp"
-   },
-   {
-    "title": "Review schedule import",
-    "dark": "media/dialogs/update-schedule/importpreviewwindow-dark.webp",
-    "w": 960,
-    "h": 600,
-    "light": "media/dialogs/update-schedule/importpreviewwindow-light.webp"
-   }
   ]
  },
  {
@@ -1615,15 +1130,6 @@
    "RENUMBER / RENAME: renumber sheets and rename sheets with find and replace, prefix, suffix, tokens and a sequence number (start, step, padding), with a live preview and a clash check.",
    "Revisions that come from a revision cloud on the sheet are reported.",
    "Each run is one Undo step, and anything skipped or blocked (borrowed by another user) is listed in the result."
-  ],
-  "dialogs": [
-   {
-    "title": "Sheet Manager",
-    "dark": "media/dialogs/sheet-manager/sheetmanagerwindow-dark.webp",
-    "w": 1306,
-    "h": 866,
-    "light": "media/dialogs/sheet-manager/sheetmanagerwindow-light.webp"
-   }
   ]
  },
  {
@@ -1652,15 +1158,6 @@
   ],
   "safeguards": [
    "Each run is one Undo step, and anything skipped or blocked (borrowed by another user) is listed in the result."
-  ],
-  "dialogs": [
-   {
-    "title": "VP Manager",
-    "dark": "media/dialogs/vp-manager/vpmanagerwindow-dark.webp",
-    "w": 1326,
-    "h": 866,
-    "light": "media/dialogs/vp-manager/vpmanagerwindow-light.webp"
-   }
   ]
  },
  {
@@ -1685,44 +1182,7 @@
    "Each tab is the same tool as its old button.",
    "Replaces Transfer Template, Transfer Filter, Transfer VS/EH and Imports Off."
   ],
-  "safeguards": [],
-  "dialogs": [
-   {
-    "title": "Template Manager",
-    "dark": "media/dialogs/template-manager/templatemanagerwindow-dark.webp",
-    "w": 1166,
-    "h": 766,
-    "light": "media/dialogs/template-manager/templatemanagerwindow-light.webp"
-   },
-   {
-    "title": "Imports Off",
-    "dark": "media/dialogs/template-manager/importsoffwindow-dark.webp",
-    "w": 746,
-    "h": 686,
-    "light": "media/dialogs/template-manager/importsoffwindow-light.webp"
-   },
-   {
-    "title": "Transfer VS / EH",
-    "dark": "media/dialogs/template-manager/transfervsoptionswindow-dark.webp",
-    "w": 540,
-    "h": 439,
-    "light": "media/dialogs/template-manager/transfervsoptionswindow-light.webp"
-   },
-   {
-    "title": "Transfer filters",
-    "dark": "media/dialogs/template-manager/filtertemplatewindow-dark.webp",
-    "w": 706,
-    "h": 586,
-    "light": "media/dialogs/template-manager/filtertemplatewindow-light.webp"
-   },
-   {
-    "title": "Transfer templates",
-    "dark": "media/dialogs/template-manager/templatetransferwindow-dark.webp",
-    "w": 946,
-    "h": 686,
-    "light": "media/dialogs/template-manager/templatetransferwindow-light.webp"
-   }
-  ]
+  "safeguards": []
  },
  {
   "slug": "graphic-overviews",
@@ -1743,15 +1203,6 @@
   ],
   "safeguards": [
    "One undoable step."
-  ],
-  "dialogs": [
-   {
-    "title": "Graphic Overviews",
-    "dark": "media/dialogs/graphic-overviews/graphicoverviewswindow-dark.webp",
-    "w": 1106,
-    "h": 746,
-    "light": "media/dialogs/graphic-overviews/graphicoverviewswindow-light.webp"
-   }
   ]
  },
  {
@@ -1776,16 +1227,7 @@
    "Switch off any detail you do not need.",
    "The lines are removed for you and one Ctrl+Z brings back both the lines and the views."
   ],
-  "safeguards": [],
-  "dialogs": [
-   {
-    "title": "Detail View",
-    "dark": "media/dialogs/detail-view/detailviewwindow-dark.webp",
-    "w": 1106,
-    "h": 746,
-    "light": "media/dialogs/detail-view/detailviewwindow-light.webp"
-   }
-  ]
+  "safeguards": []
  },
  {
   "slug": "room-to-view",
@@ -1808,15 +1250,6 @@
   ],
   "safeguards": [
    "Views are named from the room number and name so they are easy to find, and the whole batch is one undo step."
-  ],
-  "dialogs": [
-   {
-    "title": "Room To View",
-    "dark": "media/dialogs/room-to-view/roomtoviewwindow-dark.webp",
-    "w": 1166,
-    "h": 806,
-    "light": "media/dialogs/room-to-view/roomtoviewwindow-light.webp"
-   }
   ]
  },
  {
@@ -1844,22 +1277,6 @@
    "A preview lists the new view names first.",
    "MANAGE: duplicate views (duplicate, with detailing, or as dependent), apply a view template, and batch rename with find and replace, prefix, suffix and ignore case, with a live preview.",
    "Each run is one Undo step, and anything skipped or failed is listed in the result."
-  ],
-  "dialogs": [
-   {
-    "title": "View Manager",
-    "dark": "media/dialogs/view-manager/viewmanagerwindow-dark.webp",
-    "w": 1306,
-    "h": 866,
-    "light": "media/dialogs/view-manager/viewmanagerwindow-light.webp"
-   },
-   {
-    "title": "Choose the source view",
-    "dark": "media/dialogs/view-manager/sourceviewpicker-dark.webp",
-    "w": 706,
-    "h": 586,
-    "light": "media/dialogs/view-manager/sourceviewpicker-light.webp"
-   }
   ]
  }
 ]

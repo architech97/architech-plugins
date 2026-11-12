@@ -1,7 +1,7 @@
 # ArchiTECH Automation · Plugins website
 
 The public catalogue for ArchiTECH's BIM productivity software: 58 Revit tools in the Arch Folio,
-Arch Forge and Arch Sentinel suites, plus ArchiTECH I3D, ArchiTECH Assistant and ArchiTECH MCP Connector workflows for Revit, Rhino, SketchUp, AutoCAD and Blender. Browser walkthroughs use sample data.
+Arch Forge and Arch Sentinel suites, plus ArchiTECH I3D, ArchiTECH Assistant and ArchiTECH MCP Connector workflows for Revit, Rhino, SketchUp, AutoCAD and Blender. Every tool is shown through its real dialogs.
 
 The primary site is [architechdesign.in/automation/](https://architechdesign.in/automation/).
 The [GitHub Pages preview](https://architech97.github.io/architech-plugins/) remains available for existing links and is marked `noindex`.
@@ -11,15 +11,11 @@ The [GitHub Pages preview](https://architech97.github.io/architech-plugins/) rem
 Website code and public product information only:
 
 - product copy taken from each plugin's own ribbon tooltip and long description;
-- dialog screenshots rendered from each plugin's own layout with sample data;
-- guided Revit simulations, layout-based dialog explorers, and product-specific workflow simulations on sample data.
+- real dialog pictures: Revit and desktop screenshots, and renders of each product's own window classes with sample data
+  (project names and file paths are sample values). There are no recreated or simulated dialogs.
 
-It contains **no plugin source code, licensing logic, credentials or client data**. The demos never run Revit,
-open a model or call any service.
-
-The AT-01 Sample Residence project board links four demos using fictional rooms, sheets and warning groups. Each demo starts with independent sample state. Sample reports are generated in the browser.
-
-The Home page includes an attributed roof perspective and schematic plan exported from Autodesk's Snowdon Towers sample in Revit 2024. Those views are separate from the AT-01 fixtures. The I3D chair is a desktop result preview.
+It contains **no plugin source code, licensing logic, credentials or client data**. The site never runs Revit,
+opens a model or calls any service.
 
 ## Stack
 
@@ -28,22 +24,21 @@ Vite + React + TypeScript, static output for GitHub Pages. No backend.
 | Path | Purpose |
 |---|---|
 | `src/data/` | The catalogue: `tools.generated.json` (generated from the plugin sources), `problems.ts`, `extras.ts` (I3D, MCP, Assistant), `suites.ts`, `catalog.ts` |
-| `src/demo/` | The demo framework: `DemoPlayer` (simulated Revit window, guided steps, notifications, log), `ui.tsx` (dialog primitives), `dialog.css` (the plugins' own Dark/Light palette), `sample.ts`, `registry.ts` |
-| `src/demo/demos/` | Hand-built Revit demo components |
-| `src/pages/` | Home, catalogue, product, demos, pricing, custom development |
-| `public/media/` | Dialog renders, I3D captures and sample Blender render |
-| `public/demo-layouts/` | Public dialog layout fixtures loaded by the explorers |
+| `src/data/dialogs.generated.json` | The dialog mapping: every picture shown per product, generated from the dialog inventory by `scripts/build-dialogs.py` |
+| `src/components/DialogGallery.tsx` | The stepper: a tab per dialog state, Dark/Light where a light image exists, 1:1 zoom view |
+| `src/pages/` | Home, catalogue, product, dialog library (`/demos`), coverage, connect |
+| `public/dialogs/` | The dialog images (WebP; `-720` copies for small screens and thumbnails) |
+| `public/media/` | Product captures, the hero drawings and brand media |
 
-## Adding an interactive demo
+## Updating the dialog pictures
 
-1. Write `src/demo/demos/<Name>.tsx`: a component that receives `DemoContext`
-   (`theme`, `setTheme`, `done(stepId)`, `notify()`, `close()`) and builds the dialog from the primitives in
-   `src/demo/ui.tsx`. Give the controls the guide should point at a `demo="..."` prop.
-2. Add an entry to `src/demo/registry.ts`: the ribbon location, the guided steps (`id`, `title`, `hint`,
-   `target`), and the facts the simulation is based on (`basis`).
-3. Map the tool's key to the demo id in `DEMO_BY_KEY` in `src/data/catalog.ts`.
+```bash
+python scripts/build-dialogs.py <folder with dialog_inventory.csv, rendered/, clean/, clean_additional/>
+```
 
-Use the real dialog's labels, options and rules. Do not add capabilities the plugin does not have.
+The script copies the WebP files named in the inventory into `public/dialogs/` (names unchanged), writes the 720px copies and
+regenerates `src/data/dialogs.generated.json` and `src/data/hero.generated.json`. Captions, counts and the coverage page are all
+derived from that file; nothing is typed per component. It needs Python with Pillow.
 
 ## Ready for later
 
@@ -61,6 +56,6 @@ npm run build   # type-check and build to dist/
 ```
 
 Pushing to `main` deploys the preview through `.github/workflows/deploy.yml`.
-The build emits static entry points for direct product and demo links. The unified site's
+The build emits static entry points for direct product and dialog links. The unified site's
 workflow builds the commit pinned in [architech-design](https://github.com/architech97/architech-design)
 with `BASE=/automation/` and publishes both divisions in one GitHub Pages deployment.

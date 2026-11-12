@@ -1,65 +1,13 @@
 import { Link, useParams } from 'react-router-dom'
-import { CheckCircle2, ShieldCheck, PlayCircle, MessageSquare, AlertCircle, FileCheck2 } from 'lucide-react'
-import { DEMO_PROJECT } from '../data/demoProject'
+import { CheckCircle2, ShieldCheck, MessageSquare, AlertCircle, FileCheck2 } from 'lucide-react'
 import { PRODUCTS, productBySlug } from '../data/catalog'
 import { suiteById } from '../data/suites'
-import { demoById } from '../demo/registry'
-import { DemoPlayer } from '../demo/DemoPlayer'
 import { DialogGallery } from '../components/DialogGallery'
 import { ProductCard } from '../components/ProductCard'
 import { Reveal } from '../components/Layout'
 import { asset } from '../components/Brand'
 import NotFound from './NotFound'
 import './product-evidence.css'
-
-const WORKFLOW_EXAMPLES: Partial<Record<string, { input: string; result: string; reference?: string }>> = {
-  'sheet-export': { input: 'AT-01 drawing sheets and one or more export formats', result: 'Review output filenames and download a sample manifest or drawing register.' },
-  'parameter-manager': { input: 'An Asset Tag project parameter bound to Doors and Windows', result: 'Apply the definition to sample data and export the resulting parameter list to CSV.' },
-  'model-health': { input: 'Selected inventory categories in the AT-01 sample model', result: 'Review the inventory and export a sample Model Health report.' },
-  'sheet-manager': {
-    input: 'A-101 Ground Floor Plan and A-102 First Floor Plan',
-    result: 'Check the occupied A-102 number, then issue the two plans as GA-101 and GA-102.',
-  },
-  'room-to-view': {
-    input: '101 Living Room and 102 Kitchen',
-    result: 'Create plans and elevations, then see which views fit the selected sheet layout.',
-  },
-  'room-to-finishes': {
-    input: 'Rooms 101, 102, 103 and 105 with a floor, ceiling and lining type',
-    result: 'Review 12 planned rows, including Kitchen’s existing ceiling and the skipped Entrance Hall curtain wall.',
-  },
-  'warnings-inspector': {
-    input: 'Critical warnings and wall element 301178',
-    result: 'Review six affected element IDs and download the CSV for all nine warning groups.',
-  },
-  'architech-i3d': {
-    input: 'Prepared chair mesh or Dragon photo or mesh, with a known height in millimetres',
-    result: 'Review family save, load and placement as separate sample outcomes.',
-    reference: 'Chair and Dragon sample fixtures',
-  },
-  'architech-assistant': {
-    input: 'The active Revit view, or wall 401284 and its instance Comments value',
-    result: 'Inspect the Cover view response or review a proposed Comments update and check the resulting value.',
-  },
-}
-
-const DEMO_FORMATS = {
-  crafted: {
-    label: 'Guided simulation',
-    action: 'Start the guided demo',
-    description: 'Work through a specific task with sample inputs and check what changes.',
-  },
-  replica: {
-    label: 'Dialog explorer',
-    action: 'Explore the dialog',
-    description: 'Try the controls and inspect representative rows in a reconstruction of the exported dialog.',
-  },
-  workflow: {
-    label: 'Workflow simulation',
-    action: 'Try the sample workflow',
-    description: 'Run a sample scenario and inspect the illustrated result.',
-  },
-}
 
 const CHAIR_PREVIEW = 'media/i3d/chair-mesh.png'
 const DRAGON_PLACEMENT = 'media/i3d/revit-placement-0.6.36.webp'
@@ -69,9 +17,8 @@ export default function Product() {
   const p = productBySlug(slug)
   if (!p) return <NotFound />
   const suite = suiteById(p.suite)
-  const demo = p.demo ? demoById(p.demo) : undefined
-  const format = demo ? DEMO_FORMATS[demo.kind] : undefined
-  const example = WORKFLOW_EXAMPLES[p.slug]
+  const dialogCount = new Set(p.dialogs.map((d) => d.id)).size
+  const screenshots = p.dialogs.filter((d) => d.real).length
   const hasRecordedPlacement = p.media?.some(({ src }) => src === DRAGON_PLACEMENT)
   const hasChairPreview = p.slug === 'architech-i3d'
   const related = PRODUCTS.filter((x) => x.slug !== p.slug && x.suite === p.suite && x.panel === p.panel).concat(PRODUCTS.filter((x) => x.slug !== p.slug && x.suite === p.suite && x.panel !== p.panel)).slice(0, 3)
@@ -92,25 +39,17 @@ export default function Product() {
               <p className="suite-tag" style={{ ['--suite' as string]: suite.color }}>{suite.name}, {p.panel}</p>
               <p className="lead">{p.tagline}</p>
               <div className="hero-cta">
-                {format && <a className="btn btn-primary" href="#demo"><PlayCircle size={18} /> {format.action}</a>}
-                {(p.dialogs.length > 0 || p.media?.length) && <a className="btn btn-ghost" href="#dialog-reference">View {p.dialogs.length ? 'dialogs' : 'desktop visuals'}</a>}
-                <Link className={`btn ${demo ? 'btn-ghost' : 'btn-primary'}`} to={`/connect?type=walkthrough&product=${p.slug}`}><MessageSquare size={17} /> Request a walkthrough</Link>
+                {p.dialogs.length > 0
+                  ? <a className="btn btn-primary" href="#dialog-reference">See the {dialogCount === 1 ? 'dialog' : dialogCount + ' dialogs'}</a>
+                  : p.media?.length ? <a className="btn btn-ghost" href="#dialog-reference">View desktop visuals</a> : null}
+                <Link className={`btn ${p.dialogs.length ? 'btn-ghost' : 'btn-primary'}`} to={`/connect?type=walkthrough&product=${p.slug}`}><MessageSquare size={17} /> Request a walkthrough</Link>
               </div>
-              {example ? (
-                <section className="product-scenario" aria-label="Sample workflow">
-                  <p className="product-scenario-label">{example.reference ?? DEMO_PROJECT.name + ' / ' + DEMO_PROJECT.code}</p>
-                  <dl>
-                    <div><dt>Input</dt><dd>{example.input}</dd></div>
-                    <div><dt>Result</dt><dd>{example.result}</dd></div>
-                  </dl>
-                  {(hasChairPreview || hasRecordedPlacement) && (
-                    <div className="product-scenario-links">
-                      {hasChairPreview && <a href="#desktop-chair-preview">See the desktop chair preview</a>}
-                      {hasRecordedPlacement && <a href="#recorded-placement">See the separate Revit 2024 capture</a>}
-                    </div>
-                  )}
-                </section>
-              ) : format && <p className="product-format-note">{format.description}</p>}
+              {(hasChairPreview || hasRecordedPlacement) && (
+                <div className="product-scenario-links">
+                  {hasChairPreview && <a href="#desktop-chair-preview">See the desktop chair preview</a>}
+                  {hasRecordedPlacement && <a href="#recorded-placement">See the separate Revit 2024 capture</a>}
+                </div>
+              )}
             </div>
             <div className="glass spec" aria-label="Compatibility">
               <div className="spec-row"><span>Suite</span><span>{suite.name}</span></div>
@@ -118,13 +57,13 @@ export default function Product() {
               <div className="spec-row"><span>Software</span><span>{p.software.join(', ')}</span></div>
               <div className="spec-row"><span>Revit versions</span><span>{revit}</span></div>
               {p.platform && <div className="spec-row"><span>Platform</span><span>{p.platform}</span></div>}
-              <div className="spec-row"><span>Browser demo</span><span>{format ? format.label : p.dialogs.length ? 'Dialog renders below' : p.media ? 'Product media below' : 'Guided demo on request'}</span></div>
+              <div className="spec-row"><span>Dialogs shown</span><span>{p.dialogs.length ? `${dialogCount} in ${p.dialogs.length} ${p.dialogs.length === 1 ? 'picture' : 'pictures'}` : p.media ? 'Product media below' : 'Walkthrough on request'}</span></div>
             </div>
           </div>
         </div>
       </section>
 
-      {p.problem && !example && (
+      {p.problem && (
         <section className="section" style={{ paddingTop: 20, paddingBottom: 40 }}>
           <div className="wrap ps-grid">
             <Reveal><div className="glass ps-card" style={{ height: '100%' }}>
@@ -139,24 +78,7 @@ export default function Product() {
         </section>
       )}
 
-      {demo && format && (
-        <section className="section" id="demo" style={{ paddingTop: 40 }}>
-          <div className="wrap-wide">
-            <Reveal className="section-head">
-              <div><h2>{demo.title}</h2></div>
-              <Link className="btn btn-ghost" to={'/demos/' + demo.id}>Open full demo page</Link>
-            </Reveal>
-            <DemoPlayer key={demo.id} demo={demo} />
-            <details className="product-provenance">
-              <summary>What this browser demo represents</summary>
-              <p>{format.description} Actions in the browser use sample data.</p>
-              <ul>{demo.basis.map((fact) => <li key={fact}>{fact}</li>)}</ul>
-            </details>
-          </div>
-        </section>
-      )}
-
-      <section className="section" style={{ paddingTop: demo ? 40 : 20 }}>
+      <section className="section" style={{ paddingTop: 20 }}>
         <div className="wrap grid-2" style={{ alignItems: 'start', gap: 28 }}>
           <Reveal>
             <h2 style={{ margin: '12px 0 20px', fontSize: 'clamp(1.6rem, 2.6vw, 2.1rem)' }}>How it works</h2>
@@ -183,10 +105,10 @@ export default function Product() {
         <section className="section" id="dialog-reference" style={{ paddingTop: 20, scrollMarginTop: '124px' }}>
           <div className="wrap">
             <Reveal className="section-head">
-              <div><h2>{p.dialogs.length ? 'Plugin dialogs' : 'Desktop captures and illustrations'}</h2></div>
-              {p.dialogs.length > 0 && <p className="lead">{p.dialogs.length} dialog{p.dialogs.length > 1 ? 's' : ''} with sample data. Select a window or enlarge it to inspect the controls.</p>}
+              <div><h2>{p.dialogs.length ? 'Its dialogs' : 'Desktop captures and illustrations'}</h2></div>
+              {p.dialogs.length > 0 && <p className="lead">{dialogCount} dialog{dialogCount > 1 ? 's' : ''}, as built. Step through them, or zoom one to full size.</p>}
             </Reveal>
-            {p.dialogs.length > 0 && <Reveal><DialogGallery key={p.slug} dialogs={p.dialogs} name={p.name} /></Reveal>}
+            {p.dialogs.length > 0 && <DialogGallery key={p.slug} product={p} />}
             {p.media && (
               <div className={hasChairPreview ? 'grid-2 product-media-pair' : 'grid-3'} style={{ marginTop: 20 }}>
                 {hasChairPreview && (
@@ -230,8 +152,8 @@ export default function Product() {
               <span className="eyebrow">Evidence and scope</span>
               <ul className="feature-list" style={{ marginTop: 16 }}>
                 {isRevitTool && <li><FileCheck2 size={18} /><span>The native add-in targets Revit {revit}. Its ribbon location is {ribbon}.</span></li>}
-                {p.dialogs.length > 0 && <li><FileCheck2 size={18} /><span>Dialog references are rendered from XAML or reconstructed from code-built controls. They use sample data.</span></li>}
-                {format && <li><FileCheck2 size={18} /><span>{format.label}. {format.description}</span></li>}
+                {screenshots > 0 && <li><FileCheck2 size={18} /><span>{screenshots} dialog {screenshots === 1 ? 'picture is a screenshot' : 'pictures are screenshots'} of the installed build.</span></li>}
+                {p.dialogs.length > screenshots && <li><FileCheck2 size={18} /><span>{p.dialogs.length - screenshots} dialog {p.dialogs.length - screenshots === 1 ? 'picture is' : 'pictures are'} rendered from the product’s own window code with sample data.</span></li>}
                 {hasRecordedPlacement && <li><FileCheck2 size={18} /><span>The Revit placement image records a separate host run of the Dragon fixture.</span></li>}
               </ul>
             </div>

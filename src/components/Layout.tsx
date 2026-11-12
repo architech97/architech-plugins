@@ -10,7 +10,7 @@ const designUrl = unified ? '/design/' : CONTACT.designSite
 
 const SUBNAV = [
   { to: '/plugins', label: 'Plugins' },
-  { to: '/demos', label: 'Demos' },
+  { to: '/demos', label: 'Dialogs' },
   { to: '/coverage', label: 'Coverage' },
   { to: '/connect', label: 'Connect' },
 ]
@@ -46,7 +46,7 @@ export function Layout() {
       <nav className="ax-subnav" ref={subnav} aria-label="Automation">
         <div className="ax-subnav-inner">
           {SUBNAV.map((n) => <NavLink key={n.to} to={n.to}>{n.label}</NavLink>)}
-          <Link className="ax-subnav-cta" to="/demos#sample-project">Try a demo</Link>
+          <Link className="ax-subnav-cta" to="/demos#demo-index">All dialogs</Link>
         </div>
       </nav>
       <main id="main" tabIndex={-1}><div key={pathname}><Outlet /></div></main>
@@ -75,7 +75,7 @@ function Footer() {
           <p className="ax-foot-h">Work</p>
           <a href={designUrl}>Design portfolio</a>
           <Link to="/">Automation</Link>
-          <Link to="/demos">Browser demos</Link>
+          <Link to="/demos">Tool dialogs</Link>
           <Link to="/connect">Discuss a workflow</Link>
         </div>
         <div className="ax-foot-col">
@@ -90,7 +90,7 @@ function Footer() {
       </div>
       <div className="ax-foot-base">
         <span className="ax-foot-mark"><Mark size={26} />Archi<strong>TECH</strong></span>
-        <p>Portfolio of Navneet Singh, New Delhi. Demos are browser simulations on sample data; nothing connects to Revit. Autodesk, Revit and AutoCAD are trademarks of Autodesk, Inc.; Rhino, SketchUp and Blender are trademarks of their owners.</p>
+        <p>Portfolio of Navneet Singh, New Delhi. Dialog pictures are screenshots and renders of the tools, with sample data. Autodesk, Revit and AutoCAD are trademarks of Autodesk, Inc.; Rhino, SketchUp and Blender are trademarks of their owners.</p>
       </div>
     </footer>
   )

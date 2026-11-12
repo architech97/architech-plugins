@@ -15,7 +15,7 @@
 [data-spot]:not(:hover) { background-image: none; }
 
 /* Thumbnails drift a little with the pointer. */
-a:hover > .product-thumb img, .pcard:hover .product-preview-art img { translate: calc(var(--px, 0) * -7px) calc(var(--py, 0) * -7px); }
+.pcard:hover .product-preview-art img { translate: calc(var(--px, 0) * -7px) calc(var(--py, 0) * -7px); }
 .product-preview-art img { transition: translate var(--t-reveal) var(--ease), transform var(--t-scene) var(--ease), opacity var(--t-reveal) var(--ease); }
 
 
@@ -43,23 +43,19 @@ a:hover > .product-thumb img, .pcard:hover .product-preview-art img { translate:
 }
 
 /* Walkthrough player feedback. */
-.step-list li.done svg { animation: pop var(--t-reveal) var(--ease); }
 @keyframes pop { 0% { transform: scale(.4); } 60% { transform: scale(1.25); } 100% { transform: scale(1); } }
-.toast { animation: toast-in var(--t-ui) var(--ease) both; }
 @keyframes toast-in { from { opacity: 0; transform: translateY(-10px) scale(.97); } to { opacity: 1; transform: none; } }
-.demo-focus { animation: focus-ring var(--t-scene) var(--ease) 2; }
 @keyframes focus-ring { 0%, 100% { box-shadow: 0 0 0 2px var(--motion-focus-solid), 0 0 0 6px var(--motion-focus-clear); } 50% { box-shadow: 0 0 0 2px var(--motion-focus-solid), 0 0 0 9px var(--motion-focus-soft); } }
 .inquiry-draft { animation: route-in var(--t-reveal) var(--ease) both; }
-.shot img, .shot-modal img { animation: route-in var(--t-reveal) var(--ease) both; }
 .coverage-table tbody tr { transition: background var(--t-ui) var(--ease); }
 .coverage-table tbody tr:hover { background: var(--motion-row-hover); }
 .field input, .field select, .field textarea { transition: border-color var(--t-ui) var(--ease), box-shadow var(--t-ui) var(--ease); }
 .field input:focus, .field select:focus, .field textarea:focus { box-shadow: 0 0 0 4px var(--motion-field-focus); }
 
 @media (prefers-reduced-motion: reduce) {
-  .route-in, .step-list li.done svg, .toast, .demo-focus, .inquiry-draft, .shot img, .shot-modal img { animation: none; }
+  .route-in, .inquiry-draft { animation: none; }
   .bg-grid::before, .btn-primary::after, .demo-button::after { display: none; }
   .product-preview-art img { transition: none; }
-  a:hover > .product-thumb img, .pcard:hover .product-preview-art img { translate: none; }
+  .pcard:hover .product-preview-art img { translate: none; }
   .native-image img, .native-capture img, .home-band h2, .automation-contact h2 { animation: none; }
 }

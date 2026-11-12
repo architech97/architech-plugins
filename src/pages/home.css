@@ -8,23 +8,16 @@
   --home-sheet-ink: #2a2420;
   --home-white: #fff;
   --home-panel-ink: #f1efea;
-  --home-panel: #17181b;
   --home-panel-rule: #3e424b;
-  --home-panel-shadow: #14161c;
   --home-panel-divider: #383d47;
   --home-panel-muted: #9aa3b5;
-  --home-check-rule: #6b7180;
   --home-blue-text: #b3c5f2;
-  --home-row-text: #d9d6cf;
   --home-night: var(--night);
-  --home-press-clear: #7b9be600;
-  --home-press-ring: #7b9be6cc;
   --home-blueprint: var(--blueprint);
   --home-night-glass: #171311e6;
   --home-stage-muted: #c9c6bf;
   --home-stage-tab: #1d2027;
   --home-shadow-solid: #000;
-  --home-note: #b5b0a6;
   --home-link-rule: #c3d2f773;
   --home-ribbon-paper: #f8f5f0;
   --home-ribbon-hover: #e3e9f5;
@@ -43,7 +36,7 @@
 .home-secondary { display: inline-flex; align-items: center; min-height: 44px; color: var(--text); font-weight: 500; border-bottom: 1px solid var(--line-strong); transition: border-color var(--t-ui) var(--ease); }
 .home-secondary:hover { border-color: var(--text); }
 
-/* The result loop: rows are ticked, Export is pressed, the sheets come out. */
+/* The result loop: the real Sheet Export window, and the sheets that come out of it. */
 .loop { margin: 0; }
 .loop-stage { position: relative; isolation: isolate; aspect-ratio: 1.18; }
 .loop figcaption { margin-top: 12px; color: var(--muted); font-size: .84rem; text-align: right; }
@@ -62,32 +55,14 @@
   0%, 25% { opacity: 0; transform: translate(-62%, 58%) scale(.3) rotate(0deg); }
   70%, 100% { opacity: 1; transform: rotate(var(--r)); }
 }
-.loop-panel { view-transition-name: automation-dialog; position: absolute; left: 0; bottom: 3%; z-index: 1; width: 45%; color: var(--home-panel-ink); background: var(--home-panel); border: 1px solid var(--home-panel-rule); box-shadow: 0 34px 60px -30px var(--home-panel-shadow); font-size: clamp(11px, .95vw, .84rem); }
-.loop-panel-title { display: flex; flex-direction: column; gap: 2px; padding: 11px 14px; border-bottom: 1px solid var(--home-panel-divider); font-weight: 500; font-size: 1.1em; }
-.loop-panel-title span { color: var(--home-panel-muted); font: 400 11px/1.3 var(--font-body); }
-.loop-panel ul { list-style: none; margin: 0; padding: 4px 0; }
-.loop-panel li { display: grid; grid-template-columns: auto auto minmax(0, 1fr); align-items: center; gap: 10px; padding: 7px 14px; white-space: nowrap; overflow: hidden; }
-.loop-panel li i { position: relative; width: 1.15em; height: 1.15em; border: 1px solid var(--home-check-rule); }
-.loop-panel li i::after { content: ''; position: absolute; inset: -1px; background: var(--automation-cyan); animation: tick-once var(--t-reveal) var(--ease) both; }
-.loop-panel li i::before { content: ""; position: absolute; z-index: 1; width: .55em; height: .3em; left: .23em; top: .27em; border: solid var(--night); border-width: 0 0 2px 2px; transform: rotate(-45deg); }
-.loop-panel li.r0 i::after { animation-delay: var(--t-ui); }
-.loop-panel li.r1 i::after { animation-delay: var(--t-reveal); }
-.loop-panel li.r2 i::after { animation-delay: var(--t-scene); }
-.loop-panel li.r3 i::after { animation-delay: calc(var(--t-scene) + var(--t-ui)); }
-.loop-panel li b { font: 500 11px/1.3 var(--font-body); color: var(--home-blue-text); }
-.loop-panel li span { color: var(--home-row-text); overflow: hidden; text-overflow: ellipsis; }
-@keyframes tick-once { 0%, 25% { opacity: 0; transform: scale(.3); } 70%, 100% { opacity: 1; transform: none; } }
-.loop-panel-foot { display: flex; align-items: center; justify-content: space-between; gap: 10px; padding: 10px 14px; border-top: 1px solid var(--home-panel-divider); }
-.loop-count { color: var(--home-panel-muted); font: 400 11px/1.3 var(--font-body); }
-.loop-button { padding: .5em 1.3em; color: var(--home-night); background: var(--automation-cyan); font-weight: 600; animation: press-once var(--t-reveal) var(--ease) var(--t-scene) both; }
-@keyframes press-once { 0%, 45% { transform: none; box-shadow: 0 0 0 0 var(--home-press-clear); } 65% { transform: scale(.93); box-shadow: 0 0 0 0 var(--home-press-ring); } 100% { transform: none; box-shadow: 0 0 0 12px var(--home-press-clear); } }
+.loop-panel { view-transition-name: automation-dialog; position: absolute; left: 0; bottom: 3%; z-index: 1; width: 62%; height: auto; filter: drop-shadow(0 28px 34px var(--home-sheet-shadow)); }
 
 /* Section headings: a serif line on the left, one plain sentence on the right. */
 .split-head { display: grid; grid-template-columns: minmax(0, 1fr) minmax(240px, 42ch); align-items: end; gap: 12px 40px; margin-bottom: clamp(24px, 3.4vw, 50px); }
 .split-head h2, .dialog-wall-head h2, .ah-contact h2 { font-size: clamp(2.4rem, 5.2vw, 5rem); letter-spacing: -.045em; line-height: .95; }
 .split-head > p { color: var(--text-2); font-size: clamp(.97rem, 1.15vw, 1.08rem); }
 
-/* The live stage: a dark screen with a plan that draws itself behind the working dialog. */
+/* The stage: a dark screen with a plan that draws itself behind the real dialogs of one tool. */
 .try { padding: var(--s-5) 0 0; }
 .hero-stage { position: relative; isolation: isolate; overflow: hidden; color: var(--home-panel-ink); background: var(--night); border-radius: 4px; }
 .stage-blueprint { position: absolute; inset: 0; width: 100%; height: 100%; z-index: -1; fill: none; }
@@ -105,14 +80,7 @@
 .hero-stage-tabs button:hover { color: var(--home-white); background: var(--home-stage-tab); }
 .hero-stage-tabs button[aria-pressed="true"] { color: var(--home-white); background: var(--home-stage-tab); box-shadow: inset 0 -2px var(--automation-cyan); }
 .hero-stage-status { display: flex; align-items: center; padding: 0 18px; font: 500 12px/1.3 var(--font-body); color: var(--home-blue-text); white-space: nowrap; }
-.hero-stage-body { padding: clamp(12px, 2.4vw, 34px) clamp(10px, 2.4vw, 34px) 0; animation: plate-reveal var(--t-reveal) var(--ease) both; }
-.live-dialog-fit { position: relative; max-width: 1080px; margin: 0 auto; min-height: 320px; transition: height var(--t-ui) var(--ease); }
-.live-dialog-inner { transform-origin: top left; }
-.live-dialog-inner > .ad { box-shadow: 0 34px 70px -30px var(--home-shadow-solid); }
-.live-dialog-loading { min-height: 420px; display: grid; place-items: center; color: var(--home-panel-muted); font: 500 12px var(--font-body); border: 1px dashed var(--home-panel-rule); }
-.live-dialog-note { max-width: 1080px; margin: 12px auto 0; min-height: 2.9em; padding-bottom: 12px; color: var(--home-note); font: 400 12px/1.45 var(--font-body); }
-.hero-stage-still { display: block; }
-.hero-stage-still img { width: 100%; height: auto; }
+.hero-stage-body { max-width: 1180px; margin-inline: auto; padding: clamp(8px, 1.4vw, 18px) clamp(10px, 2.4vw, 34px) 0; animation: plate-reveal var(--t-reveal) var(--ease) both; }
 .hero-stage-foot { display: flex; flex-wrap: wrap; justify-content: space-between; align-items: center; gap: 10px 18px; padding: 13px clamp(12px, 2.4vw, 34px); border-top: 1px solid var(--home-panel-divider); background: var(--home-night-glass); }
 .hero-stage-foot strong { font-size: .97rem; font-weight: 500; }
 .hero-stage-foot p { margin-top: 2px; color: var(--home-stage-muted); font-size: .86rem; max-width: 60ch; }
@@ -157,7 +125,7 @@
 .ribbon-shot img { width: 100%; height: 100%; object-fit: cover; object-position: left top; border: .75px solid var(--line-strong); border-radius: 4px 4px 0 0; box-shadow: 0 40px 70px -50px var(--home-taupe); }
 .ribbon-shot figcaption { margin-top: 10px; color: var(--muted); font: 400 12px var(--font-body); text-align: right; }
 
-/* Every dialog: light renders on taupe-d. The first row overlaps the ribbon by 80px; feathers of at least 160px (30vh) into paper. */
+/* Every dialog: real main windows on taupe-d. The first row overlaps the ribbon by 80px; feathers of at least 160px (30vh) into paper. */
 .wall-band { --feather: max(160px, 30vh); --lap: calc(var(--s-5) + 80px); position: relative; z-index: 1; margin-top: calc(-1 * var(--lap)); padding-bottom: calc(var(--feather) + var(--s-3)); color: var(--on-dark);
   background: linear-gradient(var(--home-clear) 0, var(--home-clear) var(--lap), var(--paper) var(--lap), var(--stone) calc(var(--lap) + var(--feather) * .35), var(--taupe-d) calc(var(--lap) + var(--feather)), var(--taupe-d) calc(100% - var(--feather)), var(--stone) calc(100% - var(--feather) * .35), var(--paper) 100%); }
 .wall-band .dialog-wall { padding: 0; }
@@ -188,10 +156,8 @@
 .home-desktop-grid { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: var(--s-3); align-items: stretch; }
 .home-desktop-grid article { display: flex; flex-direction: column; min-width: 0; height: 100%; border-top: .75px solid var(--taupe); }
 .home-desktop-grid article > :first-child { flex: 1; min-height: 0; }
-.home-desktop-grid article > img, .home-assistant-capture { width: 100%; height: 260px; background: var(--taupe-d); object-fit: contain; padding: 12px; margin-top: var(--s-2); transition: translate var(--t-reveal) var(--ease); }
-.home-desktop-grid article:hover > img, .home-desktop-grid article:hover .home-assistant-capture { translate: 0 -4px; }
-.home-assistant-capture { display: grid; align-content: center; gap: 6px; }
-.home-assistant-capture img { width: 100%; }
+.home-desktop-grid article > img { width: 100%; height: 260px; background: var(--taupe-d); object-fit: contain; padding: 12px; margin-top: var(--s-2); transition: translate var(--t-reveal) var(--ease); }
+.home-desktop-grid article:hover > img { translate: 0 -4px; }
 .home-desktop-grid article > div:last-child { padding: 16px 0 0; }
 .home-desktop-grid h3 { margin: 8px 0 4px; font-weight: 500; font-size: 1.25rem; }
 .product-kind { margin-bottom: 5px; color: var(--muted); font: 400 13px/1.4 var(--font-body); }
@@ -221,7 +187,7 @@
   .hero-stage-body { padding-bottom: 12px; }
   .loop figcaption { text-align: left; }
   .loop-stage { aspect-ratio: 1.02; }
-  .loop-panel { width: 48%; bottom: 0; }
+  .loop-panel { width: 66%; bottom: 0; }
 }
 @media (max-width: 480px) {
   .path-steps { grid-template-columns: minmax(0, 1fr); }
@@ -232,6 +198,6 @@
   .ah h1 { font-size: clamp(2.7rem, 14vw, 3.6rem); }
 }
 @media (prefers-reduced-motion: reduce) {
-  .loop-sheet, .loop-panel li i::after, .loop-button, .hero-stage-body { animation: none; }
+  .loop-sheet, .hero-stage-body { animation: none; }
   .stage-blueprint path { animation: none; stroke-dashoffset: 0; }
 }

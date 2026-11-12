@@ -1,45 +1,94 @@
-import { useRef, useState } from 'react'
-import { Maximize2, Moon, Sun, X } from 'lucide-react'
-import type { DialogShot } from '../data/types'
+import { useRef, useState, type KeyboardEvent } from 'react'
+import { ArrowLeft, ArrowRight, Maximize2, Moon, Sun, X } from 'lucide-react'
+import type { DialogShot, Product } from '../data/types'
 import { asset } from './Brand'
+import { dialogAlt, imageProps } from './dialogImage'
+import './dialogGallery.css'
 
-export function DialogGallery({ dialogs, name }: { dialogs: DialogShot[]; name: string }) {
-  const [i, setI] = useState(0)
-  const [mode, setMode] = useState<'dark' | 'light'>('dark')
+const sourceNote = (shot: DialogShot) => shot.real ? 'Screenshot of the installed build' : 'Rendered from the product’s own window, with sample data'
+
+/**
+ * Every real dialog of one product as a stepper: a tab per dialog state, a stage that never changes size,
+ * a Dark/Light switch only where a light image exists, and a 1:1 zoom view.
+ */
+export function DialogGallery({ product, eager = false, ratio, dark = false }: { product: Product; eager?: boolean; ratio?: number; dark?: boolean }) {
+  const dialogs = product.dialogs
+  const [index, setIndex] = useState(0)
+  const [light, setLight] = useState(false)
+  const [zoomed, setZoomed] = useState(false)
   const lightbox = useRef<HTMLDialogElement>(null)
-  const shot = dialogs[i]
+  const tabs = useRef<HTMLDivElement>(null)
+  const shot = dialogs[index]
   if (!shot) return null
-  const otherMode = mode === 'dark' ? 'light' : 'dark'
-  const actualMode = shot[mode] ? mode : otherMode
-  const src = shot[actualMode]
-  if (!src) return null
-  const source = shot.source === 'reconstructed' ? 'Source-derived reconstruction with sample data.' : 'Rendered from the dialog layout with sample data.'
-  const caption = name + ', ' + shot.title + ', ' + actualMode + ' theme'
+  const theme = light && shot.light ? 'light' : 'dark'
+  const image = shot[theme]!
+  const id = 'dialogs-' + product.slug
+  // The stage keeps the shape of the product's first (main) window, so stepping never moves the page.
+  const stage = ratio ?? Math.max(1.25, dialogs[0].dark[1] / dialogs[0].dark[2])
+
+  const select = (next: number, focus = false) => {
+    setIndex(next)
+    const tab = tabs.current?.querySelectorAll<HTMLButtonElement>('[role="tab"]')[next]
+    if (focus) tab?.focus({ preventScroll: true })
+    tab?.scrollIntoView({ block: 'nearest', inline: 'nearest' })
+  }
+  const onKey = (event: KeyboardEvent<HTMLButtonElement>) => {
+    const count = dialogs.length
+    const next = event.key === 'ArrowRight' ? (index + 1) % count
+      : event.key === 'ArrowLeft' ? (index + count - 1) % count
+      : event.key === 'Home' ? 0 : event.key === 'End' ? count - 1 : undefined
+    if (next === undefined) return
+    event.preventDefault()
+    select(next, true)
+  }
 
   return (
-    <div>
-      <div className="gallery-head">
-        {dialogs.length > 1 ? (
-          <div className="shot-tabs" role="group" aria-label={name + ' dialogs'}>
-            {dialogs.map((item, index) => (
-              <button type="button" key={item.title + index} aria-pressed={index === i} className={`btn btn-sm ${index === i ? 'btn-primary' : 'btn-ghost'}`} onClick={() => setI(index)}>{item.title}</button>
-            ))}
+    <div className={dark ? 'dg on-dark' : 'dg'}>
+      <div className="dg-head">
+        <div className="dg-tabs" role="tablist" aria-label={product.name + ' dialogs'} ref={tabs}>
+          {dialogs.map((item, i) => (
+            <button type="button" role="tab" key={item.dark[0]} id={id + '-tab-' + i} aria-selected={i === index} aria-controls={id + '-panel'}
+              tabIndex={i === index ? 0 : -1} onClick={() => select(i)} onKeyDown={onKey}>{item.state}</button>
+          ))}
+        </div>
+        {shot.light && (
+          <div className="dg-theme" role="group" aria-label="Dialog theme">
+            <button type="button" aria-pressed={!light} onClick={() => setLight(false)}><Moon size={14} aria-hidden="true" /> Dark</button>
+            <button type="button" aria-pressed={light} onClick={() => setLight(true)}><Sun size={14} aria-hidden="true" /> Light</button>
           </div>
-        ) : <span className="mono muted">{shot.title}</span>}
-        <div className="seg" role="group" aria-label="Screenshot theme">
-          <button type="button" className={actualMode === 'dark' ? 'on' : ''} aria-pressed={actualMode === 'dark'} disabled={!shot.dark} onClick={() => setMode('dark')}><Moon size={14} /> Dark</button>
-          <button type="button" className={actualMode === 'light' ? 'on' : ''} aria-pressed={actualMode === 'light'} disabled={!shot.light} onClick={() => setMode('light')}><Sun size={14} /> Light</button>
+        )}
+      </div>
+      <div className="dg-panel" role="tabpanel" id={id + '-panel'} aria-labelledby={id + '-tab-' + index}>
+        <button type="button" className="dg-stage" style={{ aspectRatio: String(stage) }} onClick={() => { setZoomed(true); lightbox.current?.showModal() }}
+          aria-label={'Zoom the ' + shot.title + ' dialog to 1:1'}>
+          <img key={image[0]} {...imageProps(image)} alt={dialogAlt(product, shot, theme)} decoding="async"
+            loading={eager && index === 0 ? 'eager' : 'lazy'} fetchPriority={eager && index === 0 ? 'high' : undefined} />
+          <span className="dg-zoom" aria-hidden="true"><Maximize2 size={15} /> 1:1</span>
+        </button>
+        <div className="dg-foot">
+          <p className="dg-caption" aria-live="polite">
+            <strong>{shot.title}</strong>
+            <span>{shot.kind}. {sourceNote(shot)}.</span>
+          </p>
+          {dialogs.length > 1 && (
+            <div className="dg-step" role="group" aria-label="Step through the dialogs">
+              <button type="button" onClick={() => select(index - 1)} disabled={index === 0} aria-label="Previous dialog"><ArrowLeft size={17} aria-hidden="true" /></button>
+              <span>{index + 1} / {dialogs.length}</span>
+              <button type="button" onClick={() => select(index + 1)} disabled={index + 1 === dialogs.length} aria-label="Next dialog"><ArrowRight size={17} aria-hidden="true" /></button>
+            </div>
+          )}
         </div>
       </div>
-      <button type="button" className="shot" onClick={() => lightbox.current?.showModal()} aria-label={'Enlarge the ' + shot.title + ' dialog'}>
-        <img key={src} src={asset(src)} alt={caption} width={shot.w} height={shot.h} loading="lazy" decoding="async" />
-        <span className="shot-zoom" aria-hidden="true"><Maximize2 size={18} /></span>
-      </button>
-      <p className="caption" aria-live="polite">{i + 1} of {dialogs.length}, {shot.title}, {actualMode === 'dark' ? 'Dark' : 'Light'} theme. {source}</p>
-      <dialog className="shot-modal" ref={lightbox} aria-label={shot.title + ' enlarged'} onClick={(e) => { if (e.target === e.currentTarget) e.currentTarget.close() }}>
-        <div className="shot-modal-body">
-          <button type="button" className="btn btn-ghost btn-sm" autoFocus onClick={() => lightbox.current?.close()}><X size={16} /> Close preview</button>
-          <img src={asset(src)} alt={caption} loading="lazy" />
+
+      {/* Native modal dialog: the browser traps focus, closes on Esc and returns focus to the stage. */}
+      <dialog className="dg-lightbox" ref={lightbox} aria-labelledby={id + '-zoom-title'} onClose={() => setZoomed(false)}
+        onClick={(event) => { if (event.target === event.currentTarget) event.currentTarget.close() }}>
+        <header>
+          <p id={id + '-zoom-title'}><strong>{shot.title}</strong><span>{image[1]} × {image[2]} px, shown at 1:1</span></p>
+          <button type="button" autoFocus onClick={() => lightbox.current?.close()}><X size={17} aria-hidden="true" /> Close</button>
+        </header>
+        <div className="dg-lightbox-scroll" tabIndex={0} role="region" aria-label="Full-size dialog image. Scroll to pan.">
+          {zoomed && <img src={asset(image[0])} width={image[1]} height={image[2]} alt={dialogAlt(product, shot, theme)} decoding="async" />}
         </div>
       </dialog>
     </div>

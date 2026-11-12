@@ -1,0 +1,61 @@
+/* Real dialog gallery: a tab per dialog state, a stage of fixed shape, a 1:1 zoom view. Tokens only. */
+.dg { min-width: 0; }
+.dg-head { display: flex; align-items: center; justify-content: space-between; gap: var(--s-2); min-height: 52px; border-bottom: .75px solid var(--line-strong); }
+.dg-tabs { display: flex; flex: 1; min-width: 0; gap: 4px; overflow-x: auto; overscroll-behavior-x: contain; scrollbar-width: thin; }
+.dg-tabs button { flex: none; min-height: 44px; padding: 8px 16px; border: 0; border-radius: 2px 2px 0 0; background: none; color: var(--text-2); font: 400 .95rem/1.3 var(--font-body); white-space: nowrap; cursor: pointer; transition: color var(--t-ui), background var(--t-ui); }
+.dg-tabs button:hover { color: var(--text); background: var(--panel-2); }
+.dg-tabs button[aria-selected="true"] { color: var(--text); font-weight: 500; box-shadow: inset 0 -2px var(--brass-ink); }
+.dg [role="tab"]:focus-visible { outline: 2px solid var(--focus); outline-offset: -4px; }
+.dg-theme { display: inline-flex; flex: none; padding: 4px; border: .75px solid var(--line-strong); border-radius: 2px; }
+.dg-theme button { display: inline-flex; align-items: center; gap: 8px; min-height: 36px; padding: 0 12px; border: 0; border-radius: 2px; background: none; color: var(--text-2); font: 500 .85rem/1 var(--font-body); cursor: pointer; }
+.dg-theme button[aria-pressed="true"] { background: var(--ink); color: var(--paper); }
+
+.dg-stage { position: relative; display: block; width: 100%; max-height: 82vh; margin-top: var(--s-2); padding: 0; border: 0; border-radius: 4px; background: var(--night); cursor: zoom-in; overflow: hidden; }
+/* Never upscaled: the image sits at its own pixel size until the stage is smaller than it. */
+.dg-stage img { position: absolute; inset: clamp(10px, 2.4vw, 28px); margin: auto; width: auto; height: auto; max-width: calc(100% - 2 * clamp(10px, 2.4vw, 28px)); max-height: calc(100% - 2 * clamp(10px, 2.4vw, 28px)); animation: dg-in var(--t-ui) var(--ease) both; }
+@keyframes dg-in { from { opacity: 0; } to { opacity: 1; } }
+.dg-zoom { position: absolute; right: 10px; bottom: 10px; display: inline-flex; align-items: center; gap: 8px; padding: 8px 12px; border-radius: 2px; background: var(--paper); color: var(--ink); font: 500 .8rem/1 var(--font-body); opacity: .92; }
+.dg-stage:focus-visible { outline: 2px solid var(--focus); outline-offset: 3px; }
+
+.dg-foot { display: flex; align-items: start; justify-content: space-between; gap: var(--s-2); min-height: 76px; padding-top: 12px; }
+.dg-caption { display: grid; gap: 2px; margin: 0; min-width: 0; }
+.dg-caption strong { font-weight: 500; color: var(--text); overflow-wrap: anywhere; }
+.dg-caption span { color: var(--muted); font-size: .88rem; }
+.dg-step { display: inline-flex; flex: none; align-items: center; gap: 4px; color: var(--muted); font: 400 .88rem/1 var(--font-body); font-variant-numeric: tabular-nums; }
+.dg-step span { min-width: 4.5em; text-align: center; }
+.dg-step button { display: grid; place-items: center; width: 44px; height: 44px; border: .75px solid var(--line-strong); border-radius: 2px; background: none; color: var(--text); cursor: pointer; }
+.dg-step button:disabled { opacity: .35; cursor: default; }
+.dg button:active:not(:disabled) { translate: 0 1px; }
+
+/* On the night stage of the Automation home page. */
+.dg.on-dark .dg-head { border-color: var(--home-panel-divider); }
+.dg.on-dark .dg-tabs button { color: var(--on-dark-2); }
+.dg.on-dark .dg-tabs button:hover { color: var(--on-dark); background: var(--home-stage-tab); }
+.dg.on-dark .dg-tabs button[aria-selected="true"] { color: var(--on-dark); box-shadow: inset 0 -2px var(--automation-cyan); }
+.dg.on-dark .dg-theme, .dg.on-dark .dg-step button { border-color: var(--home-panel-rule); }
+.dg.on-dark .dg-theme button, .dg.on-dark .dg-step, .dg.on-dark .dg-caption span { color: var(--on-dark-2); }
+.dg.on-dark .dg-theme button[aria-pressed="true"] { background: var(--paper); color: var(--ink); }
+.dg.on-dark .dg-caption strong, .dg.on-dark .dg-step button { color: var(--on-dark); }
+.dg.on-dark .dg-stage { background: none; }
+.dg.on-dark :focus-visible { outline-color: var(--focus-dark); }
+
+/* Zoom view: the image at its own pixel size, panned by scrolling. */
+.dg-lightbox { width: 100%; max-width: 1520px; height: 100dvh; max-height: 100dvh; margin: auto; padding: 0; border: 0; background: var(--night); color: var(--on-dark); }
+.dg-lightbox[open] { display: grid; grid-template-rows: auto minmax(0, 1fr); }
+.dg-lightbox::backdrop { background: var(--modal-scrim); }
+.dg-lightbox header { display: flex; align-items: center; justify-content: space-between; gap: var(--s-2); padding: 12px clamp(12px, 2vw, 24px); border-bottom: .75px solid var(--taupe); }
+.dg-lightbox header p { display: grid; gap: 2px; margin: 0; min-width: 0; }
+.dg-lightbox header strong { font-weight: 500; overflow-wrap: anywhere; }
+.dg-lightbox header span { color: var(--on-dark-2); font-size: .84rem; }
+.dg-lightbox header button { display: inline-flex; flex: none; align-items: center; gap: 8px; min-height: 44px; padding: 0 16px; border: .75px solid var(--taupe); border-radius: 2px; background: none; color: var(--on-dark); font: 500 .9rem/1 var(--font-body); cursor: pointer; }
+.dg-lightbox-scroll { display: grid; overflow: auto; overscroll-behavior: contain; padding: clamp(12px, 2vw, 24px); }
+.dg-lightbox-scroll img { max-width: none; margin: auto; }
+.dg-lightbox :focus-visible { outline: 2px solid var(--focus-dark); outline-offset: 2px; }
+
+@media (max-width: 700px) {
+  .dg-head { flex-direction: column-reverse; align-items: stretch; gap: 8px; min-height: 100px; }
+  .dg-theme { align-self: end; }
+  .dg-foot { flex-direction: column-reverse; justify-content: start; align-items: stretch; gap: 12px; min-height: 168px; }
+  .dg-step { justify-content: space-between; }
+}
+@media (prefers-reduced-motion: reduce) { .dg-stage img { animation: none; } }
