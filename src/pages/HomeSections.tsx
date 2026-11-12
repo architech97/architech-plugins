@@ -6,7 +6,6 @@ import { SUITES } from '../data/suites'
 import type { Product } from '../data/types'
 import { DialogGallery } from '../components/DialogGallery'
 import { dialogAlt, thumbProps } from '../components/dialogImage'
-import { PROJECT_WORKFLOW } from '../data/demoProject'
 import { FEATURED_TOOLS } from '../data/featured'
 
 /** A floor plan that draws itself behind the live dialog. Decorative. */
@@ -194,22 +193,6 @@ export default function HomeSections() {
       </section>
 
       <div className="wall-band" data-continuity-bg="paper"><DialogWall /></div>
-
-      <section className="path" data-continuity-bg="paper-2" id="live-demo" aria-labelledby="home-project-title">
-        <div className="wrap">
-          <div className="split-head">
-            <h2 id="home-project-title">Follow one drawing set</h2>
-            <p>These four tools take one project from rooms to a reviewed drawing set.</p>
-          </div>
-          <ol className="path-steps">
-            {PROJECT_WORKFLOW.map((step, i) => (
-              <li key={step.id}>
-                <Link to={'/demos/' + step.id}><b>{String(i + 1).padStart(2, '0')}</b><span>{step.phase}</span><strong>{step.title}</strong><p>{step.detail}</p></Link>
-              </li>
-            ))}
-          </ol>
-        </div>
-      </section>
 
       <section className="home-desktop" data-continuity-bg="paper" aria-labelledby="home-desktop-title">
         <div className="wrap">

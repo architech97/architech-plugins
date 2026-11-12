@@ -48,11 +48,10 @@ export function Layout() {
           {/* Where you are, always visible while scrolling: ArchiTECH (home) › Automation (this section). */}
           <p className="ax-crumb"><a href={homeUrl}><Mark size={18} />ArchiTECH</a><span aria-hidden="true">›</span><Link to="/">Automation</Link></p>
           {SUBNAV.map((n) => <NavLink key={n.to} to={n.to}>{n.label}</NavLink>)}
-          <a className="ax-subnav-alt" href={designUrl}>Design</a>
           <Link className="ax-subnav-cta" to="/connect">Work with me</Link>
         </div>
       </nav>
-      <main id="main" tabIndex={-1}><div key={pathname}><Outlet /></div></main>
+      <main id="main" tabIndex={-1}><div key={pathname} className="route-in"><Outlet /></div></main>
       <Footer />
     </>
   )

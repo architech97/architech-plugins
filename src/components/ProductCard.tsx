@@ -73,6 +73,7 @@ export function ProductCard({ p }: { p: Product }) {
 
   return (
     <article className="pcard product-card" aria-labelledby={titleId}>
+      <Link className="pcard-link" to={productPath} aria-labelledby={titleId}><span className="sr-only">{p.name}</span></Link>
       {(dialog || media || specimen) && (
         <figure className="product-preview">
           <div className={'product-preview-art ' + (dialog ? 'is-native' : media ? 'is-desktop' : 'is-specimen')}>
@@ -81,11 +82,11 @@ export function ProductCard({ p }: { p: Product }) {
               : media ? <img src={asset(media.src)} alt={media.alt} loading="lazy" decoding="async" />
               : specimen && <SpecimenDrawing specimen={specimen} />}
           </div>
-          <figcaption>{dialog ? (dialog.real ? 'Screenshot' : 'Its own window, sample data') : media ? 'Desktop capture' : 'Workflow drawing'}</figcaption>
+          <figcaption>{dialog ? (dialog.real ? 'Screenshot' : 'Render, sample data') : media ? 'Desktop capture' : 'Workflow drawing'}</figcaption>
         </figure>
       )}
       <div className="product-card-body">
-        <span className="suite-tag" style={{ ['--suite' as string]: suite.color }}>{suite.short} <span aria-hidden="true">/</span> {p.panel}</span>
+        <span className="suite-tag" style={{ ['--suite' as string]: suite.color }}>{suite.short} <span aria-hidden="true">·</span> {p.panel}</span>
         <h3 id={titleId}>{p.name}</h3>
         <p>{p.tagline}</p>
         <ul className="product-hosts" aria-label="Supported hosts">

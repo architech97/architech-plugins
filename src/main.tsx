@@ -5,6 +5,7 @@ import './styles/chrome.css'
 import './styles/site.css'
 import './styles/motion.css'
 import './styles/continuity.css'
+import './styles/refine.css'
 import { Layout } from './components/Layout'
 import Home from './pages/Home'
 

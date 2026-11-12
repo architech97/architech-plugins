@@ -195,12 +195,13 @@ export function DemoHub() {
         {groups.filter((group) => group.demos.length).map((group) => (
           <div key={group.id} className="demo-group">
             <div className="demo-group-label"><h3>{group.title}</h3><p>{group.demos.length} {group.demos.length === 1 ? 'tool' : 'tools'}</p></div>
-            <ul className="demo-rows demo-job-rows">
+            <ul className="demo-tiles-grid">
               {group.demos.map((product) => (
                 <li key={product.slug}>
-                  <Link to={`/demos/${product.demo}`} state={libraryState}>
-                    <span><strong>{product.name}</strong><small>{product.tagline}</small></span>
-                    <span className="demo-row-format">{suiteById(product.suite).short}, {countLabel(product)}</span>
+                  <Link to={`/demos/${product.demo}`} state={libraryState} title={product.tagline}>
+                    <span className="tile-shot"><img {...thumbProps(product.dialogs[0].dark)} alt="" loading="lazy" decoding="async" /></span>
+                    <strong>{product.name}</strong>
+                    <span className="demo-row-format">{suiteById(product.suite).short} · {countLabel(product)}</span>
                   </Link>
                 </li>
               ))}
