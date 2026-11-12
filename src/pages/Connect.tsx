@@ -5,15 +5,16 @@ import { CONTACT } from '../data/contact'
 import { productBySlug } from '../data/catalog'
 
 const TYPES = {
-  workflow: 'Discuss a workflow',
-  tool: 'Ask about a tool',
-  walkthrough: 'Request a walkthrough',
+  role: 'Talk about a role or a project',
+  workflow: 'Discuss a workflow to automate',
+  tool: 'Ask about one of my tools',
+  walkthrough: 'See a tool working',
   suggestion: 'Share a suggestion',
 }
 type Topic = keyof typeof TYPES
 // Older links used these values; they still open the closest topic.
 const LEGACY: Record<string, Topic> = { custom: 'workflow', demo: 'walkthrough', pricing: 'tool', partnership: 'workflow' }
-const topicOf = (value: string | null): Topic => (value && value in TYPES ? (value as Topic) : LEGACY[value ?? ''] ?? 'workflow')
+const topicOf = (value: string | null): Topic => (value && value in TYPES ? (value as Topic) : LEGACY[value ?? ''] ?? 'role')
 const PLATFORMS = ['Revit', 'Rhino', 'SketchUp', 'AutoCAD', 'Blender', 'AI / MCP', 'Not sure yet']
 
 export default function Connect() {
@@ -56,8 +57,8 @@ function Form({ topic, product }: { topic: Topic; product?: string }) {
     <section className="section inquiry-section">
       <div className="wrap inquiry-grid">
         <div className="inquiry-intro">
-          <h1>Discuss a workflow or share a suggestion</h1>
-          <p className="lead">Tell me about a repetitive BIM task, ask how one of these tools works, or suggest an improvement.</p>
+          <h1>Get in touch</h1>
+          <p className="lead">A role, a project, or a question about one of my tools. Write here, or use the email and phone numbers below.</p>
         </div>
         <form className="glass form inquiry-form" onSubmit={prepare} onChange={() => { if (draft) setDraft(undefined) }}>
           <div className="field">

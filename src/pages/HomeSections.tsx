@@ -220,8 +220,8 @@ export default function HomeSections() {
       <section className="try" data-continuity-bg="paper-2" aria-labelledby="try-title">
         <div className="wrap-wide">
           <div className="split-head">
-            <h2 id="try-title">Open one, right here</h2>
-            <p>Step through the real windows of one tool from each suite.</p>
+            <h2 id="try-title">Look inside one tool</h2>
+            <p>Step through the real windows of one tool from each suite, exactly as they open in Revit.</p>
           </div>
           <LiveStage />
         </div>
@@ -257,8 +257,8 @@ export default function HomeSections() {
       <section className="home-desktop" data-continuity-bg="paper" aria-labelledby="home-desktop-title">
         <div className="wrap">
           <div className="split-head">
-            <h2 id="home-desktop-title">Beyond the ribbon</h2>
-            <p>Three products outside the Revit tabs: I3D turns a photo or mesh into a Revit asset, the Assistant answers questions about the open model, and the MCP Connector lets an AI assistant work in five design applications.</p>
+            <h2 id="home-desktop-title">AI and desktop apps</h2>
+            <p>Three products beyond the Revit ribbon: I3D turns a photo or a mesh into a Revit family, the Assistant answers questions about the open model, and the MCP Connector lets an AI assistant work in Revit, Rhino, SketchUp, AutoCAD and Blender, with every change checked.</p>
           </div>
           <div className="home-desktop-grid">
             {DESKTOP.map((d) => (
@@ -274,10 +274,10 @@ export default function HomeSections() {
 
       <section className="ah-contact" data-continuity-bg="paper">
         <div className="wrap ah-contact-grid">
-          <h2>Is there a task your team repeats every week?</h2>
+          <h2>An architect who can also build the tools</h2>
           <div>
-            <p>Tell me about it, or share a suggestion for one of these tools.</p>
-            <Link className="btn btn-primary" to="/connect">Discuss a workflow</Link>
+            <p>If your team needs someone who designs, documents, models, renders and automates, I would like to hear from you.</p>
+            <Link className="btn btn-primary" to="/connect">Work with me</Link>
           </div>
         </div>
       </section>

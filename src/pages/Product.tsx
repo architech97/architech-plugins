@@ -64,7 +64,7 @@ export default function Product() {
                 {p.dialogs.length > 0
                   ? <a className="btn btn-primary" href="#dialog-reference">See the {dialogCount === 1 ? 'dialog' : dialogCount + ' dialogs'}</a>
                   : p.media?.length ? <a className="btn btn-primary" href="#dialog-reference">View desktop visuals</a> : null}
-                <Link className="btn btn-ghost" to={`/connect?type=walkthrough&product=${p.slug}`}><MessageSquare size={17} /> Request a walkthrough</Link>
+                <Link className="btn btn-ghost" to={`/connect?type=walkthrough&product=${p.slug}`}><MessageSquare size={17} /> Ask me about this tool</Link>
               </div>
               {(hasChairPreview || hasRecordedPlacement) && (
                 <div className="product-scenario-links">

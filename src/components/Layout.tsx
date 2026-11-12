@@ -60,7 +60,7 @@ function Footer() {
     <footer className="ax-footer feather" id="contact">
       <div className="ax-foot-grid">
         <div className="ax-foot-lead">
-          <p className="ax-foot-line">Have a project or a workflow to talk through?</p>
+          <p className="ax-foot-line">Have a project or a role in mind? Let’s talk.</p>
           {/* TODO(Navneet): confirm the reply-time wording. */}
           <p className="ax-foot-reply">I reply within one working day.</p>
         </div>

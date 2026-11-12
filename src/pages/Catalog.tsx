@@ -87,7 +87,7 @@ export default function Catalog() {
           <div>
             <h1 id="catalog-title">Every tool I have built, by task</h1>
           </div>
-          <p className="lead">Browse {PRODUCTS.length} design and BIM tools by what you need to do. Every Revit tool is shown through its real dialogs.</p>
+          <p className="lead">All {PRODUCTS.length}, sorted by the job each one does: 58 Revit add-ins in three suites, two desktop apps and AI connectors for five design applications.</p>
         </header>
 
         <div className="catalog-tasks" role="group" aria-label="Browse by task">

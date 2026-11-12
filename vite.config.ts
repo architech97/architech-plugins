@@ -25,7 +25,7 @@ const staticRoutes: Plugin = {
       const meta = new Map<string, { title: string; description: string }>([
         ['demos', { title: 'Dialog library' + suffix, description: `${STATS.dialogs} dialogs of ${STATS.revitTools} Revit tools by Navneet Singh and the ArchiTECH desktop apps, as built, grouped by job.` }],
         ['plugins', { title: 'Plugins' + suffix, description: `The ${STATS.revitTools} Revit tools in Arch Folio, Arch Forge and Arch Sentinel, with ArchiTECH I3D, ArchiTECH Assistant and the ArchiTECH MCP Connector.` }],
-        ['connect', { title: 'Get in touch' + suffix, description: 'Tell me about a repetitive BIM task, ask how one of these tools works, or suggest an improvement.' }],
+        ['connect', { title: 'Get in touch' + suffix, description: 'Get in touch with Navneet Singh about a role, a project, or one of his tools.' }],
         ['coverage', { title: 'How the pictures were made' + suffix, description: `Every one of the ${STATS.dialogs} dialogs pictured on this site, what each picture is, and what is not shown.` }],
         ['pricing', { title: 'Discuss a tool' + suffix, description: 'Pricing depends on the tool, host application and deployment scope. This legacy route continues to the workflow contact page.' }],
         ['custom-development', { title: 'Discuss a custom workflow' + suffix, description: 'Describe a repetitive BIM task or integration requirement. This legacy route continues to the workflow contact page.' }],

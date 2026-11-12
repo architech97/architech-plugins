@@ -31,85 +31,17 @@ const JOBS: { id: string; title: string; match: (p: Product) => boolean }[] = [
 ]
 const jobOf = (p: Product) => JOBS.find((job) => job.match(p))!.id
 // The one place the dialog count is explained.
-const INDEX_NOTE = `${STATS.dialogs} dialogs in ${STATS.views} pictures across ${entries.length} products: the ${STATS.revitTools} Revit tools, the Folio ribbon home, the point-cloud toggle, ArchiTECH I3D, ArchiTECH Assistant and the ArchiTECH MCP Connector for Revit. ${STATS.screenshots} are Revit or desktop screenshots; the rest are rendered from each product’s own window with sample data.`
+const INDEX_NOTE = `${STATS.views} pictures of ${STATS.dialogs} windows from ${entries.length} products. ${STATS.screenshots} are screenshots of the installed tools; the rest are each tool’s own window, rendered with sample data.`
 
-const viewNames = ['Plan', 'Assembly', 'Review'] as const
-type View = typeof viewNames[number]
-const drawingTasks: Record<View, { note: string; id: string; label: string }> = {
-  Plan: { note: '01 / Room layout', id: 'room-to-view', label: 'Room to View dialogs' },
-  Assembly: { note: '02 / Floors, ceilings and linings', id: 'room-to-finishes', label: 'Room to Finishes dialogs' },
-  Review: { note: '03 / Model checks', id: 'warnings-inspector', label: 'Warnings Inspector dialogs' },
-}
-
-function DrawingStage() {
-  const [view, setView] = useState<View>('Assembly')
+/** One of the tools' real windows, in place of an illustration. */
+function HeroWindow() {
+  const product = productBySlug('room-to-finishes') ?? PRODUCTS.find((p) => p.dialogs.length)!
+  const shot = product.dialogs[0]
   return (
-    <figure className="drawing-stage" data-view={view.toLowerCase()}>
-      <figcaption><span>Workflow illustration</span><span>Concept geometry</span></figcaption>
-      <div className="drawing-controls" role="group" aria-label="Drawing view">
-        {viewNames.map((name, i) => (
-          <button key={name} type="button" aria-pressed={view === name} onClick={() => setView(name)}>
-            <small aria-hidden="true">{indexNumber(i)}</small>{name}
-          </button>
-        ))}
-      </div>
-      <div className="drawing-plate">
-        <svg viewBox="0 0 620 380" role="img" aria-labelledby="drawing-title drawing-desc">
-          <title id="drawing-title">{view} drawing</title>
-          <desc id="drawing-desc">A concept pavilion shown as a floor plan, exploded assembly, or marked-up model. The dialog pictures use separate sample data.</desc>
-          <defs>
-            <pattern id="plate-grid" width="22" height="22" patternUnits="userSpaceOnUse"><path d="M22 0H0v22" fill="none" stroke="var(--illustration-grid)" strokeOpacity=".24" /></pattern>
-            <pattern id="plate-hatch" width="6" height="6" patternUnits="userSpaceOnUse" patternTransform="rotate(34)"><path d="M0 0v6" stroke="var(--illustration-hatch)" strokeOpacity=".5" /></pattern>
-            <linearGradient id="roof-metal" x2="0" y2="1"><stop stopColor="var(--illustration-roof-top)" /><stop offset="1" stopColor="var(--illustration-roof-bottom)" /></linearGradient>
-          </defs>
-          <path fill="url(#plate-grid)" d="M21 17h578v347H21z" />
-          <path className="plate-marks" d="M21 31V17h14m550 0h14v14m0 319v14h-14M35 364H21v-14" />
-          <g className="plate-model" fill="none">
-            <g className="plate-guides">
-              <path d="M173 236V136m194 141V146M478 221V115M282 177V90M122 269l180-103m-23 192 245-139M128 241l254 129" />
-              <path d="m115 273 4-9m153 88 11-2m244-129-10-3" />
-            </g>
-            <g className="plate-base">
-              <path fill="var(--illustration-base)" d="m143 240 124-72 242 50-134 93z" />
-              <path fill="var(--illustration-base-edge)" d="m143 240 232 71v13l-232-72zm232 71 134-93v13l-134 93z" />
-              <path fill="var(--illustration-floor)" d="m167 239 107-62 204 44-111 73z" />
-              <path d="m185 242 91-51 182 38m-239 23 91-52m-61 63 92-56m-55 67 91-59m-52 70 89-63m-213 4 189 46m-158-64 181 48m-148-69 174 47" strokeOpacity=".4" />
-            </g>
-            <g className="plate-walls">
-              <path fill="var(--illustration-wall-light)" d="m173 236 109-59v-72l-109 58z" />
-              <path fill="var(--illustration-wall-mid)" d="m282 177 196 44v-73l-196-43z" />
-              <path fill="var(--illustration-wall-front)" d="m173 236 194 50v-72l-194-51z" />
-              <path fill="var(--illustration-wall-side)" d="m367 286 111-65v-73l-111 66z" />
-              <path fill="var(--illustration-opening)" d="m187 228 163 42v-48l-163-43zm192 38 87-51v-50l-87 50z" />
-              <path d="m217 187v49m33-40v49m34-40v49m33-40v49m84-59v49m22-62v49m22-62v49" />
-              <path d="m187 212 163 42m29-8 87-52" strokeOpacity=".65" />
-            </g>
-            <g className="plate-roof">
-              <path fill="url(#roof-metal)" d="m155 160 125-69 218 47-127 76z" />
-              <path fill="var(--illustration-roof-edge)" d="m155 160 216 54v9l-216-54zm216 54 127-76v9l-127 76z" />
-              <path strokeOpacity=".63" d="m168 159 204 51m-186-61 202 52m-186-61 201 52m-185-61 200 51m-185-59 201 50m-186-59 200 50m-185-58 200 49m-185-58 198 49" />
-            </g>
-            <g className="plate-review">
-              <path d="m367 252 99-12 40-37h62M218 232l-61 26h-53" />
-              <circle cx="367" cy="252" r="4" /><circle cx="218" cy="232" r="4" />
-              <text x="511" y="192">02 / GLAZING</text><text x="52" y="273">01 / LEVEL</text>
-            </g>
-          </g>
-          <g className="plate-plan">
-            <path className="plan-grid" d="M126 82h377m-377 222h377M151 65v259M290 65v259m172-259v259M126 201h377" />
-            <path d="M151 92h311v203H151z" fill="var(--illustration-plan)" />
-            <path d="M151 92h311v203H151zm139 0v61m0 43v99m0-139h68m42 0h62M151 222h73m41 0h25" strokeWidth="5" />
-            <path d="M308 111h130v25H308zM168 245h46v33h-46zM175 114h70v55h-70z" fill="url(#plate-hatch)" />
-            <path d="M290 195h-40a40 40 0 0 1 40-40m-66 67v36a36 36 0 0 0 37-36m99-66v40a40 40 0 0 0 40-40M151 318h311m-311-5v10m311-10v10M478 93v202m-5-202h10m-10 202h10" />
-            <text x="188" y="196">LIVING</text><text x="322" y="217">STUDIO</text><text x="285" y="337">12 400</text><text x="490" y="202">8 100</text>
-          </g>
-        </svg>
-      </div>
-      <div className="drawing-note">
-        <span aria-live="polite">{drawingTasks[view].note}</span>
-        <Link to={'/demos/' + drawingTasks[view].id}>{drawingTasks[view].label}</Link>
-      </div>
-    </figure>
+    <Link className="drawing-stage hero-window" to={'/demos/' + product.demo}>
+      <figcaption><span>{product.name}</span><span>Real window, sample data</span></figcaption>
+      <img {...thumbProps(shot.dark)} alt={product.name + ' main window'} decoding="async" />
+    </Link>
   )
 }
 
@@ -227,7 +159,7 @@ export function DemoHub() {
             </div>
             <p className="demo-footnote">Screenshots and renders with sample data</p>
           </div>
-          <div className="demo-stage-feather"><DrawingStage /></div>
+          <div className="demo-hero-window"><HeroWindow /></div>
         </div>
       </section>
 

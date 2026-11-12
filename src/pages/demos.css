@@ -272,3 +272,10 @@ a:hover .demo-card-go svg { transform: translateX(4px); }
 /* The four-step board shows each tool through its real dialogs. */
 .project-preview-gallery { padding: 0 20px 12px; }
 @media (max-width: 720px) { .project-preview-gallery { padding-inline: 10px; } }
+
+/* A real tool window in the opening, linked to its dialogs. */
+.hero-window { display: block; color: inherit; text-decoration: none; }
+.hero-window img { display: block; width: 100%; height: auto; }
+.hero-window:hover figcaption span:first-child { text-decoration: underline; text-underline-offset: 3px; }
+.demo-hero-window { min-width: 0; align-self: center; }
+.demo-hero-window .hero-window { box-shadow: 0 40px 70px -40px #241e1a99; }
