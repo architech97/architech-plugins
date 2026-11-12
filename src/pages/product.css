@@ -1,0 +1,38 @@
+/* Tool page: the summary, the real dialog straight after it, then the problem beside what the tool does. */
+.tp-hero { padding: clamp(20px, 3vw, 40px) 0 clamp(28px, 4vw, 56px); }
+.tp-head { display: grid; grid-template-columns: minmax(0, 1.5fr) minmax(260px, .7fr); align-items: end; gap: clamp(24px, 5vw, 88px); margin-top: clamp(18px, 3vw, 40px); }
+.tp-suite { display: flex; align-items: center; gap: 12px; margin-bottom: 14px; color: var(--suite, var(--text-2)); font-weight: 500; font-size: .95rem; }
+.tp-suite span { padding-left: 12px; border-left: 1px solid var(--line-strong); color: var(--muted); font-weight: 400; }
+.tp-hero h1 { font-size: clamp(3rem, 6.4vw, 6.2rem); line-height: .92; letter-spacing: -.045em; text-wrap: balance; }
+.tp-hero .lead { max-width: 52ch; margin-top: clamp(14px, 1.8vw, 24px); }
+.tp-hero .hero-cta { margin-top: 26px; }
+.tp-facts { margin: 0; border-top: 1px solid var(--line-strong); }
+.tp-facts > div { display: grid; grid-template-columns: minmax(96px, auto) minmax(0, 1fr); gap: 16px; padding: 11px 0; border-bottom: 1px solid var(--line); }
+.tp-facts dt { color: var(--muted); font-size: .88rem; }
+.tp-facts dd { margin: 0; text-align: right; font-size: .95rem; }
+
+.tp-dialogs { padding: 0 0 clamp(48px, 7vw, 104px); scroll-margin-top: 124px; }
+.tp-source { margin-top: 4px; padding-top: 12px; border-top: 1px solid var(--line); color: var(--muted); font-size: .88rem; max-width: 90ch; }
+
+.tp-story { padding: clamp(48px, 7vw, 104px) 0; border-top: 1px solid var(--line); }
+.tp-story-grid { display: grid; grid-template-columns: minmax(0, .85fr) minmax(0, 1.15fr); gap: clamp(28px, 6vw, 104px); align-items: start; }
+.tp-story-grid.no-problem { grid-template-columns: minmax(0, 62ch); }
+.tp-story h2 { margin-bottom: 16px; color: var(--muted); font: 500 .95rem/1.4 var(--font-body); letter-spacing: 0; }
+.tp-problem { position: sticky; top: 132px; }
+.no-problem .tp-problem { position: static; }
+.tp-problem p { font: 500 clamp(1.7rem, 3vw, 2.7rem)/1.12 var(--font-serif); letter-spacing: -.025em; text-wrap: balance; }
+.tp-does h2:not(:first-child) { margin-top: clamp(30px, 4vw, 52px); }
+.tp-points { list-style: none; margin: 0; padding: 0; border-top: 1px solid var(--line-strong); counter-reset: point; }
+.tp-points li { position: relative; padding: 15px 0 15px 54px; border-bottom: 1px solid var(--line); color: var(--text-2); line-height: 1.55; counter-increment: point; }
+.tp-points li::before { content: counter(point); position: absolute; left: 0; top: 9px; font: 500 1.7rem/1.2 var(--font-serif); color: var(--line-strong); font-variant-numeric: lining-nums; }
+.tp-points.checks li { padding-left: 30px; }
+.tp-points.checks li::before { content: ''; left: 4px; top: 25px; width: 10px; height: 1px; background: var(--text-2); }
+.tp-points strong { display: block; margin-bottom: 2px; color: var(--text); font-weight: 500; }
+
+.tp-related { padding: clamp(48px, 7vw, 104px) 0; border-top: 1px solid var(--line); }
+
+@media (max-width: 860px) {
+  .tp-head, .tp-story-grid { grid-template-columns: 1fr; }
+  .tp-problem { position: static; }
+  .tp-points li { padding-left: 42px; }
+}

@@ -1,5 +1,5 @@
 import { Link, useParams } from 'react-router-dom'
-import { CheckCircle2, ShieldCheck, MessageSquare, AlertCircle, FileCheck2 } from 'lucide-react'
+import { MessageSquare } from 'lucide-react'
 import { PRODUCTS, productBySlug } from '../data/catalog'
 import { suiteById } from '../data/suites'
 import { DialogGallery } from '../components/DialogGallery'
@@ -8,9 +8,19 @@ import { Reveal } from '../components/Layout'
 import { asset } from '../components/Brand'
 import NotFound from './NotFound'
 import './product-evidence.css'
+import './product.css'
 
 const CHAIR_PREVIEW = 'media/i3d/chair-mesh.png'
 const DRAGON_PLACEMENT = 'media/i3d/revit-placement-0.6.36.webp'
+
+/** A sentence that opens with a tab or mode name ("RENUMBER / RENAME: ...") shows that name as a label. */
+function Point({ text }: { text: string }) {
+  const label = /^([A-Z][A-Z /&-]{2,28}):\s+(.+)$/.exec(text)
+  if (!label) return <>{text}</>
+  const name = label[1].charAt(0) + label[1].slice(1).toLowerCase()
+  const rest = label[2].charAt(0).toUpperCase() + label[2].slice(1)
+  return <><strong>{name}</strong>{rest}</>
+}
 
 export default function Product() {
   const { slug = '' } = useParams()
@@ -26,23 +36,36 @@ export default function Product() {
   const revit = p.revit.length ? (p.revit.length > 1 ? p.revit.join(', ') : p.revit[0]) : '—'
   const isRevitTool = ['folio', 'forge', 'sentinel'].includes(p.suite)
 
+  // The shipped description is the source of every line below. Nothing is shown twice:
+  // a sentence that only repeats the summary under the title is dropped.
+  const same = (x: string, y: string) => x.replace(/\s+/g, ' ').trim().toLowerCase() === y.replace(/\s+/g, ' ').trim().toLowerCase()
+  const points = p.capabilities.filter((c) => !same(c, p.tagline))
+  const does = points.length ? points : same(p.description, p.tagline) ? [] : [p.description]
+  const checks = p.safeguards.filter((c) => !does.some((d) => same(c, d)))
+  const hasStory = Boolean(p.problem) || does.length > 0 || checks.length > 0 || Boolean(p.requirements)
+  const sources = [
+    screenshots > 0 && `${screenshots} ${screenshots === 1 ? 'picture is a screenshot' : 'pictures are screenshots'} of the installed build.`,
+    p.dialogs.length > screenshots && `${p.dialogs.length - screenshots} ${p.dialogs.length - screenshots === 1 ? 'picture is' : 'pictures are'} rendered from the product’s own window code with sample data.`,
+    hasRecordedPlacement && 'The Revit placement image records a separate host run of the Dragon fixture.',
+  ].filter(Boolean) as string[]
+
   return (
     <>
-      <section className="p-hero">
+      <section className="tp-hero">
         <div className="wrap">
           <nav className="breadcrumb" aria-label="Breadcrumb">
             <Link to="/plugins">Plugins</Link><span>/</span><Link to={`/plugins?suite=${p.suite}`}>{suite.name}</Link><span>/</span><span>{p.name}</span>
           </nav>
-          <div className="p-hero-grid">
+          <div className="tp-head">
             <div>
+              <p className="tp-suite" style={{ ['--suite' as string]: suite.color }}>{suite.name}<span>{p.panel}</span></p>
               <h1>{p.name}</h1>
-              <p className="suite-tag" style={{ ['--suite' as string]: suite.color }}>{suite.name}, {p.panel}</p>
               <p className="lead">{p.tagline}</p>
               <div className="hero-cta">
                 {p.dialogs.length > 0
                   ? <a className="btn btn-primary" href="#dialog-reference">See the {dialogCount === 1 ? 'dialog' : dialogCount + ' dialogs'}</a>
-                  : p.media?.length ? <a className="btn btn-ghost" href="#dialog-reference">View desktop visuals</a> : null}
-                <Link className={`btn ${p.dialogs.length ? 'btn-ghost' : 'btn-primary'}`} to={`/connect?type=walkthrough&product=${p.slug}`}><MessageSquare size={17} /> Request a walkthrough</Link>
+                  : p.media?.length ? <a className="btn btn-primary" href="#dialog-reference">View desktop visuals</a> : null}
+                <Link className="btn btn-ghost" to={`/connect?type=walkthrough&product=${p.slug}`}><MessageSquare size={17} /> Request a walkthrough</Link>
               </div>
               {(hasChairPreview || hasRecordedPlacement) && (
                 <div className="product-scenario-links">
@@ -51,69 +74,27 @@ export default function Product() {
                 </div>
               )}
             </div>
-            <div className="glass spec" aria-label="Compatibility">
-              <div className="spec-row"><span>Suite</span><span>{suite.name}</span></div>
-              <div className="spec-row"><span>{isRevitTool ? 'Ribbon location' : 'Type'}</span><span>{ribbon}</span></div>
-              <div className="spec-row"><span>Software</span><span>{p.software.join(', ')}</span></div>
-              <div className="spec-row"><span>Revit versions</span><span>{revit}</span></div>
-              {p.platform && <div className="spec-row"><span>Platform</span><span>{p.platform}</span></div>}
-              <div className="spec-row"><span>Dialogs shown</span><span>{p.dialogs.length ? `${dialogCount} in ${p.dialogs.length} ${p.dialogs.length === 1 ? 'picture' : 'pictures'}` : p.media ? 'Product media below' : 'Walkthrough on request'}</span></div>
-            </div>
+            <dl className="tp-facts" aria-label="Compatibility">
+              <div><dt>{isRevitTool ? 'On the ribbon' : 'Type'}</dt><dd>{ribbon}</dd></div>
+              <div><dt>Software</dt><dd>{p.software.join(', ')}{isRevitTool ? ' ' + revit : ''}</dd></div>
+              {p.platform && <div><dt>Platform</dt><dd>{p.platform}</dd></div>}
+              {p.dialogs.length > 0 && <div><dt>Shown here</dt><dd>{dialogCount} {dialogCount === 1 ? 'dialog' : 'dialogs'}{p.dialogs.length > dialogCount ? `, ${p.dialogs.length} pictures` : ''}</dd></div>}
+            </dl>
           </div>
-        </div>
-      </section>
-
-      {p.problem && (
-        <section className="section" style={{ paddingTop: 20, paddingBottom: 40 }}>
-          <div className="wrap ps-grid">
-            <Reveal><div className="glass ps-card" style={{ height: '100%' }}>
-              <h3>What slows teams down</h3>
-              <p>{p.problem}</p>
-            </div></Reveal>
-            <Reveal delay={80}><div className="glass ps-card" style={{ height: '100%', borderColor: 'var(--line-strong)' }}>
-              <h3>What {p.name} does</h3>
-              <p>{p.tagline}{p.capabilities[0] && p.capabilities[0] !== p.tagline ? ` ${p.capabilities[0]}` : ''}</p>
-            </div></Reveal>
-          </div>
-        </section>
-      )}
-
-      <section className="section" style={{ paddingTop: 20 }}>
-        <div className="wrap grid-2" style={{ alignItems: 'start', gap: 28 }}>
-          <Reveal>
-            <h2 style={{ margin: '12px 0 20px', fontSize: 'clamp(1.6rem, 2.6vw, 2.1rem)' }}>How it works</h2>
-            <ul className="feature-list">
-              {(p.capabilities.length ? p.capabilities : [p.description]).map((c) => <li key={c}><CheckCircle2 size={18} /><span>{c}</span></li>)}
-            </ul>
-          </Reveal>
-          <Reveal delay={80}>
-            {p.safeguards.length > 0 && <>
-              <h2 style={{ margin: '12px 0 20px', fontSize: 'clamp(1.6rem, 2.6vw, 2.1rem)' }}>Built to be reviewed</h2>
-              <ul className="feature-list" style={{ marginBottom: 28 }}>
-                {p.safeguards.map((c) => <li key={c}><ShieldCheck size={18} /><span>{c}</span></li>)}
-              </ul>
-            </>}
-            {p.requirements && <>
-              <span className="eyebrow">Requirements</span>
-              <ul className="feature-list" style={{ marginTop: 16 }}>{p.requirements.map((r) => <li key={r}><AlertCircle size={18} /><span>{r}</span></li>)}</ul>
-            </>}
-          </Reveal>
         </div>
       </section>
 
       {(p.dialogs.length > 0 || p.media?.length) && (
-        <section className="section" id="dialog-reference" style={{ paddingTop: 20, scrollMarginTop: '124px' }}>
+        <section className="tp-dialogs" id="dialog-reference">
           <div className="wrap">
-            <Reveal className="section-head">
-              <div><h2>{p.dialogs.length ? 'Its dialogs' : 'Desktop captures and illustrations'}</h2></div>
-              {p.dialogs.length > 0 && <p className="lead">{dialogCount} dialog{dialogCount > 1 ? 's' : ''}, as built. Step through them, or zoom one to full size.</p>}
-            </Reveal>
-            {p.dialogs.length > 0 && <DialogGallery key={p.slug} product={p} />}
+            <h2 className="sr-only">{p.dialogs.length ? `${p.name} dialogs` : 'Desktop captures and illustrations'}</h2>
+            {p.dialogs.length > 0 && <DialogGallery key={p.slug} product={p} eager />}
+            {sources.length > 0 && <p className="tp-source">{sources.join(' ')}</p>}
             {p.media && (
               <div className={hasChairPreview ? 'grid-2 product-media-pair' : 'grid-3'} style={{ marginTop: 20 }}>
                 {hasChairPreview && (
                   <figure id="desktop-chair-preview" className="product-media">
-                <img src={asset(CHAIR_PREVIEW)} alt="Upholstered chair in the textured I3D Desktop Material workspace" loading="lazy" />
+                    <img src={asset(CHAIR_PREVIEW)} alt="Upholstered chair in the textured I3D Desktop Material workspace" loading="lazy" />
                     <figcaption>
                       <strong>Captured in I3D Desktop</strong>
                       <span>Chair geometry and texture at the desktop preview stage, before export.</span>
@@ -139,30 +120,35 @@ export default function Product() {
         </section>
       )}
 
-      <section className="section" style={{ paddingTop: 20 }}>
-        <div className="wrap grid-2" style={{ alignItems: 'start', gap: 28 }}>
-          <Reveal className="glass" >
-            <div style={{ padding: 26 }}>
-              <span className="eyebrow">From the product description</span>
-              <p style={{ marginTop: 14, color: 'var(--text-2)', lineHeight: 1.75 }}>{p.description}</p>
-            </div>
-          </Reveal>
-          <Reveal delay={80} className="glass">
-            <div style={{ padding: 26 }}>
-              <span className="eyebrow">Evidence and scope</span>
-              <ul className="feature-list" style={{ marginTop: 16 }}>
-                {isRevitTool && <li><FileCheck2 size={18} /><span>The native add-in targets Revit {revit}. Its ribbon location is {ribbon}.</span></li>}
-                {screenshots > 0 && <li><FileCheck2 size={18} /><span>{screenshots} dialog {screenshots === 1 ? 'picture is a screenshot' : 'pictures are screenshots'} of the installed build.</span></li>}
-                {p.dialogs.length > screenshots && <li><FileCheck2 size={18} /><span>{p.dialogs.length - screenshots} dialog {p.dialogs.length - screenshots === 1 ? 'picture is' : 'pictures are'} rendered from the product’s own window code with sample data.</span></li>}
-                {hasRecordedPlacement && <li><FileCheck2 size={18} /><span>The Revit placement image records a separate host run of the Dragon fixture.</span></li>}
-              </ul>
-            </div>
-          </Reveal>
-        </div>
-      </section>
+      {hasStory && (
+        <section className="tp-story">
+          <div className={'wrap tp-story-grid' + (p.problem && (does.length > 0 || checks.length > 0 || p.requirements) ? '' : ' no-problem')}>
+            {p.problem && (
+              <Reveal className="tp-problem">
+                <h2>The problem</h2>
+                <p>{p.problem}</p>
+              </Reveal>
+            )}
+            {(does.length > 0 || checks.length > 0 || p.requirements) && <Reveal delay={80} className="tp-does">
+              {does.length > 0 && <>
+                <h2>What it does</h2>
+                <ol className="tp-points">{does.map((c) => <li key={c}><Point text={c} /></li>)}</ol>
+              </>}
+              {checks.length > 0 && <>
+                <h2>Checks before it changes anything</h2>
+                <ul className="tp-points checks">{checks.map((c) => <li key={c}><Point text={c} /></li>)}</ul>
+              </>}
+              {p.requirements && <>
+                <h2>Requirements</h2>
+                <ul className="tp-points checks">{p.requirements.map((r) => <li key={r}>{r}</li>)}</ul>
+              </>}
+            </Reveal>}
+          </div>
+        </section>
+      )}
 
       {related.length > 0 && (
-        <section className="section" style={{ paddingTop: 20 }}>
+        <section className="tp-related">
           <div className="wrap">
             <div className="section-head"><div><h2>More in {suite.name}</h2></div><Link className="btn btn-ghost" to={`/plugins?suite=${p.suite}`}>All {suite.short} products</Link></div>
             <div className="grid-3">{related.map((r) => <ProductCard key={r.slug} p={r} />)}</div>

@@ -25,6 +25,8 @@ export function DialogGallery({ product, eager = false, ratio, dark = false }: {
   const id = 'dialogs-' + product.slug
   // The stage keeps the shape of the product's first (main) window, so stepping never moves the page.
   const stage = ratio ?? Math.max(1.25, dialogs[0].dark[1] / dialogs[0].dark[2])
+  // A product whose dialogs are all small gets a stage no taller than its tallest picture plus the margin.
+  const tallest = Math.max(...dialogs.map((d) => d.dark[2])) + 72
 
   const select = (next: number, focus = false) => {
     setIndex(next)
@@ -59,7 +61,7 @@ export function DialogGallery({ product, eager = false, ratio, dark = false }: {
         )}
       </div>
       <div className="dg-panel" role="tabpanel" id={id + '-panel'} aria-labelledby={id + '-tab-' + index}>
-        <button type="button" className="dg-stage" style={{ aspectRatio: String(stage) }} onClick={() => { setZoomed(true); lightbox.current?.showModal() }}
+        <button type="button" className="dg-stage" style={{ aspectRatio: String(stage), maxHeight: `min(82vh, ${tallest}px)` }} onClick={() => { setZoomed(true); lightbox.current?.showModal() }}
           aria-label={'Zoom the ' + shot.title + ' dialog to 1:1'}>
           <img key={image[0]} {...imageProps(image)} alt={dialogAlt(product, shot, theme)} decoding="async"
             loading={eager && index === 0 ? 'eager' : 'lazy'} fetchPriority={eager && index === 0 ? 'high' : undefined} />
