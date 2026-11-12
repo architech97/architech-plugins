@@ -279,3 +279,6 @@ a:hover .demo-card-go svg { transform: translateX(4px); }
 .hero-window:hover figcaption span:first-child { text-decoration: underline; text-underline-offset: 3px; }
 .demo-hero-window { min-width: 0; align-self: center; }
 .demo-hero-window .hero-window { box-shadow: 0 40px 70px -40px #241e1a99; }
+
+/* The dialog player sits on one night band with hard edges, not a paper-to-night fade. */
+.demo-detail .demo-player-feather::before { inset: calc(0px - var(--demo-feather)) calc(50% - 50vw); background: var(--night); }

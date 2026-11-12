@@ -35,8 +35,9 @@ export function Layout() {
         <div className="ax-bar">
           <a className="ax-brand" href={homeUrl} aria-label="ArchiTECH home"><Mark /><span>Archi<strong>TECH</strong></span></a>
           <nav className="ax-nav" aria-label="Site">
+            <a href={homeUrl}>Home</a>
             <a href={designUrl} data-division="design">Design</a>
-            <Link to="/" aria-current="true">Automation</Link>
+            <Link to="/" aria-current="page">Automation</Link>
             <a href={homeUrl + '#about'}>About</a>
             <a href="#contact">Contact</a>
           </nav>
@@ -44,8 +45,11 @@ export function Layout() {
       </header>
       <nav className="ax-subnav" ref={subnav} aria-label="Automation">
         <div className="ax-subnav-inner">
+          {/* Where you are, always visible while scrolling: ArchiTECH (home) › Automation (this section). */}
+          <p className="ax-crumb"><a href={homeUrl}><Mark size={18} />ArchiTECH</a><span aria-hidden="true">›</span><Link to="/">Automation</Link></p>
           {SUBNAV.map((n) => <NavLink key={n.to} to={n.to}>{n.label}</NavLink>)}
-          <Link className="ax-subnav-cta" to="/demos#demo-index">All dialogs</Link>
+          <a className="ax-subnav-alt" href={designUrl}>Design</a>
+          <Link className="ax-subnav-cta" to="/connect">Work with me</Link>
         </div>
       </nav>
       <main id="main" tabIndex={-1}><div key={pathname}><Outlet /></div></main>

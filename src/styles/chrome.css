@@ -82,3 +82,11 @@
 }
 @media (max-width: 380px) { .ax-foot-col, .ax-foot-lead + .ax-foot-col { grid-column: 1 / -1; } }
 @media (prefers-reduced-motion: reduce) { .ax-blade, .ax-nav a::after { transition: none; } }
+
+/* Crisp edges, not fades: the footer starts on night with a hard line. */
+.ax-footer.feather { padding-top: var(--s-6); background: var(--night); }
+/* The footer mark reads as one word: the gap belongs between the mark and the name only. */
+.ax-foot-mark { gap: 0; }
+.ax-foot-mark svg { margin-right: 10px; }
+/* Current division in the main header. */
+.ax-nav a[aria-current="page"] { color: var(--ink); }
