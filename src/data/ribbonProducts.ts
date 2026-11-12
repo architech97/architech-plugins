@@ -7,21 +7,43 @@ const revit = {
   status: 'available',
 } satisfies Pick<Product, 'software' | 'revit' | 'platform' | 'status'>
 
+// Each suite's own Home window: search, browse by panel, preview, open. The search examples are the window's own placeholder text.
 const homes = [
-  { suite: 'folio', slug: 'folio-home', name: 'Folio Home', key: 'FolioHome', tagline: 'Documentation and publishing tools for Revit.' },
-  { suite: 'forge', slug: 'forge-home', name: 'Forge Home', key: 'ForgeHome', tagline: 'Rooms, finishes and BIM data tools for Revit.' },
-  { suite: 'sentinel', slug: 'sentinel-home', name: 'Sentinel Home', key: 'SentinelHome', tagline: 'Model health, coordination and BIM standards tools.' },
+  {
+    suite: 'folio', slug: 'folio-home', name: 'Folio Home', key: 'FolioHome',
+    tagline: 'The documentation suite: views, sheets, viewports, annotation, dimensions and publishing, from one searchable home.',
+    problem: 'A drawing set means the same actions repeated across many views and sheets. Folio turns each of those repeats into one tool.',
+    area: 'views, sheets, annotation and publishing',
+  },
+  {
+    suite: 'forge', slug: 'forge-home', name: 'Forge Home', key: 'ForgeHome',
+    tagline: 'The modelling and data suite: rooms, finishes, parameters and Scan-to-BIM, from one searchable home.',
+    problem: 'Finishes, room data and parameters are slow to build and hard to keep consistent by hand, element by element.',
+    area: 'rooms, finishes, parameters and Scan-to-BIM',
+    search: 'ceiling or point cloud',
+  },
+  {
+    suite: 'sentinel', slug: 'sentinel-home', name: 'Sentinel Home', key: 'SentinelHome',
+    tagline: 'The model-health suite: warnings, standards, links and clean-up, from one searchable home.',
+    problem: 'A model gets slower and harder to trust as warnings, duplicates and unused content build up unseen.',
+    area: 'model health, coordination, links, standards and clean-up',
+    search: 'warnings or worksets',
+  },
 ] as const
 
 export const RIBBON_PRODUCTS: Omit<Product, 'dialogs'>[] = [
-  ...homes.map((home) => ({
+  ...homes.map(({ area, ...home }) => ({
     ...revit,
     ...home,
     panel: 'Start',
-    description: 'Search the suite by name or task, browse ribbon panels, preview a tool, and open it when the active Revit context allows it.',
-    capabilities: ['Browse the suite by ribbon panel.', 'Search by tool name or workflow.', 'Review the selected tool and its availability.'],
-    safeguards: ['Tool availability depends on the active Revit document and command context.'],
-    problem: 'Find the right command when several tools share a ribbon tab.',
+    description: `Every tool in the suite for ${area}, in one window: search by name or task, browse by ribbon panel, preview a tool, and open it.`,
+    capabilities: [
+      'search' in home ? `Search by tool name or task, for example ${home.search}.` : 'Search by tool name or task.',
+      'Browse the suite by its ribbon panels, with a tool count for each.',
+      'Preview what a tool does before opening it.',
+      'Shows the open model and Revit version, in a dark or light theme.',
+    ],
+    safeguards: ['A tool opens only when the active Revit document and view allow it.'],
   })),
   {
     ...revit,
