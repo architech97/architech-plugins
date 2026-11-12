@@ -21,9 +21,8 @@ OUT = PUBLIC / 'dialogs'
 # Inventory rows whose product page differs from (or is missing in) the site_slug column.
 SLUG_OVERRIDE = {'D269': 'point-cloud-on-off', 'D420': 'folio-home', 'D421': 'folio-home', 'D422': 'folio-home'}
 # Real captures of the desktop apps that are already published under public/media/native.
+# I3D Material and Result are rendered in the same sample run as the other I3D stages (one chair throughout).
 SITE_CAPTURES = {
-    'D428': [('', 'media/native/i3d-material.webp')],
-    'D429': [('', 'media/native/i3d-result.webp')],
     'D441': [('', 'media/native/revit-mcp-connector.webp')],
     'D458': [('Active view readback', 'media/native/assistant-result.webp'), ('Composer modes', 'media/native/assistant-modes.webp')],
 }
