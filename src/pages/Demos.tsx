@@ -303,7 +303,7 @@ export function DemoPage() {
           <div className="demo-detail-title">
             <div>
               <h1>{product.name}</h1>
-              <p className="demo-detail-context">{suite.name}, {product.panel}, {countLabel(product)}</p>
+              <p className="demo-detail-context">{suite.name}, {product.panel}, {countLabel(product)}{product.dialogs.length > dialogCount(product) ? ` in ${product.dialogs.length} pictures` : ''}</p>
               <p>{product.tagline}</p>
             </div>
             <div className="demo-detail-links">

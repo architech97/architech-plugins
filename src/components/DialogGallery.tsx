@@ -12,7 +12,11 @@ const sourceNote = (shot: DialogShot) => shot.real ? 'Screenshot of the installe
  * a Dark/Light switch only where a light image exists, and a 1:1 zoom view.
  */
 export function DialogGallery({ product, eager = false, ratio, dark = false }: { product: Product; eager?: boolean; ratio?: number; dark?: boolean }) {
-  const dialogs = product.dialogs
+  // Open on the largest picture (a screenshot first when two are the same size), so a narrow strip
+  // such as a chat excerpt never sets the shape of the stage for every full window after it.
+  const area = (d: DialogShot) => d.dark[1] * d.dark[2] + (d.real ? 1 : 0)
+  const lead = product.dialogs.reduce((best, d, i, all) => area(d) > area(all[best]) ? i : best, 0)
+  const dialogs = lead ? [product.dialogs[lead], ...product.dialogs.filter((_, i) => i !== lead)] : product.dialogs
   const [index, setIndex] = useState(0)
   const [light, setLight] = useState(false)
   const [zoomed, setZoomed] = useState(false)
