@@ -29,8 +29,9 @@ export function DialogGallery({ product, eager = false, ratio, dark = false }: {
   const id = 'dialogs-' + product.slug
   // The stage keeps the shape of the product's first (main) window, so stepping never moves the page.
   const stage = ratio ?? Math.max(1.25, dialogs[0].dark[1] / dialogs[0].dark[2])
-  // A product whose dialogs are all small gets a stage no taller than its tallest picture plus the margin.
-  const tallest = Math.max(...dialogs.map((d) => d.dark[2])) + 72
+  // The frame fits the picture on show: a small confirmation or a chat excerpt gets a small frame, not the
+  // empty height of the main window. A fixed ratio (the home page) keeps one height for every picture.
+  const fit = ratio ? Math.max(...dialogs.map((d) => d.dark[2])) + 72 : Math.max(shot.dark[2] + 72, 280)
 
   const select = (next: number, focus = false) => {
     setIndex(next)
@@ -57,15 +58,25 @@ export function DialogGallery({ product, eager = false, ratio, dark = false }: {
               tabIndex={i === index ? 0 : -1} onClick={() => select(i)} onKeyDown={onKey}>{item.state}</button>
           ))}
         </div>
-        {shot.light && (
-          <div className="dg-theme" role="group" aria-label="Dialog theme">
-            <button type="button" aria-pressed={!light} onClick={() => setLight(false)}><Moon size={14} aria-hidden="true" /> Dark</button>
-            <button type="button" aria-pressed={light} onClick={() => setLight(true)}><Sun size={14} aria-hidden="true" /> Light</button>
-          </div>
-        )}
+        {/* Stepping and the theme sit above the frame, so they stay put while the frame changes height. */}
+        <div className="dg-tools">
+            {dialogs.length > 1 && (
+              <div className="dg-step" role="group" aria-label="Step through the dialogs">
+                <button type="button" onClick={() => select(index - 1)} disabled={index === 0} aria-label="Previous dialog"><ArrowLeft size={17} aria-hidden="true" /></button>
+                <span>{index + 1} / {dialogs.length}</span>
+                <button type="button" onClick={() => select(index + 1)} disabled={index + 1 === dialogs.length} aria-label="Next dialog"><ArrowRight size={17} aria-hidden="true" /></button>
+              </div>
+            )}
+          {shot.light && (
+            <div className="dg-theme" role="group" aria-label="Dialog theme">
+              <button type="button" aria-pressed={!light} onClick={() => setLight(false)}><Moon size={14} aria-hidden="true" /> Dark</button>
+              <button type="button" aria-pressed={light} onClick={() => setLight(true)}><Sun size={14} aria-hidden="true" /> Light</button>
+            </div>
+          )}
+        </div>
       </div>
       <div className="dg-panel" role="tabpanel" id={id + '-panel'} aria-labelledby={id + '-tab-' + index}>
-        <button type="button" className="dg-stage" style={{ aspectRatio: String(stage), maxHeight: `min(82vh, ${tallest}px)` }} onClick={() => { setZoomed(true); lightbox.current?.showModal() }}
+        <button type="button" className="dg-stage" style={{ aspectRatio: String(stage), maxHeight: `min(82vh, ${fit}px)` }} onClick={() => { setZoomed(true); lightbox.current?.showModal() }}
           aria-label={'Zoom the ' + shot.title + ' dialog to 1:1'}>
           <img key={image[0]} {...imageProps(image)} alt={dialogAlt(product, shot, theme)} decoding="async"
             loading={eager && index === 0 ? 'eager' : 'lazy'} fetchPriority={eager && index === 0 ? 'high' : undefined} />
@@ -76,13 +87,6 @@ export function DialogGallery({ product, eager = false, ratio, dark = false }: {
             <strong>{shot.title}</strong>
             <span>{shot.kind}. {sourceNote(shot)}.</span>
           </p>
-          {dialogs.length > 1 && (
-            <div className="dg-step" role="group" aria-label="Step through the dialogs">
-              <button type="button" onClick={() => select(index - 1)} disabled={index === 0} aria-label="Previous dialog"><ArrowLeft size={17} aria-hidden="true" /></button>
-              <span>{index + 1} / {dialogs.length}</span>
-              <button type="button" onClick={() => select(index + 1)} disabled={index + 1 === dialogs.length} aria-label="Next dialog"><ArrowRight size={17} aria-hidden="true" /></button>
-            </div>
-          )}
         </div>
       </div>
 
