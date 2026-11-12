@@ -153,9 +153,9 @@ function DialogWall() {
 }
 
 const DESKTOP = [
-  { slug: 'architech-i3d', kind: 'Desktop app', task: 'Turn a photo or mesh into a Revit family' },
-  { slug: 'architech-assistant', kind: 'Desktop app', task: 'Ask about the active Revit view' },
-  { slug: 'revit-mcp', name: 'ArchiTECH MCP Connector', kind: 'Revit, Rhino, SketchUp, AutoCAD, Blender', task: 'Let an AI assistant work in the model, with every write checked' },
+  { slug: 'architech-i3d', kind: 'Desktop app', task: 'Turn a product photo into a sized, textured Revit family, on your own computer' },
+  { slug: 'architech-assistant', kind: 'Desktop app', task: 'Ask about the open model, find the right tool and plan the change' },
+  { slug: 'revit-mcp', name: 'ArchiTECH MCP Connector', kind: 'Revit, Rhino, SketchUp, AutoCAD, Blender', task: 'Connect Claude, Codex or Cursor to Revit, Rhino, SketchUp, AutoCAD and Blender, with every change shown first' },
 ].map((item) => {
   const product = productBySlug(item.slug)!
   // The first full window, not a cropped capture strip.

@@ -35,7 +35,9 @@ function rowsFor(p: Product): Row[] {
 
 const ALL = PRODUCTS.flatMap(rowsFor)
 const withoutPictures = PRODUCTS.filter((p) => !p.dialogs.length)
-const unreachable = NOT_SHOWN.filter((d) => !d.why.startsWith('Same capture'))
+const unreachable = NOT_SHOWN.filter((d) => d.why.startsWith('not reachable'))
+const leftOut = NOT_SHOWN.filter((d) => !d.why.startsWith('Same capture') && !d.why.startsWith('not reachable'))
+const toolName = (slug: string) => PRODUCTS.find((p) => p.slug === slug)?.name ?? slug
 const csv = (rows: Row[]) => [['Suite', 'Tool', 'Inventory ID', 'Dialog', 'State', 'Kind', 'Source', 'Themes'], ...rows.map((r) => [r.suite, r.tool, r.id, r.dialog, r.state, r.kind, r.source, r.themes])]
   .map((line) => line.map((cell) => '"' + cell.replace(/"/g, '""') + '"').join(',')).join('\r\n')
 
@@ -75,7 +77,8 @@ export default function Coverage() {
           <ul>
             <li>A picture is either a screenshot of the installed build, or the product’s own window and message code rendered outside Revit with sample data. No dialog on this site is redrawn by hand.</li>
             <li>Operating-system file pickers, selection prompts on the Revit canvas, and start-up or generic error messages are left out.</li>
-            {unreachable.length > 0 && <li>{unreachable.length} inventoried dialogs have no picture because the current build no longer opens them: {unreachable.map((d) => `${PRODUCTS.find((p) => p.slug === d.slug)?.name} (${d.title})`).join(', ')}.</li>}
+            {unreachable.length > 0 && <li>{unreachable.length} inventoried dialogs have no picture because the current build no longer opens them: {unreachable.map((d) => `${toolName(d.slug)} (${d.title})`).join(', ')}.</li>}
+            {leftOut.length > 0 && <li>{leftOut.length} dialogs are left out on purpose: {leftOut.map((d) => `${toolName(d.slug)} ${d.id} (${d.why})`).join('; ')}.</li>}
             {withoutPictures.length > 0 && <li>No dialog picture yet for: {withoutPictures.map((p) => p.name).join(', ')}.</li>}
             {hiddenEntries.length > 0 && <li>Hidden ribbon entries without a page of their own: {hiddenEntries.join('; ')}.</li>}
             {uncatalogued.length > 0 && <li>Installed ribbon buttons without a page here: {uncatalogued.map((b) => `${b.name} (${b.tab} › ${b.panel})`).join(', ')}.</li>}
@@ -84,7 +87,7 @@ export default function Coverage() {
         </div>
         <div className="coverage-tools">
           <div className="demo-filter" role="group" aria-label="Filter by suite">
-            {[{ id: '', short: 'All' }, ...SUITES].map((item) => <button type="button" key={item.id} aria-pressed={item.id === suite} onClick={() => setSuite(item.id)}>{item.id === 'ai' ? 'MCP Connector' : item.short}</button>)}
+            {[{ id: '', short: 'All' }, ...SUITES].map((item) => <button type="button" key={item.id} aria-pressed={item.id === suite} onClick={() => setSuite(item.id)}>{item.id === 'ai' ? 'AI and MCP' : item.short}</button>)}
           </div>
           <label className="coverage-search"><Search size={17} aria-hidden="true" /><input type="search" aria-label="Search tools and dialogs" placeholder="Search tools and dialogs" value={query} onChange={(event) => setQuery(event.target.value)} /></label>
           <button type="button" className="btn btn-ghost btn-sm" onClick={download}><Download size={15} /> Download CSV</button>

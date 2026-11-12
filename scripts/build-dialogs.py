@@ -26,6 +26,17 @@ SITE_CAPTURES = {
     'D441': [('', 'media/native/revit-mcp-connector.webp')],
     'D458': [('Active view readback', 'media/native/assistant-result.webp'), ('Composer modes', 'media/native/assistant-modes.webp')],
 }
+# Pictures left out of the galleries on purpose; each is listed with its reason on the Coverage page.
+HIDE = {
+    'D075': 'Revit 2020/2021 builds only; Revit 2024 shows the Publish preflight review instead',
+    'D077': 'Revit 2020/2021 builds only; Revit 2024 shows the Publish preflight review instead',
+    'D454': 'Key-entry window, left out on purpose',
+    'D117': 'Generic notice shown when Revit is busy, not specific to the tool',
+    'D135': 'Generic notice shown when Revit is busy, not specific to the tool',
+    'D206': 'One-line validation notice',
+    'D011': 'One-line validation notice',
+    'D296': 'One-line validation notice',
+}
 # Whole-application rows whose only capture is already shown under one of their stages.
 SAME_CAPTURE = {'D424': 'D428', 'D442': 'D441'}
 
@@ -87,7 +98,7 @@ def publish(source, relative):
 
 rows = list(csv.DictReader(open(SRC / 'dialog_inventory.csv', encoding='utf-8')))
 tools = {t['slug'] for t in json.load(open(ROOT / 'src/data/tools.generated.json', encoding='utf-8'))}
-tools |= {'architech-i3d', 'revit-mcp', 'architech-assistant', 'folio-home', 'point-cloud-on-off'}
+tools |= {'architech-i3d', 'revit-mcp', 'architech-assistant', 'folio-home', 'forge-home', 'sentinel-home', 'point-cloud-on-off'}
 shown, skipped = {}, []
 
 for row in rows:
@@ -97,6 +108,9 @@ for row in rows:
     rendered = [f for f in row['rendered_files'].split(';') if f]
     real = row['real_shot_file'] if row['has_real_shot'] == 'yes' else ''
     if worth == 'no' and not rendered:
+        continue
+    if did in HIDE:
+        skipped.append({'id': did, 'slug': slug, 'title': row['title'], 'why': HIDE[did]})
         continue
     if did in SAME_CAPTURE:
         skipped.append({'id': did, 'slug': slug, 'title': row['title'], 'why': 'Same capture as ' + SAME_CAPTURE[did]})
@@ -138,6 +152,15 @@ for row in rows:
         continue
     # Within one dialog, the state that also has a light render is the base state.
     shown.setdefault(slug, []).extend(sorted(items.values(), key=lambda item: ('light' not in item, len(item['state']))))
+
+# Forge Home and Sentinel Home are subclasses of the Folio Home window (D420) with their own tool lists.
+# Their renders come from the same window code with sample data and are kept under public/ as published files.
+for suite in ('forge', 'sentinel'):
+    base = f'dialogs/shared-ribbon/{suite}-home/D420-{suite}-home-'
+    order, label = kind_of('main')
+    shown.setdefault(f'{suite}-home', []).append({
+        'id': 'D420', 'title': suite.title() + ' Home', 'state': 'Main window', 'kind': label, 'order': (order, False, 0, True, 0),
+        **{theme: [base + theme + '.webp', *size(PUBLIC / (base + theme + '.webp')), 1] for theme in ('dark', 'light')}})
 
 for slug, items in shown.items():
     items.sort(key=lambda item: item['order'])

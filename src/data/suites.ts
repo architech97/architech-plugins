@@ -24,7 +24,7 @@ export const SUITES: Suite[] = [
   {
     id: 'ai', name: 'AI and MCP', short: 'AI', color: 'var(--suite-ai)',
     focus: 'MCP and AI across design tools',
-    summary: 'The ArchiTECH MCP Connector and ArchiTECH Assistant bring guarded, verifiable AI automation to Revit, Rhino, SketchUp, AutoCAD and Blender.',
+    summary: 'The ArchiTECH MCP Connector and ArchiTECH Assistant let AI apps such as Claude work in Revit, Rhino, SketchUp, AutoCAD and Blender, with every change shown to you first.',
   },
 ]
 
