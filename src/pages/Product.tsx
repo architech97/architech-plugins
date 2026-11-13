@@ -53,7 +53,7 @@ export default function Product() {
       <section className="tp-hero">
         <div className="wrap">
           <nav className="breadcrumb" aria-label="Breadcrumb">
-            <Link to="/plugins">Plugins</Link><span>/</span><Link to={`/plugins?suite=${p.suite}`}>{suite.name}</Link><span>/</span><span>{p.name}</span>
+            <Link to="/plugins">All tools</Link><span>/</span><Link to={`/plugins?suite=${p.suite}`}>{suite.name}</Link><span>/</span><span>{p.name}</span>
           </nav>
           <div className="tp-head">
             <div>
@@ -75,7 +75,7 @@ export default function Product() {
             </div>
             <dl className="tp-facts" aria-label="Compatibility">
               <div><dt>{isRevitTool ? 'On the ribbon' : 'Type'}</dt><dd>{ribbon}</dd></div>
-              <div><dt>Software</dt><dd>{p.software.join(', ')}{isRevitTool ? ' ' + revit : ''}</dd></div>
+              <div><dt>Software</dt><dd>{p.software.join(', ')}{(isRevitTool || p.software.join() === 'Revit') && p.revit?.length ? ' ' + revit : ''}</dd></div>
               {p.platform && <div><dt>Platform</dt><dd>{p.platform}</dd></div>}
               {p.dialogs.length > 0 && <div><dt>Shown here</dt><dd>{dialogCount} {dialogCount === 1 ? 'dialog' : 'dialogs'}{p.dialogs.length > dialogCount ? `, ${p.dialogs.length} pictures` : ''}</dd></div>}
             </dl>

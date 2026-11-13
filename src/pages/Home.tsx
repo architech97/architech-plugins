@@ -50,7 +50,7 @@ export default function Home() {
             <p className="lead">58 Revit add-ins I designed and built for sheets, parameters and model checks, plus desktop apps and AI connectors. Every one shown through its real windows.</p>
             <div className="hero-cta">
               <Link className="btn btn-primary" to="/demos/sheet-export">Open Sheet Export</Link>
-              <Link className="home-secondary" to="/demos#demo-index">Browse every dialog</Link>
+              <Link className="home-secondary" to="/demos#demo-index">Open the dialog gallery</Link>
             </div>
           </div>
           <ResultLoop />

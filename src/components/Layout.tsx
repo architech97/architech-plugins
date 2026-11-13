@@ -9,9 +9,8 @@ const homeUrl = unified ? '/' : SITE_ORIGIN + '/'
 const designUrl = unified ? '/design/' : CONTACT.designSite
 
 const SUBNAV = [
-  { to: '/plugins', label: 'Plugins' },
-  { to: '/demos', label: 'Dialogs' },
-  { to: '/connect', label: 'Connect' },
+  { to: '/plugins', label: 'All tools' },
+  { to: '/demos', label: 'Dialog gallery' },
 ]
 
 export function Layout() {
@@ -77,7 +76,7 @@ function Footer() {
           <p className="ax-foot-h">Work</p>
           <a href={designUrl}>Design portfolio</a>
           <Link to="/">Automation</Link>
-          <Link to="/demos">Tool dialogs</Link>
+          <Link to="/demos">Dialog gallery</Link>
           <Link to="/connect">Get in touch</Link>
           <Link to="/coverage">How the pictures were made</Link>
         </div>

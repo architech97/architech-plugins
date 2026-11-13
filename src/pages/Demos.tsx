@@ -143,7 +143,7 @@ export function DemoHub() {
           <div className="demo-opening-copy">
 
             <h1 id="demo-library-title">Every dialog, <span>as built</span></h1>
-            <p className="demo-intro">Main windows, confirmations, progress and results for each tool, as they open in Revit.</p>
+            <p className="demo-intro">Every window of every tool in one place: main windows, confirmations, progress and results, as they open in Revit. Each tool’s own page shows the same pictures next to what the tool does.</p>
             <form className="demo-quick-search" role="search" aria-label="Quick tool lookup" onSubmit={(event) => { event.preventDefault(); navigate(indexLocation); focusIndex() }}>
               <DemoSearch input={quickSearch} label="Quick tool search" value={query} onChange={(value) => filter('q', value)} shortcut />
             </form>
@@ -232,7 +232,7 @@ export function DemoPage() {
     <div className="demo-detail">
       <header className="demo-detail-header" data-continuity-bg="paper">
         <div className="wrap-wide">
-          <Link to={{ pathname: '/demos', search: librarySearch, hash: '#demo-index' }} className="demo-text-link">All dialogs</Link>
+          <Link to={{ pathname: '/demos', search: librarySearch, hash: '#demo-index' }} className="demo-text-link">Dialog gallery</Link>
           <div className="demo-detail-title">
             <div>
               <h1>{product.name}</h1>

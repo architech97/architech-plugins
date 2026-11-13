@@ -135,7 +135,7 @@ export default function Catalog() {
           <section className="catalog-results" aria-labelledby="catalog-result-title">
             <div className="catalog-top">
               <div>
-                <h2 id="catalog-result-title">{selectedTask?.label ?? 'Plugin library'}</h2>
+                <h2 id="catalog-result-title">{selectedTask?.label ?? 'All tools'}</h2>
                 <p className="muted" role="status">{results.length} of {PRODUCTS.length} tools</p>
               </div>
               <Link to="/demos#sample-project">Follow one drawing set</Link>

@@ -196,6 +196,13 @@
   .ribbon-tools { column-gap: 8px; }
   .ribbon-tools a { padding-inline: 4px; }
   .ah h1 { font-size: clamp(2.7rem, 14vw, 3.6rem); }
+  /* Phones: the four sheets as a 2 × 2 set, the readable tool window full width beneath them. */
+  .loop-stage { aspect-ratio: auto; display: grid; gap: 18px; }
+  .loop-sheets { display: grid; grid-template-columns: 1fr 1fr; gap: 14px 12px; padding: 4px 6px 0; }
+  .loop-sheet, .loop-sheet.s0, .loop-sheet.s1, .loop-sheet.s2, .loop-sheet.s3 { position: relative; inset: auto; width: auto; }
+  .loop-sheet.s0 { --r: -2deg; } .loop-sheet.s1 { --r: 2deg; } .loop-sheet.s2 { --r: 1.5deg; } .loop-sheet.s3 { --r: -1.5deg; z-index: auto; }
+  .loop-panel { position: relative; left: auto; bottom: auto; width: 100%; }
+  .loop-sheet p i { display: none; }
 }
 @media (prefers-reduced-motion: reduce) {
   .loop-sheet, .hero-stage-body { animation: none; }

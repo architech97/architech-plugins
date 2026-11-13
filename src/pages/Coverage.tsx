@@ -62,7 +62,7 @@ export default function Coverage() {
       <div className="wrap">
         <header className="coverage-head">
           <div>
-            <h1>Which dialogs are shown</h1>
+            <h1>How the pictures were made</h1>
           </div>
           <p className="lead">Every dialog picture on the site, the tool it belongs to and where the picture comes from. Gaps are listed, not hidden.</p>
         </header>

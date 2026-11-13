@@ -23,8 +23,8 @@ const staticRoutes: Plugin = {
       // Each route gets its own title and description, so crawlers and link previews see the page, not the shell.
       const suffix = ' | Navneet Singh · ArchiTECH'
       const meta = new Map<string, { title: string; description: string }>([
-        ['demos', { title: 'Dialog library' + suffix, description: `${STATS.dialogs} dialogs of ${STATS.revitTools} Revit tools by Navneet Singh and the ArchiTECH desktop apps, as built, grouped by job.` }],
-        ['plugins', { title: 'Plugins' + suffix, description: `The ${STATS.revitTools} Revit tools in Arch Folio, Arch Forge and Arch Sentinel, with ArchiTECH I3D, ArchiTECH Assistant and the ArchiTECH MCP Connector.` }],
+        ['demos', { title: 'Dialog gallery' + suffix, description: `${STATS.dialogs} dialogs of ${STATS.revitTools} Revit tools by Navneet Singh and the ArchiTECH desktop apps, as built, grouped by job.` }],
+        ['plugins', { title: 'All tools' + suffix, description: `The ${STATS.revitTools} Revit tools in Arch Folio, Arch Forge and Arch Sentinel, with ArchiTECH I3D, ArchiTECH Assistant and the ArchiTECH MCP Connector.` }],
         ['connect', { title: 'Get in touch' + suffix, description: 'Get in touch with Navneet Singh about a role, a project, or one of his tools.' }],
         ['coverage', { title: 'How the pictures were made' + suffix, description: `Every one of the ${STATS.dialogs} dialogs pictured on this site, what each picture is, and what is not shown.` }],
         ['pricing', { title: 'Discuss a tool' + suffix, description: 'Pricing depends on the tool, host application and deployment scope. This legacy route continues to the workflow contact page.' }],
