@@ -38,6 +38,8 @@ export interface Product {
   demo?: string
   /** Extra media published by the product itself (screenshots, animations). */
   media?: { src: string; alt: string; kind: 'image' | 'animation' }[]
+  /** A short, numbered walk through the product, one picture per step. */
+  showcase?: { title: string; lead: string; steps: { src: string; title: string; text: string }[] }
   status: 'available' | 'preview' | 'enterprise'
   platform?: string
   requirements?: string[]

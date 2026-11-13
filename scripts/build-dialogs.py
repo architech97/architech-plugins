@@ -23,7 +23,6 @@ SLUG_OVERRIDE = {'D269': 'point-cloud-on-off', 'D420': 'folio-home', 'D421': 'fo
 # Real captures of the desktop apps that are already published under public/media/native.
 # I3D Material and Result are rendered in the same sample run as the other I3D stages (one chair throughout).
 SITE_CAPTURES = {
-    'D441': [('', 'media/native/revit-mcp-connector.webp')],
     'D458': [('Active view readback', 'media/native/assistant-result.webp'), ('Composer modes', 'media/native/assistant-modes.webp')],
 }
 # Pictures left out of the galleries on purpose; each is listed with its reason on the Coverage page.

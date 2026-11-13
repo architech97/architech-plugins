@@ -239,3 +239,6 @@
   .suite-col + .suite-col { border-top: .75px solid var(--line); }
   .suite-shot { aspect-ratio: 21 / 9; }
 }
+
+/* The three app pictures share one frame, whatever the text below them. */
+.home-desktop-grid article > img:first-child { flex: none; height: auto; aspect-ratio: 4 / 3; }

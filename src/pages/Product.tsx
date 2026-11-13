@@ -119,6 +119,28 @@ export default function Product() {
         </section>
       )}
 
+      {p.showcase && (
+        <section className="tp-show" aria-labelledby="tp-show-title">
+          <div className="wrap">
+            <header className="tp-show-head">
+              <p className="tp-label">How it works</p>
+              <h2 id="tp-show-title">{p.showcase.title}</h2>
+              <p>{p.showcase.lead}</p>
+            </header>
+            <ol className="tp-show-steps" style={{ ['--steps' as string]: p.showcase.steps.length }}>
+              {p.showcase.steps.map((step, i) => (
+                <li key={step.src}>
+                  <a className="tp-show-shot" href={asset(step.src)} target="_blank" rel="noreferrer" aria-label={step.title + ", full-size picture"}><img src={asset(step.src)} alt={step.title} loading="lazy" decoding="async" /></a>
+                  <p className="tp-show-n">{String(i + 1).padStart(2, '0')}</p>
+                  <h3>{step.title}</h3>
+                  <p>{step.text}</p>
+                </li>
+              ))}
+            </ol>
+          </div>
+        </section>
+      )}
+
       {hasStory && (
         <section className="tp-story">
           <div className={'wrap tp-story-grid' + (p.problem && (does.length > 0 || checks.length > 0 || p.requirements) ? '' : ' no-problem')}>

@@ -28,10 +28,20 @@ export const EXTRAS: Omit<Product, 'dialogs'>[] = [
       'Full Revit 2024 for RFA export (Revit LT is not supported)',
     ],
     media: [
-      { src: 'media/i3d/material-workspace.webp', alt: 'Native I3D Material workspace showing a textured chair mesh before export', kind: 'image' },
       { src: 'media/i3d/workflow.gif', alt: 'I3D workflow animation: source, geometry preparation, Revit family', kind: 'animation' },
       { src: 'media/i3d/revit-placement-0.6.36.webp', alt: 'An I3D asset placed in Revit as a native family', kind: 'image' },
     ],
+    showcase: {
+      title: 'One chair, from photo to family',
+      lead: 'Screens from a real I3D project: one product photo of a lounge chair, taken to an export-ready model on a local GPU.',
+      steps: [
+        { src: 'media/i3d/project-1-source.webp', title: 'Start from a photo', text: 'One product photo. The background is removed for you, and the mask can be checked or edited.' },
+        { src: 'media/i3d/project-2-size.webp', title: 'Give it the real size', text: 'Type the real height, here 900 mm. Width and depth follow the photo’s proportions.' },
+        { src: 'media/i3d/project-3-shape.webp', title: 'Generate the shape', text: 'The mesh is generated locally on the GPU, then checked in clay, textured or wireframe.' },
+        { src: 'media/i3d/project-4-material.webp', title: 'Paint it from the photo', text: 'The photo is mapped onto the mesh. Keep the photo texture, or use one neutral material.' },
+        { src: 'media/i3d/project-5-checks.webp', title: 'Check, then export', text: '160,000 triangles, watertight, 900 mm high. Export to Revit, SketchUp, Rhino, 3ds Max or AutoCAD.' },
+      ],
+    },
   },
   {
     slug: 'revit-mcp', key: 'RevitMCP', name: 'ArchiTECH MCP Connector (Revit)', suite: 'ai', panel: 'MCP connectors',
@@ -50,6 +60,16 @@ export const EXTRAS: Omit<Product, 'dialogs'>[] = [
       'Destructive changes are flagged separately and need their own approval.',
       'Every request and its result is visible in the Connector’s activity and diagnostics.',
     ],
+    showcase: {
+      title: 'From an AI request to a checked change',
+      lead: 'How the Connector sits between an AI app and your open Revit model.',
+      steps: [
+        { src: 'dialogs/architech-mcp-connector/revit-mcp/D443-agents-dark.webp', title: 'Connect an AI app', text: 'Claude Desktop, Claude Code, Codex, Cursor or any MCP client, set up from one page.' },
+        { src: 'dialogs/architech-mcp-connector/revit-mcp/D441-home-dark.webp', title: 'Decide what it may do', text: 'Reading is automatic, edits ask first, and deletes or risky code need your confirmation.' },
+        { src: 'dialogs/architech-mcp-connector/revit-mcp/D450-review-reversible-dark.webp', title: 'Review each change', text: 'A change arrives as a request you can read: the document, the operation and the code, before it runs.' },
+        { src: 'dialogs/architech-mcp-connector/revit-mcp/D446-diagnostics-dark.webp', title: 'See what happened', text: 'Every request and its result stays visible in the Connector’s activity and diagnostics.' },
+      ],
+    },
   },
   {
     slug: 'rhino-mcp', key: 'RhinoMCP', name: 'ArchiTECH MCP Connector (Rhino)', suite: 'ai', panel: 'MCP connectors',
@@ -108,5 +128,15 @@ export const EXTRAS: Omit<Product, 'dialogs'>[] = [
       { src: 'media/assistant/active-view-exchange.png', alt: 'Native Assistant readback of the active Revit view, Cover', kind: 'image' },
       { src: 'media/assistant/composer-modes.png', alt: 'Native Assistant composer with Ask, Search and Build controls', kind: 'image' },
     ],
+    showcase: {
+      title: 'Ask, find, plan',
+      lead: 'One conversation with an open Revit model, rendered from the Assistant’s own window with sample data.',
+      steps: [
+        { src: 'media/assistant/chat-ask.webp', title: 'Ask about the model', text: 'Which doors on Level 2 have no fire rating? It answers from the open model, read only, and shows how it found out.' },
+        { src: 'media/assistant/chat-change.webp', title: 'Make the change, then check it', text: 'Asked to set FD60, it updates the six doors in one step and reads them back to confirm.' },
+        { src: 'dialogs/architech-assistant/architech-assistant/D461-context-dark.webp', title: 'It knows the context', text: 'Revit version, document, active view and selection are read before it answers.' },
+        { src: 'dialogs/architech-assistant/architech-assistant/D462-trouble-dark.webp', title: 'Fix connections fast', text: 'Troubleshoot checks the connections and opens the logs and the action audit.' },
+      ],
+    },
   },
 ]

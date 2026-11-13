@@ -198,14 +198,14 @@ export default function HomeSections() {
         <div className="wrap">
           <div className="split-head">
             <h2 id="home-desktop-title">AI and desktop apps</h2>
-            <p>Three products beyond the Revit ribbon: I3D turns a photo or a mesh into a Revit family, the Assistant answers questions about the open model, and the MCP Connector lets an AI assistant work in Revit, Rhino, SketchUp, AutoCAD and Blender, with every change checked.</p>
+            <p>Three products beyond the Revit ribbon: I3D turns a photo or a mesh into a Revit family, the Assistant answers questions about the open model and plans the change, and the MCP Connector lets AI apps such as Claude work in Revit, Rhino, SketchUp, AutoCAD and Blender, with every change shown to you first.</p>
           </div>
           <div className="home-desktop-grid">
             {DESKTOP.map((d) => (
               <article key={d.slug}>
                 <img {...thumbProps(d.shot.dark)} alt={dialogAlt(d.product, d.shot)} loading="lazy" decoding="async" />
                 <div><h3>{d.name}</h3><p className="product-kind">{d.kind}</p><p className="home-desktop-task">{d.task}</p>
-                  <Link to={'/demos/' + d.slug}>See its {d.count} dialogs</Link></div>
+                  <Link to={'/plugins/' + d.slug}>See how it works</Link></div>
               </article>
             ))}
           </div>
