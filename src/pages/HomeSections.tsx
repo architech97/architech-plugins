@@ -205,7 +205,7 @@ export default function HomeSections() {
               <article key={d.slug}>
                 <img {...thumbProps(d.shot.dark)} alt={dialogAlt(d.product, d.shot)} loading="lazy" decoding="async" />
                 <div><h3>{d.name}</h3><p className="product-kind">{d.kind}</p><p className="home-desktop-task">{d.task}</p>
-                  <Link to={'/plugins/' + d.slug}>See how it works</Link></div>
+                  <Link to={'/plugins/' + d.slug + (d.slug === 'architech-i3d' ? '#try-i3d' : '')}>{d.slug === 'architech-i3d' ? 'Try the demo' : 'See how it works'}</Link></div>
               </article>
             ))}
           </div>

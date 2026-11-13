@@ -1,3 +1,4 @@
+import { lazy, Suspense } from 'react'
 import { Link, useParams } from 'react-router-dom'
 import { MessageSquare } from 'lucide-react'
 import { PRODUCTS, productBySlug } from '../data/catalog'
@@ -7,6 +8,9 @@ import { ProductCard } from '../components/ProductCard'
 import { Reveal } from '../components/Layout'
 import { asset } from '../components/Brand'
 import NotFound from './NotFound'
+
+/** Only the I3D page loads the browser demo (and three.js with it). */
+const I3DDemo = lazy(() => import('../components/i3d/I3DDemo'))
 import './product-evidence.css'
 import './product.css'
 
@@ -61,7 +65,8 @@ export default function Product() {
               <h1>{p.name}</h1>
               <p className="lead">{p.tagline}</p>
               <div className="hero-cta">
-                {p.dialogs.length > 0
+                {p.slug === 'architech-i3d' && <a className="btn btn-primary" href="#try-i3d">Try it in your browser</a>}
+                {p.slug === 'architech-i3d' ? <a className="btn btn-ghost" href="#dialog-reference">See the {dialogCount} dialogs</a> : p.dialogs.length > 0
                   ? <a className="btn btn-primary" href="#dialog-reference">See the {dialogCount === 1 ? 'dialog' : dialogCount + ' dialogs'}</a>
                   : p.media?.length ? <a className="btn btn-primary" href="#dialog-reference">View desktop visuals</a> : null}
                 <Link className="btn btn-ghost" to={`/connect?type=walkthrough&product=${p.slug}`}><MessageSquare size={17} /> Ask me about this tool</Link>
@@ -82,6 +87,19 @@ export default function Product() {
           </div>
         </div>
       </section>
+
+      {p.slug === 'architech-i3d' && (
+        <section className="tp-try" id="try-i3d" aria-labelledby="tp-try-title">
+          <div className="wrap">
+            <header className="tp-try-head">
+              <p className="tp-label">Interactive demo</p>
+              <h2 id="tp-try-title">Try I3D in your browser</h2>
+              <p>A working mock-up of the app around one real project: the lounge chair below was made in I3D from a single photo. Step through, change the height, generate the shape, rotate the model. Nothing is uploaded.</p>
+            </header>
+            <Suspense fallback={<div className="tp-try-wait">Loading the demo…</div>}><I3DDemo /></Suspense>
+          </div>
+        </section>
+      )}
 
       {(p.dialogs.length > 0 || p.media?.length) && (
         <section className="tp-dialogs" id="dialog-reference">
