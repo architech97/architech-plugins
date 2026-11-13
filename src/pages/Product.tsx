@@ -9,8 +9,15 @@ import { Reveal } from '../components/Layout'
 import { asset } from '../components/Brand'
 import NotFound from './NotFound'
 
-/** Only the I3D page loads the browser demo (and three.js with it). */
-const I3DDemo = lazy(() => import('../components/i3d/I3DDemo'))
+/** Browser demos of the desktop apps. Each page loads only its own (I3D brings three.js with it). */
+const DEMOS: Record<string, { Demo: ReturnType<typeof lazy>; title: string; lead: string }> = {
+  'architech-i3d': { Demo: lazy(() => import('../components/i3d/I3DDemo')), title: 'Try I3D in your browser',
+    lead: 'A working mock-up of the app around one real project: the lounge chair below was made in I3D from a single photo. Step through, change the height, generate the shape, rotate the model. Nothing is uploaded.' },
+  'architech-assistant': { Demo: lazy(() => import('../components/appdemo/AssistantDemo')), title: 'Try the Assistant in your browser',
+    lead: 'A scripted conversation with a sample Revit model. Ask about the doors on Level 2, search for a tool, then approve a change and watch it read back. Nothing is sent anywhere.' },
+  'revit-mcp': { Demo: lazy(() => import('../components/appdemo/McpDemo')), title: 'Try the Connector in your browser',
+    lead: 'The Connector’s dashboard with a sample model. Send three requests as if from Claude, change what needs your approval, and see the review dialogs. No AI app or Revit is involved.' },
+}
 import './product-evidence.css'
 import './product.css'
 
@@ -31,6 +38,7 @@ export default function Product() {
   if (!p) return <NotFound />
   const suite = suiteById(p.suite)
   const dialogCount = new Set(p.dialogs.map((d) => d.id)).size
+  const demo = DEMOS[p.slug]
   const screenshots = p.dialogs.filter((d) => d.real).length
   const hasRecordedPlacement = p.media?.some(({ src }) => src === DRAGON_PLACEMENT)
   const hasChairPreview = p.slug === 'architech-i3d'
@@ -65,8 +73,8 @@ export default function Product() {
               <h1>{p.name}</h1>
               <p className="lead">{p.tagline}</p>
               <div className="hero-cta">
-                {p.slug === 'architech-i3d' && <a className="btn btn-primary" href="#try-i3d">Try it in your browser</a>}
-                {p.slug === 'architech-i3d' ? <a className="btn btn-ghost" href="#dialog-reference">See the {dialogCount} dialogs</a> : p.dialogs.length > 0
+                {demo && <a className="btn btn-primary" href="#try-demo">Try it in your browser</a>}
+                {demo ? <a className="btn btn-ghost" href="#dialog-reference">See the {dialogCount} dialogs</a> : p.dialogs.length > 0
                   ? <a className="btn btn-primary" href="#dialog-reference">See the {dialogCount === 1 ? 'dialog' : dialogCount + ' dialogs'}</a>
                   : p.media?.length ? <a className="btn btn-primary" href="#dialog-reference">View desktop visuals</a> : null}
                 <Link className="btn btn-ghost" to={`/connect?type=walkthrough&product=${p.slug}`}><MessageSquare size={17} /> Ask me about this tool</Link>
@@ -88,15 +96,15 @@ export default function Product() {
         </div>
       </section>
 
-      {p.slug === 'architech-i3d' && (
-        <section className="tp-try" id="try-i3d" aria-labelledby="tp-try-title">
+      {demo && (
+        <section className="tp-try" id="try-demo" aria-labelledby="tp-try-title">
           <div className="wrap">
             <header className="tp-try-head">
               <p className="tp-label">Interactive demo</p>
-              <h2 id="tp-try-title">Try I3D in your browser</h2>
-              <p>A working mock-up of the app around one real project: the lounge chair below was made in I3D from a single photo. Step through, change the height, generate the shape, rotate the model. Nothing is uploaded.</p>
+              <h2 id="tp-try-title">{demo.title}</h2>
+              <p>{demo.lead}</p>
             </header>
-            <Suspense fallback={<div className="tp-try-wait">Loading the demo…</div>}><I3DDemo /></Suspense>
+            <Suspense fallback={<div className="tp-try-wait">Loading the demo…</div>}><demo.Demo /></Suspense>
           </div>
         </section>
       )}
