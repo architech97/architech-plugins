@@ -1,7 +1,6 @@
 /* ArchiTECH shared chrome: tokens, header and footer for Home and Automation.
-   Source of truth for the values is /design/ (style.css :root). This copy matches
-   architech-design/chrome.css except two Automation-only rules: the 420px nav fit,
-   and reduced-motion durations set to instant. */
+   Canonical copy: architech-design/chrome.css must match this file byte for byte.
+   Colour values follow /design/ (style.css :root). */
 :root {
   /* Tonal ramp, paper to night. */
   --paper: #f3eee6; --paper-2: #ebe4d8; --stone: #d9cdbd; --taupe: #6f5f57;
@@ -17,7 +16,8 @@
   --mono: "IBM Plex Mono", ui-monospace, monospace;
   /* One easing, three durations. */
   --ease: cubic-bezier(.2, .7, .1, 1);
-  --t-ui: 240ms; --t-reveal: 600ms; --t-scene: 1200ms;
+  --ease-out: cubic-bezier(.16, 1, .3, 1);
+  --t-ui: 240ms; --t-reveal: 600ms; --t-scene: 800ms;
   /* Spacing scale. */
   --s-1: 8px; --s-2: 16px; --s-3: 24px; --s-4: 40px; --s-5: 64px; --s-6: 104px; --s-7: 168px;
   --gut: clamp(16px, 3.6vw, 64px);
@@ -33,30 +33,34 @@
 
 /* Header: one row everywhere; Automation adds its own second row. */
 .ax-header { position: relative; z-index: 40; font-family: var(--sans); color: var(--ink); }
-.ax-bar { display: flex; align-items: center; justify-content: space-between; gap: var(--s-2); min-height: 64px; padding-inline: var(--gut); }
-.ax-brand { display: inline-flex; align-items: center; gap: 9px; min-height: 44px; color: inherit; text-decoration: none; font: 300 1.45rem/1 var(--sans); letter-spacing: -.035em; view-transition-name: ax-brand; }
+.ax-bar { display: flex; align-items: center; justify-content: space-between; gap: var(--s-2); min-height: 64px; padding-inline: var(--gut); min-width: 0; }
+.ax-brand { display: inline-flex; align-items: center; gap: 9px; min-height: 44px; color: inherit; text-decoration: none; font: 300 1.45rem/1 var(--sans); letter-spacing: -.035em; view-transition-name: ax-brand; flex: none; }
 .ax-brand strong { font-weight: 500; }
 .ax-brand svg { flex: none; }
 .ax-blade { fill: var(--brass); transform-origin: 46% 48%; transform-box: fill-box; transition: transform var(--t-reveal) var(--ease); }
 .ax-brand:hover .ax-blade { transform: rotate(-9deg); }
-.ax-nav { display: flex; gap: clamp(12px, 2.4vw, 34px); }
-.ax-nav a { position: relative; display: inline-flex; align-items: center; min-height: 44px; color: inherit; text-decoration: none; font: 400 .95rem/1 var(--sans); }
+.ax-nav { display: flex; align-items: center; justify-content: flex-end; gap: clamp(8px, 1.6vw, 28px); min-width: 0; }
+.ax-nav a { position: relative; display: inline-flex; align-items: center; min-height: 44px; color: inherit; text-decoration: none; font: 400 .95rem/1 var(--sans); white-space: nowrap; }
 .ax-nav a::after { content: ''; position: absolute; left: 0; right: 0; bottom: 11px; height: 1px; background: currentColor; transform: scaleX(0); transform-origin: left; transition: transform var(--t-reveal) var(--ease); }
 .ax-nav a:hover::after, .ax-nav a:focus-visible::after, .ax-nav a[aria-current]::after { transform: scaleX(1); }
 .ax-nav a[aria-current]::after { background: var(--blueprint); height: 2px; }
 .ax-nav a[data-division="design"][aria-current]::after { background: var(--brass); }
-@media (max-width: 520px) {
+@media (max-width: 720px) {
   .ax-brand span { display: none; }
-  .ax-nav { gap: 14px; }
-  .ax-nav a { font-size: .88rem; }
+  .ax-bar { gap: 8px; padding-inline: 12px; }
+  .ax-nav { gap: 10px; }
+  .ax-nav a { font-size: .84rem; letter-spacing: 0; }
 }
-/* Five labels plus the mark have to fit a 375px phone. This breakpoint is only in Automation. */
 @media (max-width: 420px) {
-  .ax-bar { padding-inline: 10px; gap: 8px; }
-  .ax-nav { gap: 8px; }
-  .ax-nav a { font-size: .78rem; }
+  .ax-bar { gap: 6px; padding-inline: 10px; }
+  .ax-brand svg { width: 26px; height: 26px; }
+  .ax-nav { gap: 7px; }
+  .ax-nav a { font-size: .74rem; }
 }
-@media (max-width: 340px) { .ax-nav { gap: 6px; } .ax-nav a { font-size: .72rem; } }
+@media (max-width: 340px) {
+  .ax-nav { gap: 5px; }
+  .ax-nav a { font-size: .68rem; }
+}
 
 /* Footer: the night bar /design/ ends on. */
 .ax-footer { background: var(--night); color: var(--on-dark-2); font: 300 .95rem/1.6 var(--sans); padding: var(--s-6) var(--gut) var(--s-3); scroll-margin-top: 80px; }

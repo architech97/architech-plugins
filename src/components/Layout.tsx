@@ -75,7 +75,10 @@ function Footer() {
           <p className="ax-foot-h">Contact</p>
           <a href={`mailto:${CONTACT.email}`}>{CONTACT.email}</a>
           {CONTACT.phones.map((phone) => <a key={phone} href={'tel:' + phone.replace(/\s/g, '')}>{phone}</a>)}
-          <a href={CONTACT.linkedin} rel="noreferrer">LinkedIn</a>
+          <a href={CONTACT.linkedin} rel="noopener noreferrer">LinkedIn</a>
+          <a href={CONTACT.instagram} rel="noopener noreferrer">Instagram</a>
+          <a href={CONTACT.youtube} rel="noopener noreferrer">YouTube</a>
+          <a href={CONTACT.x} rel="noopener noreferrer">X</a>
         </div>
         <div className="ax-foot-col">
           <p className="ax-foot-h">Work</p>
@@ -83,6 +86,7 @@ function Footer() {
           <Link to="/">Automation</Link>
           <Link to="/demos">Dialog gallery</Link>
           <Link to="/connect">Get in touch</Link>
+          <a href="/privacy/">Privacy</a>
           <Link to="/coverage">How the pictures were made</Link>
         </div>
         <div className="ax-foot-col">
@@ -99,6 +103,8 @@ function Footer() {
         <span className="ax-foot-mark"><Mark size={26} />Archi<strong>TECH</strong></span>
         <p>Portfolio of Navneet Singh, New Delhi. Dialog pictures are screenshots and renders of the tools, with sample data. Autodesk, Revit and AutoCAD are trademarks of Autodesk, Inc.; Rhino, SketchUp and Blender are trademarks of their owners.</p>
       </div>
+      {/* HOOK(contact-form): Navneet has not chosen a form service. Do not post this anywhere and do not add analytics. */}
+      <div id="contact-form" data-form="unconfigured" hidden />
     </footer>
   )
 }
