@@ -4,9 +4,11 @@ import { MessageSquare } from 'lucide-react'
 import { PRODUCTS, productBySlug } from '../data/catalog'
 import { suiteById } from '../data/suites'
 import { DialogGallery } from '../components/DialogGallery'
+import { imageProps } from '../components/dialogImage'
 import { ProductCard } from '../components/ProductCard'
 import { Reveal } from '../components/Layout'
 import { asset } from '../components/Brand'
+import type { DialogImage, Product } from '../data/types'
 import NotFound from './NotFound'
 
 /** Browser demos of the desktop apps. Each page loads only its own (I3D brings three.js with it). */
@@ -23,6 +25,15 @@ import './product.css'
 
 const CHAIR_PREVIEW = 'media/i3d/chair-mesh.png'
 const DRAGON_PLACEMENT = 'media/i3d/revit-placement-0.6.36.webp'
+
+/** The published dialog picture for a walkthrough step, when the step uses one. */
+function stepPicture(product: Product, src: string): DialogImage | undefined {
+  for (const dialog of product.dialogs) {
+    if (dialog.dark[0] === src) return dialog.dark
+    if (dialog.light?.[0] === src) return dialog.light
+  }
+  return undefined
+}
 
 /** A sentence that opens with a short tab or mode name ("Renumber / rename: ...") shows that name as a label. */
 function Point({ text }: { text: string }) {
@@ -154,14 +165,19 @@ export default function Product() {
               <p>{p.showcase.lead}</p>
             </header>
             <ol className="tp-show-steps" style={{ ['--steps' as string]: p.showcase.steps.length }}>
-              {p.showcase.steps.map((step, i) => (
-                <li key={step.src}>
-                  <a className="tp-show-shot" href={asset(step.src)} target="_blank" rel="noreferrer" aria-label={step.title + ", full-size picture"}><img src={asset(step.src)} alt={step.title} loading="lazy" decoding="async" /></a>
-                  <p className="tp-show-n">{String(i + 1).padStart(2, '0')}</p>
-                  <h3>{step.title}</h3>
-                  <p>{step.text}</p>
-                </li>
-              ))}
+              {p.showcase.steps.map((step, i) => {
+                const picture = stepPicture(p, step.src)
+                return (
+                  <li key={step.src}>
+                    <a className="tp-show-shot" href={asset(step.src)} target="_blank" rel="noreferrer" aria-label={step.title + ", full-size picture"}>
+                      <img {...(picture ? imageProps(picture, 420) : { src: asset(step.src) })} alt={step.title} loading="lazy" decoding="async" />
+                    </a>
+                    <p className="tp-show-n">{String(i + 1).padStart(2, '0')}</p>
+                    <h3>{step.title}</h3>
+                    <p>{step.text}</p>
+                  </li>
+                )
+              })}
             </ol>
           </div>
         </section>

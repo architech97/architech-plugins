@@ -1,0 +1,485 @@
+[
+  {
+    "slug": "manage-text",
+    "name": "Manage Text",
+    "tagline": "Change case, find and replace, merge, align and re-type text notes across the whole model.",
+    "demo": "manage-text",
+    "windows": 2
+  },
+  {
+    "slug": "reorder-pro",
+    "name": "Reorder Pro",
+    "tagline": "Renumber elements in the order you choose, with a preview before a single value is written.",
+    "demo": "reorder-pro",
+    "windows": 3
+  },
+  {
+    "slug": "spell-check",
+    "name": "Spell Check",
+    "tagline": "Check spelling on sheets and elements, and review the results in an interactive report.",
+    "demo": "spell-check",
+    "windows": 1
+  },
+  {
+    "slug": "spot-elevation-line",
+    "name": "Spot Elevation Line",
+    "tagline": "Override the line pattern of every spot elevation, across every view that shows one.",
+    "demo": "spot-elevation-line",
+    "windows": 3
+  },
+  {
+    "slug": "text-tag-align",
+    "name": "Text/Tag Align",
+    "tagline": "Align text notes and tags into a clean column or row.",
+    "demo": "text-tag-align",
+    "windows": 3
+  },
+  {
+    "slug": "auto-dimension",
+    "name": "Auto Dimension",
+    "tagline": "Dimension plans, ceiling plans, elevations, sections and drafting views automatically, one view or a batch.",
+    "demo": "auto-dimension",
+    "windows": 4
+  },
+  {
+    "slug": "make-pattern",
+    "name": "Make Pattern",
+    "tagline": "Turn drawn linework into a Revit fill pattern, and export it as a .pat file.",
+    "demo": "make-pattern",
+    "windows": 2
+  },
+  {
+    "slug": "manage-dimension",
+    "name": "Manage Dimension",
+    "tagline": "Cut-through dimensioning, merging and project-wide dimension audits, from one palette.",
+    "demo": "manage-dimension",
+    "windows": 11
+  },
+  {
+    "slug": "split-region-with-line",
+    "name": "Split Region with Line",
+    "tagline": "Split selected filled or masking regions with a detail line used as an infinite plane.",
+    "demo": "split-region-with-line",
+    "windows": 2
+  },
+  {
+    "slug": "sheet-export",
+    "name": "Sheet Export",
+    "tagline": "Batch-export sheets and views to PDF, DWG, IFC, NWC and more, with an optional drawing register.",
+    "demo": "sheet-export",
+    "windows": 6
+  },
+  {
+    "slug": "excel-to-schedule",
+    "name": "Excel to Schedule",
+    "tagline": "Bring an Excel worksheet into Revit as a schedule that looks the same, and refresh it in place.",
+    "demo": "excel-to-schedule",
+    "windows": 8
+  },
+  {
+    "slug": "update-schedule",
+    "name": "Update Schedule",
+    "tagline": "Edit element parameters and schedules in Excel, then import the values back into Revit.",
+    "demo": "update-schedule",
+    "windows": 9
+  },
+  {
+    "slug": "sheet-manager",
+    "name": "Sheet Manager",
+    "tagline": "Duplicate, renumber, rename and revise many sheets at once, from one list.",
+    "demo": "sheet-manager",
+    "windows": 2
+  },
+  {
+    "slug": "vp-manager",
+    "name": "VP Manager",
+    "tagline": "Align, crop, renumber and move viewports across many sheets at once, from one list.",
+    "demo": "vp-manager",
+    "windows": 1
+  },
+  {
+    "slug": "folio-home",
+    "name": "Folio Home",
+    "tagline": "The documentation suite: views, sheets, viewports, annotation, dimensions and publishing, from one searchable home.",
+    "demo": "folio-home",
+    "windows": 3
+  },
+  {
+    "slug": "graphic-overviews",
+    "name": "Graphic Overviews",
+    "tagline": "Document the project's line styles, patterns, line weights and materials on a sheet, automatically.",
+    "demo": "graphic-overviews",
+    "windows": 2
+  },
+  {
+    "slug": "template-manager",
+    "name": "Template Manager",
+    "tagline": "Transfer view templates, view filters, Visibility/Graphics and hidden elements, and turn imported CAD off, from one window.",
+    "demo": "template-manager",
+    "windows": 12
+  },
+  {
+    "slug": "detail-view",
+    "name": "Detail View",
+    "tagline": "Draw a cut line and get a wall section with its floor, ceiling and wall detail callouts, on every level you pick.",
+    "demo": "detail-view",
+    "windows": 1
+  },
+  {
+    "slug": "room-to-view",
+    "name": "Room to View",
+    "tagline": "Plans, a 3D view and elevations for every ticked room, then place them on sheets.",
+    "demo": "room-to-view",
+    "windows": 4
+  },
+  {
+    "slug": "view-manager",
+    "name": "View Manager",
+    "tagline": "Convert, duplicate, apply templates to and rename many views at once, from one list.",
+    "demo": "view-manager",
+    "windows": 6
+  },
+  {
+    "slug": "fr-to-finishes",
+    "name": "FR to Finishes",
+    "tagline": "Turn drawn Filled Regions into real Floors, Ceilings or Walls.",
+    "demo": "fr-to-finishes",
+    "windows": 5
+  },
+  {
+    "slug": "replace-materials",
+    "name": "Replace Materials",
+    "tagline": "Find and replace a material across the model categories you choose.",
+    "demo": "replace-materials",
+    "windows": 1
+  },
+  {
+    "slug": "room-to-finishes",
+    "name": "Room to Finishes",
+    "tagline": "Create finishing floors, walls and ceilings from the selected rooms.",
+    "demo": "room-to-finishes",
+    "windows": 2
+  },
+  {
+    "slug": "split-floor-ceiling",
+    "name": "Split Floor / Ceiling",
+    "tagline": "Split a floor or ceiling drawn as several regions into separate elements, keeping their parameters.",
+    "demo": "split-floor-ceiling",
+    "windows": 2
+  },
+  {
+    "slug": "assign-room-properties",
+    "name": "Assign Room Properties",
+    "tagline": "Write room data onto every element inside each room, from this model or a linked one.",
+    "demo": "assign-room-properties",
+    "windows": 2
+  },
+  {
+    "slug": "copy-param-from-link",
+    "name": "Copy Param from Link",
+    "tagline": "Copy one room text property onto a category of elements, from this model or a link.",
+    "demo": "copy-param-from-link",
+    "windows": 1
+  },
+  {
+    "slug": "family-param-transfer",
+    "name": "Family Param Transfer",
+    "tagline": "Copy parameter definitions from one family to another, keeping shared-parameter GUIDs.",
+    "demo": "family-param-transfer",
+    "windows": 3
+  },
+  {
+    "slug": "one-parameter",
+    "name": "One Parameter",
+    "tagline": "Find and replace, prefix or suffix one parameter's values across the model, with a preview first.",
+    "demo": "one-parameter",
+    "windows": 2
+  },
+  {
+    "slug": "parameter-manager",
+    "name": "Parameter Manager",
+    "tagline": "Create, edit and bind project parameters, set formulas, and round-trip them through Excel.",
+    "demo": "parameter-manager",
+    "windows": 12
+  },
+  {
+    "slug": "parameter-mapping",
+    "name": "Parameter Mapping",
+    "tagline": "Copy parameter values between elements, filtered by category, family and type.",
+    "demo": "parameter-mapping",
+    "windows": 6
+  },
+  {
+    "slug": "shared-param-manager",
+    "name": "Shared Param Manager",
+    "tagline": "Edit shared-parameter files and bind their definitions to model categories, in one window.",
+    "demo": "shared-param-manager",
+    "windows": 9
+  },
+  {
+    "slug": "match-opening",
+    "name": "Match Opening",
+    "tagline": "Match wall openings to a structural or architectural link: preview the matches, then create or resize them.",
+    "demo": "match-opening",
+    "windows": 2
+  },
+  {
+    "slug": "room-height-adjust",
+    "name": "Room Height Adjust",
+    "tagline": "Lower room upper limits so each room stops at the ceiling above it.",
+    "demo": "room-height-adjust",
+    "windows": 1
+  },
+  {
+    "slug": "room-level-assigner",
+    "name": "Room Level Assigner",
+    "tagline": "Move rooms to another level, keeping their number, name, parameters and position.",
+    "demo": "room-level-assigner",
+    "windows": 3
+  },
+  {
+    "slug": "deviation-inspector",
+    "name": "Deviation Inspector",
+    "tagline": "Measure how far walls and columns sit from the point cloud, and colour them by deviation.",
+    "demo": "deviation-inspector",
+    "windows": 3
+  },
+  {
+    "slug": "point-cloud-on-off",
+    "name": "Point Cloud On/Off",
+    "tagline": "Toggle point-cloud visibility in the active Revit view.",
+    "demo": "point-cloud-on-off",
+    "windows": 1
+  },
+  {
+    "slug": "point-cloud-slicer",
+    "name": "Point Cloud Slicer",
+    "tagline": "Make one 3D view and one floor plan per level, cut to that storey of the point cloud.",
+    "demo": "point-cloud-slicer",
+    "windows": 1
+  },
+  {
+    "slug": "forge-home",
+    "name": "Forge Home",
+    "tagline": "The modelling and data suite: rooms, finishes, parameters and Scan-to-BIM, from one searchable home.",
+    "demo": "forge-home",
+    "windows": 1
+  },
+  {
+    "slug": "compliance-guard",
+    "name": "Compliance Guard",
+    "tagline": "Find CAD-style lines, unpinned grids, levels and links, and content left on Workset1, then clean them up after review.",
+    "demo": "compliance-guard",
+    "windows": 2
+  },
+  {
+    "slug": "duplicates-resolver",
+    "name": "Duplicates Resolver",
+    "tagline": "Find instances stacked at the same location, then merge or delete the extras.",
+    "demo": "duplicates-resolver",
+    "windows": 3
+  },
+  {
+    "slug": "group-manager",
+    "name": "Group Manager",
+    "tagline": "Dissolve detail and model groups in bulk, keeping every member element.",
+    "demo": "group-manager",
+    "windows": 2
+  },
+  {
+    "slug": "off-axis-resolver",
+    "name": "Off-Axis Resolver",
+    "tagline": "Find elements that drifted a fraction of a degree off orthogonal, and straighten them in one undoable step.",
+    "demo": "off-axis-resolver",
+    "windows": 2
+  },
+  {
+    "slug": "purge-and-merge",
+    "name": "Purge and Merge",
+    "tagline": "Purge unused materials, patterns, filters and templates, or merge the duplicates that CAD imports leave behind.",
+    "demo": "purge-merge",
+    "windows": 5
+  },
+  {
+    "slug": "coord-plan",
+    "name": "Coord Plan",
+    "tagline": "Build a clean coordination floor plan in one step: grids, levels, base points and links shown, imports and annotation hidden.",
+    "demo": "coord-plan",
+    "windows": 1
+  },
+  {
+    "slug": "navis-view",
+    "name": "Navis View",
+    "tagline": "Set up the Navisworks export view the same way every time, or a batch of them by workset or category.",
+    "demo": "navis-view",
+    "windows": 4
+  },
+  {
+    "slug": "scope-box-synchronizer",
+    "name": "Scope Box Synchronizer",
+    "tagline": "Keep scope boxes in step with the master link model, and move every dependent view with them.",
+    "demo": "scope-box-synchronizer",
+    "windows": 3
+  },
+  {
+    "slug": "section-box",
+    "name": "Section Box",
+    "tagline": "Crop a 3D view tightly around the selected elements, with the padding you choose.",
+    "demo": "section-box",
+    "windows": 2
+  },
+  {
+    "slug": "links-inspector",
+    "name": "Links Inspector",
+    "tagline": "Audit every Revit link and CAD import, with load status, pinning and a verdict.",
+    "demo": "links-inspector",
+    "windows": 3
+  },
+  {
+    "slug": "pin-unpin-links",
+    "name": "Pin / Unpin Links",
+    "tagline": "Pin every Revit link and CAD import in bulk, so nothing gets dragged out of place by accident.",
+    "demo": "pin-unpin-links",
+    "windows": 2
+  },
+  {
+    "slug": "in-place-converter",
+    "name": "In-Place Converter",
+    "tagline": "Save in-place solids as reusable Generic Model families, keeping the originals.",
+    "demo": "in-place-converter",
+    "windows": 2
+  },
+  {
+    "slug": "in-place-inspector",
+    "name": "In-Place Inspector",
+    "tagline": "Find the in-place families that cost sync time, then isolate, convert or delete them.",
+    "demo": "in-place-inspector",
+    "windows": 2
+  },
+  {
+    "slug": "mirrored-auditor",
+    "name": "Mirrored Auditor",
+    "tagline": "Find mirrored doors, windows and equipment, tell valid flips from true mirroring, and resolve them.",
+    "demo": "mirrored-auditor",
+    "windows": 3
+  },
+  {
+    "slug": "model-health",
+    "name": "Model Health",
+    "tagline": "Check the model against the rules you choose and review it in a searchable HTML dashboard.",
+    "demo": "model-health",
+    "windows": 7
+  },
+  {
+    "slug": "structural-qa",
+    "name": "Structural QA",
+    "tagline": "Screen columns against their grids and beam ends against their supports, within 5 mm.",
+    "demo": "structural-qa",
+    "windows": 1
+  },
+  {
+    "slug": "warnings-inspector",
+    "name": "Warnings Inspector",
+    "tagline": "Group the model's warnings by type and act on the elements each one blames.",
+    "demo": "warnings-inspector",
+    "windows": 1
+  },
+  {
+    "slug": "family-name-editor",
+    "name": "Family Name Editor",
+    "tagline": "Audit and rename loadable family names against the naming convention in the BIM execution plan (BEP).",
+    "demo": "family-name-editor",
+    "windows": 6
+  },
+  {
+    "slug": "family-name-synchronizer",
+    "name": "Family Name Synchronizer",
+    "tagline": "Rename project families to match a container model, matched by Type Mark.",
+    "demo": "family-name-synchronizer",
+    "windows": 4
+  },
+  {
+    "slug": "filter-usage-checker",
+    "name": "Filter Usage Checker",
+    "tagline": "See where every view filter is used, find the unused ones, and add or remove filters across views and templates.",
+    "demo": "filter-usage-checker",
+    "windows": 2
+  },
+  {
+    "slug": "model-query-pro",
+    "name": "Model Query Pro",
+    "tagline": "Query model data, or open Review Center for a scoped review of warnings, rooms and furniture (FF&E).",
+    "demo": "model-query-pro",
+    "windows": 4
+  },
+  {
+    "slug": "parameter-colorizer",
+    "name": "Parameter Colorizer",
+    "tagline": "Colour elements by any parameter value to spot gaps and errors at a glance.",
+    "demo": "parameter-colorizer",
+    "windows": 2
+  },
+  {
+    "slug": "workset-manager",
+    "name": "Workset Manager",
+    "tagline": "Bulk-assign elements to worksets using the prefix and category rules in the BIM execution plan.",
+    "demo": "workset-manager",
+    "windows": 6
+  },
+  {
+    "slug": "sentinel-home",
+    "name": "Sentinel Home",
+    "tagline": "The model-health suite: warnings, standards, links and clean-up, from one searchable home.",
+    "demo": "sentinel-home",
+    "windows": 1
+  },
+  {
+    "slug": "architech-i3d",
+    "name": "ArchiTECH I3D",
+    "tagline": "Turn a product photo into a sized, textured Revit family, entirely on your own computer.",
+    "demo": "architech-i3d",
+    "windows": 16
+  },
+  {
+    "slug": "architech-assistant",
+    "name": "ArchiTECH Assistant",
+    "tagline": "Ask about your open Revit model, find the right tool and plan the change, in one chat.",
+    "demo": "architech-assistant",
+    "windows": 7
+  },
+  {
+    "slug": "autocad-mcp",
+    "name": "ArchiTECH MCP Connector (AutoCAD)",
+    "tagline": "Let an AI app draft in AutoCAD: layers, blocks, AutoLISP and DXF, with guarded changes.",
+    "demo": null,
+    "windows": 0
+  },
+  {
+    "slug": "blender-mcp",
+    "name": "ArchiTECH MCP Connector (Blender)",
+    "tagline": "Let an AI app set up, model and render Blender scenes, with safe recovery if a step fails.",
+    "demo": null,
+    "windows": 0
+  },
+  {
+    "slug": "revit-mcp",
+    "name": "ArchiTECH MCP Connector (Revit)",
+    "tagline": "Connect Claude, Codex or Cursor to a live Revit model, with every change shown to you first.",
+    "demo": "revit-mcp",
+    "windows": 14
+  },
+  {
+    "slug": "rhino-mcp",
+    "name": "ArchiTECH MCP Connector (Rhino)",
+    "tagline": "Let an AI app model in Rhino 8 with native RhinoCommon commands, and check every result.",
+    "demo": null,
+    "windows": 0
+  },
+  {
+    "slug": "sketchup-mcp",
+    "name": "ArchiTECH MCP Connector (SketchUp)",
+    "tagline": "Let an AI app build in SketchUp with checked geometry and verified positions.",
+    "demo": null,
+    "windows": 0
+  }
+]

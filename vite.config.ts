@@ -14,30 +14,28 @@ const staticRoutes: Plugin = {
       const shell = bundle['index.html']
       if (shell?.type !== 'asset') this.error('The built page shell is missing.')
 
-      const { module: { PRODUCTS, STATS, HERO_SIZES } } = await runnerImport<{
+      const root = this.environment.config.root
+      const { module: catalog } = await runnerImport<{
         HERO_SIZES: string
-        PRODUCTS: { slug: string; demo?: string; name: string; tagline: string; dialogs: { dark: [string, number, number, number] }[] }[]
-        STATS: { revitTools: number; dialogs: number }
-      }>('/src/data/catalog.ts', { root: this.environment.config.root })
+        PRODUCTS: { slug: string; demo?: string; dialogs: { dark: [string, number, number, number] }[] }[]
+        STATS: { revitTools: number }
+      }>('/src/data/catalog.ts', { root })
+      const { module: metaCheck } = await runnerImport<{
+        assertSiteMeta: () => void
+        assertUniqueMeta: (routes: string[]) => void
+        publishedStats: () => { revitTools: number }
+      }>('/src/data/siteMetaCheck.ts', { root })
+      const { module: metaModule } = await runnerImport<{
+        pageMeta: (route: string) => { title: string; description: string }
+      }>('/src/data/pageMeta.ts', { root })
+      metaCheck.assertSiteMeta()
+      const { PRODUCTS, HERO_SIZES } = catalog
+      const { pageMeta } = metaModule
 
-      // Each route gets its own title and description, so crawlers and link previews see the page, not the shell.
-      const suffix = ' | Navneet Singh · ArchiTECH'
-      const meta = new Map<string, { title: string; description: string }>([
-        ['demos', { title: 'Dialog gallery' + suffix, description: `${STATS.dialogs} dialogs of ${STATS.revitTools} Revit tools by Navneet Singh and the ArchiTECH desktop apps, as built, grouped by job.` }],
-        ['plugins', { title: 'All tools' + suffix, description: `The ${STATS.revitTools} Revit tools in Arch Folio, Arch Forge and Arch Sentinel, with ArchiTECH I3D, ArchiTECH Assistant and the ArchiTECH MCP Connector.` }],
-        ['connect', { title: 'Get in touch' + suffix, description: 'Get in touch with Navneet Singh about a role, a project, or one of his tools.' }],
-        ['coverage', { title: 'How the pictures were made' + suffix, description: `Every one of the ${STATS.dialogs} dialogs pictured on this site, what each picture is, and what is not shown.` }],
-        ['pricing', { title: 'Discuss a tool' + suffix, description: 'Pricing depends on the tool, host application and deployment scope. This legacy route continues to the workflow contact page.' }],
-        ['custom-development', { title: 'Discuss a custom workflow' + suffix, description: 'Describe a repetitive BIM task or integration requirement. This legacy route continues to the workflow contact page.' }],
-      ])
       const legacyRedirects = new Map<string, string>([
         ['pricing', 'connect'],
         ['custom-development', 'connect'],
       ])
-      for (const product of PRODUCTS) {
-        meta.set(`plugins/${product.slug}`, { title: product.name + suffix, description: product.tagline })
-        if (product.demo) meta.set(`demos/${product.demo}`, { title: product.name + ' dialogs' + suffix, description: `The dialogs of ${product.name}, as built. ${product.tagline}` })
-      }
       const escape = (text: string) => text.replace(/&/g, '&amp;').replace(/"/g, '&quot;').replace(/</g, '&lt;')
 
       const routes = new Set(['demos', 'plugins', 'connect', 'coverage', 'pricing', 'custom-development'])
@@ -45,6 +43,8 @@ const staticRoutes: Plugin = {
         routes.add(`plugins/${product.slug}`)
         if (product.demo) routes.add(`demos/${product.demo}`)
       }
+      metaCheck.assertUniqueMeta(['', ...routes])
+      this.emitFile({ type: 'asset', fileName: 'stats.json', source: JSON.stringify(metaCheck.publishedStats(), null, 2) + '\n' })
 
       const template = String(shell.source)
       // The home page's largest picture is drawn by script; preloading it lets it arrive with the script, not after it.
@@ -56,11 +56,12 @@ const staticRoutes: Plugin = {
         const html = base === AUTOMATION_PATH
           ? template.replace(/\s*<meta name="robots" content="noindex, nofollow" \/>/, '')
           : template
-        const info = meta.get(route)
-        const titled = !info ? html : html
+        const info = pageMeta(route)
+        const titled = html
           .replace(/<title>[^<]*<\/title>/, () => `<title>${escape(info.title)}</title>`)
           .replace(/(<meta (?:name="description"|property="og:description") content=")[^"]*"/g, (_, tag) => tag + escape(info.description) + '"')
           .replace(/(<meta property="og:title" content=")[^"]*"/, (_, tag) => tag + escape(info.title) + '"')
+          .replace(/(<meta property="og:image:alt" content=")[^"]*"/, (_, tag) => tag + escape(`Tools that finish the drawing set: ${metaCheck.publishedStats().revitTools} Revit add-ins by Navneet Singh.`) + '"')
         const indexed = legacyRedirects.has(route)
           ? titled.replace('</head>', '  <meta name="robots" content="noindex, follow" />\n  </head>')
           : titled
