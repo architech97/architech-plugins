@@ -1,6 +1,7 @@
 /* ArchiTECH shared chrome: tokens, header and footer for Home and Automation.
-   Source of truth for the values is /design/ (style.css :root). Keep this file byte-identical in
-   architech-design/chrome.css and architech-plugins/src/styles/chrome.css. */
+   Source of truth for the values is /design/ (style.css :root). This copy matches
+   architech-design/chrome.css except two Automation-only rules: the 420px nav fit,
+   and reduced-motion durations set to instant. */
 :root {
   /* Tonal ramp, paper to night. */
   --paper: #f3eee6; --paper-2: #ebe4d8; --stone: #d9cdbd; --taupe: #6f5f57;
@@ -49,7 +50,13 @@
   .ax-nav { gap: 14px; }
   .ax-nav a { font-size: .88rem; }
 }
-@media (max-width: 340px) { .ax-nav { gap: 10px; } .ax-nav a { font-size: .82rem; } }
+/* Five labels plus the mark have to fit a 375px phone. This breakpoint is only in Automation. */
+@media (max-width: 420px) {
+  .ax-bar { padding-inline: 10px; gap: 8px; }
+  .ax-nav { gap: 8px; }
+  .ax-nav a { font-size: .78rem; }
+}
+@media (max-width: 340px) { .ax-nav { gap: 6px; } .ax-nav a { font-size: .72rem; } }
 
 /* Footer: the night bar /design/ ends on. */
 .ax-footer { background: var(--night); color: var(--on-dark-2); font: 300 .95rem/1.6 var(--sans); padding: var(--s-6) var(--gut) var(--s-3); scroll-margin-top: 80px; }
@@ -81,7 +88,17 @@
   .ax-footer { padding-top: var(--s-5); }
 }
 @media (max-width: 380px) { .ax-foot-col, .ax-foot-lead + .ax-foot-col { grid-column: 1 / -1; } }
-@media (prefers-reduced-motion: reduce) { .ax-blade, .ax-nav a::after { transition: none; } }
+@media (prefers-reduced-motion: reduce) {
+  :root { --t-ui: 0ms; --t-reveal: 0ms; --t-scene: 0ms; }
+  /* Durations written in milliseconds, not the tokens, still have to stop. */
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0s !important;
+    scroll-behavior: auto !important;
+  }
+  .ax-blade, .ax-nav a::after { transition: none; }
+}
 
 /* Crisp edges, not fades: the footer starts on night with a hard line. */
 .ax-footer.feather { padding-top: var(--s-6); background: var(--night); }

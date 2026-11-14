@@ -131,10 +131,20 @@ export const REVIT_TOOLS = tools
 
 const shown = PRODUCTS.flatMap((p) => p.dialogs)
 
-/** One number story, counted from the images on the site. Suite counts sum to `revitTools`. */
+/** Suite home windows, the point-cloud toggle, desktop apps and MCP connectors. These are products, not Revit add-ins. */
+const suiteHomes = RIBBON_PRODUCTS.filter((product) => product.panel === 'Start').length
+const utilities = RIBBON_PRODUCTS.length - suiteHomes
+const connectors = EXTRAS.filter((product) => product.panel === 'MCP connectors').length
+const desktopApps = EXTRAS.length - connectors
+
+/** One number story, counted from the images on the site. The five groups sum to `products`. Suite tool counts sum to `revitTools`. */
 export const STATS = {
   products: PRODUCTS.length,
   revitTools: tools.length,
+  suiteHomes,
+  utilities,
+  desktopApps,
+  connectors,
   suiteTools: (suite: string) => tools.filter((t) => t.suite === suite).length,
   /** Distinct dialogs shown; a dialog pictured in several states counts once. */
   dialogs: new Set(shown.map((d) => d.id)).size,
@@ -144,6 +154,11 @@ export const STATS = {
   light: shown.filter((d) => d.light).length,
   demos: PRODUCTS.filter((product) => product.demo).length,
   softwares: new Set(PRODUCTS.flatMap((p) => p.software)).size,
+}
+
+const grouped = STATS.revitTools + STATS.suiteHomes + STATS.utilities + STATS.desktopApps + STATS.connectors
+if (grouped !== STATS.products) {
+  throw new Error(`Catalogue groups sum to ${grouped}, but there are ${STATS.products} products.`)
 }
 
 export { HERO_SIZES } from './featured'

@@ -2,6 +2,7 @@ import { useEffect, type ReactNode } from 'react'
 import { Link, NavLink, Outlet, useLocation } from 'react-router-dom'
 import { Mark } from './Brand'
 import { AUTOMATION_PATH, CONTACT, SITE_ORIGIN } from '../data/contact'
+import { pageMeta } from '../data/pageMeta'
 import { useContinuityBackground, useImageFade, useScrollProgress, useSiteMotion } from './motion'
 
 const unified = import.meta.env.BASE_URL === AUTOMATION_PATH
@@ -21,8 +22,12 @@ export function Layout() {
   useContinuityBackground(pathname)
   useEffect(() => {
     window.scrollTo({ top: 0, behavior: 'instant' })
-    const heading = document.querySelector('main h1')?.textContent?.replace(/\s+/g, ' ').trim()
-    document.title = heading ? heading + ' | Navneet Singh · ArchiTECH' : 'Navneet Singh · ArchiTECH Automation'
+    const meta = pageMeta(pathname)
+    document.title = meta.title
+    const set = (selector: string, content: string) => document.head.querySelector(selector)?.setAttribute('content', content)
+    set('meta[name="description"]', meta.description)
+    set('meta[property="og:title"]', meta.title)
+    set('meta[property="og:description"]', meta.description)
   }, [pathname])
   useEffect(() => {
     if (hash) document.getElementById(hash.slice(1))?.scrollIntoView()

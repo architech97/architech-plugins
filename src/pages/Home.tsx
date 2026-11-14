@@ -2,6 +2,7 @@ import { lazy, Suspense } from 'react'
 import { Link } from 'react-router-dom'
 import { asset } from '../components/Brand'
 import { dialogAlt, imageProps } from '../components/dialogImage'
+import counts from '../data/counts.generated.json'
 import { FEATURED_TOOLS, HERO_SIZES } from '../data/featured'
 import hero from '../data/hero.generated.json'
 import type { DialogShot } from '../data/types'
@@ -47,7 +48,7 @@ export default function Home() {
         <div className="wrap-wide ah-grid">
           <div className="ah-copy">
             <h1><span>Tools that finish</span> <span>the drawing set</span></h1>
-            <p className="lead">58 Revit add-ins I designed and built for sheets, parameters and model checks, plus desktop apps and AI connectors. Every one shown through its real windows.</p>
+            <p className="lead">{counts.revitTools} Revit add-ins I designed and built for sheets, parameters and model checks, plus {counts.desktopApps} desktop apps and AI connectors for {counts.connectors} design applications. Every one shown through its real windows.</p>
             <div className="hero-cta">
               <Link className="btn btn-primary" to="/demos/sheet-export">Open Sheet Export</Link>
               <Link className="home-secondary" to="/demos#demo-index">Open the dialog gallery</Link>
