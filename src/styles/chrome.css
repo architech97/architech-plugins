@@ -22,14 +22,26 @@
   --s-1: 8px; --s-2: 16px; --s-3: 24px; --s-4: 40px; --s-5: 64px; --s-6: 104px; --s-7: 168px;
   --gut: clamp(16px, 3.6vw, 64px);
   --plan-line: .75px solid currentColor;
+  /* Set to the measured sticky shell height by each site's navigation script. */
+  --chrome-height: 110px;
 }
 @media (max-width: 700px) { :root { --s-6: 64px; } }
+html { scroll-behavior: smooth; }
+/* The attribute keeps this above the older route-specific fixed offsets. */
+:is(#main, #contact, #about, main [id])[id] { scroll-margin-top: calc(var(--chrome-height) + 8px); }
+#top { scroll-margin-top: 0; }
 
 /* Pages share an animated cross-document transition between Home and Automation. */
 @media (prefers-reduced-motion: no-preference) {
   @view-transition { navigation: auto; }
   ::view-transition-group(*) { animation-duration: var(--t-reveal); animation-timing-function: var(--ease); }
 }
+
+/* One sticky unit: site header plus any section navigation. */
+.ax-chrome { position: sticky; top: 0; z-index: 50; background: var(--paper); transform: translateY(0); transition: transform 200ms var(--ease); }
+.ax-chrome[data-hidden="true"] { transform: translateY(-100%); }
+.ax-chrome:focus-within { transform: translateY(0); }
+.ax-chrome :focus-visible, .ax-mobile-menu :focus-visible, .ax-foot-mark:focus-visible, .ax-foot-top:focus-visible { outline: 2px solid var(--focus); outline-offset: 3px; }
 
 /* Header: one row everywhere; Automation adds its own second row. */
 .ax-header { position: relative; z-index: 40; font-family: var(--sans); color: var(--ink); }
@@ -43,27 +55,57 @@
 .ax-nav a { position: relative; display: inline-flex; align-items: center; min-height: 44px; color: inherit; text-decoration: none; font: 400 .95rem/1 var(--sans); white-space: nowrap; }
 .ax-nav a::after { content: ''; position: absolute; left: 0; right: 0; bottom: 11px; height: 1px; background: currentColor; transform: scaleX(0); transform-origin: left; transition: transform var(--t-reveal) var(--ease); }
 .ax-nav a:hover::after, .ax-nav a:focus-visible::after, .ax-nav a[aria-current]::after { transform: scaleX(1); }
-.ax-nav a[aria-current]::after { background: var(--blueprint); height: 2px; }
+.ax-nav a[aria-current="page"] { font-weight: 500; }
+.ax-nav a[aria-current]::after { background: var(--ink); height: 2px; }
+.ax-nav a[data-division="automation"][aria-current]::after { background: var(--blueprint); }
 .ax-nav a[data-division="design"][aria-current]::after { background: var(--brass); }
+.ax-menu-toggle, .ax-mobile-section { display: none; }
+.ax-menu-toggle, .ax-menu-close { box-sizing: border-box; align-items: center; justify-content: center; flex: none; width: 44px; height: 44px; padding: 10px; border: .75px solid var(--ink); border-radius: 2px; color: var(--ink); background: var(--paper); cursor: pointer; }
+.ax-menu-toggle svg, .ax-menu-close svg { width: 22px; height: 22px; }
+.ax-menu-toggle:hover, .ax-menu-close:hover { background: var(--paper-2); }
+
+/* A native modal dialog supplies an inert background; scripts manage focus and closing. */
+.ax-mobile-menu { box-sizing: border-box; position: fixed; inset: 12px 12px auto auto; width: calc(100% - 24px); max-width: 480px; max-height: calc(100dvh - 24px); margin: 0; padding: 20px; overflow-y: auto; overscroll-behavior: contain; color: var(--ink); background: var(--paper); border: .75px solid var(--ink); border-radius: 2px; font: 400 1rem/1.4 var(--sans); }
+.ax-mobile-menu:not([open]) { display: none; }
+.ax-mobile-menu::backdrop { background: #17131199; }
+.ax-menu-head { display: flex; align-items: center; justify-content: space-between; gap: 16px; margin-bottom: 12px; }
+.ax-menu-head h2, .ax-menu-head p { margin: 0; font: 500 1.25rem/1.2 var(--sans); }
+.ax-menu-close { display: inline-flex; }
+.ax-menu-site, .ax-menu-sections { display: flex; flex-direction: column; }
+.ax-menu-sections { margin-top: 12px; padding-top: 12px; border-top: .75px solid var(--stone); }
+.ax-mobile-menu nav a { box-sizing: border-box; display: flex; align-items: center; min-width: 44px; min-height: 44px; padding: 8px 12px; color: inherit; text-decoration: none; }
+.ax-mobile-menu nav a:hover { background: var(--paper-2); }
+.ax-mobile-menu nav a[aria-current="page"] { font-weight: 500; text-decoration: underline; text-decoration-thickness: 2px; text-underline-offset: 5px; text-decoration-color: var(--blueprint); }
+.ax-menu-site a[data-division="home"][aria-current="page"] { text-decoration-color: var(--ink); }
+.ax-menu-site a[data-division="design"][aria-current="page"] { text-decoration-color: var(--brass); }
+.ax-menu-breadcrumb { margin: 16px 0 0; padding: 12px; border-top: .75px solid var(--stone); color: var(--ink-2); font-size: .875rem; overflow-wrap: anywhere; }
+
 @media (max-width: 720px) {
+  :root { --chrome-height: 64px; }
+  .ax-bar { gap: 12px; padding-inline: 16px; }
+  .ax-nav, .ax-chrome .ax-subnav { display: none; }
+  .ax-menu-toggle { display: inline-flex; }
+  .ax-mobile-section { display: block; min-width: 0; margin-left: auto; color: var(--ink-2); font: 500 .9rem/1.2 var(--sans); }
+}
+@media (max-width: 399px) {
   .ax-brand span { display: none; }
-  .ax-bar { gap: 8px; padding-inline: 12px; }
-  .ax-nav { gap: 10px; }
-  .ax-nav a { font-size: .84rem; letter-spacing: 0; }
 }
-@media (max-width: 420px) {
-  .ax-bar { gap: 6px; padding-inline: 10px; }
-  .ax-brand svg { width: 26px; height: 26px; }
-  .ax-nav { gap: 7px; }
-  .ax-nav a { font-size: .74rem; }
-}
-@media (max-width: 340px) {
-  .ax-nav { gap: 5px; }
-  .ax-nav a { font-size: .68rem; }
+
+/* Shared return control; scripts raise it above the footer's legal/base row. */
+.ax-back-top { box-sizing: border-box; position: fixed; right: 24px; bottom: var(--back-top-bottom, 24px); z-index: 45; display: inline-flex; align-items: center; justify-content: center; width: 44px; height: 44px; min-width: 44px; min-height: 44px; padding: 10px; border: 1px solid var(--paper); border-radius: 2px; background: var(--night); color: var(--paper); text-decoration: none; }
+.ax-back-top[hidden] { display: none; }
+.ax-back-top svg { width: 22px; height: 22px; }
+.ax-back-top:hover { background: var(--taupe-d); }
+.ax-back-top:focus-visible { outline: 2px solid var(--focus); outline-offset: 4px; box-shadow: 0 0 0 2px var(--paper); }
+.ax-back-top[data-theme="dark"] { border-color: var(--night); background: var(--paper); color: var(--night); }
+.ax-back-top[data-theme="dark"]:hover { background: var(--paper-2); }
+.ax-back-top[data-theme="dark"]:focus-visible { outline-color: var(--focus-dark); box-shadow: 0 0 0 2px var(--night); }
+@media (max-width: 720px) {
+  .ax-back-top { right: 16px; }
 }
 
 /* Footer: the night bar /design/ ends on. */
-.ax-footer { background: var(--night); color: var(--on-dark-2); font: 300 .95rem/1.6 var(--sans); padding: var(--s-6) var(--gut) var(--s-3); scroll-margin-top: 80px; }
+.ax-footer { background: var(--night); color: var(--on-dark-2); font: 300 .95rem/1.6 var(--sans); padding: var(--s-6) var(--gut) var(--s-3); }
 /* On pages that end on paper, the footer begins with a 30vh ramp so the night bar is never a hard cut. */
 .ax-footer.feather { --feather: max(160px, 30vh); padding-top: calc(var(--feather) + var(--s-5)); background: linear-gradient(var(--paper), var(--stone) calc(var(--feather) * .35), var(--taupe-d) calc(var(--feather) * .75), var(--night) var(--feather)); }
 .ax-footer :focus-visible { outline-color: var(--focus-dark); }
@@ -80,6 +122,9 @@
 .ax-foot-base { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: var(--s-2) var(--s-4); max-width: 1520px; margin: var(--s-6) auto 0; padding-top: var(--s-3); border-top: .75px solid var(--chrome-footer-rule); font: 400 .8125rem/1.5 var(--sans); }
 .ax-foot-base p { margin: 0; max-width: 90ch; }
 .ax-foot-mark { display: inline-flex; align-items: center; gap: 10px; color: var(--on-dark); font: 300 1.2rem/1 var(--sans); letter-spacing: -.03em; }
+.ax-foot-mark, .ax-foot-top { min-height: 44px; text-decoration: none; }
+.ax-foot-top { display: inline-flex; align-items: center; white-space: nowrap; }
+.ax-foot-mark:focus-visible, .ax-foot-top:focus-visible { outline-color: var(--focus-dark); }
 .ax-foot-mark strong { font-weight: 500; }
 .ax-foot-mark svg path:first-child { fill: var(--on-dark); }
 @media (max-width: 1000px) {
@@ -102,6 +147,8 @@
     scroll-behavior: auto !important;
   }
   .ax-blade, .ax-nav a::after { transition: none; }
+  .ax-chrome, .ax-chrome[data-hidden="true"] { transform: none; transition: none; }
+  .ax-back-top, .ax-mobile-menu { animation: none; transition: none; }
 }
 
 /* Crisp edges, not fades: the footer starts on night with a hard line. */

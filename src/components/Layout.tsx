@@ -1,22 +1,43 @@
 import { useEffect, type ReactNode } from 'react'
 import { Link, NavLink, Outlet, useLocation } from 'react-router-dom'
 import { Mark } from './Brand'
-import { AUTOMATION_PATH, CONTACT, SITE_ORIGIN } from '../data/contact'
+import { CONTACT } from '../data/contact'
+import pages from '../data/pageIndex.generated.json'
 import { pageMeta } from '../data/pageMeta'
 import { useContinuityBackground, useImageFade, useScrollProgress, useSiteMotion } from './motion'
+import { useChromeNavigation } from './useChromeNavigation'
 
-const unified = import.meta.env.BASE_URL === AUTOMATION_PATH
-const homeUrl = unified ? '/' : SITE_ORIGIN + '/'
-const designUrl = unified ? '/design/' : CONTACT.designSite
+const homeUrl = '/'
+const designUrl = '/design/'
 
 const SUBNAV = [
+  { to: '/', label: 'Overview' },
   { to: '/plugins', label: 'All tools' },
   { to: '/demos', label: 'Dialog gallery' },
+  { to: '/connect', label: 'Work with me' },
 ]
 
 export function Layout() {
   const { pathname, hash } = useLocation()
-  const subnav = useScrollProgress<HTMLElement>()
+  const subnav = useScrollProgress<HTMLDivElement>()
+  const { chromeRef, dialogRef, menuButtonRef, menuOpen, hidden, showBackToTop, openMenu, closeMenu } = useChromeNavigation(pathname)
+  const route = pathname.replace(/\/+$/, '')
+  const tool = route.startsWith('/plugins/') ? pages.find((page) => page.slug === route.slice('/plugins/'.length)) : undefined
+  const demo = route.startsWith('/demos/') ? pages.find((page) => page.demo === route.slice('/demos/'.length)) : undefined
+  const breadcrumb = tool ? { to: '/plugins', section: 'All tools', name: tool.name }
+    : demo ? { to: '/demos', section: 'Dialog gallery', name: demo.name } : undefined
+  const siteLinks = <>
+    <a href={homeUrl}>Home</a>
+    <a href={designUrl} data-division="design">Design</a>
+    <Link to="/" data-division="automation" aria-current="page">Automation</Link>
+    <a href={homeUrl + '#about'}>About</a>
+    <a href="#contact">Contact</a>
+  </>
+  const sectionLinks = SUBNAV.map((item) => (
+    <NavLink key={item.to} to={item.to} end={item.to === '/'} className={item.to === '/connect' ? 'ax-subnav-cta' : undefined}>
+      {item.label}
+    </NavLink>
+  ))
   useImageFade()
   useSiteMotion()
   useContinuityBackground(pathname)
@@ -30,33 +51,54 @@ export function Layout() {
     set('meta[property="og:description"]', meta.description)
   }, [pathname])
   useEffect(() => {
-    if (hash) document.getElementById(hash.slice(1))?.scrollIntoView()
+    if (!hash) return
+    const target = document.getElementById(hash.slice(1))
+    // Finish the route's entrance transform before measuring the fragment position.
+    target?.closest('.route-in')?.getAnimations().forEach((animation) => animation.finish())
+    target?.scrollIntoView()
   }, [pathname, hash])
   return (
     <>
       <a className="skip-link" href="#main">Skip to content</a>
-      <header className="ax-header">
-        <div className="ax-bar">
-          <a className="ax-brand" href={homeUrl} aria-label="ArchiTECH home"><Mark /><span>Archi<strong>TECH</strong></span></a>
-          <nav className="ax-nav" aria-label="Site">
-            <a href={homeUrl}>Home</a>
-            <a href={designUrl} data-division="design">Design</a>
-            <Link to="/" aria-current="page">Automation</Link>
-            <a href={homeUrl + '#about'}>About</a>
-            <a href="#contact">Contact</a>
-          </nav>
+      <div id="top" tabIndex={-1} />
+      <div className="ax-chrome" ref={chromeRef} data-hidden={hidden}>
+        <header className="ax-header">
+          <div className="ax-bar">
+            <a className="ax-brand" href={homeUrl} aria-label="ArchiTECH home"><Mark /><span>Archi<strong>TECH</strong></span></a>
+            <nav className="ax-nav" aria-label="Site">{siteLinks}</nav>
+            <span className="ax-mobile-section">Automation</span>
+            <button type="button" className="ax-menu-toggle" ref={menuButtonRef} aria-label="Open menu" aria-expanded={menuOpen} aria-controls="site-menu" onClick={openMenu}>
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" aria-hidden="true"><path d="M4 6h16M4 12h16M4 18h16" /></svg>
+            </button>
+          </div>
+          <dialog id="site-menu" className="ax-mobile-menu" ref={dialogRef} aria-labelledby="site-menu-title" onCancel={(event) => { event.preventDefault(); closeMenu() }} onClose={closeMenu}>
+            <div className="ax-menu-head">
+              <span id="site-menu-title">Menu</span>
+              <button type="button" className="ax-menu-close" aria-label="Close menu" onClick={closeMenu} autoFocus>
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" aria-hidden="true"><path d="m6 6 12 12M6 18 18 6" /></svg>
+              </button>
+            </div>
+            <nav className="ax-menu-site" aria-label="Site" onClick={(event) => { if ((event.target as Element).closest('a')) closeMenu() }}>{siteLinks}</nav>
+            <nav className="ax-menu-sections" aria-label="Automation" onClick={(event) => { if ((event.target as Element).closest('a')) closeMenu() }}>{sectionLinks}</nav>
+            {breadcrumb && <p className="ax-menu-breadcrumb">Automation <span aria-hidden="true">›</span> {breadcrumb.section} <span aria-hidden="true">›</span> {breadcrumb.name}</p>}
+          </dialog>
+        </header>
+        <div className="ax-subnav" ref={subnav}>
+          <div className="ax-subnav-inner">
+            {breadcrumb && <nav className="ax-crumb" aria-label="Breadcrumb">
+              <Link to="/">Automation</Link><span aria-hidden="true">›</span>
+              <Link to={breadcrumb.to}>{breadcrumb.section}</Link><span aria-hidden="true">›</span>
+              <span aria-current="page">{breadcrumb.name}</span>
+            </nav>}
+            <nav className="ax-section-links" aria-label="Automation">{sectionLinks}</nav>
+          </div>
         </div>
-      </header>
-      <nav className="ax-subnav" ref={subnav} aria-label="Automation">
-        <div className="ax-subnav-inner">
-          {/* Where you are, always visible while scrolling: ArchiTECH (home) › Automation (this section). */}
-          <p className="ax-crumb"><a href={homeUrl}><Mark size={18} />ArchiTECH</a><span aria-hidden="true">›</span><Link to="/">Automation</Link></p>
-          {SUBNAV.map((n) => <NavLink key={n.to} to={n.to}>{n.label}</NavLink>)}
-          <Link className="ax-subnav-cta" to="/connect">Work with me</Link>
-        </div>
-      </nav>
+      </div>
       <main id="main" tabIndex={-1}><div key={pathname} className="route-in"><Outlet /></div></main>
       <Footer />
+      <a className="ax-back-top" href="#top" aria-label="Back to top" hidden={!showBackToTop}>
+        <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" aria-hidden="true"><path d="m6 11 6-6 6 6M12 5v14" /></svg>
+      </a>
     </>
   )
 }
@@ -82,6 +124,7 @@ function Footer() {
         </div>
         <div className="ax-foot-col">
           <p className="ax-foot-h">Work</p>
+          <a href={homeUrl}>Home</a>
           <a href={designUrl}>Design portfolio</a>
           <Link to="/">Automation</Link>
           <Link to="/demos">Dialog gallery</Link>
@@ -100,7 +143,8 @@ function Footer() {
         </div>
       </div>
       <div className="ax-foot-base">
-        <span className="ax-foot-mark"><Mark size={26} />Archi<strong>TECH</strong></span>
+        <a className="ax-foot-mark" href={homeUrl} aria-label="ArchiTECH home"><Mark size={26} />Archi<strong>TECH</strong></a>
+        <a className="ax-foot-top" href="#top">Back to top</a>
         <p>Portfolio of Navneet Singh, New Delhi. Dialog pictures are screenshots and renders of the tools, with sample data. Autodesk, Revit and AutoCAD are trademarks of Autodesk, Inc.; Rhino, SketchUp and Blender are trademarks of their owners.</p>
       </div>
       {/* HOOK(contact-form): Navneet has not chosen a form service. Do not post this anywhere and do not add analytics. */}
