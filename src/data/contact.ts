@@ -9,5 +9,8 @@ export const CONTACT = {
   // TODO(Navneet): WhatsApp number, digits only with country code (e.g. 91XXXXXXXXXX). Shown once set.
   whatsapp: '',
   linkedin: 'https://www.linkedin.com/in/architech-india/',
+  instagram: 'https://www.instagram.com/architechdesign.in/',
+  youtube: 'https://www.youtube.com/@ArchiTECH97',
+  x: 'https://x.com/Architech_India',
   designSite: SITE_ORIGIN + '/design/',
 }
