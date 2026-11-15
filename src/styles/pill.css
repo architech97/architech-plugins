@@ -72,13 +72,14 @@ html { scrollbar-gutter: stable; }
 .automation-pill .pill-progress { position: absolute; left: var(--r); right: var(--r); bottom: 0; height: 1px; overflow: hidden; opacity: .55; pointer-events: none; }
 .automation-pill .pill-progress span { display: block; height: 100%; background: var(--logo-accent); transform: scaleX(var(--scroll, 0)); transform-origin: left; }
 
-/* A native modal repeats the capsule's two rows so its expanded sheet keeps
+/* A native modal repeats the capsule header so its expanded sheet keeps
    focus and background inertness without depending on custom dialog semantics. */
 .automation-pill .pill-menu { position: fixed; inset: calc(env(safe-area-inset-top, 0px) + 12px) max(16px, env(safe-area-inset-right, 0px)) auto max(16px, env(safe-area-inset-left, 0px)); width: auto; max-width: 1280px; max-height: calc(100dvh - env(safe-area-inset-top, 0px) - 28px); margin: 0 auto; padding: 0; overflow-y: auto; overscroll-behavior: contain; color: inherit; background: rgba(246, 242, 236, .96); -webkit-backdrop-filter: blur(26px) saturate(180%); backdrop-filter: blur(26px) saturate(180%); }
 .automation-pill .pill-menu:not([open]) { display: none; }
 .automation-pill.is-dark .pill-menu { background: rgba(23, 19, 17, .96); }
 .automation-pill .pill-menu::backdrop { background: rgba(23, 19, 17, .18); }
 .automation-pill .pill-menu-body { padding: 0 10px; }
+.automation-pill .nav-menu-divisions { display: none; }
 .automation-pill .nav-menu-inner > a { display: flex; align-items: baseline; gap: 14px; min-height: 56px; padding: 12px 14px; border-top: 1px solid rgba(127, 115, 105, .2); font: 300 30px/1.1 var(--serif); }
 .automation-pill .nav-menu-inner > a small { font: 400 11px var(--sans); letter-spacing: .2em; color: var(--blue-ink); }
 .automation-pill .nav-menu-inner > a i { margin-left: auto; font-style: normal; font-size: 18px; opacity: .5; }
@@ -99,16 +100,18 @@ html { scrollbar-gutter: stable; }
   .automation-pill .nav-links a:not(.nav-cta) { padding-inline: 3px; letter-spacing: .1em; }
 }
 @media (max-width: 860px) {
-  :root { --chrome-height: calc(env(safe-area-inset-top, 0px) + 110px); }
+  /* One compact row (logo + menu), matching /design/. Home / Design / Automation live in the menu. */
+  :root { --chrome-height: calc(env(safe-area-inset-top, 0px) + 68px); }
   .automation-pill .navglass, .automation-pill .pill-menu { --r: 26px; }
-  .automation-pill .nav-row { display: grid; grid-template-columns: 1fr 44px; grid-template-rows: 44px 54px; grid-template-areas: 'divisions divisions' 'logo toggle'; height: auto; padding: 0 12px 0 20px; }
-  .automation-pill .division-switcher { grid-area: divisions; justify-content: center; margin: 0; padding: 0; border: 0; }
-  .automation-pill .division-switcher a { min-height: 44px; padding-inline: 8px; }
-  .automation-pill .bar-logo { grid-area: logo; justify-self: start; }
-  .automation-pill .ax-lockup { width: 156px; height: 38px; }
+  .automation-pill .nav-row { display: flex; align-items: center; justify-content: space-between; height: 56px; padding: 0 8px 0 16px; }
+  .automation-pill .division-switcher { display: none; }
   .automation-pill .nav-links { display: none; }
-  .automation-pill .nav-toggle { display: block; grid-area: toggle; }
-  .automation-pill .pill-menu-body { max-height: calc(100dvh - var(--chrome-height) - 16px); overflow-y: auto; overscroll-behavior: contain; }
+  .automation-pill .nav-toggle { display: block; }
+  .automation-pill .ax-lockup { width: 156px; height: 38px; }
+  .automation-pill .nav-menu-divisions { display: flex; flex-wrap: wrap; align-items: center; gap: 4px 2px; padding: 14px 14px 4px; }
+  .automation-pill .nav-menu-divisions a { display: inline-flex; align-items: center; min-height: 44px; padding: 0 12px; border-radius: 16px; font: 500 13px/1 var(--sans); letter-spacing: .035em; }
+  .automation-pill .nav-menu-divisions a[aria-current="page"] { text-decoration: underline; text-underline-offset: 4px; text-decoration-color: var(--logo-accent); text-decoration-thickness: 2px; }
+  .automation-pill .pill-menu-body { max-height: calc(100dvh - env(safe-area-inset-top, 0px) - 80px); overflow-y: auto; overscroll-behavior: contain; }
   .automation-pill .pill-crumb a { min-height: 28px; }
 }
 @media (prefers-reduced-motion: reduce) {
