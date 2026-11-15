@@ -81,14 +81,14 @@ export function Layout() {
           <h2 id="site-menu-title" className="sr-only">Menu</h2>
           <div className="nav-row">
             <a className="bar-logo" href={homeUrl} aria-label="ArchiTECH home"><DesignLockup /></a>
-            <nav className="division-switcher" aria-label="Site">{siteLinks}</nav>
             <button type="button" className="nav-toggle is-close" aria-label="Close menu" onClick={closeMenu} autoFocus><span /><span /></button>
           </div>
           {crumbs}
           <div className="pill-menu-body">
+            <nav className="nav-menu-divisions" aria-label="Site">{siteLinks}</nav>
             <nav className="nav-menu-inner" aria-label="Automation">
               {SECTIONS.map((item, index) => <NavLink key={item.to} to={item.to} end={item.to === '/'} className={item.to === '/connect' ? 'nav-cta' : undefined}>
-                <small aria-hidden="true">{String(index + 1).padStart(2, '0')}</small>{item.label}<i aria-hidden="true">&rsaquo;</i>
+                <small aria-hidden="true">{String(index + 1).padStart(2, '0')}</small>{item.label}<i aria-hidden="true">→</i>
               </NavLink>)}
             </nav>
             <div className="nav-menu-foot">
