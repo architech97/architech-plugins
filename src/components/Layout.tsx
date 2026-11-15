@@ -1,6 +1,6 @@
 import { useEffect, type ReactNode } from 'react'
 import { Link, NavLink, Outlet, useLocation } from 'react-router-dom'
-import { Mark } from './Brand'
+import { DesignLockup } from './Brand'
 import { CONTACT } from '../data/contact'
 import pages from '../data/pageIndex.generated.json'
 import { pageMeta } from '../data/pageMeta'
@@ -61,10 +61,10 @@ export function Layout() {
     <>
       <a className="skip-link" href="#main">Skip to content</a>
       <div id="top" tabIndex={-1} />
-      <div className="ax-chrome" ref={chromeRef} data-hidden={hidden}>
+      <div className="ax-chrome" data-logo="blueprint" ref={chromeRef} data-hidden={hidden}>
         <header className="ax-header">
           <div className="ax-bar">
-            <a className="ax-brand" href={homeUrl} aria-label="ArchiTECH home"><Mark /><span>Archi<strong>TECH</strong></span></a>
+            <a className="ax-brand" href={homeUrl} aria-label="ArchiTECH home"><DesignLockup /></a>
             <nav className="ax-nav" aria-label="Site">{siteLinks}</nav>
             <span className="ax-mobile-section">Automation</span>
             <button type="button" className="ax-menu-toggle" ref={menuButtonRef} aria-label="Open menu" aria-expanded={menuOpen} aria-controls="site-menu" onClick={openMenu}>
@@ -106,7 +106,7 @@ export function Layout() {
 /** The same night-bar footer as the homepage (architech-design/portal.html). */
 function Footer() {
   return (
-    <footer className="ax-footer feather" id="contact">
+    <footer className="ax-footer feather" data-logo="blueprint" id="contact">
       <div className="ax-foot-grid">
         <div className="ax-foot-lead">
           <p className="ax-foot-line">Have a project or a role in mind? Let’s talk.</p>
@@ -143,7 +143,7 @@ function Footer() {
         </div>
       </div>
       <div className="ax-foot-base">
-        <a className="ax-foot-mark" href={homeUrl} aria-label="ArchiTECH home"><Mark size={26} />Archi<strong>TECH</strong></a>
+        <a className="ax-foot-mark" href={homeUrl} aria-label="ArchiTECH home"><DesignLockup /></a>
         <a className="ax-foot-top" href="#top">Back to top</a>
         <p>Portfolio of Navneet Singh, New Delhi. Dialog pictures are screenshots and renders of the tools, with sample data. Autodesk, Revit and AutoCAD are trademarks of Autodesk, Inc.; Rhino, SketchUp and Blender are trademarks of their owners.</p>
       </div>

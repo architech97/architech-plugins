@@ -26,6 +26,16 @@
   --chrome-height: 110px;
 }
 @media (max-width: 700px) { :root { --s-6: 64px; } }
+/* Official lockup colours are independent of the site's UI accent tokens.
+   Set data-logo on the shell/footer or a common ancestor in either site. */
+[data-logo="brass"] { --logo-ink: #2A2420; --logo-accent: #A88752; }
+[data-logo="blueprint"] { --logo-ink: #2A2420; --logo-accent: #7B9BE6; }
+.ax-footer[data-logo="brass"], .ax-footer [data-logo="brass"], [data-logo="brass"] .ax-footer {
+  --logo-ink: #F1EFEA; --logo-accent: #A88752;
+}
+.ax-footer[data-logo="blueprint"], .ax-footer [data-logo="blueprint"], [data-logo="blueprint"] .ax-footer {
+  --logo-ink: #F1EFEA; --logo-accent: #7B9BE6;
+}
 html { scroll-behavior: smooth; }
 /* The attribute keeps this above the older route-specific fixed offsets. */
 :is(#main, #contact, #about, main [id])[id] { scroll-margin-top: calc(var(--chrome-height) + 8px); }
@@ -46,11 +56,9 @@ html { scroll-behavior: smooth; }
 /* Header: one row everywhere; Automation adds its own second row. */
 .ax-header { position: relative; z-index: 40; font-family: var(--sans); color: var(--ink); }
 .ax-bar { display: flex; align-items: center; justify-content: space-between; gap: var(--s-2); min-height: 64px; padding-inline: var(--gut); min-width: 0; }
-.ax-brand { display: inline-flex; align-items: center; gap: 9px; min-height: 44px; color: inherit; text-decoration: none; font: 300 1.45rem/1 var(--sans); letter-spacing: -.035em; view-transition-name: ax-brand; flex: none; }
-.ax-brand strong { font-weight: 500; }
-.ax-brand svg { flex: none; }
-.ax-blade { fill: var(--brass); transform-origin: 46% 48%; transform-box: fill-box; transition: transform var(--t-reveal) var(--ease); }
-.ax-brand:hover .ax-blade { transform: rotate(-9deg); }
+.ax-brand { display: inline-flex; align-items: center; min-height: 44px; color: inherit; text-decoration: none; view-transition-name: ax-brand; flex: none; }
+.ax-lockup { display: inline-flex; flex: none; }
+.ax-brand svg { display: block; flex: none; height: 44px; width: auto; }
 .ax-nav { display: flex; align-items: center; justify-content: flex-end; gap: clamp(8px, 1.6vw, 28px); min-width: 0; }
 .ax-nav a { position: relative; display: inline-flex; align-items: center; min-height: 44px; color: inherit; text-decoration: none; font: 400 .95rem/1 var(--sans); white-space: nowrap; }
 .ax-nav a::after { content: ''; position: absolute; left: 0; right: 0; bottom: 11px; height: 1px; background: currentColor; transform: scaleX(0); transform-origin: left; transition: transform var(--t-reveal) var(--ease); }
@@ -83,12 +91,13 @@ html { scroll-behavior: smooth; }
 @media (max-width: 720px) {
   :root { --chrome-height: 64px; }
   .ax-bar { gap: 12px; padding-inline: 16px; }
+  .ax-brand svg { height: clamp(32px, 11vw, 44px); }
   .ax-nav, .ax-chrome .ax-subnav { display: none; }
   .ax-menu-toggle { display: inline-flex; }
   .ax-mobile-section { display: block; min-width: 0; margin-left: auto; color: var(--ink-2); font: 500 .9rem/1.2 var(--sans); }
 }
-@media (max-width: 399px) {
-  .ax-brand span { display: none; }
+@media (max-width: 480px) {
+  .ax-mobile-section { display: none; }
 }
 
 /* Shared return control; scripts raise it above the footer's legal/base row. */
@@ -121,12 +130,11 @@ html { scroll-behavior: smooth; }
 .ax-foot-col a { display: inline-flex; align-items: center; min-height: 32px; overflow-wrap: anywhere; }
 .ax-foot-base { display: flex; flex-wrap: wrap; align-items: center; justify-content: space-between; gap: var(--s-2) var(--s-4); max-width: 1520px; margin: var(--s-6) auto 0; padding-top: var(--s-3); border-top: .75px solid var(--chrome-footer-rule); font: 400 .8125rem/1.5 var(--sans); }
 .ax-foot-base p { margin: 0; max-width: 90ch; }
-.ax-foot-mark { display: inline-flex; align-items: center; gap: 10px; color: var(--on-dark); font: 300 1.2rem/1 var(--sans); letter-spacing: -.03em; }
+.ax-foot-mark { display: inline-flex; align-items: center; color: var(--on-dark); }
+.ax-foot-mark svg { display: block; flex: none; height: 40px; width: auto; }
 .ax-foot-mark, .ax-foot-top { min-height: 44px; text-decoration: none; }
 .ax-foot-top { display: inline-flex; align-items: center; white-space: nowrap; }
 .ax-foot-mark:focus-visible, .ax-foot-top:focus-visible { outline-color: var(--focus-dark); }
-.ax-foot-mark strong { font-weight: 500; }
-.ax-foot-mark svg path:first-child { fill: var(--on-dark); }
 @media (max-width: 1000px) {
   .ax-foot-lead { grid-column: 1 / -1; }
   .ax-foot-col, .ax-foot-lead + .ax-foot-col { grid-column: span 4; }
@@ -146,15 +154,12 @@ html { scroll-behavior: smooth; }
     transition-duration: 0s !important;
     scroll-behavior: auto !important;
   }
-  .ax-blade, .ax-nav a::after { transition: none; }
+  .ax-nav a::after { transition: none; }
   .ax-chrome, .ax-chrome[data-hidden="true"] { transform: none; transition: none; }
   .ax-back-top, .ax-mobile-menu { animation: none; transition: none; }
 }
 
 /* Crisp edges, not fades: the footer starts on night with a hard line. */
 .ax-footer.feather { padding-top: var(--s-6); background: var(--night); }
-/* The footer mark reads as one word: the gap belongs between the mark and the name only. */
-.ax-foot-mark { gap: 0; }
-.ax-foot-mark svg { margin-right: 10px; }
 /* Current division in the main header. */
 .ax-nav a[aria-current="page"] { color: var(--ink); }
