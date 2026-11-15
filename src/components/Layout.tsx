@@ -10,7 +10,7 @@ import { useChromeNavigation } from './useChromeNavigation'
 const homeUrl = '/'
 const designUrl = '/design/'
 
-const SUBNAV = [
+const SECTIONS = [
   { to: '/', label: 'Overview' },
   { to: '/plugins', label: 'All tools' },
   { to: '/demos', label: 'Dialog gallery' },
@@ -19,8 +19,8 @@ const SUBNAV = [
 
 export function Layout() {
   const { pathname, hash } = useLocation()
-  const subnav = useScrollProgress<HTMLDivElement>()
-  const { chromeRef, dialogRef, menuButtonRef, menuOpen, hidden, showBackToTop, openMenu, closeMenu } = useChromeNavigation(pathname)
+  const pill = useScrollProgress<HTMLElement>()
+  const { chromeRef, dialogRef, menuButtonRef, menuOpen, hidden, isDark, showBackToTop, openMenu, closeMenu } = useChromeNavigation(pathname)
   const route = pathname.replace(/\/+$/, '')
   const tool = route.startsWith('/plugins/') ? pages.find((page) => page.slug === route.slice('/plugins/'.length)) : undefined
   const demo = route.startsWith('/demos/') ? pages.find((page) => page.demo === route.slice('/demos/'.length)) : undefined
@@ -30,14 +30,17 @@ export function Layout() {
     <a href={homeUrl}>Home</a>
     <a href={designUrl} data-division="design">Design</a>
     <Link to="/" data-division="automation" aria-current="page">Automation</Link>
-    <a href={homeUrl + '#about'}>About</a>
-    <a href="#contact">Contact</a>
   </>
-  const sectionLinks = SUBNAV.map((item) => (
-    <NavLink key={item.to} to={item.to} end={item.to === '/'} className={item.to === '/connect' ? 'ax-subnav-cta' : undefined}>
+  const sectionLinks = SECTIONS.map((item) => (
+    <NavLink key={item.to} to={item.to} end={item.to === '/'} className={item.to === '/connect' ? 'nav-cta' : undefined}>
       {item.label}
     </NavLink>
   ))
+  const crumbs = breadcrumb && <nav className="pill-crumb" aria-label="Breadcrumb">
+    <Link to="/">Automation</Link><span aria-hidden="true">&rsaquo;</span>
+    <Link to={breadcrumb.to}>{breadcrumb.section}</Link><span aria-hidden="true">&rsaquo;</span>
+    <span aria-current="page">{breadcrumb.name}</span>
+  </nav>
   useImageFade()
   useSiteMotion()
   useContinuityBackground(pathname)
@@ -61,38 +64,40 @@ export function Layout() {
     <>
       <a className="skip-link" href="#main">Skip to content</a>
       <div id="top" tabIndex={-1} />
-      <div className="ax-chrome" data-logo="blueprint" ref={chromeRef} data-hidden={hidden}>
-        <header className="ax-header">
-          <div className="ax-bar">
-            <a className="ax-brand" href={homeUrl} aria-label="ArchiTECH home"><DesignLockup /></a>
-            <nav className="ax-nav" aria-label="Site">{siteLinks}</nav>
-            <span className="ax-mobile-section">Automation</span>
-            <button type="button" className="ax-menu-toggle" ref={menuButtonRef} aria-label="Open menu" aria-expanded={menuOpen} aria-controls="site-menu" onClick={openMenu}>
-              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" aria-hidden="true"><path d="M4 6h16M4 12h16M4 18h16" /></svg>
+      <div className={'automation-pill' + (isDark ? ' is-dark' : '')} data-logo="blueprint" ref={chromeRef} data-hidden={hidden} data-menu-open={menuOpen}>
+        <header className="navglass" ref={pill}>
+          <div className="nav-row">
+            <a className="bar-logo" href={homeUrl} aria-label="ArchiTECH home"><DesignLockup /></a>
+            <nav className="division-switcher navtabs" aria-label="Site">{siteLinks}</nav>
+            <nav className="nav-links" aria-label="Automation">{sectionLinks}</nav>
+            <button type="button" className="nav-toggle" ref={menuButtonRef} aria-label="Open menu" aria-expanded={menuOpen} aria-controls="site-menu" onClick={openMenu}>
+              <span /><span />
             </button>
           </div>
-          <dialog id="site-menu" className="ax-mobile-menu" ref={dialogRef} aria-labelledby="site-menu-title" onCancel={(event) => { event.preventDefault(); closeMenu() }} onClose={closeMenu}>
-            <div className="ax-menu-head">
-              <span id="site-menu-title">Menu</span>
-              <button type="button" className="ax-menu-close" aria-label="Close menu" onClick={closeMenu} autoFocus>
-                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="1.5" aria-hidden="true"><path d="m6 6 12 12M6 18 18 6" /></svg>
-              </button>
-            </div>
-            <nav className="ax-menu-site" aria-label="Site" onClick={(event) => { if ((event.target as Element).closest('a')) closeMenu() }}>{siteLinks}</nav>
-            <nav className="ax-menu-sections" aria-label="Automation" onClick={(event) => { if ((event.target as Element).closest('a')) closeMenu() }}>{sectionLinks}</nav>
-            {breadcrumb && <p className="ax-menu-breadcrumb">Automation <span aria-hidden="true">›</span> {breadcrumb.section} <span aria-hidden="true">›</span> {breadcrumb.name}</p>}
-          </dialog>
+          {crumbs}
+          <div className="pill-progress" aria-hidden="true"><span /></div>
         </header>
-        <div className="ax-subnav" ref={subnav}>
-          <div className="ax-subnav-inner">
-            {breadcrumb && <nav className="ax-crumb" aria-label="Breadcrumb">
-              <Link to="/">Automation</Link><span aria-hidden="true">›</span>
-              <Link to={breadcrumb.to}>{breadcrumb.section}</Link><span aria-hidden="true">›</span>
-              <span aria-current="page">{breadcrumb.name}</span>
-            </nav>}
-            <nav className="ax-section-links" aria-label="Automation">{sectionLinks}</nav>
+        <dialog id="site-menu" className="pill-menu" ref={dialogRef} aria-labelledby="site-menu-title" onCancel={(event) => { event.preventDefault(); closeMenu() }} onClose={closeMenu} onClick={(event) => { if ((event.target as Element).closest('a')) closeMenu() }}>
+          <h2 id="site-menu-title" className="sr-only">Menu</h2>
+          <div className="nav-row">
+            <a className="bar-logo" href={homeUrl} aria-label="ArchiTECH home"><DesignLockup /></a>
+            <nav className="division-switcher" aria-label="Site">{siteLinks}</nav>
+            <button type="button" className="nav-toggle is-close" aria-label="Close menu" onClick={closeMenu} autoFocus><span /><span /></button>
           </div>
-        </div>
+          {crumbs}
+          <div className="pill-menu-body">
+            <nav className="nav-menu-inner" aria-label="Automation">
+              {SECTIONS.map((item, index) => <NavLink key={item.to} to={item.to} end={item.to === '/'} className={item.to === '/connect' ? 'nav-cta' : undefined}>
+                <small aria-hidden="true">{String(index + 1).padStart(2, '0')}</small>{item.label}<i aria-hidden="true">&rsaquo;</i>
+              </NavLink>)}
+            </nav>
+            <div className="nav-menu-foot">
+              <a href={homeUrl + '#about'}>About</a>
+              <a href="#contact">Contact</a>
+              <a href={`mailto:${CONTACT.email}`}>{CONTACT.email}</a>
+            </div>
+          </div>
+        </dialog>
       </div>
       <main id="main" tabIndex={-1}><div key={pathname} className="route-in"><Outlet /></div></main>
       <Footer />

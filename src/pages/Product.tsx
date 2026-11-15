@@ -75,9 +75,6 @@ export default function Product() {
     <>
       <section className="tp-hero">
         <div className="wrap">
-          <nav className="breadcrumb" aria-label="Breadcrumb">
-            <Link to="/plugins">All tools</Link><span>/</span><Link to={`/plugins?suite=${p.suite}`}>{suite.name}</Link><span>/</span><span>{p.name}</span>
-          </nav>
           <div className="tp-head">
             <div>
               <p className="tp-suite" style={{ ['--suite' as string]: suite.color }}>{suite.name}<span>{p.panel}</span></p>
