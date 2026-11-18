@@ -68,4 +68,3 @@
 .tp-try-head h2 { margin: 0 0 10px; font: 400 clamp(2rem, 4vw, 3rem)/1.05 var(--font-serif); }
 .tp-try-head p { margin: 0; color: var(--text-2); font-size: 1.05rem; line-height: 1.6; }
 .tp-try-wait { display: grid; place-items: center; min-height: 520px; border-radius: 10px; background: #34373e; color: #aab0bb; }
-.tp-try { scroll-margin-top: 96px; }

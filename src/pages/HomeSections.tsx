@@ -3,6 +3,7 @@ import { ArrowRight } from 'lucide-react'
 import { Link, useLocation } from 'react-router-dom'
 import { PRODUCTS, REVIT_TOOLS, STATS, productBySlug } from '../data/catalog'
 import { SUITES } from '../data/suites'
+import { CONTACT } from '../data/contact'
 import type { Product } from '../data/types'
 import { DialogGallery } from '../components/DialogGallery'
 import { dialogAlt, thumbProps } from '../components/dialogImage'
@@ -217,7 +218,10 @@ export default function HomeSections() {
           <h2>An architect who can also build the tools</h2>
           <div>
             <p>If your team needs someone who designs, documents, models, renders and automates, I would like to hear from you.</p>
-            <Link className="btn btn-primary" to="/connect">Work with me</Link>
+            <div className="hero-cta">
+              <a className="btn btn-primary" href={`mailto:${CONTACT.email}?subject=Project%20or%20role%20enquiry`}>Email me</a>
+              <Link className="btn btn-ghost" to="/connect">Use the contact form</Link>
+            </div>
           </div>
         </div>
       </section>

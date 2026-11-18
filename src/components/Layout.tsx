@@ -14,7 +14,7 @@ const SECTIONS = [
   { to: '/', label: 'Overview' },
   { to: '/plugins', label: 'All tools' },
   { to: '/demos', label: 'Dialog gallery' },
-  { to: '/connect', label: 'Work with me' },
+  { to: '/connect', label: 'Get in touch' },
 ]
 
 export function Layout() {

@@ -50,9 +50,10 @@ export default function Home() {
             <h1><span>Tools that finish</span> <span>the drawing set</span></h1>
             <p className="lead">{counts.revitTools} Revit add-ins I designed and built for sheets, parameters and model checks, plus {counts.desktopApps} desktop apps and AI connectors for {counts.connectors} design applications. Every one shown through its real windows.</p>
             <div className="hero-cta">
-              <Link className="btn btn-primary" to="/demos/sheet-export">Open Sheet Export</Link>
-              <Link className="home-secondary" to="/demos#demo-index">Open the dialog gallery</Link>
+              <Link className="btn btn-primary" to="/plugins/architech-i3d#try-demo">Try I3D in your browser</Link>
+              <Link className="home-secondary" to="/plugins">Browse all {counts.revitTools} tools</Link>
             </div>
+            <p className="ah-try">Also live in your browser: <Link to="/plugins/architech-assistant#try-demo">the Assistant</Link> and <Link to="/plugins/revit-mcp#try-demo">the MCP Connector</Link>.</p>
           </div>
           <ResultLoop />
         </div>
