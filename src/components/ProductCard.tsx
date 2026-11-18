@@ -68,7 +68,6 @@ export function ProductCard({ p }: { p: Product }) {
   const dialog = p.dialogs[0]
   const media = dialog ? undefined : p.media?.find((item) => item.kind === 'image')
   const specimen = SPECIMENS[p.slug]
-  const previewScale = dialog ? Math.max(1, Math.min(1.55, dialog.dark[1] / 680)) : 1
   const productPath = '/plugins/' + p.slug
 
   return (
@@ -78,7 +77,7 @@ export function ProductCard({ p }: { p: Product }) {
         <figure className="product-preview">
           <div className={'product-preview-art ' + (dialog ? 'is-native' : media ? 'is-desktop' : 'is-specimen')}>
             {dialog
-              ? <img {...thumbProps(dialog.dark)} alt={dialogAlt(p, dialog)} style={{ ['--preview-scale' as string]: previewScale }} loading="lazy" decoding="async" />
+              ? <img {...thumbProps(dialog.dark)} alt={dialogAlt(p, dialog)} loading="lazy" decoding="async" />
               : media ? <img src={asset(media.src)} alt={media.alt} loading="lazy" decoding="async" />
               : specimen && <SpecimenDrawing specimen={specimen} />}
           </div>

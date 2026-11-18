@@ -73,7 +73,8 @@ main .pcard .product-hosts, main .pcard .product-card-actions { display: none; }
     .split-head h2, .demo-section-title h2, main .catalog-top h2, .demo-group-label h3, .suite-title strong {
       animation: settle-up linear both; animation-timeline: view(); animation-range: entry 0% cover 25%;
     }
-    @keyframes draw-in { from { clip-path: inset(0 100% 0 0); } to { clip-path: inset(0); } }
+    /* A soft rise, never a wipe: a half-revealed window reads as a broken picture. */
+    @keyframes draw-in { from { opacity: 0; transform: translateY(18px); } to { opacity: 1; transform: none; } }
     @keyframes settle-up { from { opacity: 0; transform: translateY(28px); } to { opacity: 1; transform: none; } }
   }
 }
@@ -91,3 +92,14 @@ main .pcard .product-hosts, main .pcard .product-card-actions { display: none; }
   main .catalog-task-options button:nth-child(even) { border-left: 0; }
   .demo-tiles-grid { grid-template-columns: 1fr 1fr; }
 }
+
+/* ---------- Tool thumbnails: the whole window, scaled to fit, on one dark tile (no crops, no zoom) ---------- */
+main .pcard .product-preview-art.is-native, main .pcard .product-preview-art.is-desktop, .tile-shot {
+  aspect-ratio: 16 / 10; display: grid; place-items: center; padding: 7% 8%; border-bottom: 0;
+  background: radial-gradient(120% 90% at 50% 0%, #2c2521 0%, #191412 70%);
+}
+main .pcard .product-preview-art.is-native img, main .pcard .product-preview-art.is-desktop img, .tile-shot img {
+  width: 100%; height: 100%; object-fit: contain; object-position: center; transform: none;
+  filter: drop-shadow(0 10px 16px rgba(0, 0, 0, .45));
+}
+main .pcard:hover .product-preview-art img, .demo-tiles-grid a:hover .tile-shot img, .demo-tiles-grid a:focus-visible .tile-shot img { scale: 1.035; translate: none; }
