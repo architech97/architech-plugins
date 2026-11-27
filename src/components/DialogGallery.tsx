@@ -2,7 +2,7 @@ import { useRef, useState, type KeyboardEvent } from 'react'
 import { ArrowLeft, ArrowRight, Maximize2, Moon, Sun, X } from 'lucide-react'
 import type { DialogShot, Product } from '../data/types'
 import { asset } from './Brand'
-import { dialogAlt, imageProps } from './dialogImage'
+import { dialogAlt, imageProps, leadShot } from './dialogImage'
 import './dialogGallery.css'
 
 const sourceNote = (shot: DialogShot) => shot.real ? 'Screenshot of the installed build' : 'Rendered from the product’s own window, with sample data'
@@ -14,9 +14,8 @@ const sourceNote = (shot: DialogShot) => shot.real ? 'Screenshot of the installe
 export function DialogGallery({ product, eager = false, ratio, dark = false }: { product: Product; eager?: boolean; ratio?: number; dark?: boolean }) {
   // Open on the largest picture (a screenshot first when two are the same size), so a narrow strip
   // such as a chat excerpt never sets the shape of the stage for every full window after it.
-  const area = (d: DialogShot) => d.dark[1] * d.dark[2] + (d.real ? 1 : 0)
-  const lead = product.dialogs.reduce((best, d, i, all) => area(d) > area(all[best]) ? i : best, 0)
-  const dialogs = lead ? [product.dialogs[lead], ...product.dialogs.filter((_, i) => i !== lead)] : product.dialogs
+  const lead = leadShot(product.dialogs)
+  const dialogs = lead ? [lead, ...product.dialogs.filter((shot) => shot !== lead)] : product.dialogs
   const [index, setIndex] = useState(0)
   const [light, setLight] = useState(false)
   const [zoomed, setZoomed] = useState(false)

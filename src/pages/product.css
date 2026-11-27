@@ -55,7 +55,7 @@
 @media (prefers-reduced-motion: no-preference) {
   @supports (animation-timeline: view()) {
     .tp-show-steps li { animation: tp-show-rise linear both; animation-timeline: view(); animation-range: entry 5% cover 28%; }
-    @keyframes tp-show-rise { from { opacity: 0; transform: translateY(22px); } to { opacity: 1; transform: none; } }
+    @keyframes tp-show-rise { from { transform: translateY(22px); } to { transform: none; } }
   }
 }
 
@@ -68,3 +68,6 @@
 .tp-try-head h2 { margin: 0 0 10px; font: 400 clamp(2rem, 4vw, 3rem)/1.05 var(--font-serif); }
 .tp-try-head p { margin: 0; color: var(--text-2); font-size: 1.05rem; line-height: 1.6; }
 .tp-try-wait { display: grid; place-items: center; min-height: 520px; border-radius: 10px; background: #34373e; color: #aab0bb; }
+.tp-capture { padding: clamp(8px, 2vw, 20px) 0 clamp(48px, 6vw, 80px); }
+.tp-capture h2 { margin: 0 0 10px; font: 500 clamp(1.6rem, 3vw, 2.2rem)/1.1 var(--font-serif); }
+.tp-capture p { max-width: 62ch; margin: 0; color: var(--text-2); }

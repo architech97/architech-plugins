@@ -2,7 +2,9 @@ import { lazy, Suspense } from 'react'
 import { Link, useParams } from 'react-router-dom'
 import { MessageSquare } from 'lucide-react'
 import { PRODUCTS, productBySlug } from '../data/catalog'
+import { BROWSER_DEMOS } from '../data/liveDemos'
 import { suiteById } from '../data/suites'
+import { ClientOnly } from '../components/ClientOnly'
 import { DialogGallery } from '../components/DialogGallery'
 import { imageProps } from '../components/dialogImage'
 import { ProductCard } from '../components/ProductCard'
@@ -19,6 +21,9 @@ const DEMOS: Record<string, { Demo: ReturnType<typeof lazy>; title: string; lead
     lead: 'A scripted conversation with a sample Revit model. Ask about the doors on Level 2, search for a tool, then approve a change and watch it read back. Nothing is sent anywhere.' },
   'revit-mcp': { Demo: lazy(() => import('../components/appdemo/McpDemo')), title: 'Try the Connector in your browser',
     lead: 'The Connector’s dashboard with a sample model. Send three requests as if from Claude, change what needs your approval, and see the review dialogs. No AI app or Revit is involved.' },
+}
+if (BROWSER_DEMOS.some((slug) => !DEMOS[slug]) || Object.keys(DEMOS).some((slug) => !(BROWSER_DEMOS as readonly string[]).includes(slug))) {
+  throw new Error('Browser demos on the product page do not match the catalogue list.')
 }
 import './product-evidence.css'
 import './product.css'
@@ -84,7 +89,8 @@ export default function Product() {
                 {demo && <a className="btn btn-primary" href="#try-demo">Try it in your browser</a>}
                 {demo ? <a className="btn btn-ghost" href="#dialog-reference">See the {dialogCount} dialogs</a> : p.dialogs.length > 0
                   ? <a className="btn btn-primary" href="#dialog-reference">See the {dialogCount === 1 ? 'dialog' : dialogCount + ' dialogs'}</a>
-                  : p.media?.length ? <a className="btn btn-primary" href="#dialog-reference">View desktop visuals</a> : null}
+                  : p.media?.length ? <a className="btn btn-primary" href="#dialog-reference">View desktop visuals</a>
+                  : <a className="btn btn-ghost" href="#dialog-reference">Dialog capture coming</a>}
                 <Link className="btn btn-ghost" to={`/connect?type=walkthrough&product=${p.slug}`}><MessageSquare size={17} /> Ask me about this tool</Link>
               </div>
               {(hasChairPreview || hasRecordedPlacement) && (
@@ -99,6 +105,7 @@ export default function Product() {
               <div><dt>Software</dt><dd>{p.software.join(', ')}{(isRevitTool || p.software.join() === 'Revit') && p.revit?.length ? ' ' + revit : ''}</dd></div>
               {p.platform && <div><dt>Platform</dt><dd>{p.platform}</dd></div>}
               {p.dialogs.length > 0 && <div><dt>Shown here</dt><dd>{dialogCount} {dialogCount === 1 ? 'dialog' : 'dialogs'}{p.dialogs.length > dialogCount ? `, ${p.dialogs.length} pictures` : ''}</dd></div>}
+              {p.dialogs.length === 0 && !p.media?.length && <div><dt>Shown here</dt><dd>Dialog capture coming</dd></div>}
             </dl>
           </div>
         </div>
@@ -112,7 +119,18 @@ export default function Product() {
               <h2 id="tp-try-title">{demo.title}</h2>
               <p>{demo.lead}</p>
             </header>
-            <Suspense fallback={<div className="tp-try-wait">Loading the demo…</div>}><demo.Demo /></Suspense>
+            <ClientOnly fallback={<div className="tp-try-wait">Loading the demo…</div>}>
+              <Suspense fallback={<div className="tp-try-wait">Loading the demo…</div>}><demo.Demo /></Suspense>
+            </ClientOnly>
+          </div>
+        </section>
+      )}
+
+      {p.dialogs.length === 0 && !p.media?.length && (
+        <section className="tp-capture" id="dialog-reference">
+          <div className="wrap">
+            <h2>Dialog capture coming</h2>
+            <p>This page does not show a window yet. {p.name} has no dialog picture in the catalogue. A real screenshot of its setup, or of its own window, will replace this note.</p>
           </div>
         </section>
       )}
@@ -211,7 +229,7 @@ export default function Product() {
         <section className="tp-related">
           <div className="wrap">
             <div className="section-head"><div><h2>More in {suite.name}</h2></div><Link className="btn btn-ghost" to={`/plugins?suite=${p.suite}`}>All {suite.short} products</Link></div>
-            <div className="grid-3">{related.map((r) => <ProductCard key={r.slug} p={r} />)}</div>
+            <div className="grid-3">{related.map((r) => <ProductCard key={r.slug} p={r} deferImage />)}</div>
           </div>
         </section>
       )}

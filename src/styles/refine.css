@@ -1,8 +1,7 @@
 /* Automation refinements: calmer catalogue, a visual dialog index, and motion with a purpose. */
 
-/* ---------- Route change: the new page settles in. ---------- */
-.route-in { animation: route-rise .6s var(--ease) both; }
-@keyframes route-rise { from { opacity: 0; transform: translateY(14px); } to { opacity: 1; transform: none; } }
+/* The new page is readable immediately. A fade from opacity 0 hid the largest content and started below contrast. */
+.route-in { animation: none; }
 
 /* ---------- Plugins: tasks as a hairline schedule ---------- */
 main .catalog-section .catalog-heading h1 { font-size: clamp(3rem, 6vw, 6rem); line-height: .92; letter-spacing: -.04em; }
@@ -67,15 +66,15 @@ main .pcard .product-hosts, main .pcard .product-card-actions { display: none; }
 /* ---------- Scroll motion: pictures are drawn in, headings settle. Only where the browser can tie it to scroll. ---------- */
 @supports (animation-timeline: view()) {
   @media (prefers-reduced-motion: no-preference) {
-    main .pcard .product-preview-art, .tile-shot, .suite-shot, .home-desktop-grid article > :first-child, .dialog-wall-head h2 {
+    main .pcard .product-preview-art, .tile-shot, .suite-shot, .home-desktop-grid article > :first-child {
       animation: draw-in linear both; animation-timeline: view(); animation-range: entry 0% cover 30%;
     }
-    .split-head h2, .demo-section-title h2, main .catalog-top h2, .demo-group-label h3, .suite-title strong {
+    .split-head h2, .demo-section-title h2, main .catalog-top h2, .demo-group-label h3, .suite-title strong, .dialog-wall-head h2 {
       animation: settle-up linear both; animation-timeline: view(); animation-range: entry 0% cover 25%;
     }
-    /* A soft rise, never a wipe: a half-revealed window reads as a broken picture. */
+    /* Pictures may rise in. Headings stay at full contrast and only move. */
     @keyframes draw-in { from { opacity: 0; transform: translateY(18px); } to { opacity: 1; transform: none; } }
-    @keyframes settle-up { from { opacity: 0; transform: translateY(28px); } to { opacity: 1; transform: none; } }
+    @keyframes settle-up { from { transform: translateY(28px); } to { transform: none; } }
   }
 }
 @media (prefers-reduced-motion: reduce) {

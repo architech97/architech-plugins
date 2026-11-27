@@ -1,6 +1,7 @@
-import { useState } from 'react'
-import { Link, useSearchParams } from 'react-router-dom'
+import { useEffect, useState } from 'react'
+import { Link } from 'react-router-dom'
 import { ListFilter, Search, X } from 'lucide-react'
+import { useDeferredSearchParams } from '../components/useDeferredSearch'
 import { PRODUCTS, STATS, searchText } from '../data/catalog'
 import { SUITES, suiteById } from '../data/suites'
 import { ProductCard } from '../components/ProductCard'
@@ -43,8 +44,11 @@ function searchRank(name: string, term: string, words: string[]) {
 }
 
 export default function Catalog() {
-  const [params, setParams] = useSearchParams()
-  const [filtersOpen, setFiltersOpen] = useState(() => FILTER_KEYS.some((key) => params.has(key)))
+  const [params, setParams] = useDeferredSearchParams()
+  const [filtersOpen, setFiltersOpen] = useState(false)
+  useEffect(() => {
+    if (FILTER_KEYS.some((key) => params.has(key))) setFiltersOpen(true)
+  }, [params])
   const query = params.get('q') ?? ''
   const task = params.get('task') ?? ''
   const suite = params.get('suite') ?? ''
@@ -87,13 +91,13 @@ export default function Catalog() {
           <div>
             <h1 id="catalog-title">Every tool I have built, by task</h1>
           </div>
-          <p className="lead">All {STATS.products}, sorted by the job each one does: {STATS.revitTools} Revit add-ins in three suites, {STATS.suiteHomes} suite homes, {STATS.utilities} ribbon utility, {STATS.desktopApps} desktop apps and AI connectors for {STATS.connectors} design applications.</p>
+          <p className="lead">All {STATS.products} products, sorted by the job each one does: {STATS.revitTools} Revit add-ins in three suites, {STATS.suiteHomes} suite homes, {STATS.utilities} ribbon utility, {STATS.desktopApps} desktop apps and {STATS.connectors} connectors.</p>
         </header>
 
         <div className="catalog-tasks" role="group" aria-label="Browse by task">
           <div className="catalog-task-heading">
             <h2>Browse by task</h2>
-            <button type="button" aria-pressed={!task} onClick={() => update('task', '')}>All tools <span>{PRODUCTS.length}</span></button>
+            <button type="button" aria-pressed={!task} onClick={() => update('task', '')}>All products <span>{PRODUCTS.length}</span></button>
           </div>
           <div className="catalog-task-options">
             {TASKS.map((item, index) => (
@@ -135,7 +139,7 @@ export default function Catalog() {
           <section className="catalog-results" aria-labelledby="catalog-result-title">
             <div className="catalog-top">
               <div>
-                <h2 id="catalog-result-title">{selectedTask?.label ?? 'All tools'}</h2>
+                <h2 id="catalog-result-title">{selectedTask?.label ?? 'All products'}</h2>
                 <p className="muted" role="status">{results.length} of {PRODUCTS.length} tools</p>
               </div>
               <Link to="/demos#sample-project">Follow one drawing set</Link>

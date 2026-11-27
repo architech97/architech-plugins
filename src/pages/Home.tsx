@@ -1,35 +1,42 @@
-import { lazy, Suspense } from 'react'
+import { useEffect, useRef } from 'react'
 import { Link } from 'react-router-dom'
 import { asset } from '../components/Brand'
 import { dialogAlt, imageProps } from '../components/dialogImage'
+import { browseAllLabel } from '../data/countsLabel'
 import counts from '../data/counts.generated.json'
 import { FEATURED_TOOLS, HERO_SIZES } from '../data/featured'
 import hero from '../data/hero.generated.json'
 import type { DialogShot } from '../data/types'
+import HomeSections from './HomeSections'
 import './home.css'
 
-const HomeSections = lazy(() => import('./HomeSections'))
-
 const SHEETS = [
-  { no: 'A-101', name: 'Ground floor plan', file: 'plan-drawing-480.webp', paper: true },
-  { no: 'A-102', name: 'Rendered plan', file: 'plan-render-480.webp' },
-  { no: 'A-201', name: 'Front view, day', file: 'front-day-480.webp' },
-  { no: 'A-202', name: 'Front view, dusk', file: 'front-dusk-480.webp' },
+  { no: 'A-101', name: 'Ground floor plan', file: 'plan-drawing-480.webp', paper: true, w: 480, h: 387 },
+  { no: 'A-102', name: 'Rendered plan', file: 'plan-render-480.webp', w: 480, h: 391 },
+  { no: 'A-201', name: 'Front view, day', file: 'front-day-480.webp', w: 480, h: 319 },
+  { no: 'A-202', name: 'Front view, dusk', file: 'front-dusk-480.webp', w: 480, h: 319 },
 ]
 
-// The hero reads one generated record, not the catalogue, so the first script stays small.
 const HERO = hero as unknown as DialogShot
 const HERO_TOOL = { name: FEATURED_TOOLS[0].title, software: ['Revit'], suite: 'folio' as const }
 
 /** The result first: the real Sheet Export window, and the set that comes out of it. */
 function ResultLoop() {
+  const sheetsRef = useRef<HTMLDivElement>(null)
+  useEffect(() => {
+    const root = sheetsRef.current
+    if (!root) return
+    root.querySelectorAll<HTMLImageElement>('img[data-src]').forEach((img) => {
+      if (!img.getAttribute('src')) img.src = img.dataset.src || ''
+    })
+  }, [])
   return (
     <figure className="loop">
       <div className="loop-stage">
-        <div className="loop-sheets">
+        <div className="loop-sheets" ref={sheetsRef}>
           {SHEETS.map((sheet, i) => (
             <div className={'loop-sheet s' + i} key={sheet.no} aria-hidden="true">
-              <div className={'loop-sheet-art' + (sheet.paper ? ' paper' : '')}><img src={asset('media/house/' + sheet.file)} alt="" decoding="async" /></div>
+              <div className={'loop-sheet-art' + (sheet.paper ? ' paper' : '')}><img data-src={asset('media/house/' + sheet.file)} alt="" width={sheet.w} height={sheet.h} decoding="async" /></div>
               <p><b>{sheet.no}</b>{sheet.name}<i>PDF</i></p>
             </div>
           ))}
@@ -48,10 +55,10 @@ export default function Home() {
         <div className="wrap-wide ah-grid">
           <div className="ah-copy">
             <h1><span>Tools that finish</span> <span>the drawing set</span></h1>
-            <p className="lead">{counts.revitTools} Revit add-ins I designed and built for sheets, parameters and model checks, plus {counts.desktopApps} desktop apps and AI connectors for {counts.connectors} design applications. Every one shown through its real windows.</p>
+            <p className="lead">{counts.catalogue}. Each Revit add-in is shown through its real windows. {counts.awaitingDialogNote}</p>
             <div className="hero-cta">
               <Link className="btn btn-primary" to="/plugins/architech-i3d#try-demo">Try I3D in your browser</Link>
-              <Link className="home-secondary" to="/plugins">Browse all {counts.revitTools} tools</Link>
+              <Link className="home-secondary" to="/plugins">{browseAllLabel(counts.products)}</Link>
             </div>
             <p className="ah-try">Also live in your browser: <Link to="/plugins/architech-assistant#try-demo">the Assistant</Link> and <Link to="/plugins/revit-mcp#try-demo">the MCP Connector</Link>.</p>
           </div>
@@ -59,9 +66,7 @@ export default function Home() {
         </div>
       </section>
 
-      <Suspense fallback={<div aria-hidden="true" style={{ minHeight: '100vh' }} />}>
-        <HomeSections />
-      </Suspense>
+      <HomeSections />
     </div>
   )
 }

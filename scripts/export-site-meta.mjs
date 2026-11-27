@@ -13,6 +13,11 @@ try {
     utilities: STATS.utilities,
     desktopApps: STATS.desktopApps,
     connectors: STATS.connectors,
+    productsWithDialogs: STATS.productsWithDialogs,
+    galleryPages: STATS.galleryPages,
+    browserDemos: STATS.browserDemos,
+    catalogue: STATS.catalogue,
+    awaitingDialogNote: STATS.awaitingDialogNote,
   }
   const pages = PRODUCTS.map((product) => ({
     slug: product.slug,

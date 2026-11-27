@@ -3,8 +3,12 @@
 The public catalogue for ArchiTECH's BIM productivity software: the Revit add-ins in the Arch Folio,
 Arch Forge and Arch Sentinel suites, the three suite homes, the Point Cloud On/Off toggle, ArchiTECH I3D,
 ArchiTECH Assistant and MCP connectors for Revit, Rhino, SketchUp, AutoCAD and Blender. The live counts are
-published at `stats.json` (`products`, `revitTools`, `suiteHomes`, `utilities`, `desktopApps`, `connectors`).
-Every tool is shown through its real dialogs.
+published at `stats.json`, with a `definitions` object for each number. `products` is the whole catalogue.
+`revitTools`, `suiteHomes`, `utilities`, `desktopApps` and `connectors` are the five groups that add up to it.
+`productsWithDialogs` and `galleryPages` count products that have a dialog picture. `browserDemos` counts the
+three browser demos (I3D, the Assistant and the Revit MCP Connector). `demos` is the old name for `galleryPages`.
+Each Revit add-in is shown through its real dialogs. The AutoCAD, Blender, Rhino and SketchUp connectors do not
+have dialog pictures yet; their pages say so, and the coverage page names them.
 
 The primary site is [architechdesign.in/automation/](https://architechdesign.in/automation/).
 The [GitHub Pages preview](https://architech97.github.io/architech-plugins/) remains available for existing links and is marked `noindex`.
@@ -55,8 +59,11 @@ own email app; nothing is sent or stored by the site.
 ```bash
 npm install
 npm run dev
-npm run build   # type-check and build to dist/
+npm run build   # type-check, build, then prerender each page and its Open Graph image
 ```
+
+After a product, name or tagline change, run `node scripts/export-site-meta.mjs` before the build.
+The build checks that `src/data/counts.generated.json` still matches the catalogue.
 
 Pushing to `main` deploys the preview through `.github/workflows/deploy.yml`.
 The build emits static entry points for direct product and dialog links. The unified site's

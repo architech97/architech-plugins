@@ -115,7 +115,6 @@ function Footer() {
       <div className="ax-foot-grid">
         <div className="ax-foot-lead">
           <p className="ax-foot-line">Have a project or a role in mind? Let’s talk.</p>
-          {/* TODO(Navneet): confirm the reply-time wording. */}
           <p className="ax-foot-reply">I reply within one working day.</p>
         </div>
         <div className="ax-foot-col">
@@ -152,7 +151,6 @@ function Footer() {
         <a className="ax-foot-top" href="#top">Back to top</a>
         <p>Portfolio of Navneet Singh, New Delhi. Dialog pictures are screenshots and renders of the tools, with sample data. Autodesk, Revit and AutoCAD are trademarks of Autodesk, Inc.; Rhino, SketchUp and Blender are trademarks of their owners.</p>
       </div>
-      {/* HOOK(contact-form): Navneet has not chosen a form service. Do not post this anywhere and do not add analytics. */}
       <div id="contact-form" data-form="unconfigured" hidden />
     </footer>
   )

@@ -105,7 +105,7 @@ function Suites() {
             <Link className="suite-shot" to={'/plugins?suite=' + suite.id} tabIndex={-1} aria-hidden="true">
               <img {...thumbProps(shot.dialogs[0].dark)} alt="" loading="lazy" decoding="async" />
             </Link>
-            <h3 className="suite-title" id={'suite-' + suite.id}><strong>{suite.name}</strong><span><b>{count}</b> tools</span></h3>
+            <h3 className="suite-title" id={'suite-' + suite.id}><strong>{suite.name}</strong><span><b>{count}</b> add-ins</span></h3>
             <p className="suite-focus">{SUITE_TASKS[suite.id]}</p>
             <ul className="suite-groups">
               {groups.map((group) => (
@@ -119,7 +119,7 @@ function Suites() {
                 </li>
               ))}
             </ul>
-            <Link className="suite-all" to={'/plugins?suite=' + suite.id}>All {count} {suite.short} tools</Link>
+            <Link className="suite-all" to={'/plugins?suite=' + suite.id}>All {count} {suite.short} add-ins</Link>
           </article>
         )
       })}
@@ -138,7 +138,7 @@ function DialogWall() {
         {wallRows.map((row, r) => (
           <div className={'marquee-row' + (r ? ' rev' : '')} key={r}>
             {[...row, ...row].map((item, i) => (
-              <Link key={item.slug + i} to={'/demos/' + item.slug} aria-hidden={i >= row.length} tabIndex={i >= row.length ? -1 : undefined} aria-label={i < row.length ? item.name + ' dialogs' : undefined}>
+              <Link key={item.slug + i} to={'/demos/' + item.slug} aria-hidden={i >= row.length ? true : undefined} inert={i >= row.length ? true : undefined} tabIndex={i >= row.length ? -1 : undefined} aria-label={i < row.length ? item.name + ' dialogs' : undefined}>
                 <img {...thumbProps(item.image)} alt="" loading="lazy" decoding="async" /><span>{item.name}</span>
               </Link>
             ))}
@@ -147,7 +147,7 @@ function DialogWall() {
       </div>
       <div className="wrap dialog-wall-head">
         <h2 id="dialog-wall-title">{STATS.dialogs} dialogs, as built</h2>
-        <p>Most of the {STATS.revitTools} tools open more than one window. Each picture is a Revit screenshot or the tool’s own window with sample data; pick one to see the rest.</p>
+        <p>Most of the {STATS.revitTools} Revit add-ins open more than one window. Each picture is a Revit screenshot or the tool’s own window with sample data; pick one to see the rest.</p>
       </div>
     </section>
   )
@@ -199,7 +199,7 @@ export default function HomeSections() {
         <div className="wrap">
           <div className="split-head">
             <h2 id="home-desktop-title">AI and desktop apps</h2>
-            <p>Three products beyond the Revit ribbon: I3D turns a photo or a mesh into a Revit family, the Assistant answers questions about the open model and plans the change, and the MCP Connector lets AI apps such as Claude work in Revit, Rhino, SketchUp, AutoCAD and Blender, with every change shown to you first.</p>
+            <p>I3D turns a photo or a mesh into a Revit family, the Assistant answers questions about the open model and plans the change, and the MCP Connector lets AI apps such as Claude work in Revit, Rhino, SketchUp, AutoCAD and Blender, with every change shown to you first.</p>
           </div>
           <div className="home-desktop-grid">
             {DESKTOP.map((d) => (

@@ -1,5 +1,6 @@
 import counts from './counts.generated.json'
 import pages from './pageIndex.generated.json'
+import { isBrowserDemo } from './liveDemos'
 
 const SUFFIX = ' | ArchiTECH Automation'
 
@@ -11,17 +12,17 @@ export type PageMeta = { title: string; description: string }
 
 const home: PageMeta = {
   title: 'ArchiTECH Automation | BIM tools by Navneet Singh',
-  description: `BIM tools by Navneet Singh: ${counts.revitTools} Revit add-ins, ${counts.suiteHomes} suite homes, ${counts.desktopApps} desktop apps and ${counts.connectors} AI connectors.`,
+  description: `${counts.catalogue}. Each Revit add-in is shown through its real windows. ${counts.awaitingDialogNote}`,
 }
 
 const STATIC: Record<string, PageMeta> = {
   plugins: {
     title: 'All tools' + SUFFIX,
-    description: `All ${counts.products} ArchiTECH products, sorted by the job each one does: ${counts.revitTools} Revit add-ins, ${counts.suiteHomes} suite homes, ${counts.utilities} ribbon utility, ${counts.desktopApps} desktop apps and ${counts.connectors} AI connectors.`,
+    description: `All ${counts.products} products, sorted by the job each one does. ${counts.catalogue}.`,
   },
   demos: {
     title: 'Dialog gallery' + SUFFIX,
-    description: `Dialog gallery of every ArchiTECH window as built, grouped by the job each tool does. Open a tool to see its real dialogs.`,
+    description: `Dialog gallery of ${counts.productsWithDialogs} products with real windows, grouped by the job each tool does. ${counts.awaitingDialogNote}`,
   },
   connect: {
     title: 'Get in touch' + SUFFIX,
@@ -51,19 +52,20 @@ export function pageMeta(route: string): PageMeta {
   const pluginSlug = path.startsWith('plugins/') ? path.slice('plugins/'.length) : ''
   const plugin = pluginSlug ? PAGES.find((page) => page.slug === pluginSlug) : undefined
   if (plugin) {
+    const live = isBrowserDemo(plugin.slug) ? ' A browser demo is on this page.' : ''
     return {
       title: `${plugin.name}${SUFFIX}`,
-      description: `${plugin.name}. ${plugin.tagline}`,
+      description: `${plugin.name}. ${plugin.tagline}${live}`,
     }
   }
 
   const demoId = path.startsWith('demos/') ? path.slice('demos/'.length) : ''
   const demo = demoId ? PAGES.find((page) => page.demo === demoId) : undefined
   if (demo) {
-    const windows = demo.windows === 1 ? '1 window' : `${demo.windows} windows`
+    const pictures = demo.windows === 1 ? '1 picture' : `${demo.windows} pictures`
     return {
-      title: `${demo.name} live demo${SUFFIX}`,
-      description: `${demo.name} live demo: ${windows} as built. ${demo.tagline}`,
+      title: `${demo.name} dialogs${SUFFIX}`,
+      description: `${demo.name} dialogs: ${pictures} of its windows as built. ${demo.tagline}`,
     }
   }
 

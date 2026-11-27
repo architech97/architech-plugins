@@ -1,9 +1,9 @@
 /* Site-wide motion. Everything here is decoration on top of a page that works without it:
    content is visible by default, and every effect is switched off under prefers-reduced-motion. */
 
-/* Route change: the new page settles in. Ends at transform: none, so fixed children are unaffected. */
-.route-in { animation: route-in var(--t-reveal) var(--ease) both; }
-@keyframes route-in { from { opacity: 0; } to { opacity: 1; transform: none; } }
+/* Route changes do not fade the page. The text stays at full contrast, including before any motion runs. */
+.route-in { animation: none; }
+@keyframes route-in { from { transform: translateY(8px); } to { transform: none; } }
 
 
 /* A soft light follows the pointer across the drafting grid. */
@@ -39,12 +39,12 @@
   .native-image img, .native-capture img { animation: settle linear both; animation-timeline: view(); animation-range: entry 0% cover 45%; }
   @keyframes settle { from { transform: scale(1.09); } to { transform: scale(1); } }
   .home-band h2, .automation-contact h2 { animation: slide-x linear both; animation-timeline: view(); animation-range: entry 0% cover 40%; }
-  @keyframes slide-x { from { transform: translateX(-4vw); opacity: .35; } to { transform: none; opacity: 1; } }
+  @keyframes slide-x { from { transform: translateX(-4vw); } to { transform: none; } }
 }
 
 /* Walkthrough player feedback. */
 @keyframes pop { 0% { transform: scale(.4); } 60% { transform: scale(1.25); } 100% { transform: scale(1); } }
-@keyframes toast-in { from { opacity: 0; transform: translateY(-10px) scale(.97); } to { opacity: 1; transform: none; } }
+@keyframes toast-in { from { transform: translateY(-10px) scale(.97); } to { transform: none; } }
 @keyframes focus-ring { 0%, 100% { box-shadow: 0 0 0 2px var(--motion-focus-solid), 0 0 0 6px var(--motion-focus-clear); } 50% { box-shadow: 0 0 0 2px var(--motion-focus-solid), 0 0 0 9px var(--motion-focus-soft); } }
 .inquiry-draft { animation: route-in var(--t-reveal) var(--ease) both; }
 .coverage-table tbody tr { transition: background var(--t-ui) var(--ease); }

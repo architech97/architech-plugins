@@ -33,7 +33,7 @@
 .i3d-steps button:hover span { border-color: var(--i-text); }
 
 .i3d-panel { display: grid; gap: 10px; animation: i3d-in .35s ease both; }
-@keyframes i3d-in { from { opacity: 0; transform: translateY(6px); } }
+@keyframes i3d-in { from { transform: translateY(6px); } }
 .i3d-panel h3 { margin: 0; font-size: 14px; font-weight: 600; }
 .i3d-row, .i3d-grid2 { display: grid; grid-template-columns: 1fr 1fr; gap: 8px; }
 .i3d-grid2 label, .i3d-field { display: grid; gap: 5px; font-size: 13px; font-weight: 600; }

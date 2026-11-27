@@ -1,6 +1,7 @@
 import counts from './counts.generated.json'
 import pages from './pageIndex.generated.json'
 import { PRODUCTS, STATS } from './catalog'
+import { browseAllLabel, COUNT_DEFINITIONS } from './countsLabel'
 import { pageMeta } from './pageMeta'
 
 type PageRecord = { slug: string; name: string; tagline: string; demo: string | null; windows: number }
@@ -8,13 +9,18 @@ type PageRecord = { slug: string; name: string; tagline: string; demo: string | 
 /** The JSON the pages import has to match the catalogue, or the build stops. */
 export function assertSiteMeta() {
   const problems: string[] = []
-  const expect: [number, number, string][] = [
+  const expect: [number | string, number | string, string][] = [
     [counts.products, STATS.products, 'products'],
     [counts.revitTools, STATS.revitTools, 'revitTools'],
     [counts.suiteHomes, STATS.suiteHomes, 'suiteHomes'],
     [counts.utilities, STATS.utilities, 'utilities'],
     [counts.desktopApps, STATS.desktopApps, 'desktopApps'],
     [counts.connectors, STATS.connectors, 'connectors'],
+    [counts.productsWithDialogs, STATS.productsWithDialogs, 'productsWithDialogs'],
+    [counts.galleryPages, STATS.galleryPages, 'galleryPages'],
+    [counts.browserDemos, STATS.browserDemos, 'browserDemos'],
+    [counts.catalogue, STATS.catalogue, 'catalogue'],
+    [counts.awaitingDialogNote, STATS.awaitingDialogNote, 'awaitingDialogNote'],
   ]
   for (const [published, actual, label] of expect) {
     if (published !== actual) problems.push(`${label} is ${published} in counts.generated.json and ${actual} in the catalogue`)
@@ -39,6 +45,7 @@ export function assertSiteMeta() {
 
 /** Counts the parent site can read at /automation/stats.json. */
 export function publishedStats() {
+  const withoutDialogs = PRODUCTS.filter((product) => product.dialogs.length === 0)
   return {
     products: STATS.products,
     revitTools: STATS.revitTools,
@@ -48,11 +55,20 @@ export function publishedStats() {
     connectors: STATS.connectors,
     dialogs: STATS.dialogs,
     views: STATS.views,
+    screenshots: STATS.screenshots,
     demos: STATS.demos,
-    productsWithoutDialogs: PRODUCTS.filter((product) => product.dialogs.length === 0).map((product) => ({
-      slug: product.slug,
-      name: product.name,
-    })),
+    productsWithDialogs: STATS.productsWithDialogs,
+    galleryPages: STATS.galleryPages,
+    browserDemos: STATS.browserDemos,
+    productsWithoutDialogs: withoutDialogs.map((product) => ({ slug: product.slug, name: product.name })),
+    awaitingDialogs: STATS.awaitingDialogHosts,
+    awaitingDialogNote: STATS.awaitingDialogNote,
+    catalogue: STATS.catalogue,
+    definitions: COUNT_DEFINITIONS,
+    labels: {
+      catalogue: STATS.catalogue,
+      browseAll: browseAllLabel(STATS.products),
+    },
   }
 }
 
