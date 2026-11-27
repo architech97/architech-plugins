@@ -1,8 +1,10 @@
 // Fills each built route with its rendered HTML and writes that page's Open Graph image.
+import { createHash } from 'node:crypto'
 import { createServer } from 'vite'
 import { mkdirSync, readFileSync, readdirSync, statSync, writeFileSync } from 'node:fs'
 import { dirname, join, relative } from 'node:path'
 import { fileURLToPath } from 'node:url'
+import { PurgeCSS } from 'purgecss'
 import sharp from 'sharp'
 
 const root = fileURLToPath(new URL('..', import.meta.url))
@@ -32,6 +34,55 @@ function locationFor(route) {
 }
 
 const esc = (text) => text.replace(/&/g, '&amp;').replace(/</g, '&lt;').replace(/>/g, '&gt;').replace(/"/g, '&quot;')
+
+// Classes that can appear on the home page, including ones hydration adds.
+const HOME_CLASS_SOURCES = [
+  'index.html',
+  'src/pages/Home.tsx',
+  'src/pages/HomeSections.tsx',
+  'src/components/DialogGallery.tsx',
+  'src/components/Layout.tsx',
+  'src/components/Brand.tsx',
+  'src/components/mailFallback.tsx',
+  'src/components/motion.tsx',
+  'src/components/useChromeNavigation.ts',
+]
+
+/** The home sentence is the largest paint. The shared stylesheet also carries every other page, so the first paint only waits for the rules this page uses. The full file follows once that paint has settled, for the next page. */
+async function slimHomeStylesheet(html) {
+  const link = html.match(/<link rel="stylesheet"[^>]*href="([^"]+)"/)
+  if (!link) throw new Error('Home page is missing its stylesheet')
+  const href = link[1]
+  const prefix = basePath && basePath !== '/' ? basePath : ''
+  const rel = href.startsWith(`${prefix}/`) ? href.slice(prefix.length) : href
+  const cssFile = join(dist, rel.replace(/^\//, ''))
+  const css = readFileSync(cssFile, 'utf8')
+  const content = [{ raw: html, extension: 'html' }]
+  for (const file of HOME_CLASS_SOURCES) {
+    content.push({ raw: readFileSync(join(root, file), 'utf8'), extension: file.endsWith('.html') ? 'html' : 'js' })
+  }
+  const purged = await new PurgeCSS().purge({
+    content,
+    css: [{ raw: css }],
+    // Keep every face, including the metric-matched fallbacks. Unused faces are not unused: the family is chosen through a custom property.
+    fontFace: false,
+    keyframes: false,
+    variables: false,
+  })
+  const slim = purged[0]?.css ?? ''
+  if (!slim.includes('@font-face') || !slim.includes('Cormorant Garamond') || !slim.includes('.ah-honest') || !slim.includes('.mail-note')) {
+    throw new Error('Home stylesheet lost the display font or the home copy styles')
+  }
+  const hash = createHash('sha256').update(slim).digest('base64url').slice(0, 8)
+  const name = `home-${hash}.css`
+  writeFileSync(join(dirname(cssFile), name), slim)
+  const slimHref = href.slice(0, href.lastIndexOf('/') + 1) + name
+  const swapped = html.replaceAll(href, slimHref)
+  const boot = 'function boot(){if(started)return;started=true;'
+  if (!swapped.includes(boot)) throw new Error('Home page is missing the deferred script boot')
+  const fullCss = `var l=document.createElement("link");l.rel="stylesheet";l.href=${JSON.stringify(href)};document.head.appendChild(l);`
+  return swapped.replace(boot, boot + fullCss)
+}
 
 function wrap(text, max) {
   const words = text.replace(/\s+/g, ' ').trim().split(' ')
@@ -131,7 +182,8 @@ try {
     if (markup.includes("This page isn't here.")) throw new Error(`Prerender missed the route ${route || '/'}`)
     const shell = readFileSync(file, 'utf8')
     if (!shell.includes('<div id="root"></div>')) throw new Error(`Built shell has no empty root: ${route || '/'}`)
-    const next = shell.replace('<div id="root"></div>', () => `<div id="root">${markup}</div>`)
+    let next = shell.replace('<div id="root"></div>', () => `<div id="root">${markup}</div>`)
+    if (!route) next = await slimHomeStylesheet(next)
     for (const href of [...next.matchAll(/<link rel="preload" as="image"[^>]*href="([^"]+)"/g)].map((match) => match[1])) {
       if (!next.includes(`src="${href}"`)) throw new Error(`Image preload ${href} is not the picture on ${route || '/'}`)
     }

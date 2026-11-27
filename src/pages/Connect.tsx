@@ -1,6 +1,7 @@
 import { useRef, useState, type FormEvent } from 'react'
 import { useDeferredSearchParams } from '../components/useDeferredSearch'
 import { Clipboard, Mail, Phone, Send } from 'lucide-react'
+import { MailFallback } from '../components/mailFallback'
 import { CONTACT } from '../data/contact'
 import { productBySlug } from '../data/catalog'
 
@@ -92,7 +93,7 @@ function Form({ topic, product }: { topic: Topic; product?: string }) {
         <aside className="inquiry-next">
           <h2>Reach me directly</h2>
           <p className="inquiry-reply">I reply within one working day.</p>
-          <a href={'mailto:' + CONTACT.email}><Mail size={16} /> {CONTACT.email}</a>
+          <MailFallback link={<a href={'mailto:' + CONTACT.email}><Mail size={16} /> {CONTACT.email}</a>} />
           {CONTACT.phones.map((phone) => <a key={phone} href={'tel:' + phone.replace(/\s/g, '')}><Phone size={16} /> {phone}</a>)}
           <a href={CONTACT.linkedin} target="_blank" rel="noreferrer">LinkedIn</a>
           {CONTACT.whatsapp && <a href={'https://wa.me/' + CONTACT.whatsapp} target="_blank" rel="noreferrer">WhatsApp</a>}

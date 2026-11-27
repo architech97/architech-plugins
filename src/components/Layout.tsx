@@ -1,6 +1,7 @@
 import { useEffect, type ReactNode } from 'react'
 import { Link, NavLink, Outlet, useLocation } from 'react-router-dom'
 import { DesignLockup } from './Brand'
+import { MailFallback } from './mailFallback'
 import { CONTACT } from '../data/contact'
 import pages from '../data/pageIndex.generated.json'
 import { pageMeta } from '../data/pageMeta'
@@ -94,7 +95,7 @@ export function Layout() {
             <div className="nav-menu-foot">
               <a href={homeUrl + '#about'}>About</a>
               <a href="#contact">Contact</a>
-              <a href={`mailto:${CONTACT.email}`}>{CONTACT.email}</a>
+              <MailFallback />
             </div>
           </div>
         </dialog>
@@ -119,7 +120,7 @@ function Footer() {
         </div>
         <div className="ax-foot-col">
           <p className="ax-foot-h">Contact</p>
-          <a href={`mailto:${CONTACT.email}`}>{CONTACT.email}</a>
+          <MailFallback />
           {CONTACT.phones.map((phone) => <a key={phone} href={'tel:' + phone.replace(/\s/g, '')}>{phone}</a>)}
           <a href={CONTACT.linkedin} rel="noopener noreferrer">LinkedIn</a>
           <a href={CONTACT.instagram} rel="noopener noreferrer">Instagram</a>

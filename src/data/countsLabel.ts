@@ -17,6 +17,20 @@ export function browseAllLabel(products: number) {
   return `Browse all ${products} products`
 }
 
+/**
+ * Navneet's hero sentence. The connector count is the design-app count:
+ * one connector each for Revit, Rhino, SketchUp, AutoCAD and Blender.
+ */
+export function heroLead(counts: CatalogueCounts) {
+  return `${counts.revitTools} Revit add-ins I designed and built for sheets, parameters and model checks, plus ${counts.desktopApps} desktop apps and AI connectors for ${counts.connectors} design apps.`
+}
+
+/** Revit windows are on the site. Connector pictures that are not yet captured stay named. */
+export function windowsLine(note: string) {
+  const shown = 'Each Revit add-in is shown through its real windows.'
+  return note ? `${shown} ${note}` : shown
+}
+
 /** Hosts or names of products that have no dialog picture yet. */
 export function awaitingDialogSentence(labels: readonly string[], connectors: boolean) {
   if (!labels.length) return ''

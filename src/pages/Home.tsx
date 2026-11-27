@@ -2,7 +2,7 @@ import { useEffect, useRef } from 'react'
 import { Link } from 'react-router-dom'
 import { asset } from '../components/Brand'
 import { dialogAlt, imageProps } from '../components/dialogImage'
-import { browseAllLabel } from '../data/countsLabel'
+import { browseAllLabel, heroLead, windowsLine } from '../data/countsLabel'
 import counts from '../data/counts.generated.json'
 import { FEATURED_TOOLS, HERO_SIZES } from '../data/featured'
 import hero from '../data/hero.generated.json'
@@ -41,7 +41,7 @@ function ResultLoop() {
             </div>
           ))}
         </div>
-        <img className="loop-panel" {...imageProps(HERO.dark, 420)} sizes={HERO_SIZES} alt={dialogAlt(HERO_TOOL, HERO)} decoding="async" fetchPriority="high" />
+        <img className="loop-panel" {...imageProps(HERO.dark, 420)} sizes={HERO_SIZES} alt={dialogAlt(HERO_TOOL, HERO)} decoding="async" fetchPriority="low" />
       </div>
       <figcaption>Sheet Export, using my Vasant Kunj drawings and visualisations.</figcaption>
     </figure>
@@ -55,7 +55,8 @@ export default function Home() {
         <div className="wrap-wide ah-grid">
           <div className="ah-copy">
             <h1><span>Tools that finish</span> <span>the drawing set</span></h1>
-            <p className="lead">{counts.catalogue}. Each Revit add-in is shown through its real windows. {counts.awaitingDialogNote}</p>
+            <p className="lead">{heroLead(counts)}</p>
+            <p className="ah-honest">{windowsLine(counts.awaitingDialogNote)}</p>
             <div className="hero-cta">
               <Link className="btn btn-primary" to="/plugins/architech-i3d#try-demo">Try I3D in your browser</Link>
               <Link className="home-secondary" to="/plugins">{browseAllLabel(counts.products)}</Link>

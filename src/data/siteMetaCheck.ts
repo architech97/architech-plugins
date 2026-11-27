@@ -1,7 +1,7 @@
 import counts from './counts.generated.json'
 import pages from './pageIndex.generated.json'
 import { PRODUCTS, STATS } from './catalog'
-import { browseAllLabel, COUNT_DEFINITIONS } from './countsLabel'
+import { browseAllLabel, COUNT_DEFINITIONS, heroLead, windowsLine } from './countsLabel'
 import { pageMeta } from './pageMeta'
 
 type PageRecord = { slug: string; name: string; tagline: string; demo: string | null; windows: number }
@@ -68,6 +68,8 @@ export function publishedStats() {
     labels: {
       catalogue: STATS.catalogue,
       browseAll: browseAllLabel(STATS.products),
+      hero: heroLead(STATS),
+      windows: windowsLine(STATS.awaitingDialogNote),
     },
   }
 }

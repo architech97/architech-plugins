@@ -32,6 +32,7 @@
 .ah h1 { margin: 0 0 clamp(18px, 2.2vw, 30px); font-size: clamp(3rem, 5.7vw, 6.1rem); line-height: .9; letter-spacing: -.045em; text-wrap: initial; }
 .ah h1 > span { display: block; overflow: hidden; padding-bottom: .16em; margin-bottom: -.16em; }
 .ah .lead { max-width: 42ch; }
+.ah-honest { margin: 14px 0 0; max-width: 46ch; color: var(--text-2); font-size: 1rem; line-height: 1.5; }
 .ah .hero-cta { margin-top: 26px; align-items: center; gap: 12px 26px; }
 .home-secondary { display: inline-flex; align-items: center; min-height: 44px; color: var(--text); font-weight: 500; border-bottom: 1px solid var(--line-strong); transition: border-color var(--t-ui) var(--ease); }
 .home-secondary:hover { border-color: var(--text); }

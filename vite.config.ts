@@ -1,5 +1,39 @@
 import { readFileSync } from 'node:fs'
 import { defineConfig, runnerImport, type Plugin } from 'vite'
+
+const FONT_PRELOADS = ['cormorant-garamond', 'jost'] as const
+
+/** The woff2 urls the built CSS actually requests, so the preload matches the file the heading uses. */
+function fontPreloadTags(bundle: Record<string, { type: string; fileName?: string; source?: string | Uint8Array }>, assetBase: string) {
+  const found = new Map<string, string>()
+  for (const item of Object.values(bundle)) {
+    if (item.type !== 'asset' || !item.fileName?.endsWith('.css') || typeof item.source !== 'string') continue
+    for (const match of item.source.matchAll(/url\((['"]?)([^'")]+)\1\)/g)) {
+      const raw = match[2]
+      if (!raw.endsWith('.woff2') || raw.includes('italic')) continue
+      const key = FONT_PRELOADS.find((name) => raw.includes(`${name}.`) || raw.includes(`${name}-`))
+      if (!key || found.has(key)) continue
+      found.set(key, absoluteFromCss(assetBase, item.fileName, raw))
+    }
+  }
+  return new Map(FONT_PRELOADS.filter((key) => found.has(key)).map((key) => [key, found.get(key)!]))
+}
+
+function fontPreloadTag(href: string, priority: 'high' | 'low') {
+  return `<link rel="preload" as="font" type="font/woff2" href="${href}" crossorigin="anonymous" fetchpriority="${priority}" />`
+}
+
+function absoluteFromCss(assetBase: string, cssFile: string, raw: string) {
+  if (/^(?:https?:|data:|\/)/.test(raw)) return raw
+  const dir = cssFile.slice(0, cssFile.lastIndexOf('/') + 1)
+  const stack: string[] = []
+  for (const part of (dir + raw).split('/')) {
+    if (part === '..') stack.pop()
+    else if (part !== '.' && part !== '') stack.push(part)
+  }
+  const prefix = assetBase.endsWith('/') ? assetBase : `${assetBase}/`
+  return prefix + stack.join('/')
+}
 import react from '@vitejs/plugin-react'
 import { AUTOMATION_PATH, SITE_ORIGIN } from './src/data/contact.ts'
 
@@ -47,16 +81,24 @@ const staticRoutes: Plugin = {
         ['custom-development', 'connect'],
       ])
       const escape = (text: string) => text.replace(/&/g, '&amp;').replace(/"/g, '&quot;').replace(/</g, '&lt;')
-      const link = (preload: { href: string; srcSet?: string; sizes?: string } | undefined) => {
+      // runnerImport does not load this config, so its asset helper returns a root path. The pages request the base path.
+      const rooted = (url: string) => !url || /^(?:https?:|data:)/.test(url) || url.startsWith(base) ? url : base + url.replace(/^\//, '')
+      const rootedSet = (srcSet: string) => srcSet.split(',').map((part) => {
+        const bits = part.trim().split(/\s+/)
+        bits[0] = rooted(bits[0])
+        return bits.join(' ')
+      }).join(', ')
+      const link = (preload: { href: string; srcSet?: string; sizes?: string } | undefined, priority: 'high' | 'low' = 'high') => {
         if (!preload) return ''
-        const srcSet = preload.srcSet ? ` imagesrcset="${preload.srcSet}"` : ''
+        const srcSet = preload.srcSet ? ` imagesrcset="${rootedSet(preload.srcSet)}"` : ''
         const sizes = preload.sizes ? ` imagesizes="${preload.sizes}"` : ''
-        return `<link rel="preload" as="image" fetchpriority="high" href="${preload.href}"${srcSet}${sizes} />`
+        return `<link rel="preload" as="image" fetchpriority="${priority}" href="${rooted(preload.href)}"${srcSet}${sizes} />`
       }
       const productBySlug = (slug: string) => PRODUCTS.find((product) => product.slug === slug)
       const productByDemo = (demo: string) => PRODUCTS.find((product) => product.demo === demo)
       const preloadFor = (route: string) => {
-        if (!route) return link(images.imagePreload(hero.dark, 420, HERO_SIZES))
+        // The home sentence is the largest paint. The dialog picture follows it.
+        if (!route) return link(images.imagePreload(hero.dark, 420, HERO_SIZES), 'low')
         if (route === 'demos') {
           const product = productBySlug('room-to-finishes') ?? PRODUCTS.find((item) => item.dialogs.length)
           return product ? link({ href: images.thumbProps(product.dialogs[0].dark).src }) : ''
@@ -74,6 +116,13 @@ const staticRoutes: Plugin = {
       }
       metaCheck.assertUniqueMeta(['', ...routes])
       this.emitFile({ type: 'asset', fileName: 'stats.json', source: JSON.stringify(metaCheck.publishedStats(), null, 2) + '\n' })
+      const fontHrefs = fontPreloadTags(bundle, base)
+      if (fontHrefs.size !== FONT_PRELOADS.length) this.error('Cormorant and Jost woff2 preloads were not found in the built CSS.')
+      const fontLinksFor = (route: string) => {
+        // Home's largest paint is the sentence, set in Jost. The heading face can follow.
+        const jost = route === '' ? 'high' : 'low'
+        return FONT_PRELOADS.map((key) => fontPreloadTag(fontHrefs.get(key)!, key === 'jost' ? jost : 'low')).join('\n    ')
+      }
 
       const template = String(shell.source)
       const page = (route = '') => {
@@ -95,7 +144,7 @@ const staticRoutes: Plugin = {
           : titled
         const withHead = indexed
           .replace(/(<meta property="og:url" content=")[^"]*"/, (_, tag) => tag + canonical + '"')
-          .replace('<meta name="viewport" content="width=device-width, initial-scale=1.0" />', `<meta name="viewport" content="width=device-width, initial-scale=1.0" />\n    ${preloadFor(route)}`)
+          .replace('<meta name="viewport" content="width=device-width, initial-scale=1.0" />', `<meta name="viewport" content="width=device-width, initial-scale=1.0" />\n    ${preloadFor(route)}\n    ${fontLinksFor(route)}`)
           .replace('</head>', `    <link rel="canonical" href="${canonical}" />\n  </head>`)
         const sources: string[] = []
         const moved = withHead

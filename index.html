@@ -22,13 +22,70 @@
     <meta name="robots" content="noindex, nofollow" />
     <link rel="icon" type="image/svg+xml" href="%BASE_URL%favicon.svg" />
     <link rel="icon" href="/favicon.ico" sizes="any" />
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500&amp;family=Jost:wght@300;400;500&amp;display=optional" onload="this.onload=null;this.rel='stylesheet'" />
-    <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500&amp;family=Jost:wght@300;400;500&amp;display=optional" /></noscript>
   </head>
   <body>
     <div id="root"></div>
     <script type="module" src="/src/main.tsx"></script>
+    <script>
+      (function () {
+        var note = 'If no mail app opens, copy the address and paste it into any mail program.'
+        var copied = 'Email address copied.'
+        var failed = 'Select the address and copy it from your browser menu.'
+        var none = 'No mail app opened. Copy the address and paste it into any mail program.'
+        function statusFor(node) {
+          var root = node.closest('section, footer, main, .ax-foot-col') || document.body
+          return root.querySelector('[data-mail-status]')
+        }
+        function legacyCopy(value) {
+          var field = document.createElement('textarea')
+          field.value = value
+          field.setAttribute('readonly', '')
+          field.style.position = 'fixed'
+          field.style.left = '-999px'
+          document.body.appendChild(field)
+          field.select()
+          var ok = false
+          try { ok = document.execCommand('copy') } catch (error) { ok = false }
+          field.remove()
+          return ok
+        }
+        function write(value) {
+          if (navigator.clipboard && window.isSecureContext) return navigator.clipboard.writeText(value).then(function () { return true })
+          return Promise.resolve(legacyCopy(value))
+        }
+        document.addEventListener('click', function (event) {
+          var button = event.target.closest('[data-copy-email]')
+          if (button) {
+            var value = button.getAttribute('data-copy-email') || ''
+            var live = statusFor(button)
+            var label = button.textContent
+            write(value).then(function (ok) {
+              if (live) live.textContent = ok ? copied : failed
+              if (ok) button.textContent = 'Copied'
+              window.setTimeout(function () {
+                button.textContent = label
+                if (live && live.textContent === copied) live.textContent = note
+              }, 2500)
+            }, function () {
+              if (live) live.textContent = failed
+            })
+            return
+          }
+          var link = event.target.closest('a[href^="mailto:"]')
+          if (!link) return
+          var status = statusFor(link)
+          if (!status) return
+          var left = false
+          var mark = function () { left = true }
+          window.addEventListener('blur', mark, { once: true })
+          document.addEventListener('visibilitychange', function () {
+            if (document.visibilityState === 'hidden') left = true
+          }, { once: true })
+          window.setTimeout(function () {
+            if (!left && document.visibilityState === 'visible') status.textContent = none
+          }, 1600)
+        })
+      })()
+    </script>
   </body>
 </html>
