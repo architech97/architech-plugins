@@ -1,6 +1,8 @@
 import generated from './tools.generated.json'
 import dialogData from './dialogs.generated.json'
+import { awaitingDialogSentence, catalogueSentence } from './countsLabel'
 import { EXTRAS } from './extras'
+import { BROWSER_DEMOS } from './liveDemos'
 import { PROBLEMS } from './problems'
 import { RIBBON_PRODUCTS } from './ribbonProducts'
 import type { DialogShot, Product } from './types'
@@ -137,6 +139,18 @@ const utilities = RIBBON_PRODUCTS.length - suiteHomes
 const connectors = EXTRAS.filter((product) => product.panel === 'MCP connectors').length
 const desktopApps = EXTRAS.length - connectors
 
+const productsWithDialogs = PRODUCTS.filter((product) => product.dialogs.length > 0).length
+const awaitingProducts = PRODUCTS.filter((product) => product.dialogs.length === 0)
+const awaitingDialogHosts = awaitingProducts.map((product) => product.software[0] ?? product.name)
+const catalogue = catalogueSentence({
+  products: PRODUCTS.length,
+  revitTools: tools.length,
+  suiteHomes,
+  utilities,
+  desktopApps,
+  connectors,
+})
+
 /** One number story, counted from the images on the site. The five groups sum to `products`. Suite tool counts sum to `revitTools`. */
 export const STATS = {
   products: PRODUCTS.length,
@@ -152,13 +166,28 @@ export const STATS = {
   views: shown.length,
   screenshots: shown.filter((d) => d.real).length,
   light: shown.filter((d) => d.light).length,
+  /** Products with a dialog gallery. This is not the number of browser demos. */
   demos: PRODUCTS.filter((product) => product.demo).length,
+  productsWithDialogs,
+  /** One gallery page per product that has at least one dialog picture. */
+  galleryPages: productsWithDialogs,
+  /** I3D, the Assistant and the Revit MCP Connector. */
+  browserDemos: BROWSER_DEMOS.length,
+  awaitingDialogHosts,
+  awaitingDialogNote: awaitingDialogSentence(awaitingDialogHosts, awaitingProducts.every((product) => product.panel === 'MCP connectors')),
+  catalogue,
   softwares: new Set(PRODUCTS.flatMap((p) => p.software)).size,
 }
 
 const grouped = STATS.revitTools + STATS.suiteHomes + STATS.utilities + STATS.desktopApps + STATS.connectors
 if (grouped !== STATS.products) {
   throw new Error(`Catalogue groups sum to ${grouped}, but there are ${STATS.products} products.`)
+}
+if (STATS.demos !== STATS.productsWithDialogs) {
+  throw new Error(`Gallery pages (${STATS.demos}) and products with dialog pictures (${STATS.productsWithDialogs}) have drifted.`)
+}
+for (const slug of BROWSER_DEMOS) {
+  if (!PRODUCTS.some((product) => product.slug === slug)) throw new Error(`Unknown browser demo: ${slug}`)
 }
 
 export { HERO_SIZES } from './featured'

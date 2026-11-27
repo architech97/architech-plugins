@@ -1,4 +1,4 @@
-import { useId } from 'react'
+import { useEffect, useId, useRef, type RefObject } from 'react'
 import { Link } from 'react-router-dom'
 import type { Product } from '../data/types'
 import { suiteById } from '../data/suites'
@@ -62,13 +62,34 @@ function SpecimenDrawing({ specimen }: { specimen: Specimen }) {
   )
 }
 
-export function ProductCard({ p }: { p: Product }) {
+function CardPreview({ img, defer, src, alt, width, height }: { img: RefObject<HTMLImageElement | null>; defer: boolean; src: string; alt: string; width?: number; height?: number }) {
+  return (
+    <img
+      ref={defer ? img : undefined}
+      src={defer ? undefined : src}
+      data-src={defer ? src : undefined}
+      alt={alt}
+      width={width}
+      height={height}
+      loading="lazy"
+      decoding="async"
+    />
+  )
+}
+
+export function ProductCard({ p, deferImage = false }: { p: Product; deferImage?: boolean }) {
   const titleId = useId()
   const suite = suiteById(p.suite)
   const dialog = p.dialogs[0]
   const media = dialog ? undefined : p.media?.find((item) => item.kind === 'image')
   const specimen = SPECIMENS[p.slug]
   const productPath = '/plugins/' + p.slug
+  const previewRef = useRef<HTMLImageElement>(null)
+  useEffect(() => {
+    const img = previewRef.current
+    if (!img || img.getAttribute('src') || !img.dataset.src) return
+    img.src = img.dataset.src
+  }, [])
 
   return (
     <article className="pcard product-card" aria-labelledby={titleId}>
@@ -77,8 +98,8 @@ export function ProductCard({ p }: { p: Product }) {
         <figure className="product-preview">
           <div className={'product-preview-art ' + (dialog ? 'is-native' : media ? 'is-desktop' : 'is-specimen')}>
             {dialog
-              ? <img {...thumbProps(dialog.dark)} alt={dialogAlt(p, dialog)} loading="lazy" decoding="async" />
-              : media ? <img src={asset(media.src)} alt={media.alt} loading="lazy" decoding="async" />
+              ? <CardPreview img={previewRef} defer={deferImage} {...thumbProps(dialog.dark)} alt={dialogAlt(p, dialog)} />
+              : media ? <CardPreview img={previewRef} defer={deferImage} src={asset(media.src)} alt={media.alt} />
               : specimen && <SpecimenDrawing specimen={specimen} />}
           </div>
           <figcaption>{dialog ? (dialog.real ? 'Screenshot' : 'Render, sample data') : media ? 'Desktop capture' : 'Workflow drawing'}</figcaption>

@@ -1,6 +1,7 @@
 import { useEffect, type ReactNode } from 'react'
 import { Link, NavLink, Outlet, useLocation } from 'react-router-dom'
 import { DesignLockup } from './Brand'
+import { MailFallback } from './mailFallback'
 import { CONTACT } from '../data/contact'
 import pages from '../data/pageIndex.generated.json'
 import { pageMeta } from '../data/pageMeta'
@@ -94,7 +95,7 @@ export function Layout() {
             <div className="nav-menu-foot">
               <a href={homeUrl + '#about'}>About</a>
               <a href="#contact">Contact</a>
-              <a href={`mailto:${CONTACT.email}`}>{CONTACT.email}</a>
+              <MailFallback />
             </div>
           </div>
         </dialog>
@@ -115,12 +116,11 @@ function Footer() {
       <div className="ax-foot-grid">
         <div className="ax-foot-lead">
           <p className="ax-foot-line">Have a project or a role in mind? Let’s talk.</p>
-          {/* TODO(Navneet): confirm the reply-time wording. */}
           <p className="ax-foot-reply">I reply within one working day.</p>
         </div>
         <div className="ax-foot-col">
           <p className="ax-foot-h">Contact</p>
-          <a href={`mailto:${CONTACT.email}`}>{CONTACT.email}</a>
+          <MailFallback />
           {CONTACT.phones.map((phone) => <a key={phone} href={'tel:' + phone.replace(/\s/g, '')}>{phone}</a>)}
           <a href={CONTACT.linkedin} rel="noopener noreferrer">LinkedIn</a>
           <a href={CONTACT.instagram} rel="noopener noreferrer">Instagram</a>
@@ -152,7 +152,6 @@ function Footer() {
         <a className="ax-foot-top" href="#top">Back to top</a>
         <p>Portfolio of Navneet Singh, New Delhi. Dialog pictures are screenshots and renders of the tools, with sample data. Autodesk, Revit and AutoCAD are trademarks of Autodesk, Inc.; Rhino, SketchUp and Blender are trademarks of their owners.</p>
       </div>
-      {/* HOOK(contact-form): Navneet has not chosen a form service. Do not post this anywhere and do not add analytics. */}
       <div id="contact-form" data-form="unconfigured" hidden />
     </footer>
   )

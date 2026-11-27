@@ -108,7 +108,7 @@
 .drawing-stage[data-view="review"] .plate-walls { transform: none; }
 .drawing-stage[data-view="review"] .plate-guides { opacity: .19; }
 .drawing-stage[data-view="review"] .plate-review { opacity: 1; }
-@keyframes plate-in { from { transform: translateY(14px); opacity: 0; } to { transform: none; opacity: 1; } }
+@keyframes plate-in { from { transform: translateY(14px); } to { transform: none; } }
 .drawing-controls { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); border-block: 1px solid var(--demo-stage-rule); }
 .drawing-controls button { border: 0; border-bottom: 2px solid var(--clear); background: var(--clear); cursor: pointer; color: var(--demo-stage-muted); padding: 10px 12px; min-height: 44px; font-size: .84rem; transition: color var(--t-ui) var(--ease), background var(--t-ui) var(--ease), border-color var(--t-ui) var(--ease); }
 .drawing-controls button + button { border-left: 1px solid var(--demo-stage-rule); }

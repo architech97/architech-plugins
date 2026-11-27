@@ -32,6 +32,7 @@
 .ah h1 { margin: 0 0 clamp(18px, 2.2vw, 30px); font-size: clamp(3rem, 5.7vw, 6.1rem); line-height: .9; letter-spacing: -.045em; text-wrap: initial; }
 .ah h1 > span { display: block; overflow: hidden; padding-bottom: .16em; margin-bottom: -.16em; }
 .ah .lead { max-width: 42ch; }
+.ah-honest { margin: 14px 0 0; max-width: 46ch; color: var(--text-2); font-size: 1rem; line-height: 1.5; }
 .ah .hero-cta { margin-top: 26px; align-items: center; gap: 12px 26px; }
 .home-secondary { display: inline-flex; align-items: center; min-height: 44px; color: var(--text); font-weight: 500; border-bottom: 1px solid var(--line-strong); transition: border-color var(--t-ui) var(--ease); }
 .home-secondary:hover { border-color: var(--text); }
@@ -52,8 +53,8 @@
 .loop-sheet b { font: 500 1em var(--font-body); }
 .loop-sheet p i { margin-left: auto; padding: 1px 5px; font: 500 11px/1.2 var(--font-body); font-style: normal; color: var(--home-white); background: var(--automation-heading); }
 @keyframes sheet-out {
-  0%, 25% { opacity: 0; transform: translate(-62%, 58%) scale(.3) rotate(0deg); }
-  70%, 100% { opacity: 1; transform: rotate(var(--r)); }
+  0%, 25% { transform: translate(-62%, 58%) scale(.3) rotate(0deg); }
+  70%, 100% { transform: rotate(var(--r)); }
 }
 .loop-panel { view-transition-name: automation-dialog; position: absolute; left: 0; bottom: 3%; z-index: 1; width: 62%; height: auto; filter: drop-shadow(0 28px 34px var(--home-sheet-shadow)); }
 
@@ -87,7 +88,7 @@
 .stage-link { display: inline-flex; align-items: center; gap: 8px; min-height: 44px; color: var(--focus-dark); font-weight: 500; border-bottom: .75px solid var(--home-link-rule); transition: gap var(--t-reveal) var(--ease), border-color var(--t-ui); }
 .stage-link:hover, .stage-link:focus-visible { color: var(--home-white); gap: 12px; border-color: currentColor; }
 .hero-stage :focus-visible { outline-color: var(--focus-dark); }
-@keyframes plate-reveal { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: none; } }
+@keyframes plate-reveal { from { transform: translateY(8px); } to { transform: none; } }
 
 /* Three suites as one Revit ribbon: tabs, real panels, tools; pointing at a tool explains it. */
 .suites { padding: var(--s-6) 0 var(--s-5); }

@@ -4,28 +4,88 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>ArchiTECH Automation | BIM tools by Navneet Singh</title>
-    <meta name="description" content="BIM tools by Navneet Singh: 58 Revit add-ins, 3 suite homes, 2 desktop apps and 5 AI connectors." />
+    <meta name="description" content="69 products: 58 Revit add-ins, 3 suite homes, 1 ribbon utility, 2 desktop apps and 5 connectors. Each Revit add-in is shown through its real windows." />
     <meta property="og:type" content="website" />
     <meta property="og:site_name" content="ArchiTECH Automation" />
     <meta property="og:title" content="ArchiTECH Automation | BIM tools by Navneet Singh" />
     <meta property="og:url" content="https://architechdesign.in/automation/" />
-    <meta property="og:image:alt" content="Tools that finish the drawing set: 58 Revit add-ins by Navneet Singh." />
-    <meta property="og:description" content="BIM tools by Navneet Singh: 58 Revit add-ins, 3 suite homes, 2 desktop apps and 5 AI connectors." />
-    <meta property="og:image" content="https://architechdesign.in/automation/og.png" />
+    <meta property="og:image:alt" content="69 products: 58 Revit add-ins, 3 suite homes, 1 ribbon utility, 2 desktop apps and 5 connectors." />
+    <meta property="og:description" content="69 products: 58 Revit add-ins, 3 suite homes, 1 ribbon utility, 2 desktop apps and 5 connectors. Each Revit add-in is shown through its real windows." />
+    <meta property="og:image" content="https://architechdesign.in/automation/og/home.png" />
     <meta property="og:image:width" content="1200" />
     <meta property="og:image:height" content="630" />
     <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="ArchiTECH Automation | BIM tools by Navneet Singh" />
+    <meta name="twitter:description" content="69 products: 58 Revit add-ins, 3 suite homes, 1 ribbon utility, 2 desktop apps and 5 connectors. Each Revit add-in is shown through its real windows." />
+    <meta name="twitter:image" content="https://architechdesign.in/automation/og/home.png" />
     <meta name="theme-color" content="#f3eee6" />
     <meta name="robots" content="noindex, nofollow" />
     <link rel="icon" type="image/svg+xml" href="%BASE_URL%favicon.svg" />
     <link rel="icon" href="/favicon.ico" sizes="any" />
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link rel="preload" as="style" href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500&amp;family=Jost:wght@300;400;500&amp;display=optional" onload="this.onload=null;this.rel='stylesheet'" />
-    <noscript><link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:wght@500&amp;family=Jost:wght@300;400;500&amp;display=optional" /></noscript>
   </head>
   <body>
     <div id="root"></div>
     <script type="module" src="/src/main.tsx"></script>
+    <script>
+      (function () {
+        var note = 'If no mail app opens, copy the address and paste it into any mail program.'
+        var copied = 'Email address copied.'
+        var failed = 'Select the address and copy it from your browser menu.'
+        var none = 'No mail app opened. Copy the address and paste it into any mail program.'
+        function statusFor(node) {
+          var root = node.closest('section, footer, main, .ax-foot-col') || document.body
+          return root.querySelector('[data-mail-status]')
+        }
+        function legacyCopy(value) {
+          var field = document.createElement('textarea')
+          field.value = value
+          field.setAttribute('readonly', '')
+          field.style.position = 'fixed'
+          field.style.left = '-999px'
+          document.body.appendChild(field)
+          field.select()
+          var ok = false
+          try { ok = document.execCommand('copy') } catch (error) { ok = false }
+          field.remove()
+          return ok
+        }
+        function write(value) {
+          if (navigator.clipboard && window.isSecureContext) return navigator.clipboard.writeText(value).then(function () { return true })
+          return Promise.resolve(legacyCopy(value))
+        }
+        document.addEventListener('click', function (event) {
+          var button = event.target.closest('[data-copy-email]')
+          if (button) {
+            var value = button.getAttribute('data-copy-email') || ''
+            var live = statusFor(button)
+            var label = button.textContent
+            write(value).then(function (ok) {
+              if (live) live.textContent = ok ? copied : failed
+              if (ok) button.textContent = 'Copied'
+              window.setTimeout(function () {
+                button.textContent = label
+                if (live && live.textContent === copied) live.textContent = note
+              }, 2500)
+            }, function () {
+              if (live) live.textContent = failed
+            })
+            return
+          }
+          var link = event.target.closest('a[href^="mailto:"]')
+          if (!link) return
+          var status = statusFor(link)
+          if (!status) return
+          var left = false
+          var mark = function () { left = true }
+          window.addEventListener('blur', mark, { once: true })
+          document.addEventListener('visibilitychange', function () {
+            if (document.visibilityState === 'hidden') left = true
+          }, { once: true })
+          window.setTimeout(function () {
+            if (!left && document.visibilityState === 'visible') status.textContent = none
+          }, 1600)
+        })
+      })()
+    </script>
   </body>
 </html>

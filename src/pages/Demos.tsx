@@ -1,5 +1,6 @@
 import { useEffect, useRef, useState, type RefObject } from 'react'
-import { Link, Navigate, useLocation, useNavigate, useParams, useSearchParams } from 'react-router-dom'
+import { Link, Navigate, useLocation, useNavigate, useParams } from 'react-router-dom'
+import { useDeferredSearchParams } from '../components/useDeferredSearch'
 import { ArrowRight, Search, X } from 'lucide-react'
 import { PRODUCTS, STATS, productByDemo, productBySlug, searchText } from '../data/catalog'
 import type { Product } from '../data/types'
@@ -40,7 +41,7 @@ function HeroWindow() {
   return (
     <Link className="drawing-stage hero-window" to={'/demos/' + product.demo}>
       <figcaption><span>{product.name}</span><span>Real window, sample data</span></figcaption>
-      <img {...thumbProps(shot.dark)} alt={product.name + ' main window'} decoding="async" />
+      <img {...thumbProps(shot.dark)} alt={product.name + ' main window'} decoding="async" fetchPriority="high" />
     </Link>
   )
 }
@@ -93,7 +94,7 @@ function DemoSearch({ input, label, value, onChange, shortcut }: {
 }
 
 export function DemoHub() {
-  const [params] = useSearchParams()
+  const [params] = useDeferredSearchParams()
   const location = useLocation()
   const navigate = useNavigate()
   const quickSearch = useRef<HTMLInputElement>(null)
@@ -143,7 +144,7 @@ export function DemoHub() {
           <div className="demo-opening-copy">
 
             <h1 id="demo-library-title">Every dialog, <span>as built</span></h1>
-            <p className="demo-intro">Every window of every tool in one place: main windows, confirmations, progress and results, as they open in Revit. Each tool’s own page shows the same pictures next to what the tool does.</p>
+            <p className="demo-intro">Every pictured window in one place: main windows, confirmations, progress and results. Each product page shows the same pictures next to what the tool does. Products without a picture yet are named on the coverage page.</p>
             <form className="demo-quick-search" role="search" aria-label="Quick tool lookup" onSubmit={(event) => { event.preventDefault(); navigate(indexLocation); focusIndex() }}>
               <DemoSearch input={quickSearch} label="Quick tool search" value={query} onChange={(value) => filter('q', value)} shortcut />
             </form>

@@ -23,3 +23,18 @@ export function imageProps([src, w, h, small]: DialogImage, slot = 1100) {
 export function thumbProps([src, w, h, small]: DialogImage) {
   return { src: small ? smallUrl(asset(src)) : asset(src), width: w, height: h }
 }
+
+/** The picture the gallery opens on: the largest frame, with a screenshot winning a tie. */
+export function leadShot(dialogs: readonly DialogShot[]): DialogShot | undefined {
+  if (!dialogs.length) return undefined
+  const area = (shot: DialogShot) => shot.dark[1] * shot.dark[2] + (shot.real ? 1 : 0)
+  return dialogs.reduce((best, shot) => (area(shot) > area(best) ? shot : best))
+}
+
+/** The same src, srcset and sizes the gallery image renders, so a preload matches the request. */
+export function imagePreload(image: DialogImage, slot = 1100, sizes?: string) {
+  const props = imageProps(image, slot)
+  const srcSet = 'srcSet' in props ? props.srcSet : undefined
+  const sized = 'sizes' in props ? props.sizes : undefined
+  return { href: props.src, srcSet, sizes: sizes ?? sized }
+}

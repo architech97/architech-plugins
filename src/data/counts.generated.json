@@ -4,5 +4,10 @@
   "suiteHomes": 3,
   "utilities": 1,
   "desktopApps": 2,
-  "connectors": 5
+  "connectors": 5,
+  "productsWithDialogs": 65,
+  "galleryPages": 65,
+  "browserDemos": 3,
+  "catalogue": "69 products: 58 Revit add-ins, 3 suite homes, 1 ribbon utility, 2 desktop apps and 5 connectors",
+  "awaitingDialogNote": "Dialog pictures for the AutoCAD, Blender, Rhino and SketchUp connectors are still to come."
 }

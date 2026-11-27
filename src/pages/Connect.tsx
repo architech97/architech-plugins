@@ -1,6 +1,7 @@
 import { useRef, useState, type FormEvent } from 'react'
-import { useSearchParams } from 'react-router-dom'
+import { useDeferredSearchParams } from '../components/useDeferredSearch'
 import { Clipboard, Mail, Phone, Send } from 'lucide-react'
+import { MailFallback } from '../components/mailFallback'
 import { CONTACT } from '../data/contact'
 import { productBySlug } from '../data/catalog'
 
@@ -18,7 +19,7 @@ const topicOf = (value: string | null): Topic => (value && value in TYPES ? (val
 const PLATFORMS = ['Revit', 'Rhino', 'SketchUp', 'AutoCAD', 'Blender', 'AI / MCP', 'Not sure yet']
 
 export default function Connect() {
-  const [params] = useSearchParams()
+  const [params] = useDeferredSearchParams()
   const product = productBySlug(params.get('product') ?? '')
   return <Form key={params.toString()} topic={topicOf(params.get('type'))} product={product?.name} />
 }
@@ -91,9 +92,8 @@ function Form({ topic, product }: { topic: Topic; product?: string }) {
         </form>
         <aside className="inquiry-next">
           <h2>Reach me directly</h2>
-          {/* TODO(Navneet): confirm the reply-time wording. */}
           <p className="inquiry-reply">I reply within one working day.</p>
-          <a href={'mailto:' + CONTACT.email}><Mail size={16} /> {CONTACT.email}</a>
+          <MailFallback link={<a href={'mailto:' + CONTACT.email}><Mail size={16} /> {CONTACT.email}</a>} />
           {CONTACT.phones.map((phone) => <a key={phone} href={'tel:' + phone.replace(/\s/g, '')}><Phone size={16} /> {phone}</a>)}
           <a href={CONTACT.linkedin} target="_blank" rel="noreferrer">LinkedIn</a>
           {CONTACT.whatsapp && <a href={'https://wa.me/' + CONTACT.whatsapp} target="_blank" rel="noreferrer">WhatsApp</a>}

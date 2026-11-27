@@ -67,7 +67,7 @@ export default function Coverage() {
           <p className="lead">Every dialog picture on the site, the tool it belongs to and where the picture comes from. Gaps are listed, not hidden.</p>
         </header>
         <dl className="coverage-summary">
-          <div><dt>Dialogs shown, across {STATS.demos} products</dt><dd><CountUp to={STATS.dialogs} /></dd></div>
+          <div><dt>Dialogs shown, from {STATS.productsWithDialogs} products with pictures</dt><dd><CountUp to={STATS.dialogs} /></dd></div>
           <div><dt>Pictures, counting each dialog state</dt><dd><CountUp to={STATS.views} /></dd></div>
           <div><dt>Screenshots of the installed build</dt><dd><CountUp to={STATS.screenshots} /></dd></div>
           <div><dt>Pictures also shown in the Light theme</dt><dd><CountUp to={STATS.light} /></dd></div>
